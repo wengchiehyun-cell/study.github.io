@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>108課綱歷史數位地圖與測驗系統</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>108課綱歷史測驗與數位地圖系統</title>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
 <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css" />
 <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css" />
@@ -11,309 +12,254 @@
 *{box-sizing:border-box;margin:0;padding:0;}
 body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;background:#0f172a;color:#f8fafc;height:100vh;display:flex;flex-direction:column;overflow:hidden;}
 
-/* 全螢幕強制驗證登入/註冊牆 (類似 AI 工具的入口) */
+/* 全螢幕強制登入/註冊門檻 */
 #authScreen{
     position:fixed;top:0;left:0;width:100vw;height:100vh;
     background:#0f172a;z-index:10000;display:flex;
     justify-content:center;align-items:center;padding:20px;
 }
 .auth-card{
-    background:#1e293b;border:2px solid #334155;border-radius:20px;
-    padding:36px 32px;width:100%;max-width:440px;box-shadow:0 20px 50px rgba(0,0,0,0.6);
-    display:flex;flex-direction:column;gap:20px;
+    background:#1e293b;border:1px solid #334155;border-radius:12px;
+    padding:32px 28px;width:100%;max-width:400px;
+    display:flex;flex-direction:column;gap:16px;
 }
 .auth-header{text-align:center;}
-.auth-title{font-size:1.6rem;font-weight:800;color:#f59e0b;margin-bottom:6px;}
-.auth-subtitle{font-size:0.88rem;color:#94a3b8;line-height:1.4;}
+.auth-title{font-size:1.4rem;font-weight:bold;color:#f59e0b;margin-bottom:4px;}
+.auth-subtitle{font-size:0.85rem;color:#94a3b8;}
 
-.auth-tabs{display:flex;background:#0f172a;padding:4px;border-radius:12px;border:1px solid #334155;}
-.auth-tab-btn{flex:1;background:transparent;color:#cbd5e1;border:none;padding:10px 0;border-radius:8px;font-size:0.9rem;font-weight:bold;cursor:pointer;transition:all 0.2s;}
+.auth-tabs{display:flex;background:#0f172a;padding:3px;border-radius:8px;border:1px solid #334155;}
+.auth-tab-btn{flex:1;background:transparent;color:#cbd5e1;border:none;padding:8px 0;border-radius:6px;font-size:0.85rem;font-weight:bold;cursor:pointer;}
 .auth-tab-btn.active{background:#f59e0b;color:#0f172a;}
 
-.auth-form{display:flex;flex-direction:column;gap:14px;}
-.form-group{display:flex;flex-direction:column;gap:6px;}
-.form-label{font-size:0.82rem;font-weight:bold;color:#cbd5e1;}
-.auth-input, .auth-select{background:#0f172a;border:1px solid #475569;color:#fff;padding:10px 14px;border-radius:10px;font-size:0.9rem;outline:none;transition:border 0.2s;}
+.auth-form{display:flex;flex-direction:column;gap:12px;}
+.form-group{display:flex;flex-direction:column;gap:4px;}
+.form-label{font-size:0.8rem;color:#cbd5e1;}
+.auth-input, .auth-select{background:#0f172a;border:1px solid #475569;color:#fff;padding:9px 12px;border-radius:6px;font-size:0.85rem;outline:none;}
 .auth-input:focus, .auth-select:focus{border-color:#f59e0b;}
 
-.btn-auth-submit{background:#f59e0b;color:#0f172a;border:none;padding:12px;border-radius:10px;font-size:0.95rem;font-weight:800;cursor:pointer;transition:all 0.2s;}
-.btn-auth-submit:hover{transform:translateY(-2px);box-shadow:0 6px 16px rgba(245,158,11,0.4);}
+.btn-auth-submit{background:#f59e0b;color:#0f172a;border:none;padding:10px;border-radius:6px;font-size:0.9rem;font-weight:bold;cursor:pointer;}
+.btn-auth-skip{background:transparent;border:1px solid #475569;color:#94a3b8;padding:8px;border-radius:6px;font-size:0.8rem;cursor:pointer;}
 
-.btn-auth-skip{background:transparent;border:1px solid #475569;color:#94a3b8;padding:10px;border-radius:10px;font-size:0.82rem;font-weight:bold;cursor:pointer;transition:all 0.2s;}
-.btn-auth-skip:hover{background:#334155;color:#fff;}
-
-.auth-divider{display:flex;align-items:center;margin:4px 0;color:#64748b;font-size:0.75rem;}
+.auth-divider{display:flex;align-items:center;margin:2px 0;color:#64748b;font-size:0.75rem;}
 .auth-divider::before, .auth-divider::after{content:"";flex:1;height:1px;background:#334155;}
-.auth-divider span{padding:0 10px;}
+.auth-divider span{padding:0 8px;}
 
 .btn-google-auth{
-    background:#fff;color:#1e293b;border:none;padding:11px;border-radius:10px;
-    font-size:0.9rem;font-weight:bold;cursor:pointer;display:flex;align-items:center;
-    justify-content:center;gap:10px;transition:all 0.2s;
+    background:#fff;color:#1e293b;border:none;padding:10px;border-radius:6px;
+    font-size:0.85rem;font-weight:bold;cursor:pointer;display:flex;align-items:center;
+    justify-content:center;gap:8px;
 }
-.btn-google-auth:hover{background:#f1f5f9;transform:translateY(-2px);}
 
-/* 主系統 App 區塊 */
+/* 主系統區域 */
 #appMain{display:none;flex-direction:column;width:100%;height:100vh;overflow:hidden;}
 
-/* 頂部 Sticky 導覽列 (僅保留「歷屆試題」與「測驗與閃卡」) */
+/* 頂部導覽列（僅保留「歷屆試題」與「測驗與閃卡」） */
 nav.top-nav{
-    background:#1e293be6;backdrop-filter:blur(12px);border-bottom:1px solid #334155;
-    padding:10px 16px;display:flex;justify-content:space-between;align-items:center;gap:12px;z-index:900;
+    background:#1e293b;border-bottom:1px solid #334155;
+    padding:10px 16px;display:flex;justify-content:space-between;align-items:center;z-index:900;
 }
-.nav-left{display:flex;align-items:center;gap:10px;}
-.btn-menu-trigger{background:#334155;color:#f59e0b;border:1px solid #475569;padding:6px 12px;border-radius:6px;font-size:0.9rem;font-weight:bold;cursor:pointer;}
-.nav-brand{font-size:1.1rem;font-weight:bold;color:#f59e0b;display:flex;align-items:center;gap:6px;}
+.nav-left{display:flex;align-items:center;gap:12px;}
+.btn-menu-trigger{background:#334155;color:#f59e0b;border:1px solid #475569;padding:6px 12px;border-radius:6px;font-size:0.85rem;font-weight:bold;cursor:pointer;}
+.nav-brand{font-size:1rem;font-weight:bold;color:#f59e0b;}
 .nav-links{display:flex;align-items:center;gap:8px;}
-.nav-btn{background:transparent;color:#cbd5e1;border:1px solid #334155;padding:7px 16px;border-radius:20px;font-size:0.85rem;font-weight:bold;cursor:pointer;transition:all 0.2s;}
-.nav-btn:hover, .nav-btn.active{background:#f59e0b;color:#0f172a;border-color:#f59e0b;}
+.nav-btn{background:transparent;color:#cbd5e1;border:1px solid #334155;padding:6px 14px;border-radius:6px;font-size:0.85rem;font-weight:bold;cursor:pointer;}
+.nav-btn.active, .nav-btn:hover{background:#f59e0b;color:#0f172a;border-color:#f59e0b;}
 
 .view-container{flex:1;position:relative;width:100%;height:100%;overflow:hidden;}
 
 /* 視圖：歷屆試題專頁 */
-#view-exams{width:100%;height:100%;overflow-y:auto;padding:20px 16px 60px;max-width:1150px;margin:0 auto;display:none;}
-.exams-header{background:linear-gradient(135deg, #1e293b, #0f172a);border:1px solid #334155;border-radius:16px;padding:22px 28px;margin-bottom:20px;display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;}
-.exams-header h2{font-size:1.5rem;color:#38bdf8;margin-bottom:4px;}
-.exams-header p{font-size:0.88rem;color:#cbd5e1;line-height:1.5;}
+#view-exams{width:100%;height:100%;overflow-y:auto;padding:20px 16px 60px;max-width:1000px;margin:0 auto;display:none;}
+.exams-header{background:#1e293b;border:1px solid #334155;border-radius:8px;padding:16px 20px;margin-bottom:16px;}
+.exams-header h2{font-size:1.2rem;color:#38bdf8;margin-bottom:4px;}
+.exams-header p{font-size:0.85rem;color:#cbd5e1;}
 
-.exam-cards-list{display:flex;flex-direction:column;gap:12px;}
+.exam-cards-list{display:flex;flex-direction:column;gap:10px;}
 .exam-pdf-card-row{
-    background:#1e293b;border:1px solid #334155;border-radius:14px;padding:16px 20px;
+    background:#1e293b;border:1px solid #334155;border-radius:8px;padding:14px 18px;
     display:flex;flex-direction:row;align-items:center;justify-content:space-between;gap:16px;
-    transition:all 0.2s;box-shadow:0 4px 10px rgba(0,0,0,0.2);
 }
-.exam-pdf-card-row:hover{border-color:#38bdf8;transform:translateX(4px);background:#243347;}
-.exam-left-info{display:flex;align-items:center;gap:16px;flex:1;}
-.exam-tag-pill{background:#0284c7;color:#fff;padding:6px 14px;border-radius:14px;font-size:0.82rem;font-weight:800;white-space:nowrap;}
-.exam-text-group{display:flex;flex-direction:column;gap:4px;}
-.exam-card-title-row{font-size:1.05rem;font-weight:bold;color:#f8fafc;}
-.exam-card-desc-row{font-size:0.82rem;color:#cbd5e1;line-height:1.4;}
-.exam-action-btns{display:flex;align-items:center;gap:10px;white-space:nowrap;}
+.exam-left-info{display:flex;align-items:center;gap:12px;flex:1;}
+.exam-tag-pill{background:#0284c7;color:#fff;padding:4px 10px;border-radius:4px;font-size:0.8rem;font-weight:bold;}
+.exam-card-title-row{font-size:0.95rem;font-weight:bold;color:#f8fafc;}
+.exam-card-desc-row{font-size:0.8rem;color:#cbd5e1;}
+.exam-action-btns{display:flex;align-items:center;gap:8px;}
 
-.btn-download-pdf{background:#0284c7;color:#fff;padding:8px 16px;border-radius:8px;text-decoration:none;font-size:0.85rem;font-weight:bold;transition:background 0.2s;display:inline-flex;align-items:center;gap:4px;}
-.btn-download-pdf:hover{background:#0369a1;}
-.btn-cite-quiz{background:#059669;color:#fff;border:none;padding:8px 16px;border-radius:8px;font-size:0.85rem;font-weight:bold;cursor:pointer;transition:background 0.2s;display:inline-flex;align-items:center;gap:4px;}
-.btn-cite-quiz:hover{background:#047857;}
+.btn-download-pdf{background:#0284c7;color:#fff;padding:6px 12px;border-radius:6px;text-decoration:none;font-size:0.8rem;font-weight:bold;}
+.btn-cite-quiz{background:#059669;color:#fff;border:none;padding:6px 12px;border-radius:6px;font-size:0.8rem;font-weight:bold;cursor:pointer;}
 
 /* 視圖：測驗與閃卡 */
-#view-quiz{width:100%;height:100%;overflow-y:auto;padding:20px 16px 60px;max-width:1150px;margin:0 auto;display:none;}
+#view-quiz{width:100%;height:100%;overflow-y:auto;padding:20px 16px 60px;max-width:1000px;margin:0 auto;display:block;}
 
-.quiz-header{background:#1e293b;border:1px solid #334155;border-radius:16px;padding:20px 24px;margin-bottom:20px;display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;}
-.quiz-title-box h2{font-size:1.45rem;color:#f59e0b;margin-bottom:4px;}
-.quiz-title-box p{font-size:0.85rem;color:#94a3b8;}
+.quiz-header{background:#1e293b;border:1px solid #334155;border-radius:8px;padding:16px 20px;margin-bottom:16px;display:flex;justify-content:space-between;align-items:center;gap:16px;}
+.quiz-title-box h2{font-size:1.2rem;color:#f59e0b;margin-bottom:4px;}
+.quiz-title-box p{font-size:0.8rem;color:#94a3b8;}
 
-.quiz-stats-bar{display:flex;gap:10px;background:#0f172a;padding:8px 16px;border-radius:14px;border:1px solid #334155;}
-.q-stat-item{text-align:center;font-size:0.8rem;color:#cbd5e1;cursor:pointer;padding:4px 12px;border-radius:8px;transition:all 0.2s;}
-.q-stat-item:hover{background:#1e293b;transform:scale(1.05);}
-.q-stat-item b{display:block;font-size:1.2rem;color:#f59e0b;}
+.quiz-stats-bar{display:flex;gap:12px;background:#0f172a;padding:6px 14px;border-radius:8px;border:1px solid #334155;}
+.q-stat-item{text-align:center;font-size:0.75rem;color:#cbd5e1;cursor:pointer;}
+.q-stat-item b{display:block;font-size:1.1rem;color:#f59e0b;}
 
-.quiz-tab-group{display:flex;gap:8px;margin-bottom:20px;border-bottom:1px solid #334155;padding-bottom:10px;}
-.q-tab-btn{background:#0f172a;border:1px solid #334155;color:#cbd5e1;padding:10px 22px;border-radius:20px;font-size:0.92rem;font-weight:bold;cursor:pointer;}
+.quiz-tab-group{display:flex;gap:8px;margin-bottom:16px;border-bottom:1px solid #334155;padding-bottom:8px;}
+.q-tab-btn{background:#0f172a;border:1px solid #334155;color:#cbd5e1;padding:8px 16px;border-radius:6px;font-size:0.85rem;font-weight:bold;cursor:pointer;}
 .q-tab-btn.active{background:#f59e0b;color:#0f172a;border-color:#f59e0b;}
 
 .quiz-config-card{
-    background:#1e293b;border:1px solid #334155;border-radius:16px;padding:18px 24px;
-    margin-bottom:24px;display:flex;gap:16px;align-items:center;flex-wrap:wrap;justify-content:space-between;
-    box-shadow:0 4px 12px rgba(0,0,0,0.3);
+    background:#1e293b;border:1px solid #334155;border-radius:8px;padding:14px 18px;
+    margin-bottom:16px;display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap;
 }
-.quiz-config-group{display:flex;gap:12px;align-items:center;flex-wrap:wrap;}
-.quiz-select-label{font-size:0.9rem;color:#f8fafc;font-weight:bold;}
-.quiz-select-input{background:#0f172a;border:1px solid #475569;color:#fff;padding:8px 12px;border-radius:10px;font-size:0.88rem;outline:none;cursor:pointer;}
-.custom-count-input{background:#0f172a;border:1px solid #475569;color:#f59e0b;padding:8px 12px;border-radius:10px;font-size:0.88rem;width:120px;outline:none;font-weight:bold;}
-.btn-start-quiz{background:#f59e0b;color:#0f172a;border:none;padding:10px 24px;border-radius:10px;font-weight:800;font-size:0.95rem;cursor:pointer;transition:all 0.2s;}
-.btn-start-quiz:hover{transform:scale(1.05);box-shadow:0 0 12px rgba(245,158,11,0.5);}
+.quiz-config-group{display:flex;gap:10px;align-items:center;flex-wrap:wrap;}
+.quiz-select-label{font-size:0.85rem;color:#f8fafc;font-weight:bold;}
+.quiz-select-input{background:#0f172a;border:1px solid #475569;color:#fff;padding:6px 10px;border-radius:6px;font-size:0.82rem;outline:none;}
+.custom-count-input{background:#0f172a;border:1px solid #475569;color:#f59e0b;padding:6px 10px;border-radius:6px;font-size:0.82rem;width:100px;outline:none;}
+.btn-start-quiz{background:#f59e0b;color:#0f172a;border:none;padding:8px 18px;border-radius:6px;font-weight:bold;font-size:0.85rem;cursor:pointer;}
 
-.quiz-cited-info{width:100%;background:#0284c71a;border:1px solid #38bdf8;color:#38bdf8;padding:8px 14px;border-radius:8px;font-size:0.88rem;font-weight:bold;margin-bottom:10px;display:none;}
-
-/* 閃卡卡片 3D Flip 樣式 */
-.flashcard-wrapper{perspective:1000px;width:100%;max-width:750px;margin:0 auto 24px;height:380px;cursor:pointer;}
-.flashcard-inner{position:relative;width:100%;height:100%;text-align:center;transition:transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);transform-style:preserve-3d;}
+.flashcard-wrapper{perspective:1000px;width:100%;max-width:700px;margin:0 auto 16px;height:340px;cursor:pointer;}
+.flashcard-inner{position:relative;width:100%;height:100%;text-align:center;transition:transform 0.5s;transform-style:preserve-3d;}
 .flashcard-wrapper.flipped .flashcard-inner{transform:rotateY(180deg);}
 
 .flashcard-front, .flashcard-back{
     position:absolute;width:100%;height:100%;backface-visibility:hidden;
-    border-radius:20px;border:2px solid #334155;padding:28px;
+    border-radius:12px;border:1px solid #334155;padding:20px;
     display:flex;flex-direction:column;justify-content:space-between;align-items:center;
-    box-shadow:0 16px 36px rgba(0,0,0,0.5);
 }
-.flashcard-front{background:linear-gradient(135deg, #1e293b, #0f172a);color:#fff;}
-.flashcard-back{background:linear-gradient(135deg, #0f172a, #1e293b);color:#f8fafc;transform:rotateY(180deg);border-color:#f59e0b;overflow-y:auto;}
+.flashcard-front{background:#1e293b;color:#fff;}
+.flashcard-back{background:#0f172a;color:#f8fafc;transform:rotateY(180deg);border-color:#f59e0b;overflow-y:auto;}
 
-.fc-badge{padding:4px 12px;border-radius:14px;font-size:0.82rem;font-weight:bold;color:#fff;}
-.fc-hint{font-size:0.8rem;color:#94a3b8;margin-top:8px;}
-.fc-title{font-size:1.8rem;font-weight:800;color:#f59e0b;margin:16px 0;line-height:1.4;}
-.fc-box{background:#0f172a;padding:12px 16px;border-radius:10px;border:1px solid #334155;text-align:left;width:100%;font-size:0.9rem;line-height:1.5;margin-bottom:8px;}
-.fc-box b{color:#f59e0b;}
+.fc-badge{padding:2px 8px;border-radius:4px;font-size:0.75rem;font-weight:bold;color:#fff;background:#f59e0b;}
+.fc-title{font-size:1.5rem;font-weight:bold;color:#f59e0b;margin:12px 0;}
+.fc-box{background:#0f172a;padding:10px;border-radius:6px;border:1px solid #334155;text-align:left;width:100%;font-size:0.85rem;line-height:1.4;margin-bottom:6px;}
 
-.flashcard-controls{display:flex;justify-content:center;gap:14px;max-width:750px;margin:0 auto;}
-.btn-fc-rating{flex:1;padding:12px;border-radius:10px;border:none;font-size:0.95rem;font-weight:bold;cursor:pointer;color:#fff;transition:all 0.2s;}
+.flashcard-controls{display:flex;justify-content:center;gap:10px;max-width:700px;margin:0 auto;}
+.btn-fc-rating{flex:1;padding:10px;border-radius:6px;border:none;font-size:0.85rem;font-weight:bold;cursor:pointer;color:#fff;}
 .btn-fc-forgot{background:#ef4444;} .btn-fc-fuzzy{background:#f59e0b;} .btn-fc-remembered{background:#10b981;}
-.btn-fc-rating:hover{transform:scale(1.03);}
 
-/* 選擇題測驗卡片與選項 */
-.quiz-card{background:#1e293b;border:2px solid #334155;border-radius:20px;padding:32px;max-width:850px;margin:0 auto;box-shadow:0 12px 30px rgba(0,0,0,0.4);position:relative;}
-.q-top-ctrl-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;}
-.q-progress{font-size:0.9rem;color:#94a3b8;font-weight:bold;}
-.btn-quit-quiz{background:#334155;color:#f8fafc;border:1px solid #ef4444;padding:4px 12px;border-radius:12px;font-size:0.78rem;font-weight:bold;cursor:pointer;transition:all 0.2s;}
-.btn-quit-quiz:hover{background:#ef4444;color:#fff;}
+.quiz-card{background:#1e293b;border:1px solid #334155;border-radius:12px;padding:24px;max-width:800px;margin:0 auto;}
+.q-top-ctrl-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;}
+.q-progress{font-size:0.85rem;color:#94a3b8;font-weight:bold;}
+.btn-quit-quiz{background:#334155;color:#f8fafc;border:1px solid #ef4444;padding:4px 10px;border-radius:4px;font-size:0.75rem;cursor:pointer;}
 
-.q-question{font-size:1.3rem;font-weight:800;color:#f8fafc;margin-bottom:24px;line-height:1.6;letter-spacing:0.3px;}
-.q-options{display:flex;flex-direction:column;gap:12px;margin-bottom:24px;}
-.q-opt-btn{background:#0f172a;border:2px solid #334155;color:#e2e8f0;padding:14px 20px;border-radius:12px;font-size:1.02rem;font-weight:bold;cursor:pointer;text-align:left;transition:all 0.2s;line-height:1.4;}
-.q-opt-btn:hover{border-color:#f59e0b;color:#fff;background:#1e293b;transform:translateX(4px);}
+.q-question{font-size:1.1rem;font-weight:bold;color:#f8fafc;margin-bottom:16px;line-height:1.5;}
+.q-options{display:flex;flex-direction:column;gap:10px;margin-bottom:16px;}
+.q-opt-btn{background:#0f172a;border:1px solid #334155;color:#e2e8f0;padding:12px 16px;border-radius:8px;font-size:0.9rem;cursor:pointer;text-align:left;}
+.q-opt-btn:hover{border-color:#f59e0b;color:#fff;}
 .q-opt-btn.correct{background:#064e3b;border-color:#10b981;color:#fff;}
 .q-opt-btn.wrong{background:#7f1d1d;border-color:#ef4444;color:#fff;}
 
-.q-explanation-box{background:#0f172a;border:2px solid #f59e0b;border-radius:14px;padding:20px;margin-top:20px;display:none;animation:fadeIn 0.3s;}
-.q-explanation-box h4{color:#f59e0b;font-size:1.1rem;margin-bottom:10px;}
-.q-exp-text{font-size:0.95rem;color:#cbd5e1;line-height:1.6;margin-bottom:10px;}
+.q-explanation-box{background:#0f172a;border:1px solid #f59e0b;border-radius:8px;padding:14px;margin-top:14px;display:none;}
+.q-explanation-box h4{color:#f59e0b;font-size:0.95rem;margin-bottom:6px;}
+.q-exp-text{font-size:0.85rem;color:#cbd5e1;line-height:1.5;margin-bottom:8px;}
 
-.quiz-result-card{background:#1e293b;border:2px solid #f59e0b;border-radius:20px;padding:32px;max-width:850px;margin:0 auto;text-align:center;box-shadow:0 12px 30px rgba(0,0,0,0.4);display:none;}
-.result-score{font-size:3rem;font-weight:900;color:#f59e0b;margin:12px 0;}
-.result-desc{font-size:1rem;color:#cbd5e1;margin-bottom:24px;line-height:1.6;}
+.quiz-result-card{background:#1e293b;border:1px solid #f59e0b;border-radius:12px;padding:24px;max-width:800px;margin:0 auto;text-align:center;display:none;}
+.result-score{font-size:2.5rem;font-weight:bold;color:#f59e0b;margin:10px 0;}
 
-.mistake-list{display:flex;flex-direction:column;gap:14px;max-width:1150px;margin:0 auto;}
-.mistake-card-row{background:#1e293b;border:1px solid #ef4444;border-radius:14px;padding:18px;display:flex;justify-content:space-between;align-items:center;gap:14px;box-shadow:0 4px 10px rgba(0,0,0,0.2);}
-.mistake-info h4{font-size:1.05rem;color:#f8fafc;margin-bottom:6px;}
-.mistake-info p{font-size:0.85rem;color:#cbd5e1;line-height:1.5;}
-.btn-remove-mistake{background:#334155;color:#ef4444;border:1px solid #ef4444;padding:8px 14px;border-radius:8px;font-size:0.8rem;font-weight:bold;cursor:pointer;white-space:nowrap;}
+.mistake-list{display:flex;flex-direction:column;gap:10px;}
+.mistake-card-row{background:#1e293b;border:1px solid #ef4444;border-radius:8px;padding:14px;display:flex;justify-content:space-between;align-items:center;gap:10px;}
+.mistake-info h4{font-size:0.95rem;color:#f8fafc;margin-bottom:4px;}
+.mistake-info p{font-size:0.8rem;color:#cbd5e1;}
+.btn-remove-mistake{background:#334155;color:#ef4444;border:1px solid #ef4444;padding:6px 12px;border-radius:6px;font-size:0.75rem;cursor:pointer;}
 
 /* 視圖：世界地圖 */
 #view-map{width:100%;height:100%;display:none;flex-direction:column;position:relative;}
-.map-top-bar{background:#1e293b;padding:10px 14px;display:flex;flex-direction:column;gap:8px;border-bottom:1px solid #334155;z-index:10;}
-.map-toolbar-row1{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;}
-.timeline-box{display:flex;align-items:center;gap:8px;flex:1;min-width:260px;background:#0f172a;padding:5px 12px;border-radius:18px;border:1px solid #334155;}
-.hdr-era-badge{background:#1e293b;color:#f59e0b;padding:2px 8px;border-radius:10px;font-size:0.72rem;font-weight:bold;white-space:nowrap;}
-.btn-reset-slider{background:#334155;color:#fff;border:none;padding:2px 8px;border-radius:10px;font-size:0.7rem;cursor:pointer;white-space:nowrap;}
-input[type="range"]{flex:1;-webkit-appearance:none;background:#334155;height:5px;border-radius:3px;outline:none;cursor:pointer;}
-input[type="range"]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;height:14px;border-radius:50%;background:#f59e0b;cursor:pointer;border:2px solid #fff;}
-.simple-search-input{background:#334155;border:1px solid #475569;color:#fff;padding:5px 10px;border-radius:6px;font-size:0.8rem;outline:none;width:180px;}
+.map-top-bar{background:#1e293b;padding:8px 12px;display:flex;gap:10px;align-items:center;border-bottom:1px solid #334155;z-index:10;}
+.timeline-box{display:flex;align-items:center;gap:8px;flex:1;background:#0f172a;padding:4px 10px;border-radius:6px;border:1px solid #334155;}
+.hdr-era-badge{color:#f59e0b;font-size:0.75rem;font-weight:bold;white-space:nowrap;}
+input[type="range"]{flex:1;height:4px;}
+.simple-search-input{background:#334155;border:1px solid #475569;color:#fff;padding:4px 8px;border-radius:4px;font-size:0.8rem;outline:none;width:160px;}
 
 #map{flex:1;width:100%;height:100%;background:#0f172a;}
 
 /* 視圖：年代對照 */
-#view-timeline{width:100%;height:100%;overflow-y:auto;padding:20px 16px 60px;max-width:1240px;margin:0 auto;display:none;}
-.timeline-header{text-align:center;margin-bottom:20px;}
-.timeline-title{font-size:1.6rem;font-weight:bold;color:#f8fafc;margin-bottom:4px;}
-.timeline-subtitle{font-size:0.85rem;color:#94a3b8;}
+#view-timeline{width:100%;height:100%;overflow-y:auto;padding:20px 16px 60px;max-width:1000px;margin:0 auto;display:none;}
+.chronology-container{background:#1e293b;border:1px solid #334155;border-radius:8px;padding:16px;margin-bottom:16px;overflow-x:auto;}
+.chrono-row-group{margin-bottom:14px;min-width:700px;}
+.chrono-group-title{font-size:0.85rem;font-weight:bold;color:#f59e0b;margin-bottom:6px;}
+.chrono-track-area{position:relative;height:36px;background:#0f172a;border-radius:6px;border:1px solid #334155;display:flex;align-items:center;padding:0 4px;gap:6px;overflow-x:auto;}
+.dynasty-bar{height:26px;border-radius:4px;display:flex;align-items:center;justify-content:center;padding:0 8px;font-size:0.75rem;font-weight:bold;color:#fff;white-space:nowrap;cursor:pointer;flex-shrink:0;}
 
-.chronology-container{background:#1e293b;border:1px solid #334155;border-radius:14px;padding:16px;margin-bottom:20px;overflow-x:auto;-webkit-overflow-scrolling:touch;}
-.num-line-wrapper{position:relative;height:35px;border-bottom:2px solid #f59e0b;margin-bottom:16px;min-width:850px;}
-.num-line-ticks{display:flex;justify-content:space-between;position:absolute;width:100%;bottom:4px;font-size:0.72rem;color:#94a3b8;font-weight:bold;}
+#timelineEventsArea{background:#1e293b;border:1px solid #334155;border-radius:8px;padding:14px;display:none;}
+.tl-events-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;border-bottom:1px solid #334155;padding-bottom:6px;}
 
-.chrono-row-group{margin-bottom:18px;min-width:850px;}
-.chrono-group-title{font-size:0.9rem;font-weight:bold;color:#f59e0b;margin-bottom:8px;}
-.chrono-track-area{position:relative;height:38px;background:#0f172a;border-radius:8px;border:1px solid #334155;display:flex;align-items:center;padding:0 4px;gap:6px;overflow-x:auto;}
-
-.dynasty-bar{height:28px;border-radius:5px;display:flex;align-items:center;justify-content:center;padding:0 8px;font-size:0.75rem;font-weight:bold;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;box-shadow:0 2px 4px rgba(0,0,0,0.3);cursor:pointer;transition:all 0.2s;border:1px solid rgba(255,255,255,0.3);flex-shrink:0;}
-.dynasty-bar:hover, .dynasty-bar.selected{transform:scale(1.03);z-index:20;box-shadow:0 0 10px rgba(245,158,11,0.8);border-color:#fff;}
-
-#timelineEventsArea{background:#1e293b;border:1px solid #334155;border-radius:14px;padding:18px;display:none;animation:fadeIn 0.25s ease-out;}
-@keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
-.tl-events-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;border-bottom:1px solid #334155;padding-bottom:8px;}
-.tl-events-title{font-size:1rem;font-weight:bold;color:#f59e0b;}
-.btn-close-tl-events{background:#334155;color:#fff;border:none;padding:4px 8px;border-radius:4px;font-size:0.72rem;cursor:pointer;}
-
-/* 側邊欄 Sidebar Overlay (僅保留「世界地圖」與「年代發展」) */
-#sidebarOverlay{position:fixed;top:0;left:0;width:280px;height:100vh;background:#0f172af2;backdrop-filter:blur(16px);border-right:1px solid #334155;z-index:1000;display:flex;flex-direction:column;padding:18px;overflow-y:auto;transform:translateX(-100%);transition:transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);}
+/* 側邊欄（僅保留「世界地圖」與「年代發展」） */
+#sidebarOverlay{position:fixed;top:0;left:0;width:240px;height:100vh;background:#0f172a;border-right:1px solid #334155;z-index:1000;display:flex;flex-direction:column;padding:16px;transform:translateX(-100%);transition:transform 0.25s;}
 #sidebarOverlay.active{ transform:translateX(0); }
-.sidebar-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;border-bottom:1px solid #334155;padding-bottom:12px;}
-.sidebar-title{font-size:1.1rem;font-weight:bold;color:#f59e0b;}
-.btn-close-sidebar{background:#334155;color:#fff;border:none;width:28px;height:28px;border-radius:50%;cursor:pointer;font-weight:bold;}
-.sidebar-menu{display:flex;flex-direction:column;gap:8px;margin-bottom:20px;}
-.menu-item{background:#1e293b;border:1px solid #334155;color:#f8fafc;padding:12px 16px;border-radius:8px;font-size:0.9rem;font-weight:bold;cursor:pointer;display:flex;align-items:center;gap:8px;transition:all 0.2s;}
-.menu-item:hover, .menu-item.active{background:#f59e0b;color:#0f172a;border-color:#f59e0b;}
+.sidebar-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;border-bottom:1px solid #334155;padding-bottom:8px;}
+.sidebar-title{font-size:1rem;font-weight:bold;color:#f59e0b;}
+.btn-close-sidebar{background:transparent;color:#fff;border:none;font-size:1rem;cursor:pointer;}
+.sidebar-menu{display:flex;flex-direction:column;gap:6px;}
+.menu-item{background:#1e293b;border:1px solid #334155;color:#f8fafc;padding:10px 14px;border-radius:6px;font-size:0.85rem;font-weight:bold;cursor:pointer;}
+.menu-item:hover{background:#f59e0b;color:#0f172a;}
 
-/* Event Detail Modal 彈窗 */
-#eventDetailModal{position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(15,23,42,0.85);backdrop-filter:blur(12px);z-index:2000;display:none;justify-content:center;align-items:center;padding:16px;}
+/* 彈窗 */
+#eventDetailModal{position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(15,23,42,0.8);z-index:2000;display:none;justify-content:center;align-items:center;padding:16px;}
 #eventDetailModal.active{ display:flex; }
-.modal-content{background:#1e293b;border:1px solid #334155;border-radius:16px;width:100%;max-width:920px;max-height:88vh;overflow-y:auto;display:flex;flex-direction:column;position:relative;}
-.modal-header{background:#0f172a;padding:18px 24px;border-bottom:1px solid #334155;display:flex;justify-content:space-between;align-items:flex-start;position:sticky;top:0;z-index:10;}
-.modal-title-area{display:flex;flex-direction:column;gap:4px;}
-.modal-badges{display:flex;gap:6px;align-items:center;}
-.modal-title{font-size:1.45rem;font-weight:bold;color:#f8fafc;}
-.modal-source{font-size:0.8rem;color:#38bdf8;font-weight:bold;}
-.btn-close-modal{background:#334155;color:#fff;border:none;width:30px;height:30px;border-radius:50%;cursor:pointer;font-weight:bold;}
-.modal-body{padding:24px;display:grid;grid-template-columns:1fr 1fr;gap:24px;}
+.modal-content{background:#1e293b;border:1px solid #334155;border-radius:12px;width:100%;max-width:600px;max-height:80vh;overflow-y:auto;padding:20px;}
+.modal-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;}
+.btn-close-modal{background:transparent;color:#fff;border:none;font-size:1rem;cursor:pointer;}
+.modal-section{margin-bottom:10px;background:#0f172a;padding:10px;border-radius:6px;font-size:0.85rem;line-height:1.4;color:#cbd5e1;}
 
-.modal-section-title{font-size:0.92rem;color:#f59e0b;font-weight:bold;margin-bottom:8px;border-bottom:1px solid #334155;padding-bottom:4px;}
-.modal-text-box{font-size:0.9rem;color:#cbd5e1;line-height:1.6;margin-bottom:16px;background:#0f172a;padding:12px 16px;border-radius:10px;border:1px solid #334155;}
-.modal-keywords-box{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px;}
-.kw-chip{background:#0f172a;color:#38bdf8;border:1px solid #0284c7;padding:4px 12px;border-radius:14px;font-size:0.75rem;font-weight:bold;}
-
-.modal-footer{background:#0f172a;padding:14px 24px;border-top:1px solid #334155;display:flex;justify-content:flex-end;gap:10px;}
-.btn-fly-map{background:#f59e0b;color:#0f172a;border:none;padding:10px 20px;border-radius:8px;font-size:0.9rem;font-weight:bold;cursor:pointer;}
-
-/* 響應式微調 */
 @media (max-width: 768px) {
-    .nav-brand-text { display: none; }
-    .nav-links { gap: 4px; }
-    .nav-btn { padding: 5px 10px; font-size: 0.78rem; }
-    .modal-body { grid-template-columns:1fr; padding: 16px; }
+    .exam-pdf-card-row { flex-direction: column; align-items: flex-start; }
+    .exam-action-btns { width: 100%; justify-content: flex-end; }
 }
 </style>
 </head>
 <body>
 
-<!-- 全螢幕強制驗證登入/註冊門檻 (未驗證前完全阻擋系統內容) -->
+<!-- 全螢幕強制登入/註冊門檻 -->
 <div id="authScreen">
     <div class="auth-card">
         <div class="auth-header">
-            <div class="auth-title">📜 歷史數位學習系統</div>
-            <div class="auth-subtitle">開啟系統前請先登入或註冊您的帳號</div>
+            <div class="auth-title">歷史數位學習系統</div>
+            <div class="auth-subtitle">請先登入或註冊帳號以繼續使用</div>
         </div>
 
         <div class="auth-tabs">
-            <button id="tabAuthLogin" class="auth-tab-btn active" onclick="switchAuthTab('login')">登入帳號</button>
-            <button id="tabAuthRegister" class="auth-tab-btn" onclick="switchAuthTab('register')">註冊新帳號</button>
+            <button id="tabAuthLogin" class="auth-tab-btn active" onclick="switchAuthTab('login')">登入</button>
+            <button id="tabAuthRegister" class="auth-tab-btn" onclick="switchAuthTab('register')">註冊</button>
         </div>
 
-        <!-- Google 帳號登入/註冊 -->
         <button class="btn-google-auth" onclick="handleGoogleAuth()">
-            <svg width="18" height="18" viewBox="0 0 24 24">
+            <svg width="16" height="16" viewBox="0 0 24 24">
                 <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
                 <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
                 <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
                 <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
             </svg>
-            使用 Google 帳號繼續
+            使用 Google 帳號登入
         </button>
 
-        <div class="auth-divider"><span>或使用帳號密碼</span></div>
+        <div class="auth-divider"><span>或</span></div>
 
-        <!-- 登入表單 -->
         <form id="formAuthLogin" class="auth-form" onsubmit="handleAuthLogin(event)">
             <div class="form-group">
-                <span class="form-label">📧 電子郵件 / 使用者帳號</span>
-                <input type="text" id="loginUser" class="auth-input" placeholder="請輸入帳號" required>
+                <span class="form-label">帳號 / Email</span>
+                <input type="text" id="loginUser" class="auth-input" required>
             </div>
             <div class="form-group">
-                <span class="form-label">🔑 密碼</span>
-                <input type="password" id="loginPass" class="auth-input" placeholder="請輸入密碼" required>
+                <span class="form-label">密碼</span>
+                <input type="password" id="loginPass" class="auth-input" required>
             </div>
-            <button type="submit" class="btn-auth-submit">立即登入系統</button>
+            <button type="submit" class="btn-auth-submit">登入</button>
         </form>
 
-        <!-- 註冊表單 -->
         <form id="formAuthRegister" class="auth-form" style="display:none;" onsubmit="handleAuthRegister(event)">
             <div class="form-group">
-                <span class="form-label">📧 設定帳號或 Email</span>
-                <input type="text" id="regUser" class="auth-input" placeholder="請輸入帳號" required>
+                <span class="form-label">帳號 / Email</span>
+                <input type="text" id="regUser" class="auth-input" required>
             </div>
             <div class="form-group">
-                <span class="form-label">🔑 設定密碼</span>
-                <input type="password" id="regPass" class="auth-input" placeholder="請輸入密碼" required>
+                <span class="form-label">密碼</span>
+                <input type="password" id="regPass" class="auth-input" required>
             </div>
             <div class="form-group">
-                <span class="form-label">💾 選擇學習資料儲存位置</span>
+                <span class="form-label">學習資料儲存位置</span>
                 <select id="regStorageLoc" class="auth-select">
                     <option value="local">本機儲存 (LocalStorage)</option>
-                    <option value="gdrive">Google Drive 雲端同步</option>
-                    <option value="cloud">系統雲端資料庫 (Cloud DB)</option>
+                    <option value="gdrive">Google Drive</option>
+                    <option value="cloud">雲端資料庫</option>
                 </select>
             </div>
-            <button type="submit" class="btn-auth-submit">完成註冊並進入</button>
-            <button type="button" class="btn-auth-skip" onclick="skipRegisterStorage()">跳過設定 (使用預設本機儲存)</button>
+            <button type="submit" class="btn-auth-submit">完成註冊</button>
+            <button type="button" class="btn-auth-skip" onclick="skipRegisterStorage()">跳過設定 (使用預設本機)</button>
         </form>
     </div>
 </div>
@@ -323,9 +269,9 @@ input[type="range"]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;hei
     <nav class="top-nav">
         <div class="nav-left">
             <button class="btn-menu-trigger" onclick="toggleSidebar()">☰ 選單</button>
-            <div class="nav-brand">📜 <span class="nav-brand-text">108課綱歷史總覽</span></div>
+            <div class="nav-brand">108課綱歷史學習系統</div>
         </div>
-        <!-- 頂部標題列：僅保留「歷屆試題」與「測驗與閃卡」 -->
+        <!-- 頂部導覽列：僅保留「歷屆試題」與「測驗與閃卡」 -->
         <div class="nav-links">
             <button id="navBtnExams" class="nav-btn" onclick="switchView('exams')">📄 歷屆試題</button>
             <button id="navBtnQuiz" class="nav-btn active" onclick="switchView('quiz')">🧠 測驗與閃卡</button>
@@ -334,13 +280,11 @@ input[type="range"]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;hei
 
     <div class="view-container">
 
-        <!-- 視圖：歷屆試題專頁 -->
+        <!-- 視圖：歷屆試題 -->
         <div id="view-exams">
             <div class="exams-header">
-                <div>
-                    <h2>📄 大考中心官方社會科歷屆試題庫 (83~115 學年度)</h2>
-                    <p>收錄 83 至 115 學年度大學學測與聯考社會考科試題原檔。可下載 PDF 或點擊按鈕帶入測驗。</p>
-                </div>
+                <h2>大考中心歷史歷屆試題</h2>
+                <p>收錄社會考科試題原檔，支援下載 PDF 與直接帶入測驗。</p>
             </div>
             <div class="exam-cards-list" id="ceecExamCardsList"></div>
         </div>
@@ -349,78 +293,75 @@ input[type="range"]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;hei
         <div id="view-quiz">
             <div class="quiz-header">
                 <div class="quiz-title-box">
-                    <h2>🧠 主動提取與間隔重複學習系統</h2>
-                    <p>支援離線高畫質記憶儲存，透過 Flashcards 閃卡與多功能選擇題強化考點記憶。</p>
+                    <h2>歷史測驗與閃卡</h2>
+                    <p>選擇範疇進行記憶閃卡複習或模擬題目測驗。</p>
                 </div>
                 <div class="quiz-stats-bar">
-                    <div class="q-stat-item" onclick="switchQuizSubTab('fc_mastered')" title="查看已掌握項目"><b id="statMastered">0</b>已掌握</div>
-                    <div class="q-stat-item" onclick="switchQuizSubTab('fc_reviewing')" title="查看待複習項目"><b id="statReviewing">0</b>待複習</div>
-                    <div class="q-stat-item" onclick="switchQuizSubTab('mistakes')" title="查看錯題本" style="border-left:1px solid #334155; padding-left:12px;"><b id="statMistakes" style="color:#ef4444">0</b>錯題本</div>
+                    <div class="q-stat-item"><b id="statMastered">0</b>已掌握</div>
+                    <div class="q-stat-item"><b id="statReviewing">0</b>待複習</div>
+                    <div class="q-stat-item" style="border-left:1px solid #334155; padding-left:10px;"><b id="statMistakes" style="color:#ef4444">0</b>錯題本</div>
                 </div>
             </div>
 
             <div class="quiz-tab-group">
-                <button class="q-tab-btn active" id="subTabFC" onclick="switchQuizSubTab('flashcards')">🗂️ 閃卡記憶卡</button>
+                <button class="q-tab-btn active" id="subTabFC" onclick="switchQuizSubTab('flashcards')">🗂️ 記憶閃卡</button>
                 <button class="q-tab-btn" id="subTabTest" onclick="switchQuizSubTab('quiz')">📝 模擬測驗</button>
-                <button class="q-tab-btn" id="subTabMistakes" onclick="switchQuizSubTab('mistakes')">❌ 錯題本紀錄</button>
+                <button class="q-tab-btn" id="subTabMistakes" onclick="switchQuizSubTab('mistakes')">❌ 錯題本</button>
             </div>
 
             <!-- 閃卡區塊 -->
             <div id="secFlashcards">
                 <div class="quiz-config-card">
                     <div class="quiz-config-group">
-                        <span class="quiz-select-label">🎯 閃卡範疇：</span>
+                        <span class="quiz-select-label">範疇：</span>
                         <select id="cfgFcDomain" class="quiz-select-input">
-                            <option value="ALL">✨ 全部歷史領域</option>
-                            <option value="臺灣史">🇹🇼 臺灣史</option>
-                            <option value="中國史">🇨🇳 中國史</option>
-                            <option value="世界史">🌍 世界史</option>
+                            <option value="ALL">全部領域</option>
+                            <option value="臺灣史">臺灣史</option>
+                            <option value="中國史">中國史</option>
+                            <option value="世界史">世界史</option>
                         </select>
 
-                        <span class="quiz-select-label">🔢 卡片數量：</span>
+                        <span class="quiz-select-label">數量：</span>
                         <select id="cfgFcCount" class="quiz-select-input">
                             <option value="5">5 張</option>
                             <option value="10" selected>10 張</option>
-                            <option value="15">15 張</option>
                             <option value="20">20 張</option>
-                            <option value="ALL">ALL (全套)</option>
+                            <option value="ALL">全部</option>
                         </select>
-                        <input type="number" id="cfgFcCustomCount" class="custom-count-input" placeholder="自訂數量" min="1">
+                        <input type="number" id="cfgFcCustomCount" class="custom-count-input" placeholder="自訂" min="1">
                     </div>
-                    <button class="btn-start-quiz" onclick="startConfiguredFlashcards()">🚀 開始閃卡</button>
+                    <button class="btn-start-quiz" onclick="startConfiguredFlashcards()">開始閃卡</button>
                 </div>
 
                 <div id="fcDisplayArea" style="display:none">
                     <div class="flashcard-wrapper" id="fcWrapper" onclick="toggleFCFlip()">
                         <div class="flashcard-inner">
                             <div class="flashcard-front">
-                                <span class="fc-badge" id="fcDomainBadge" style="background:#f59e0b">臺灣史</span>
+                                <span class="fc-badge" id="fcDomainBadge">臺灣史</span>
                                 <div style="flex:1;display:flex;flex-direction:column;justify-content:center">
-                                    <div class="fc-title" id="fcFrontTitle">考點載入中...</div>
-                                    <div style="font-size:0.9rem;color:#cbd5e1" id="fcFrontSub">點擊卡片翻轉查看歷史細節與重點說明</div>
+                                    <div class="fc-title" id="fcFrontTitle">載入中...</div>
+                                    <div style="font-size:0.85rem;color:#cbd5e1" id="fcFrontSub">點擊卡片翻面</div>
                                 </div>
-                                <div class="fc-hint">💡 點擊卡片任意處翻面</div>
                             </div>
                             <div class="flashcard-back">
                                 <div style="width:100%">
-                                    <div class="fc-box"><b>📍 年代與地點：</b><span id="fcBackYearLoc">--</span></div>
-                                    <div class="fc-box"><b>📖 核心說明：</b><div id="fcBackDesc">--</div></div>
-                                    <div class="fc-box"><b>🔍 時代背景與影響：</b><div id="fcBackCause">--</div></div>
+                                    <div class="fc-box"><b>年代/地點：</b><span id="fcBackYearLoc">--</span></div>
+                                    <div class="fc-box"><b>說明：</b><div id="fcBackDesc">--</div></div>
+                                    <div class="fc-box"><b>背景與影響：</b><div id="fcBackCause">--</div></div>
                                 </div>
-                                <div class="fc-hint">請評估您的記憶熟悉度：</div>
                             </div>
                         </div>
                     </div>
 
                     <div class="flashcard-controls">
-                        <button class="btn-fc-rating btn-fc-forgot" onclick="rateFlashcard('forgot')">🔴 忘了 (重排)</button>
-                        <button class="btn-fc-rating btn-fc-fuzzy" onclick="rateFlashcard('fuzzy')">🟡 模糊 (近期)</button>
-                        <button class="btn-fc-rating btn-fc-remembered" onclick="rateFlashcard('remembered')">🟢 記得 (已掌握)</button>
+                        <button class="btn-fc-rating btn-fc-forgot" onclick="rateFlashcard('forgot')">忘了</button>
+                        <button class="btn-fc-rating btn-fc-fuzzy" onclick="rateFlashcard('fuzzy')">模糊</button>
+                        <button class="btn-fc-rating btn-fc-remembered" onclick="rateFlashcard('remembered')">記得</button>
                     </div>
                 </div>
 
-                <div id="fcStartPrompt" style="text-align:center; padding:48px 20px; color:#cbd5e1; background:#1e293b; border:1px solid #334155; border-radius:16px; font-size:1.05rem;">
-                    💡 請設定上方範疇與數量，點擊<b style="color:#f59e0b; margin:0 4px">「🚀 開始閃卡」</b>即可展開卡片記憶訓練。
+                <div id="fcStartPrompt" style="text-align:center; padding:36px 20px; color:#cbd5e1; background:#1e293b; border:1px solid #334155; border-radius:8px;">
+                    請選擇上方設定並點擊「開始閃卡」。
                 </div>
             </div>
 
@@ -428,61 +369,55 @@ input[type="range"]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;hei
             <div id="secQuiz" style="display:none">
                 <div class="quiz-config-card">
                     <div class="quiz-config-group">
-                        <span class="quiz-select-label">🎯 測驗範疇：</span>
+                        <span class="quiz-select-label">範疇：</span>
                         <select id="cfgDomain" class="quiz-select-input">
-                            <option value="ALL">✨ 全部歷史領域</option>
-                            <option value="臺灣史">🇹🇼 臺灣史</option>
-                            <option value="中國史">🇨🇳 中國史</option>
-                            <option value="世界史">🌍 世界史</option>
+                            <option value="ALL">全部領域</option>
+                            <option value="臺灣史">臺灣史</option>
+                            <option value="中國史">中國史</option>
+                            <option value="世界史">世界史</option>
                         </select>
 
-                        <span class="quiz-select-label">⚙️ 出題模式：</span>
+                        <span class="quiz-select-label">題型：</span>
                         <select id="cfgType" class="quiz-select-input">
-                            <option value="MIX">🎲 混合題型</option>
-                            <option value="YEAR">📅 西元年代配對</option>
-                            <option value="DESC">📖 歷史事實描述</option>
+                            <option value="MIX">混合題型</option>
+                            <option value="YEAR">年代配對</option>
+                            <option value="DESC">事實描述</option>
                         </select>
 
-                        <span class="quiz-select-label">🔢 題目數量：</span>
+                        <span class="quiz-select-label">題數：</span>
                         <select id="cfgCount" class="quiz-select-input">
                             <option value="5">5 題</option>
                             <option value="10" selected>10 題</option>
                             <option value="15">15 題</option>
-                            <option value="20">20 題</option>
                         </select>
                     </div>
-                    <button class="btn-start-quiz" onclick="startConfiguredQuiz()">🏃 開始測驗</button>
+                    <button class="btn-start-quiz" onclick="startConfiguredQuiz()">開始測驗</button>
                 </div>
 
-                <div class="quiz-cited-info" id="quizCitedInfo">📌 已載入大考歷屆試題範疇專項測驗！</div>
-
-                <!-- 測驗進行卡片 -->
                 <div class="quiz-card" id="quizCard" style="display:none;">
                     <div class="q-top-ctrl-row">
                         <div class="q-progress" id="quizProgress">題目 1 / 10</div>
-                        <button class="btn-quit-quiz" onclick="quitQuiz()">✕ 結束測驗</button>
+                        <button class="btn-quit-quiz" onclick="quitQuiz()">✕ 結束</button>
                     </div>
-                    <div class="q-question" id="quizQuestionText">載入題目中...</div>
+                    <div class="q-question" id="quizQuestionText">載入中...</div>
                     <div class="q-options" id="quizOptionsContainer"></div>
 
                     <div class="q-explanation-box" id="quizExpBox">
-                        <h4>💡 考點解析與脈絡說明</h4>
+                        <h4>考點解析</h4>
                         <div class="q-exp-text" id="quizExpText"></div>
-                        <button class="btn-start-quiz" style="padding:6px 16px; font-size:0.85rem;" onclick="nextQuizQuestion()">下一題 ➔</button>
+                        <button class="btn-start-quiz" style="padding:4px 12px; font-size:0.8rem;" onclick="nextQuizQuestion()">下一題</button>
                     </div>
                 </div>
 
-                <!-- 測驗結果卡片 -->
                 <div class="quiz-result-card" id="quizResultCard">
-                    <h3>🎉 測驗完成！</h3>
-                    <div class="result-score" id="resultScoreVal">80 分</div>
-                    <p class="result-desc" id="resultDescText">您答對了 8 / 10 題！標註答錯的題目已自動登錄至錯題本。</p>
-                    <button class="btn-start-quiz" onclick="switchQuizSubTab('quiz')">再次測驗</button>
-                    <button class="btn-start-quiz" style="background:#38bdf8; color:#0f172a; margin-left:10px;" onclick="switchQuizSubTab('mistakes')">查看錯題本</button>
+                    <h3>測驗完成</h3>
+                    <div class="result-score" id="resultScoreVal">0 分</div>
+                    <p id="resultDescText" style="font-size:0.9rem; color:#cbd5e1; margin-bottom:16px;"></p>
+                    <button class="btn-start-quiz" onclick="switchQuizSubTab('quiz')">重新測驗</button>
                 </div>
             </div>
 
-            <!-- 錯題本區塊 -->
+            <!-- 錯題本 -->
             <div id="secMistakes" style="display:none">
                 <div class="mistake-list" id="mistakesContainer"></div>
             </div>
@@ -491,82 +426,68 @@ input[type="range"]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;hei
         <!-- 視圖：世界地圖 -->
         <div id="view-map">
             <div class="map-top-bar">
-                <div class="map-toolbar-row1">
-                    <div class="timeline-box">
-                        <span class="hdr-era-badge" id="mapYearBadge">全部年份</span>
-                        <input type="range" id="mapYearSlider" min="-2000" max="2026" value="2026" oninput="updateMapTimeline(this.value)">
-                        <button class="btn-reset-slider" onclick="resetMapSlider()">重設</button>
-                    </div>
-                    <input type="text" id="mapSearchInput" class="simple-search-input" placeholder="🔍 搜尋地圖考點..." oninput="filterMapByKeyword(this.value)">
+                <div class="timeline-box">
+                    <span class="hdr-era-badge" id="mapYearBadge">全部年份</span>
+                    <input type="range" id="mapYearSlider" min="-2000" max="2026" value="2026" oninput="updateMapTimeline(this.value)">
                 </div>
+                <input type="text" id="mapSearchInput" class="simple-search-input" placeholder="搜尋地點或考點..." oninput="filterMapByKeyword(this.value)">
             </div>
             <div id="map"></div>
         </div>
 
         <!-- 視圖：年代對照 -->
         <div id="view-timeline">
-            <div class="timeline-header">
-                <h2 class="timeline-title">⏳ 跨區域年代發展對照軌道</h2>
-                <p class="timeline-subtitle">點擊下方朝代或歷史時期條狀圖，快速篩選同時間軸發生的跨國歷史事件。</p>
-            </div>
-
             <div class="chronology-container">
-                <div class="num-line-wrapper">
-                    <div class="num-line-ticks">
-                        <span>-2000年</span><span>-1000年</span><span>西元元年</span><span>1000年</span><span>1500年</span><span>1800年</span><span>1900年</span><span>2000年</span><span>2026年</span>
+                <div class="chrono-row-group">
+                    <div class="chrono-group-title">臺灣史時期</div>
+                    <div class="chrono-track-area">
+                        <div class="dynasty-bar" style="background:#0284c7;" onclick="selectDynasty('史前文化', -5000, 1624)">史前文化</div>
+                        <div class="dynasty-bar" style="background:#f59e0b;" onclick="selectDynasty('荷西與鄭氏', 1624, 1683)">荷西/鄭氏</div>
+                        <div class="dynasty-bar" style="background:#10b981;" onclick="selectDynasty('清領時期', 1683, 1895)">清領時期</div>
+                        <div class="dynasty-bar" style="background:#ef4444;" onclick="selectDynasty('日治時期', 1895, 1945)">日治時期</div>
+                        <div class="dynasty-bar" style="background:#8b5cf6;" onclick="selectDynasty('戰後至今', 1945, 2026)">戰後至今</div>
                     </div>
                 </div>
 
                 <div class="chrono-row-group">
-                    <div class="chrono-group-title">🇹🇼 臺灣史時期</div>
+                    <div class="chrono-group-title">中國史朝代</div>
                     <div class="chrono-track-area">
-                        <div class="dynasty-bar" style="background:#0284c7;" onclick="selectDynasty('史前與原住民', -5000, 1624)">史前文化 (-5000~1624)</div>
-                        <div class="dynasty-bar" style="background:#f59e0b;" onclick="selectDynasty('荷西與鄭氏', 1624, 1683)">荷西/鄭氏 (1624~1683)</div>
-                        <div class="dynasty-bar" style="background:#10b981;" onclick="selectDynasty('清領時期', 1683, 1895)">清領時期 (1683~1895)</div>
-                        <div class="dynasty-bar" style="background:#ef4444;" onclick="selectDynasty('日治時期', 1895, 1945)">日治時期 (1895~1945)</div>
-                        <div class="dynasty-bar" style="background:#8b5cf6;" onclick="selectDynasty('戰後民主', 1945, 2026)">戰後至今 (1945~2026)</div>
+                        <div class="dynasty-bar" style="background:#d97706;" onclick="selectDynasty('先秦三代', -2000, -221)">先秦三代</div>
+                        <div class="dynasty-bar" style="background:#b91c1c;" onclick="selectDynasty('秦漢魏晉', -221, 581)">秦漢魏晉</div>
+                        <div class="dynasty-bar" style="background:#047857;" onclick="selectDynasty('隋唐宋元', 581, 1368)">隋唐宋元</div>
+                        <div class="dynasty-bar" style="background:#4338ca;" onclick="selectDynasty('明清兩朝', 1368, 1911)">明清兩朝</div>
+                        <div class="dynasty-bar" style="background:#be123c;" onclick="selectDynasty('近現代', 1911, 2026)">近現代</div>
                     </div>
                 </div>
 
                 <div class="chrono-row-group">
-                    <div class="chrono-group-title">🇨🇳 中國史朝代</div>
+                    <div class="chrono-group-title">世界史時代</div>
                     <div class="chrono-track-area">
-                        <div class="dynasty-bar" style="background:#d97706;" onclick="selectDynasty('先秦三代', -2000, -221)">先秦三代 (-2000~-221)</div>
-                        <div class="dynasty-bar" style="background:#b91c1c;" onclick="selectDynasty('秦漢魏晉', -221, 581)">秦漢魏晉 (-221~581)</div>
-                        <div class="dynasty-bar" style="background:#047857;" onclick="selectDynasty('隋唐宋元', 581, 1368)">隋唐宋元 (581~1368)</div>
-                        <div class="dynasty-bar" style="background:#4338ca;" onclick="selectDynasty('明清帝國', 1368, 1911)">明清兩朝 (1368~1911)</div>
-                        <div class="dynasty-bar" style="background:#be123c;" onclick="selectDynasty('近代中國', 1911, 2026)">民國與近現代 (1911~2026)</div>
-                    </div>
-                </div>
-
-                <div class="chrono-row-group">
-                    <div class="chrono-group-title">🌍 世界史時代</div>
-                    <div class="chrono-track-area">
-                        <div class="dynasty-bar" style="background:#0284c7;" onclick="selectDynasty('古典文明', -2000, 476)">古典文明 (-2000~476)</div>
-                        <div class="dynasty-bar" style="background:#6d28d9;" onclick="selectDynasty('中古世紀', 476, 1453)">中古世紀 (476~1453)</div>
-                        <div class="dynasty-bar" style="background:#f59e0b;" onclick="selectDynasty('近世大航海', 1453, 1789)">近世/大航海 (1453~1789)</div>
-                        <div class="dynasty-bar" style="background:#15803d;" onclick="selectDynasty('近代工業革命', 1789, 1914)">近代與工業化 (1789~1914)</div>
-                        <div class="dynasty-bar" style="background:#9333ea;" onclick="selectDynasty('現代與冷戰', 1914, 2026)">現代世界 (1914~2026)</div>
+                        <div class="dynasty-bar" style="background:#0284c7;" onclick="selectDynasty('古典文明', -2000, 476)">古典文明</div>
+                        <div class="dynasty-bar" style="background:#6d28d9;" onclick="selectDynasty('中古世紀', 476, 1453)">中古世紀</div>
+                        <div class="dynasty-bar" style="background:#f59e0b;" onclick="selectDynasty('大航海時代', 1453, 1789)">大航海時代</div>
+                        <div class="dynasty-bar" style="background:#15803d;" onclick="selectDynasty('工業革命', 1789, 1914)">工業革命</div>
+                        <div class="dynasty-bar" style="background:#9333ea;" onclick="selectDynasty('現代世界', 1914, 2026)">現代世界</div>
                     </div>
                 </div>
             </div>
 
             <div id="timelineEventsArea">
                 <div class="tl-events-header">
-                    <span class="tl-events-title" id="tlEventsTitle">歷史事件名冊</span>
-                    <button class="btn-close-tl-events" onclick="closeTimelineEvents()">✕ 關閉</button>
+                    <span id="tlEventsTitle" style="font-weight:bold; color:#f59e0b;">歷史事件</span>
+                    <button onclick="closeTimelineEvents()" style="background:none; border:none; color:#fff; cursor:pointer;">✕</button>
                 </div>
-                <div class="events-grid" id="tlEventsGrid"></div>
+                <div id="tlEventsGrid" style="display:flex; flex-direction:column; gap:8px;"></div>
             </div>
         </div>
 
     </div>
 </div>
 
-<!-- 側邊欄 Sidebar Overlay：僅保留「世界地圖」與「年代發展」 -->
+<!-- 側邊欄：僅保留「世界地圖」與「年代發展」 -->
 <div id="sidebarOverlay">
     <div class="sidebar-header">
-        <span class="sidebar-title">📜 探索與時代軌道</span>
+        <span class="sidebar-title">功能選單</span>
         <button class="btn-close-sidebar" onclick="toggleSidebar()">✕</button>
     </div>
     <div class="sidebar-menu">
@@ -575,37 +496,20 @@ input[type="range"]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;hei
     </div>
 </div>
 
-<!-- Event Detail Modal -->
+<!-- 事件詳情彈窗 -->
 <div id="eventDetailModal">
     <div class="modal-content">
         <div class="modal-header">
-            <div class="modal-title-area">
-                <div class="modal-badges">
-                    <span id="modalDomainTag" class="ev-badge" style="background:#f59e0b">臺灣史</span>
-                    <span id="modalYearTag" style="font-size:0.85rem; color:#94a3b8; font-weight:bold;">西元 1624 年</span>
-                </div>
-                <div class="modal-title" id="modalTitle">事件名稱</div>
-                <div class="modal-source" id="modalSource">📚 108課綱歷史核心考點</div>
+            <div>
+                <span id="modalDomainTag" class="fc-badge"></span>
+                <h3 id="modalTitle" style="color:#f8fafc; margin-top:4px;"></h3>
             </div>
             <button class="btn-close-modal" onclick="closeModal()">✕</button>
         </div>
-        <div class="modal-body">
-            <div>
-                <div class="modal-section-title">📍 歷史地點與空間脈絡</div>
-                <div class="modal-text-box" id="modalLocText">--</div>
-                <div class="modal-section-title">📖 考點詳細說明</div>
-                <div class="modal-text-box" id="modalDescText">--</div>
-            </div>
-            <div>
-                <div class="modal-section-title">🔍 時代背景與歷史影響</div>
-                <div class="modal-text-box" id="modalCauseText">--</div>
-                <div class="modal-section-title">🏷️ 關鍵概念標籤</div>
-                <div class="modal-keywords-box" id="modalKeywordsBox"></div>
-            </div>
-        </div>
-        <div class="modal-footer">
-            <button class="btn-fly-map" id="btnFlyMap" onclick="flyToCurrentEvent()">🗺️ 在地圖上定位</button>
-        </div>
+        <div class="modal-section" id="modalLocText"></div>
+        <div class="modal-section" id="modalDescText"></div>
+        <div class="modal-section" id="modalCauseText"></div>
+        <button class="btn-start-quiz" style="width:100%; margin-top:8px;" onclick="flyToCurrentEvent()">在地圖上查看地點</button>
     </div>
 </div>
 
@@ -613,89 +517,77 @@ input[type="range"]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;hei
 <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
 
 <script>
-/* --- 歷史考點資料庫 --- */
+/* 歷史資料庫 */
 const HIST_DATA = [
     {
-        id: "TW01", category: "臺灣史", title: "熱蘭遮城興建與大航海時代", year: "西元 1624 年", yearNum: 1624,
+        id: "TW01", category: "臺灣史", title: "熱蘭遮城興建", year: "西元 1624 年", yearNum: 1624,
         location: "臺南安平", lat: 23.0008, lng: 120.1605,
-        desc: "荷蘭東印度公司（VOC）佔領大員（今臺南安平），興建熱蘭遮城作為東亞國際貿易轉運樞紐，開啟臺灣荷治時期。",
-        cause: "背景：17 世紀大航海時代，荷蘭欲拓展對華、對日貿易網絡。影響：引進王田制、赤崁漢人移民與贌社制度。",
-        source: "108課綱 - 臺灣史主題二：區域網絡與全球聯結", keywords: ["荷治時期", "熱蘭遮城", "VOC", "轉口貿易", "王田"]
+        desc: "荷蘭東印度公司佔領大員並興建熱蘭遮城，作為東亞貿易樞紐。",
+        cause: "背景：17世紀大航海時代拓展貿易。影響：引進王田制與漢人移民。"
     },
     {
-        id: "TW02", category: "臺灣史", title: "鄭氏政權建聖廟與孔廟建置", year: "西元 1665 年", yearNum: 1665,
+        id: "TW02", category: "臺灣史", title: "臺南孔廟建置", year: "西元 1665 年", yearNum: 1665,
         location: "臺南孔子廟", lat: 22.9903, lng: 120.2038,
-        desc: "陳永華建議鄭經興建全臺首學（臺南孔廟），建立科舉與儒學教育體系，深耕漢人文化體制。",
-        cause: "背景：明鄭為反清復明進行長期整備。影響：奠定臺灣漢人文化儒學教育基礎，開創屯田與官學體制。",
-        source: "108課綱 - 臺灣史主題二：政權變遷與社會回應", keywords: ["鄭氏政權", "陳永華", "全臺首學", "屯田制", "儒學"]
+        desc: "陳永華建議鄭經興建全臺首學（臺南孔廟），建立科舉與儒學體制。",
+        cause: "背景：明鄭時期深耕漢人文化體制。"
     },
     {
-        id: "TW03", category: "臺灣史", title: "天津條約與臺灣開港通商", year: "西元 1860 年", yearNum: 1860,
+        id: "TW03", category: "臺灣史", title: "臺灣開港通商", year: "西元 1860 年", yearNum: 1860,
         location: "淡水/安平/打狗/雞籠", lat: 25.1725, lng: 121.4308,
-        desc: "清朝英法聯軍戰敗簽訂天津條約，淡水、安平、打狗、雞籠開港，茶、糖、樟腦大量出口，臺灣邁入全球貿易市場。",
-        cause: "背景：第二次鴉片戰爭與外力迫使開港。影響：經濟重心北移，外商洋行林立，西方傳教士（馬偕、巴克禮）來臺。",
-        source: "108課綱 - 臺灣史主題三：經濟與文化變遷", keywords: ["開港通商", "三寶（茶糖樟腦）", "洋行", "經濟重心北移", "馬偕"]
+        desc: "天津條約簽訂後，淡水、安平、打狗、雞籠開港，茶、糖、樟腦大量出口。",
+        cause: "背景：第二次鴉片戰爭迫使開港。影響：經濟重心北移與洋行設立。"
     },
     {
-        id: "TW04", category: "臺灣史", title: "日治時期總督府專賣與基建", year: "西元 1895 年", yearNum: 1895,
-        location: "臺北市總督府", lat: 25.0400, lng: 121.5120,
-        desc: "馬關條約簽訂後日本統治臺灣，實施特別法權（六三法），推動土地調查、度量衡統一、縱貫鐵路與日月潭水電基礎建設。",
-        cause: "背景：日本殖民統治與資本主義轉化。影響：現代化基礎設施確立，但也形成「工業日本，農業臺灣」經濟依附結構。",
-        source: "108課綱 - 臺灣史主題三：日治時期統治與回應", keywords: ["日治時期", "六三法", "縱貫鐵路", "專賣制度", "專利統治"]
+        id: "TW04", category: "臺灣史", title: "日治基礎建設", year: "西元 1895 年", yearNum: 1895,
+        location: "臺北市", lat: 25.0400, lng: 121.5120,
+        desc: "日本開始統治臺灣，推動土地調查、縱貫鐵路與度量衡統一。",
+        cause: "背景：馬關條約割讓臺灣。影響：確立現代化基礎設施。"
     },
     {
-        id: "CN01", category: "中國史", title: "秦始皇廢封建立郡縣", year: "西元前 221 年", yearNum: -221,
+        id: "CN01", category: "中國史", title: "秦始皇郡縣制", year: "西元前 221 年", yearNum: -221,
         location: "陝西咸陽", lat: 34.3333, lng: 108.7000,
-        desc: "秦滅六國後，采采法家學說，廢除分封制，全面實行郡縣制，統一文字、車軌、度量衡與貨幣。",
-        cause: "背景：戰國時期連年混戰與法家強國思想。影響：確立中央集權官僚體制雛形，影響中國後世兩千年的政治架構。",
-        source: "108課綱 - 中國史主題一：國家與社會的成立", keywords: ["秦始皇", "郡縣制", "法家", "中央集權", "車同軌"]
+        desc: "秦滅六國後實行郡縣制，統一文字、車軌與度量衡。",
+        cause: "影響：確立中央集權官僚體制雛形。"
     },
     {
-        id: "CN02", category: "中國史", title: "唐代張騫與絲綢之路貿易", year: "西元 618 年", yearNum: 618,
+        id: "CN02", category: "中國史", title: "唐代長安貿易", year: "西元 618 年", yearNum: 618,
         location: "陝西長安", lat: 34.2658, lng: 108.9541,
-        desc: "唐朝首都長安成為國際大都市，東西方商人透過陸上絲綢之路聚集，三省六部制與科舉制度發揮高度效能。",
-        cause: "背景：隋唐大一統與開放包容政策。影響：胡漢文化融合，東亞文化圈（漢字、儒家、律令、佛教）完整建立。",
-        source: "108課綱 - 中國史主題二：陸海交流與東亞秩序", keywords: ["長安", "絲綢之路", "三省六部", "東亞文化圈", "科舉制"]
+        desc: "唐朝首都長安經由絲綢之路聚集東西方商人。",
+        cause: "影響：東亞文化圈建立與胡漢文化融合。"
     },
     {
-        id: "CN03", category: "中國史", title: "宋代商業革命與交子發行", year: "西元 960 年", yearNum: 960,
-        location: "四川成都 / 河南開封", lat: 30.6586, lng: 104.0648,
-        desc: "宋代坊市界限打破，夜市興盛，四川出現世界上最早的紙幣「交子」，海外貿易（市舶司）高度發達。",
-        cause: "背景：農業產量提升與貨幣經濟需求爆炸。影響：市井文化崛起、士大夫文化興盛，平民社會成型。",
-        source: "108課綱 - 中國史主題二：社會經濟變遷", keywords: ["宋代商業革命", "交子", "市舶司", "夜市", "士大夫"]
+        id: "CN03", category: "中國史", title: "宋代交子發行", year: "西元 960 年", yearNum: 960,
+        location: "四川成都", lat: 30.6586, lng: 104.0648,
+        desc: "宋代商業繁榮，四川出現世界上最早的紙幣「交子」。",
+        cause: "影響：平民社會成型與貨幣經濟發達。"
     },
     {
-        id: "WD01", category: "世界史", title: "雅典古典民主政治巔峰", year: "西元前 508 年", yearNum: -508,
+        id: "WD01", category: "世界史", title: "雅典民主政治", year: "西元前 508 年", yearNum: -508,
         location: "希臘雅典", lat: 37.9838, lng: 23.7275,
-        desc: "克里斯提尼與伯里克利改革，確立公民大會、五百人會議與陶片放逐制，開啟西洋民主政治先河。",
-        cause: "背景：平民階級崛起與城邦爭霸。影響：西方政治哲學與公民權利觀念之發源地，惟公民資格排斥女性與奴隸。",
-        source: "108課綱 - 世界史主題一：古典文明與多元文化", keywords: ["雅典民主", "公民大會", "陶片放逐", "伯里克利", "古典希臘"]
+        desc: "克里斯提尼與伯里克利改革，確立公民大會與陶片放逐制。",
+        cause: "影響：西方西洋民主政治源頭。"
     },
     {
-        id: "WD02", category: "世界史", title: "哥倫布到達美洲與地理大發現", year: "西元 1492 年", yearNum: 1492,
-        location: "加勒比海巴哈馬", lat: 25.0343, lng: -77.3963,
-        desc: "西班牙資助哥倫布橫渡大西洋抵達美洲，啟動「哥倫布大交換」，物種、疾病與銀幣在全球範圍快速流動。",
-        cause: "背景：鄂圖曼土耳其阻斷陸路貿易，歐洲尋求新航路。影響：開啟歐洲重商主義、殖民帝國與全球化歷程。",
-        source: "108課綱 - 世界史主題二：近代世界的形成", keywords: ["地理大發現", "哥倫布", "哥倫布大交換", "大航海時代", "重商主義"]
+        id: "WD02", category: "世界史", title: "哥倫布到達美洲", year: "西元 1492 年", yearNum: 1492,
+        location: "巴哈馬", lat: 25.0343, lng: -77.3963,
+        desc: "哥倫布橫渡大西洋抵達美洲，開啟哥倫布大交換與大航海時代。",
+        cause: "影響：全球物種、貿易與殖民歷程展開。"
     },
     {
-        id: "WD03", category: "世界史", title: "英國工業革命與蒸汽機應用", year: "西元 1760 年", yearNum: 1760,
+        id: "WD03", category: "世界史", title: "英國工業革命", year: "西元 1760 年", yearNum: 1760,
         location: "英國曼徹斯特", lat: 53.4808, lng: -2.2426,
-        desc: "瓦特改進蒸汽機，紡織業工廠化生產，鐵路與蒸汽船徹底改變交通運輸，人類進入機器動力時代。",
-        cause: "背景：英國資金充沛、海外市場廣闊、專利制度與圈地運動。影響：都市化速成、資本主義崛起與階級問題爆發。",
-        source: "108課綱 - 世界史主題三：現代世界的轉變", keywords: ["工業革命", "蒸汽機", "資本主義", "都市化", "工廠制度"]
+        desc: "蒸汽機改良與工廠制度崛起，人類進入機械化生產時代。",
+        cause: "影響：都市化速成與資本主義發展。"
     }
 ];
 
-/* --- 歷屆試題庫資料 --- */
 const EXAM_DATABASE = [
-    { year: 114, title: "114 學年度學術能力測驗 - 社會考科試題", desc: "包含臺灣史跨科情境題、地圖判讀題與跨領域素養導向素養題型。", pdfUrl: "#" },
-    { year: 113, title: "113 學年度學術能力測驗 - 社會考科試題", desc: "著重歷史因果邏輯分析、史料閱讀與多選題推理導向。", pdfUrl: "#" },
-    { year: 112, title: "112 學年度分科測驗 - 歷史考科試題", desc: "深度考核史料批判、跨歷史時期對比與混合題型作答能力。", pdfUrl: "#" },
-    { year: 111, title: "111 學年度學術能力測驗 - 社會考科試題", desc: "108課綱首屆新型學測，含手寫混合題型與地圖疊加分析。", pdfUrl: "#" }
+    { year: 114, title: "114 學年度學術能力測驗 - 社會考科", desc: "學測社會科歷史試題原檔", pdfUrl: "#" },
+    { year: 113, title: "113 學年度學術能力測驗 - 社會考科", desc: "學測社會科歷史試題原檔", pdfUrl: "#" },
+    { year: 112, title: "112 學年度分科測驗 - 歷史考科", desc: "分科測驗歷史試題原檔", pdfUrl: "#" },
+    { year: 111, title: "111 學年度學術能力測驗 - 社會考科", desc: "學測社會科歷史試題原檔", pdfUrl: "#" }
 ];
 
-/* --- 應用程式狀態 --- */
 let currentUser = null;
 let activeView = 'quiz';
 
@@ -715,7 +607,6 @@ let leafletMap = null;
 let markerCluster = null;
 let activeModalEvent = null;
 
-/* --- 初始化 --- */
 window.addEventListener('DOMContentLoaded', () => {
     checkFirstTimeAuth();
     updateGlobalStats();
@@ -723,7 +614,7 @@ window.addEventListener('DOMContentLoaded', () => {
     renderMistakesList();
 });
 
-/* --- 強制登入/註冊門檻邏輯 --- */
+/* 強制驗證邏輯 */
 function checkFirstTimeAuth() {
     const userSession = localStorage.getItem('hist_user_session');
     if (!userSession) {
@@ -763,34 +654,31 @@ function handleAuthLogin(e) {
     e.preventDefault();
     const username = document.getElementById('loginUser').value.trim();
     if (!username) return;
-    completeAuthSuccess({ name: username, type: 'custom', storage: 'local' });
+    completeAuthSuccess({ name: username, type: 'custom' });
 }
 
 function handleAuthRegister(e) {
     e.preventDefault();
     const username = document.getElementById('regUser').value.trim();
-    const storage = document.getElementById('regStorageLoc').value;
     if (!username) return;
-    completeAuthSuccess({ name: username, type: 'custom', storage: storage });
+    completeAuthSuccess({ name: username, type: 'custom' });
 }
 
 function skipRegisterStorage() {
-    const username = document.getElementById('regUser').value.trim() || '學生使用者';
-    completeAuthSuccess({ name: username, type: 'custom', storage: 'local' });
+    const username = document.getElementById('regUser').value.trim() || '使用者';
+    completeAuthSuccess({ name: username, type: 'custom' });
 }
 
 function handleGoogleAuth() {
-    completeAuthSuccess({ name: 'Google 驗證使用者', type: 'google', storage: 'gdrive' });
+    completeAuthSuccess({ name: 'Google 使用者', type: 'google' });
 }
 
-/* --- 全局統計數字更新 --- */
 function updateGlobalStats() {
     document.getElementById('statMastered').textContent = masteredSet.size;
     document.getElementById('statReviewing').textContent = reviewingSet.size;
     document.getElementById('statMistakes').textContent = mistakesList.length;
 }
 
-/* --- 視圖切換邏輯 --- */
 function switchView(viewId) {
     activeView = viewId;
     const views = ['exams', 'quiz', 'map', 'timeline'];
@@ -802,7 +690,10 @@ function switchView(viewId) {
     });
 
     if(viewId === 'map') {
-        setTimeout(initOrRefreshMap, 100);
+        // 確保視圖顯示後重算地圖尺寸並刷新點位
+        setTimeout(() => {
+            initOrRefreshMap();
+        }, 100);
     }
 }
 
@@ -810,7 +701,7 @@ function toggleSidebar() {
     document.getElementById('sidebarOverlay').classList.toggle('active');
 }
 
-/* --- 歷屆試題專頁 --- */
+/* 歷屆試題 */
 function renderExamList() {
     const listEl = document.getElementById('ceecExamCardsList');
     if(!listEl) return;
@@ -822,14 +713,14 @@ function renderExamList() {
         row.innerHTML = `
             <div class="exam-left-info">
                 <span class="exam-tag-pill">${ex.year} 學年度</span>
-                <div class="exam-text-group">
+                <div>
                     <div class="exam-card-title-row">${ex.title}</div>
                     <div class="exam-card-desc-row">${ex.desc}</div>
                 </div>
             </div>
             <div class="exam-action-btns">
-                <a class="btn-download-pdf" href="${ex.pdfUrl}" onclick="alert('已模擬觸發大考中心原檔 PDF 下載機制！')">📥 下載 PDF</a>
-                <button class="btn-cite-quiz" onclick="citeExamToQuiz(${ex.year})">⚡ 帶入此卷測驗</button>
+                <a class="btn-download-pdf" href="${ex.pdfUrl}" onclick="alert('觸發試題下載')">下載 PDF</a>
+                <button class="btn-cite-quiz" onclick="citeExamToQuiz(${ex.year})">帶入測驗</button>
             </div>
         `;
         listEl.appendChild(row);
@@ -839,15 +730,10 @@ function renderExamList() {
 function citeExamToQuiz(year) {
     switchView('quiz');
     switchQuizSubTab('quiz');
-    const info = document.getElementById('quizCitedInfo');
-    if(info) {
-        info.style.display = 'block';
-        info.textContent = `📌 已成功帶入 ${year} 學年度大考模擬題庫範疇！`;
-    }
     startConfiguredQuiz();
 }
 
-/* --- 閃卡與測驗子分頁切換 --- */
+/* 閃卡與測驗 */
 function switchQuizSubTab(subTab) {
     document.getElementById('subTabFC')?.classList.toggle('active', subTab === 'flashcards');
     document.getElementById('subTabTest')?.classList.toggle('active', subTab === 'quiz');
@@ -860,7 +746,6 @@ function switchQuizSubTab(subTab) {
     if(subTab === 'mistakes') renderMistakesList();
 }
 
-/* --- 閃卡系統邏輯 --- */
 function startConfiguredFlashcards() {
     const domain = document.getElementById('cfgFcDomain').value;
     const countVal = document.getElementById('cfgFcCount').value;
@@ -877,7 +762,7 @@ function startConfiguredFlashcards() {
     fcCurrentIdx = 0;
 
     if(fcList.length === 0) {
-        alert('該條件下查無考點！');
+        alert('無相符考點');
         return;
     }
 
@@ -888,7 +773,7 @@ function startConfiguredFlashcards() {
 
 function renderFC() {
     if(fcCurrentIdx >= fcList.length) {
-        alert('🎉 恭喜完成本輪閃卡複習！');
+        alert('完成閃卡複習');
         document.getElementById('fcDisplayArea').style.display = 'none';
         document.getElementById('fcStartPrompt').style.display = 'block';
         return;
@@ -900,11 +785,11 @@ function renderFC() {
     const ev = fcList[fcCurrentIdx];
     document.getElementById('fcDomainBadge').textContent = ev.category;
     document.getElementById('fcFrontTitle').textContent = ev.title;
-    document.getElementById('fcFrontSub').textContent = `📍 ${ev.location} (${ev.year})`;
+    document.getElementById('fcFrontSub').textContent = `${ev.location} (${ev.year})`;
 
     document.getElementById('fcBackYearLoc').textContent = `${ev.year}｜${ev.location}`;
     document.getElementById('fcBackDesc').textContent = ev.desc;
-    document.getElementById('fcBackCause').textContent = ev.cause;
+    document.getElementById('fcBackCause').textContent = ev.cause || '無';
 }
 
 function toggleFCFlip() {
@@ -933,7 +818,6 @@ function rateFlashcard(level) {
     renderFC();
 }
 
-/* --- 模擬測驗邏輯 --- */
 function startConfiguredQuiz() {
     const domain = document.getElementById('cfgDomain').value;
     const type = document.getElementById('cfgType').value;
@@ -943,7 +827,7 @@ function startConfiguredQuiz() {
     candidates = candidates.sort(() => 0.5 - Math.random());
 
     if(candidates.length === 0) {
-        alert('無足夠題目可出！');
+        alert('題目數量不足');
         return;
     }
 
@@ -971,9 +855,9 @@ function renderQuizQuestion() {
 
     const qText = document.getElementById('quizQuestionText');
     if(qData.type === 'YEAR') {
-        qText.textContent = `請問歷史事件：「${qData.target.title}」發生於哪一個時期或年代？`;
+        qText.textContent = `歷史事件「${qData.target.title}」發生於何時？`;
     } else {
-        qText.textContent = `關於「${qData.target.title}」的歷史脈絡與核心特徵，下列敘述何者最適當？`;
+        qText.textContent = `關於「${qData.target.title}」的描述何者正確？`;
     }
 
     const container = document.getElementById('quizOptionsContainer');
@@ -1012,7 +896,7 @@ function selectOption(optIdx, btnEl) {
     }
 
     const expBox = document.getElementById('quizExpBox');
-    document.getElementById('quizExpText').textContent = `【正確答案】${qData.target.year} - ${qData.target.title}。 ${qData.target.cause}`;
+    document.getElementById('quizExpText').textContent = `正解：${qData.target.year} - ${qData.target.title}。${qData.target.desc}`;
     expBox.style.display = 'block';
 }
 
@@ -1030,23 +914,22 @@ function showQuizResult() {
     const resCard = document.getElementById('quizResultCard');
     resCard.style.display = 'block';
     document.getElementById('resultScoreVal').textContent = `${quizScore} 分`;
-    document.getElementById('resultDescText').textContent = `您完成了全部 ${quizList.length} 道題目。答錯項已自動加入錯題本。`;
+    document.getElementById('resultDescText').textContent = `已完成 ${quizList.length} 道題目，錯題已自動記入錯題本。`;
 }
 
 function quitQuiz() {
-    if(confirm('確定要結束本次測驗嗎？')) {
+    if(confirm('確定要結束測驗？')) {
         document.getElementById('quizCard').style.display = 'none';
     }
 }
 
-/* --- 錯題本邏輯 --- */
 function renderMistakesList() {
     const container = document.getElementById('mistakesContainer');
     if(!container) return;
     container.innerHTML = '';
 
     if(mistakesList.length === 0) {
-        container.innerHTML = `<div style="text-align:center; padding:40px; color:#cbd5e1;">🎉 目前無任何錯題紀錄，繼續保持！</div>`;
+        container.innerHTML = `<div style="text-align:center; padding:30px; color:#cbd5e1;">目前無錯題紀錄。</div>`;
         return;
     }
 
@@ -1058,7 +941,7 @@ function renderMistakesList() {
                 <h4>${m.title} (${m.year})</h4>
                 <p>📍 ${m.location}｜${m.desc}</p>
             </div>
-            <button class="btn-remove-mistake" onclick="removeMistake('${m.id}')">🗑️ 移出錯題本</button>
+            <button class="btn-remove-mistake" onclick="removeMistake('${m.id}')">移除</button>
         `;
         container.appendChild(row);
     });
@@ -1071,20 +954,24 @@ function removeMistake(id) {
     renderMistakesList();
 }
 
-/* --- 地圖模組邏輯 --- */
+/* 地圖初始化與地圖點繪製（解決地圖點遺失問題） */
 function initOrRefreshMap() {
-    if(!leafletMap) {
-        leafletMap = L.map('map').setView([23.5, 121], 5);
+    const mapContainer = document.getElementById('map');
+    if (!mapContainer) return;
+
+    if (!leafletMap) {
+        leafletMap = L.map('map').setView([23.5, 121], 4);
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '&copy; OpenStreetMap contributors'
+            attribution: '&copy; OpenStreetMap'
         }).addTo(leafletMap);
 
         markerCluster = L.markerClusterGroup();
         leafletMap.addLayer(markerCluster);
-        renderMapMarkers(HIST_DATA);
-    } else {
-        leafletMap.invalidateSize();
     }
+    
+    // 強制更新尺寸並載入 Marker 點位
+    leafletMap.invalidateSize();
+    renderMapMarkers(HIST_DATA);
 }
 
 function renderMapMarkers(data) {
@@ -1092,13 +979,15 @@ function renderMapMarkers(data) {
     markerCluster.clearLayers();
 
     data.forEach(ev => {
-        const marker = L.marker([ev.lat, ev.lng]);
-        marker.bindPopup(`
-            <b style="color:#0f172a">${ev.title}</b><br>
-            <span style="font-size:0.8rem;color:#475569">${ev.year}｜${ev.location}</span><br>
-            <button onclick="openModal('${ev.id}')" style="margin-top:6px; background:#f59e0b; border:none; padding:3px 8px; border-radius:4px; font-weight:bold; cursor:pointer;">查看詳情</button>
-        `);
-        markerCluster.addLayer(marker);
+        if(ev.lat && ev.lng) {
+            const marker = L.marker([ev.lat, ev.lng]);
+            marker.bindPopup(`
+                <b style="color:#0f172a">${ev.title}</b><br>
+                <span style="font-size:0.8rem;color:#475569">${ev.year}｜${ev.location}</span><br>
+                <button onclick="openModal('${ev.id}')" style="margin-top:6px; background:#f59e0b; border:none; padding:2px 6px; border-radius:4px; font-weight:bold; cursor:pointer;">查看詳細</button>
+            `);
+            markerCluster.addLayer(marker);
+        }
     });
 }
 
@@ -1109,38 +998,32 @@ function updateMapTimeline(val) {
     renderMapMarkers(filtered);
 }
 
-function resetMapSlider() {
-    document.getElementById('mapYearSlider').value = 2026;
-    updateMapTimeline(2026);
-}
-
 function filterMapByKeyword(kw) {
     const k = kw.trim().toLowerCase();
     const filtered = HIST_DATA.filter(d => d.title.toLowerCase().includes(k) || d.location.toLowerCase().includes(k));
     renderMapMarkers(filtered);
 }
 
-/* --- 年代對照軌道邏輯 --- */
+/* 年代對照 */
 function selectDynasty(name, startYear, endYear) {
     const area = document.getElementById('timelineEventsArea');
     const title = document.getElementById('tlEventsTitle');
     const grid = document.getElementById('tlEventsGrid');
 
-    title.textContent = `⏳ ${name} (${startYear < 0 ? '前'+Math.abs(startYear) : startYear} ~ ${endYear}) 歷史事件`;
+    title.textContent = `${name} 事件名冊`;
     grid.innerHTML = '';
 
     const events = HIST_DATA.filter(d => d.yearNum >= startYear && d.yearNum <= endYear);
     if(events.length === 0) {
-        grid.innerHTML = `<div style="color:#cbd5e1; padding:20px;">該時期暫無收錄考點。</div>`;
+        grid.innerHTML = `<div style="color:#cbd5e1; padding:10px;">該時期暫無資料。</div>`;
     } else {
         events.forEach(ev => {
             const card = document.createElement('div');
-            card.className = 'event-card';
+            card.style.cssText = "background:#0f172a; padding:10px; border-radius:6px; border:1px solid #334155; cursor:pointer;";
             card.onclick = () => openModal(ev.id);
             card.innerHTML = `
-                <div class="ev-title">${ev.title}</div>
-                <div class="ev-year">${ev.year}｜📍 ${ev.location}</div>
-                <div class="ev-desc">${ev.desc}</div>
+                <div style="font-weight:bold; color:#f8fafc;">${ev.title}</div>
+                <div style="font-size:0.8rem; color:#f59e0b;">${ev.year}｜📍 ${ev.location}</div>
             `;
             grid.appendChild(card);
         });
@@ -1153,29 +1036,16 @@ function closeTimelineEvents() {
     document.getElementById('timelineEventsArea').style.display = 'none';
 }
 
-/* --- Event Detail Modal --- */
 function openModal(id) {
     const ev = HIST_DATA.find(d => d.id === id);
     if(!ev) return;
     activeModalEvent = ev;
 
     document.getElementById('modalDomainTag').textContent = ev.category;
-    document.getElementById('modalYearTag').textContent = ev.year;
     document.getElementById('modalTitle').textContent = ev.title;
-    document.getElementById('modalSource').textContent = `📚 ${ev.source}`;
-
-    document.getElementById('modalLocText').textContent = ev.location;
-    document.getElementById('modalDescText').textContent = ev.desc;
-    document.getElementById('modalCauseText').textContent = ev.cause;
-
-    const kwBox = document.getElementById('modalKeywordsBox');
-    kwBox.innerHTML = '';
-    ev.keywords.forEach(k => {
-        const chip = document.createElement('span');
-        chip.className = 'kw-chip';
-        chip.textContent = `# ${k}`;
-        kwBox.appendChild(chip);
-    });
+    document.getElementById('modalLocText').textContent = `📍 地點：${ev.location} (${ev.year})`;
+    document.getElementById('modalDescText').textContent = `📖 內容：${ev.desc}`;
+    document.getElementById('modalCauseText').textContent = `🔍 背景：${ev.cause || '無'}`;
 
     document.getElementById('eventDetailModal').classList.add('active');
 }
@@ -1189,7 +1059,7 @@ function flyToCurrentEvent() {
     closeModal();
     switchView('map');
     if(leafletMap) {
-        leafletMap.flyTo([activeModalEvent.lat, activeModalEvent.lng], 10, { duration: 1.5 });
+        leafletMap.flyTo([activeModalEvent.lat, activeModalEvent.lng], 8, { duration: 1 });
     }
 }
 </script>
