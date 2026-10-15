@@ -254,109 +254,99 @@ for key, e in unique_dict.items():
 
     preset = ENRICHMENT_PRESETS.get(title) or ENRICHMENT_PRESETS.get(title.split('（')[0])
     if preset:
-        cause, effect, comparison = preset["cause"], preset["effect"], preset["comparison"]
-    else:
-        cause = f"【{domain} - {e['sheet']}】關鍵情境"
-        effect = f"【{domain}】發展影響：{e['desc']}"
-        comparison = None
-
-    processed_events.append({
-        "domain": domain, "sheet": e['sheet'], "stage": sort_stages(e['stage']),
-        "year": y_str, "start_year": start_yr, "end_year": end_yr, "num_year": num_yr,
-        "lat": round(lat, 5), "lng": round(lng, 5),
-        "loc": loc_name, "title": title, "desc": e['desc'],
-        "cause": cause, "effect": effect, "comparison": comparison,
-        "keywords": kw_clean, "exam_refs": exam_refs
-    })
-
+請謹慎使用程式碼。
+cause, effect, comparison = preset["cause"], preset["effect"], preset["comparison"]
+else:
+cause = f"【{domain} - {e['sheet']}】關鍵情境"
+effect = f"【{domain}】發展影響：{e['desc']}"
+comparison = None
+processed_events.append({
+"domain": domain, "sheet": e['sheet'], "stage": sort_stages(e['stage']),
+"year": y_str, "start_year": start_yr, "end_year": end_yr, "num_year": num_yr,
+"lat": round(lat, 5), "lng": round(lng, 5),
+"loc": loc_name, "title": title, "desc": e['desc'],
+"cause": cause, "effect": effect, "comparison": comparison,
+"keywords": kw_clean, "exam_refs": exam_refs
+})
 processed_events.sort(key=lambda x: x['num_year'])
 for idx, item in enumerate(processed_events, start=1):
-    item['id'] = idx
-
+item['id'] = idx
 with open(DATA_FILE, "w", encoding="utf-8") as f:
-    json.dump(processed_events, f, ensure_ascii=False, indent=2)
-
+json.dump(processed_events, f, ensure_ascii=False, indent=2)
 print(f"🎉 成功處理並寫入 {len(processed_events)} 筆歷史考點至 {DATA_FILE}！")
 
+==============================================================================
 
-# ==============================================================================
-# 部份二：網頁介面與地圖/測驗系統生成 (輸出 world_history_map.html)
-# ==============================================================================
+
+部份二：網頁介面與地圖/測驗系統生成 (輸出 world_history_map.html)
+
+
+==============================================================================
 
 if os.path.exists(DATA_FILE):
-    with open(DATA_FILE, "r", encoding="utf-8") as f:
-        events_data = json.load(f)
+with open(DATA_FILE, "r", encoding="utf-8") as f:
+events_data = json.load(f)
 else:
-    raise FileNotFoundError(f"找不到 {DATA_FILE}，請先執行「部份一」生成資料檔！")
+raise FileNotFoundError(f"找不到 {DATA_FILE}，請先執行「部份一」生成資料檔！")
 
-# 建立 83~115 學年度完整歷屆試題清單
+建立 83~115 學年度完整歷屆試題清單
+
 KNOWN_PDF_URLS = {
-    115: "https://www.ceec.edu.tw/files/file_pool/1/0q054534130270752519/05-115%e5%ad%b8%e6%b8%ac%e7%a4%be%e6%9c%83%e8%a9%a6%e5%8d%b7.pdf",
-    114: "https://www.ceec.edu.tw/files/file_pool/1/0p056429479567292230/05-114%e5%ad%b8%e6%b8%ac%e7%a4%be%e6%9c%83%e8%a9%a6%e9%a1%8c.pdf",
-    113: "https://www.ceec.edu.tw/files/file_pool/1/0o051421699906768624/05-113%e5%ad%b8%e6%b8%ac%e7%a4%be%e6%9c%83%e7%a7%91%e8%a9%a6%e9%a1%8c%e5%ae%9a%e7%a8%bf.pdf",
-    111: "https://www.ceec.edu.tw/files/file_pool/1/0m053364108279287592/05-111%e5%ad%b8%e6%b8%ac%e7%a4%be%e6%9c%83%e8%a9%a6%e5%8d%b7.pdf",
-    110: "https://www.ceec.edu.tw/files/file_pool/1/0l069606123954085532/110%e5%ad%b8%e6%b8%ac%e7%a4%be%e6%9c%83%e8%a9%a6%e5%8d%b7.pdf"
+115: "ceec.edu.tw",
+114: "ceec.edu.tw",
+113: "ceec.edu.tw",
+111: "ceec.edu.tw",
+110: "ceec.edu.tw"
 }
-
 CEEC_PDF_LIST = []
 for yr in range(115, 82, -1):
-    url = KNOWN_PDF_URLS.get(yr, f"https://www.ceec.edu.tw/xmfile?xsmsid=0J052424823015665353")
-    CEEC_PDF_LIST.append({
-        "year": f"{yr} 學年度",
-        "title": f"{yr} 學年度大學學測/聯考社會考科試題",
-        "url": url,
-        "desc": f"收錄 {yr} 學年度大考中心社會科（歷史、地理、公民）正式試題檔案。"
-    })
-
+url = KNOWN_PDF_URLS.get(yr, f"ceec.edu.tw")
+CEEC_PDF_LIST.append({
+"year": f"{yr} 學年度",
+"title": f"{yr} 學年度大學學測/聯考社會考科試題",
+"url": url,
+"desc": f"收錄 {yr} 學年度大考中心社會科（歷史、地理、公民）正式試題檔案。"
+})
 dynasties_data = [
-    {"cat": "taiwan", "name": "史前與原住民文化", "start": -10000, "end": 1624, "color": "#d97706"},
-    {"cat": "taiwan", "name": "荷西時期", "start": 1624, "end": 1662, "color": "#10b981"},
-    {"cat": "taiwan", "name": "明鄭時期", "start": 1662, "end": 1683, "color": "#3b82f6"},
-    {"cat": "taiwan", "name": "清領時期", "start": 1683, "end": 1895, "color": "#8b5cf6"},
-    {"cat": "taiwan", "name": "日治時期", "start": 1895, "end": 1945, "color": "#ef4444"},
-    {"cat": "taiwan", "name": "戰後中華民國", "start": 1945, "end": 2026, "color": "#06b6d4"},
-
-    {"cat": "china", "name": "史前傳說與夏商周", "start": -10000, "end": -256, "color": "#d97706"},
-    {"cat": "china", "name": "秦漢帝國", "start": -221, "end": 220, "color": "#ef4444"},
-    {"cat": "china", "name": "魏晉南北朝", "start": 220, "end": 589, "color": "#8b5cf6"},
-    {"cat": "china", "name": "隋唐五代", "start": 581, "end": 907, "color": "#3b82f6"},
-    {"cat": "china", "name": "兩宋與元朝", "start": 960, "end": 1368, "color": "#10b981"},
-    {"cat": "china", "name": "明清時期", "start": 1368, "end": 1912, "color": "#8b5cf6"},
-    {"cat": "china", "name": "民國與現代", "start": 1911, "end": 2026, "color": "#06b6d4"},
-
-    {"cat": "world", "name": "四大古文明與早期人類", "start": -10000, "end": -500, "color": "#d97706"},
-    {"cat": "world", "name": "希臘羅馬古典時代", "start": -500, "end": 476, "color": "#3b82f6"},
-    {"cat": "world", "name": "歐洲中古與拜占庭", "start": 476, "end": 1453, "color": "#8b5cf6"},
-    {"cat": "world", "name": "地理大發現與近世", "start": 1450, "end": 1789, "color": "#10b981"},
-    {"cat": "world", "name": "工業革命與帝國主義", "start": 1760, "end": 1914, "color": "#06b6d4"},
-    {"cat": "world", "name": "世界大戰與現代國際秩序", "start": 1914, "end": 2026, "color": "#f43f5e"}
+{"cat": "taiwan", "name": "史前與原住民文化", "start": -10000, "end": 1624, "color": "#d97706"},
+{"cat": "taiwan", "name": "荷西時期", "start": 1624, "end": 1662, "color": "#10b981"},
+{"cat": "taiwan", "name": "明鄭時期", "start": 1662, "end": 1683, "color": "#3b82f6"},
+{"cat": "taiwan", "name": "清領時期", "start": 1683, "end": 1895, "color": "#8b5cf6"},
+{"cat": "taiwan", "name": "日治時期", "start": 1895, "end": 1945, "color": "#ef4444"},
+{"cat": "taiwan", "name": "戰後中華民國", "start": 1945, "end": 2026, "color": "#06b6d4"},
+{"cat": "china", "name": "史前傳說與夏商周", "start": -10000, "end": -256, "color": "#d97706"},
+{"cat": "china", "name": "秦漢帝國", "start": -221, "end": 220, "color": "#ef4444"},
+{"cat": "china", "name": "魏晉南北朝", "start": 220, "end": 589, "color": "#8b5cf6"},
+{"cat": "china", "name": "隋唐五代", "start": 581, "end": 907, "color": "#3b82f6"},
+{"cat": "china", "name": "兩宋與元朝", "start": 960, "end": 1368, "color": "#10b981"},
+{"cat": "china", "name": "明清時期", "start": 1368, "end": 1912, "color": "#8b5cf6"},
+{"cat": "china", "name": "民國與現代", "start": 1911, "end": 2026, "color": "#06b6d4"},
+{"cat": "world", "name": "四大古文明與早期人類", "start": -10000, "end": -500, "color": "#d97706"},
+{"cat": "world", "name": "希臘羅馬古典時代", "start": -500, "end": 476, "color": "#3b82f6"},
+{"cat": "world", "name": "歐洲中古與拜占庭", "start": 476, "end": 1453, "color": "#8b5cf6"},
+{"cat": "world", "name": "地理大發現與近世", "start": 1450, "end": 1789, "color": "#10b981"},
+{"cat": "world", "name": "工業革命與帝國主義", "start": 1760, "end": 1914, "color": "#06b6d4"},
+{"cat": "world", "name": "世界大戰與現代國際秩序", "start": 1914, "end": 2026, "color": "#f43f5e"}
 ]
-
 STATIC_CONFIG = {
-    "leaflet_css": "https://unpkg.com/leaflet@1.9.4/dist/leaflet.css",
-    "leaflet_js": "https://unpkg.com/leaflet@1.9.4/dist/leaflet.js",
-    "cluster_css": "https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css",
-    "cluster_default_css": "https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css",
-    "cluster_js": "https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js",
-    "tile_url": "https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}"
+"leaflet_css": "unpkg.com",
+"leaflet_js": "unpkg.com",
+"cluster_css": "unpkg.com",
+"cluster_default_css": "unpkg.com",
+"cluster_js": "unpkg.com",
+"tile_url": "arcgisonline.com{z}/{y}/{x}"
 }
+html_content = f"""
 
-html_content = f"""<!DOCTYPE html>
-<html lang="zh-TW">
-<head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>108課綱歷史數位地圖與測驗系統</title>
-<link rel="stylesheet" href="{STATIC_CONFIG['leaflet_css']}" />
-<link rel="stylesheet" href="{STATIC_CONFIG['cluster_css']}" />
-<link rel="stylesheet" href="{STATIC_CONFIG['cluster_default_css']}" />
-<style>
+
+
+108課綱歷史數位地圖與測驗系統
 *{{box-sizing:border-box;margin:0;padding:0;}}
 body{{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;background:#0f172a;color:#f8fafc;height:100vh;display:flex;flex-direction:column;overflow:hidden;}}
-
 /* 頂部 Sticky 導覽列 */
 nav.top-nav{{
-    background:#1e293be6;backdrop-filter:blur(12px);border-bottom:1px solid #334155;
-    padding:10px 16px;display:flex;justify-content:space-between;align-items:center;gap:12px;z-index:900;
+background:#1e293be6;backdrop-filter:blur(12px);border-bottom:1px solid #334155;
+padding:10px 16px;display:flex;justify-content:space-between;align-items:center;gap:12px;z-index:900;
 }}
 .nav-left{{display:flex;align-items:center;gap:10px;}}
 .btn-menu-trigger{{background:#334155;color:#f59e0b;border:1px solid #475569;padding:6px 12px;border-radius:6px;font-size:0.9rem;font-weight:bold;cursor:pointer;}}
@@ -364,9 +354,7 @@ nav.top-nav{{
 .nav-links{{display:flex;align-items:center;gap:6px;}}
 .nav-btn{{background:transparent;color:#cbd5e1;border:none;padding:6px 12px;border-radius:20px;font-size:0.82rem;font-weight:bold;cursor:pointer;transition:all 0.2s;}}
 .nav-btn:hover, .nav-btn.active{{background:#f59e0b;color:#0f172a;}}
-
 .view-container{{flex:1;position:relative;width:100%;height:100%;overflow:hidden;}}
-
 /* ================= 視圖 1：首頁 Dashboard ================= */
 #view-home{{width:100%;height:100%;overflow-y:auto;padding:20px 16px 60px;max-width:1240px;margin:0 auto;display:block;}}
 .home-hero{{background:linear-gradient(135deg, #1e293b 0%, #0f172a 100%);border:1px solid #334155;border-radius:16px;padding:24px 20px;margin-bottom:24px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:12px;}}
@@ -376,7 +364,6 @@ nav.top-nav{{
 .home-title{{font-size:1.8rem;font-weight:800;color:#f8fafc;}}
 .home-title span{{color:#f59e0b;}}
 .home-subtitle{{font-size:0.88rem;color:#94a3b8;max-width:680px;line-height:1.5;}}
-
 .portal-grid{{display:grid;grid-template-columns:repeat(auto-fit, minmax(260px, 1fr));gap:16px;margin-bottom:28px;}}
 .portal-card{{background:#1e293b;border:2px solid #334155;border-radius:14px;padding:18px;display:flex;flex-direction:column;justify-content:space-between;transition:all 0.25s;cursor:pointer;position:relative;overflow:hidden;}}
 .portal-card::before{{content:"";position:absolute;top:0;left:0;width:100%;height:4px;}}
@@ -387,13 +374,11 @@ nav.top-nav{{
 .portal-count-tag{{padding:3px 8px;border-radius:10px;font-size:0.72rem;font-weight:bold;color:#fff;}}
 .portal-title{{font-size:1.15rem;font-weight:bold;color:#fff;margin-bottom:4px;}}
 .portal-desc{{font-size:0.8rem;color:#cbd5e1;line-height:1.4;margin-bottom:12px;}}
-
 .home-filter-section{{background:#1e293b;border:1px solid #334155;border-radius:12px;padding:12px 16px;margin-bottom:20px;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;}}
 .home-filter-tabs{{display:flex;gap:6px;flex-wrap:wrap;}}
 .tab-btn{{background:#0f172a;border:1px solid #334155;color:#cbd5e1;padding:6px 14px;border-radius:18px;font-size:0.82rem;font-weight:bold;cursor:pointer;}}
 .tab-btn.active, .tab-btn:hover{{background:#f59e0b;color:#0f172a;border-color:#f59e0b;}}
 .home-search-input{{background:#0f172a;border:1px solid #475569;color:#fff;padding:7px 12px;border-radius:8px;font-size:0.82rem;outline:none;width:220px;}}
-
 .events-grid{{display:grid;grid-template-columns:repeat(auto-fill, minmax(280px, 1fr));gap:16px;}}
 .event-card{{background:#1e293b;border:1px solid #334155;border-radius:12px;padding:14px;display:flex;flex-direction:column;justify-content:space-between;transition:all 0.2s;cursor:pointer;}}
 .event-card:hover{{border-color:#f59e0b;transform:translateY(-3px);}}
@@ -405,16 +390,13 @@ nav.top-nav{{
 .ev-loc{{font-size:0.75rem;color:#94a3b8;margin-bottom:6px;}}
 .ev-desc{{font-size:0.78rem;color:#cbd5e1;line-height:1.4;margin-bottom:10px;flex:1;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}}
 .btn-card-detail{{background:#0f172a;color:#f59e0b;border:1px solid #f59e0b;padding:6px 10px;border-radius:6px;font-size:0.78rem;font-weight:bold;cursor:pointer;text-align:center;}}
-
 .load-more-box{{text-align:center;margin-top:24px;}}
 .btn-load-more{{background:#334155;color:#f59e0b;border:1px solid #475569;padding:8px 24px;border-radius:20px;font-size:0.85rem;font-weight:bold;cursor:pointer;}}
-
 /* ================= 視圖 2：歷屆試題獨立分頁 ================= */
 #view-exams{{width:100%;height:100%;overflow-y:auto;padding:20px 16px 60px;max-width:1100px;margin:0 auto;display:none;}}
 .exams-header{{background:linear-gradient(135deg, #1e293b, #0f172a);border:1px solid #334155;border-radius:16px;padding:24px;margin-bottom:24px;text-align:center;}}
 .exams-header h2{{font-size:1.5rem;color:#38bdf8;margin-bottom:8px;}}
 .exams-header p{{font-size:0.88rem;color:#cbd5e1;line-height:1.5;}}
-
 .exam-cards-grid{{display:grid;grid-template-columns:repeat(auto-fill, minmax(280px, 1fr));gap:16px;}}
 .exam-pdf-card{{background:#1e293b;border:1px solid #334155;border-radius:14px;padding:18px;display:flex;flex-direction:column;justify-content:space-between;transition:all 0.2s;}}
 .exam-pdf-card:hover{{border-color:#38bdf8;transform:translateY(-3px);}}
@@ -423,24 +405,19 @@ nav.top-nav{{
 .exam-card-desc{{font-size:0.8rem;color:#cbd5e1;line-height:1.4;margin-bottom:14px;flex:1;}}
 .btn-download-pdf{{background:#0284c7;color:#fff;padding:8px 16px;border-radius:8px;text-decoration:none;font-size:0.85rem;font-weight:bold;text-align:center;transition:background 0.2s;}}
 .btn-download-pdf:hover{{background:#0369a1;}}
-
 /* ================= 視圖 3：測驗與閃卡 ================= */
 #view-quiz{{width:100%;height:100%;overflow-y:auto;padding:20px 16px 60px;max-width:1100px;margin:0 auto;display:none;}}
-
 .quiz-header{{background:#1e293b;border:1px solid #334155;border-radius:16px;padding:20px;margin-bottom:20px;display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;}}
 .quiz-title-box h2{{font-size:1.4rem;color:#f59e0b;margin-bottom:4px;}}
 .quiz-title-box p{{font-size:0.82rem;color:#94a3b8;}}
-
 /* 右上角點選式統計膠囊列 */
 .quiz-stats-bar{{display:flex;gap:10px;background:#0f172a;padding:8px 14px;border-radius:12px;border:1px solid #334155;}}
 .q-stat-item{{text-align:center;font-size:0.75rem;color:#cbd5e1;cursor:pointer;padding:4px 10px;border-radius:8px;transition:background 0.2s;}}
 .q-stat-item:hover{{background:#1e293b;}}
 .q-stat-item b{{display:block;font-size:1.1rem;color:#f59e0b;}}
-
 .quiz-tab-group{{display:flex;gap:8px;margin-bottom:20px;border-bottom:1px solid #334155;padding-bottom:10px;}}
 .q-tab-btn{{background:#0f172a;border:1px solid #334155;color:#cbd5e1;padding:8px 18px;border-radius:20px;font-size:0.85rem;font-weight:bold;cursor:pointer;}}
 .q-tab-btn.active{{background:#f59e0b;color:#0f172a;border-color:#f59e0b;}}
-
 /* 測驗/閃卡設定選單卡片 */
 .quiz-config-card{{background:#1e293b;border:1px solid #334155;border-radius:14px;padding:16px 20px;margin-bottom:20px;display:flex;gap:16px;align-items:center;flex-wrap:wrap;justify-content:space-between;}}
 .quiz-config-group{{display:flex;gap:12px;align-items:center;flex-wrap:wrap;}}
@@ -448,32 +425,27 @@ nav.top-nav{{
 .quiz-select-input{{background:#0f172a;border:1px solid #475569;color:#fff;padding:6px 12px;border-radius:8px;font-size:0.85rem;outline:none;cursor:pointer;}}
 .btn-start-quiz{{background:#f59e0b;color:#0f172a;border:none;padding:8px 20px;border-radius:8px;font-weight:bold;font-size:0.88rem;cursor:pointer;transition:transform 0.2s;}}
 .btn-start-quiz:hover{{transform:scale(1.03);}}
-
 /* 閃卡卡片 3D Flip 容器 */
 .flashcard-wrapper{{perspective:1000px;width:100%;max-width:650px;margin:0 auto 24px;height:360px;cursor:pointer;}}
 .flashcard-inner{{position:relative;width:100%;height:100%;text-align:center;transition:transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);transform-style:preserve-3d;}}
 .flashcard-wrapper.flipped .flashcard-inner{{transform:rotateY(180deg);}}
-
 .flashcard-front, .flashcard-back{{
-    position:absolute;width:100%;height:100%;backface-visibility:hidden;
-    border-radius:16px;border:2px solid #334155;padding:24px;
-    display:flex;flex-direction:column;justify-content:space-between;align-items:center;
-    box-shadow:0 12px 30px rgba(0,0,0,0.5);
+position:absolute;width:100%;height:100%;backface-visibility:hidden;
+border-radius:16px;border:2px solid #334155;padding:24px;
+display:flex;flex-direction:column;justify-content:space-between;align-items:center;
+box-shadow:0 12px 30px rgba(0,0,0,0.5);
 }}
 .flashcard-front{{background:linear-gradient(135deg, #1e293b, #0f172a);color:#fff;}}
 .flashcard-back{{background:linear-gradient(135deg, #0f172a, #1e293b);color:#f8fafc;transform:rotateY(180deg);border-color:#f59e0b;overflow-y:auto;}}
-
 .fc-badge{{padding:3px 10px;border-radius:12px;font-size:0.75rem;font-weight:bold;color:#fff;}}
 .fc-hint{{font-size:0.75rem;color:#94a3b8;margin-top:12px;}}
 .fc-title{{font-size:1.6rem;font-weight:800;color:#f59e0b;margin:16px 0;}}
 .fc-box{{background:#0f172a;padding:12px;border-radius:8px;border:1px solid #334155;text-align:left;width:100%;font-size:0.85rem;line-height:1.5;margin-bottom:8px;}}
 .fc-box b{{color:#f59e0b;}}
-
 .flashcard-controls{{display:flex;justify-content:center;gap:12px;max-width:650px;margin:0 auto;}}
 .btn-fc-rating{{flex:1;padding:10px;border-radius:8px;border:none;font-size:0.88rem;font-weight:bold;cursor:pointer;color:#fff;transition:all 0.2s;}}
 .btn-fc-forgot{{background:#ef4444;}} .btn-fc-fuzzy{{background:#f59e0b;}} .btn-fc-remembered{{background:#10b981;}}
 .btn-fc-rating:hover{{transform:scale(1.03);}}
-
 /* 選擇題測驗容器 */
 .quiz-card{{background:#1e293b;border:1px solid #334155;border-radius:16px;padding:24px;max-width:750px;margin:0 auto;}}
 .q-progress{{font-size:0.8rem;color:#94a3b8;margin-bottom:12px;display:flex;justify-content:space-between;}}
@@ -483,18 +455,15 @@ nav.top-nav{{
 .q-opt-btn:hover{{border-color:#f59e0b;color:#fff;}}
 .q-opt-btn.correct{{background:#064e3b;border-color:#10b981;color:#fff;}}
 .q-opt-btn.wrong{{background:#7f1d1d;border-color:#ef4444;color:#fff;}}
-
 .q-explanation-box{{background:#0f172a;border:1px solid #f59e0b;border-radius:10px;padding:16px;margin-top:16px;display:none;animation:fadeIn 0.3s;}}
 .q-explanation-box h4{{color:#f59e0b;font-size:0.95rem;margin-bottom:8px;}}
 .q-exp-text{{font-size:0.85rem;color:#cbd5e1;line-height:1.5;margin-bottom:8px;}}
-
 /* 錯題本表格 */
 .mistake-list{{display:flex;flex-direction:column;gap:12px;max-width:850px;margin:0 auto;}}
 .mistake-card{{background:#1e293b;border:1px solid #ef4444;border-radius:12px;padding:16px;display:flex;justify-content:space-between;align-items:center;gap:12px;}}
 .mistake-info h4{{font-size:1rem;color:#f8fafc;margin-bottom:4px;}}
 .mistake-info p{{font-size:0.8rem;color:#cbd5e1;}}
 .btn-remove-mistake{{background:#334155;color:#ef4444;border:1px solid #ef4444;padding:6px 12px;border-radius:6px;font-size:0.75rem;font-weight:bold;cursor:pointer;}}
-
 /* ================= 視圖 4：世界地圖 ================= */
 #view-map{{width:100%;height:100%;display:none;flex-direction:column;position:relative;}}
 .map-top-bar{{background:#1e293b;padding:10px 14px;display:flex;flex-direction:column;gap:8px;border-bottom:1px solid #334155;z-index:10;}}
@@ -505,37 +474,29 @@ nav.top-nav{{
 input[type="range"]{{flex:1;-webkit-appearance:none;background:#334155;height:5px;border-radius:3px;outline:none;cursor:pointer;}}
 input[type="range"]::-webkit-slider-thumb{{-webkit-appearance:none;width:14px;height:14px;border-radius:50%;background:#f59e0b;cursor:pointer;border:2px solid #fff;}}
 .simple-search-input{{background:#334155;border:1px solid #475569;color:#fff;padding:5px 10px;border-radius:6px;font-size:0.8rem;outline:none;width:180px;}}
-
 .map-toolbar-row2{{display:flex;gap:10px;align-items:center;flex-wrap:wrap;font-size:0.75rem;color:#cbd5e1;}}
 .filter-chip-group{{display:flex;align-items:center;gap:4px;flex-wrap:wrap;}}
 .chip-btn-sm{{background:#0f172a;border:1px solid #334155;color:#cbd5e1;padding:2px 8px;border-radius:12px;font-size:0.72rem;cursor:pointer;}}
 .chip-btn-sm.active{{background:#f59e0b;color:#0f172a;border-color:#f59e0b;font-weight:bold;}}
-
 #map{{flex:1;width:100%;height:100%;background:#0f172a;}}
-
 /* ================= 視圖 5：年代對照 ================= */
 #view-timeline{{width:100%;height:100%;overflow-y:auto;padding:20px 16px 60px;max-width:1240px;margin:0 auto;display:none;}}
 .timeline-header{{text-align:center;margin-bottom:20px;}}
 .timeline-title{{font-size:1.6rem;font-weight:bold;color:#f8fafc;margin-bottom:4px;}}
 .timeline-subtitle{{font-size:0.85rem;color:#94a3b8;}}
-
 .chronology-container{{background:#1e293b;border:1px solid #334155;border-radius:14px;padding:16px;margin-bottom:20px;overflow-x:auto;}}
 .num-line-wrapper{{position:relative;height:35px;border-bottom:2px solid #f59e0b;margin-bottom:16px;min-width:720px;}}
 .num-line-ticks{{display:flex;justify-content:space-between;position:absolute;width:100%;bottom:4px;font-size:0.72rem;color:#94a3b8;font-weight:bold;}}
-
 .chrono-row-group{{margin-bottom:18px;min-width:720px;}}
 .chrono-group-title{{font-size:0.9rem;font-weight:bold;color:#f59e0b;margin-bottom:8px;}}
 .chrono-track-area{{position:relative;height:38px;background:#0f172a;border-radius:8px;border:1px solid #334155;display:flex;align-items:center;padding:0 4px;gap:4px;}}
-
 .dynasty-bar{{height:28px;border-radius:5px;display:flex;align-items:center;justify-content:center;padding:0 6px;font-size:0.72rem;font-weight:bold;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;box-shadow:0 2px 4px rgba(0,0,0,0.3);cursor:pointer;transition:all 0.2s;border:1px solid rgba(255,255,255,0.3);flex-shrink:0;}}
 .dynasty-bar:hover, .dynasty-bar.selected{{transform:scale(1.03);z-index:20;box-shadow:0 0 10px rgba(245,158,11,0.8);border-color:#fff;}}
-
 #timelineEventsArea{{background:#1e293b;border:1px solid #334155;border-radius:14px;padding:18px;display:none;animation:fadeIn 0.25s ease-out;}}
 @keyframes fadeIn {{ from {{ opacity:0; }} to {{ opacity:1; }} }}
 .tl-events-header{{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;border-bottom:1px solid #334155;padding-bottom:8px;}}
 .tl-events-title{{font-size:1rem;font-weight:bold;color:#f59e0b;}}
 .btn-close-tl-events{{background:#334155;color:#fff;border:none;padding:4px 8px;border-radius:4px;font-size:0.72rem;cursor:pointer;}}
-
 /* Popup 氣泡 */
 .popup-box{{padding:4px;color:#1e293b;max-width:280px;}}
 .popup-head{{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #e2e8f0;padding-bottom:4px;margin-bottom:6px;}}
@@ -548,7 +509,6 @@ input[type="range"]::-webkit-slider-thumb{{-webkit-appearance:none;width:14px;he
 .popup-loc{{font-size:0.75rem;color:#64748b;margin-bottom:6px;}}
 .popup-desc{{font-size:0.75rem;color:#334155;line-height:1.4;margin-bottom:8px;}}
 .btn-popup-detail{{width:100%;background:#0284c7;color:#fff;border:none;padding:5px;border-radius:4px;font-size:0.75rem;font-weight:bold;cursor:pointer;text-align:center;}}
-
 /* 側邊欄 */
 #sidebarOverlay{{position:fixed;top:0;left:0;width:280px;height:100vh;background:#0f172af2;backdrop-filter:blur(16px);border-right:1px solid #334155;z-index:1000;display:flex;flex-direction:column;padding:18px;overflow-y:auto;transform:translateX(-100%);transition:transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);}}
 #sidebarOverlay.active{{ transform:translateX(0); }}
@@ -557,7 +517,6 @@ input[type="range"]::-webkit-slider-thumb{{-webkit-appearance:none;width:14px;he
 .sidebar-menu{{display:flex;flex-direction:column;gap:8px;margin-bottom:20px;}}
 .menu-item{{background:#1e293b;border:1px solid #334155;color:#f8fafc;padding:10px 14px;border-radius:8px;font-size:0.88rem;font-weight:bold;cursor:pointer;display:flex;align-items:center;gap:8px;}}
 .menu-item.active{{background:#f59e0b;color:#0f172a;border-color:#f59e0b;}}
-
 /* 考點介紹 Modal */
 #eventDetailModal{{position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(15,23,42,0.85);backdrop-filter:blur(12px);z-index:2000;display:none;justify-content:center;align-items:center;padding:16px;}}
 #eventDetailModal.active{{ display:flex; }}
@@ -569,1063 +528,793 @@ input[type="range"]::-webkit-slider-thumb{{-webkit-appearance:none;width:14px;he
 .modal-source{{font-size:0.78rem;color:#38bdf8;font-weight:bold;}}
 .btn-close-modal{{background:#334155;color:#fff;border:none;width:28px;height:28px;border-radius:50%;cursor:pointer;font-weight:bold;}}
 .modal-body{{padding:20px;display:grid;grid-template-columns:1fr 1fr;gap:20px;}}
-
 .modal-section-title{{font-size:0.88rem;color:#f59e0b;font-weight:bold;margin-bottom:8px;border-bottom:1px solid #334155;padding-bottom:4px;}}
-.modal-text-box{{font-size:0.85rem;color:#cbd5e1;line-height:1.5;margin-bottom:14px;background:#0f172a;padding:10px 14px;border-radius:8px;border:1px solid #334155;}}
+.modal-text-box{{font-size:0.85rem;color:#cbd5e1;line-height
+:1.5;margin-bottom:14px;background:#0f172a;padding:10px 14px;border-radius:8px;border:1px solid #334155;}}
 .modal-text-box b{{color:#f59e0b;}}
 .modal-keywords-box{{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px;}}
 .kw-chip{{background:#0f172a;color:#38bdf8;border:1px solid #0284c7;padding:3px 10px;border-radius:12px;font-size:0.72rem;font-weight:bold;}}
-
 .modal-footer{{background:#0f172a;padding:12px 20px;border-top:1px solid #334155;display:flex;justify-content:flex-end;gap:10px;}}
 .btn-fly-map{{background:#f59e0b;color:#0f172a;border:none;padding:8px 16px;border-radius:6px;font-size:0.85rem;font-weight:bold;cursor:pointer;}}
-
 @media (max-width: 768px) {{
-    .nav-brand-text {{ display: none; }}
-    .modal-body {{ grid-template-columns:1fr; }}
-    .map-toolbar-row1, .map-toolbar-row2 {{ flex-direction:column; align-items:stretch; }}
-    .simple-search-input, .home-search-input {{ width:100%; }}
+.nav-brand-text {{ display: none; }}
+.modal-body {{ grid-template-columns:1fr; }}
+.map-toolbar-row1, .map-toolbar-row2 {{ flex-direction:column; align-items:stretch; }}
+.simple-search-input, .home-search-input {{ width:100%; }}
 }}
-</style>
-</head>
-<body>
 
-<nav class="top-nav">
-    <div class="nav-left">
-        <button class="btn-menu-trigger" onclick="toggleSidebar()">☰ 選單</button>
-        <div class="nav-brand" onclick="switchView('home')">📜 <span class="nav-brand-text">108課綱歷史總覽</span></div>
-    </div>
-    <div class="nav-links">
-        <button id="navBtnHome" class="nav-btn active" onclick="switchView('home')">🏠 首頁</button>
-        <button id="navBtnExams" class="nav-btn" onclick="switchView('exams')">📄 歷屆試題</button>
-        <button id="navBtnQuiz" class="nav-btn" onclick="switchView('quiz')">🧠 測驗與閃卡</button>
-        <button id="navBtnMap" class="nav-btn" onclick="switchView('map')">🗺️ 世界地圖</button>
-        <button id="navBtnTimeline" class="nav-btn" onclick="switchView('timeline')">⏳ 年代發展</button>
-    </div>
-</nav>
 
-<div class="view-container">
+☰ 選單
+📜 108課綱歷史總覽
 
-    <!-- 視圖 1：首頁 Dashboard -->
-    <div id="view-home">
-        <div class="home-hero">
-            <div class="hero-badge-group">
-                <div class="hero-stat-pill">🇹🇼 臺灣史：<span id="statTW">0</span></div>
-                <div class="hero-stat-pill">🇨🇳 中國史：<span id="statCN">0</span></div>
-                <div class="hero-stat-pill">🌍 世界史：<span id="statWD">0</span></div>
-            </div>
-            <h1 class="home-title">108課綱歷史考點 <span>數位時空指南</span></h1>
-            <p class="home-subtitle">收錄共 <span id="statTotal">0</span> 筆歷史考點，支援地圖聚合、因果對比分析與自動化測驗模組。</p>
-        </div>
 
-        <div class="portal-grid">
-            <div class="portal-card tw" onclick="filterHomeCategory('臺灣史')">
-                <div class="portal-top"><span class="portal-icon">🇹🇼</span><span class="portal-count-tag" id="portalTWTag" style="background:#f59e0b">0</span></div>
-                <div><div class="portal-title">臺灣史</div><div class="portal-desc">包含史前文化、大航海時代、清領轉折、日治變遷與戰後民主。</div></div>
-            </div>
-            <div class="portal-card cn" onclick="filterHomeCategory('中國史')">
-                <div class="portal-top"><span class="portal-icon">🇨🇳</span><span class="portal-count-tag" id="portalCNTag" style="background:#ef4444">0</span></div>
-                <div><div class="portal-title">中國史</div><div class="portal-desc">涵蓋華夏早期文明、歷代朝代制度、東亞交流與近代變革。</div></div>
-            </div>
-            <div class="portal-card wd" onclick="filterHomeCategory('世界史')">
-                <div class="portal-top"><span class="portal-icon">🌍</span><span class="portal-count-tag" id="portalWDTag" style="background:#3b82f6">0</span></div>
-                <div><div class="portal-title">世界史</div><div class="portal-desc">收錄四大古文明、古典希臘羅馬、大航海探索與現代秩序。</div></div>
-            </div>
-        </div>
+🏠 首頁
+📄 歷屆試題
+🧠 測驗與閃卡
+🗺️ 世界地圖
+⏳ 年代發展
 
-        <div class="home-filter-section">
-            <div class="home-filter-tabs">
-                <button class="tab-btn active" id="tabAll" onclick="filterHomeCategory('ALL')">✨ 全部</button>
-                <button class="tab-btn" id="tabTW" onclick="filterHomeCategory('臺灣史')">🇹🇼 臺灣史</button>
-                <button class="tab-btn" id="tabCN" onclick="filterHomeCategory('中國史')">🇨🇳 中國史</button>
-                <button class="tab-btn" id="tabWD" onclick="filterHomeCategory('世界史')">🌍 世界史</button>
-            </div>
-            <input type="text" id="homeSearchInput" class="home-search-input" placeholder="🔍 搜尋考點、地點或關鍵字..." oninput="resetHomePagination(); renderHomeCards();">
-        </div>
+🇹🇼 臺灣史：0
+🇨🇳 中國史：0
+🌍 世界史：0
 
-        <div class="events-grid" id="eventsGrid"></div>
-        <div class="load-more-box" id="loadMoreBox">
-            <button class="btn-load-more" onclick="loadMoreHomeCards()">載入更多考點...</button>
-        </div>
-    </div>
+108課綱歷史考點 數位時空指南
+收錄共 0 筆歷史考點，支援地圖聚合、因果對比分析與自動化測驗模組。
+🇹🇼0
+臺灣史包含史前文化、大航海時代、清領轉折、日治變遷與戰後民主。
 
-    <!-- 視圖 2：歷屆試題獨立分頁 -->
-    <div id="view-exams">
-        <div class="exams-header">
-            <h2>📄 大考中心官方社會科歷屆試題庫 (83~115 學年度)</h2>
-            <p>收錄 83 至 115 學年度大學學測與聯考社會考科試題原檔，可點擊開啟或下載（若個別連結失效請至大考中心官方網站查詢）。</p>
-        </div>
-        <div class="exam-cards-grid" id="ceecExamCardsGrid"></div>
-    </div>
 
-    <!-- 視圖 3：測驗與閃卡 -->
-    <div id="view-quiz">
-        <div class="quiz-header">
-            <div class="quiz-title-box">
-                <h2>🧠 主動提取與間隔重複學習系統</h2>
-                <p>請先設定好學習範疇與數量，點擊按鈕開啟記憶體驗。</p>
-            </div>
-            <div style="display:flex; flex-direction:column; align-items:flex-end; gap:8px;">
-                <div class="quiz-stats-bar">
-                    <div class="q-stat-item" onclick="switchQuizSubTab('fc_mastered')" title="點擊檢視已掌握項目">
-                        <b id="statMastered">0</b>已掌握
-                    </div>
-                    <div class="q-stat-item" onclick="switchQuizSubTab('fc_reviewing')" title="點擊開始複習">
-                        <b id="statReviewing">0</b>待複習
-                    </div>
-                    <div class="q-stat-item" onclick="switchQuizSubTab('mistakes')" title="點擊進入錯題本" style="border-left:1px solid #334155; padding-left:10px;">
-                        <b id="statMistakes" style="color:#ef4444">0</b>錯題本
-                    </div>
-                </div>
-            </div>
-        </div>
+🇨🇳0
+中國史涵蓋華夏早期文明、歷代朝代制度、東亞交流與近代變革。
 
-        <div class="quiz-tab-group">
-            <button class="q-tab-btn active" id="subTabFC" onclick="switchQuizSubTab('flashcards')">🗂️ 閃卡記憶卡</button>
-            <button class="q-tab-btn" id="subTabTest" onclick="switchQuizSubTab('quiz')">📝 模擬測驗</button>
-        </div>
 
-        <!-- 閃卡區塊 -->
-        <div id="secFlashcards">
-            <!-- 閃卡設定面板 -->
-            <div class="quiz-config-card">
-                <div class="quiz-config-group">
-                    <span class="quiz-select-label">🎯 閃卡範疇：</span>
-                    <select id="cfgFcDomain" class="quiz-select-input">
-                        <option value="ALL">✨ 全部</option>
-                        <option value="臺灣史">🇹🇼 臺灣史</option>
-                        <option value="中國史">🇨🇳 中國史</option>
-                        <option value="世界史">🌍 世界史</option>
-                    </select>
+🌍0
+世界史收錄四大古文明、古典希臘羅馬、大航海探索與現代秩序。
 
-                    <span class="quiz-select-label">🔢 卡片數量：</span>
-                    <select id="cfgFcCount" class="quiz-select-input">
-                        <option value="5">5 張 (快速刷卡)</option>
-                        <option value="10" selected>10 張 (標準卡組)</option>
-                        <option value="15">15 張 (深度複習)</option>
-                        <option value="20">20 張 (強化突破)</option>
-                    </select>
-                </div>
-                <button class="btn-start-quiz" onclick="startConfiguredFlashcards()">🚀 開始閃卡</button>
-            </div>
+✨ 全部
+🇹🇼 臺灣史
+🇨🇳 中國史
+🌍 世界史
 
-            <!-- 閃卡顯示區域 -->
-            <div id="fcDisplayArea" style="display:none">
-                <div class="flashcard-wrapper" id="fcWrapper" onclick="toggleFCFlip()">
-                    <div class="flashcard-inner">
-                        <div class="flashcard-front">
-                            <span class="fc-badge" id="fcDomainBadge" style="background:#f59e0b">臺灣史</span>
-                            <div style="flex:1;display:flex;flex-direction:column;justify-content:center">
-                                <div class="fc-title" id="fcFrontTitle">考點載入中...</div>
-                                <div style="font-size:0.85rem;color:#cbd5e1" id="fcFrontSub">點擊卡片翻轉查看【歷史細節與重點說明】</div>
-                            </div>
-                            <div class="fc-hint">💡 點擊任意處翻面</div>
-                        </div>
-                        <div class="flashcard-back">
-                            <div style="width:100%">
-                                <div class="fc-box"><b>📍 年代與地點：</b><span id="fcBackYearLoc">--</span></div>
-                                <div class="fc-box"><b>📖 核心說明：</b><div id="fcBackDesc">--</div></div>
-                                <div class="fc-box"><b>🔍 時代背景 / 影響：</b><div id="fcBackCause">--</div></div>
-                            </div>
-                            <div class="fc-hint">請評估您的記憶熟悉度：</div>
-                        </div>
-                    </div>
-                </div>
 
-                <div class="flashcard-controls">
-                    <button class="btn-fc-rating btn-fc-forgot" onclick="rateFlashcard('forgot')">🔴 忘了 (重排)</button>
-                    <button class="btn-fc-rating btn-fc-fuzzy" onclick="rateFlashcard('fuzzy')">🟡 模糊 (近期)</button>
-                    <button class="btn-fc-rating btn-fc-remembered" onclick="rateFlashcard('remembered')">🟢 記得 (已掌握)</button>
-                </div>
-            </div>
+載入更多考點...
 
-            <div id="fcStartPrompt" style="text-align:center; padding:40px 20px; color:#94a3b8; background:#1e293b; border:1px solid #334155; border-radius:14px;">
-                💡 請先設定上方「閃卡範疇」與「卡片數量」，點擊<b>「🚀 開始閃卡」</b>即可進行練習。
-            </div>
-        </div>
+📄 大考中心官方社會科歷屆試題庫 (83~115 學年度)
+收錄 83 至 115 學年度大學學測與聯考社會考科試題原檔，可點擊開啟或下載（若個別連結失效請至大考中心官方網站查詢）。
 
-        <!-- 選擇題測驗區塊 -->
-        <div id="secQuiz" style="display:none">
-            <!-- 測驗設定面板 -->
-            <div class="quiz-config-card">
-                <div class="quiz-config-group">
-                    <span class="quiz-select-label">🎯 測驗範疇：</span>
-                    <select id="cfgDomain" class="quiz-select-input">
-                        <option value="ALL">✨ 全部</option>
-                        <option value="臺灣史">🇹🇼 臺灣史</option>
-                        <option value="中國史">🇨🇳 中國史</option>
-                        <option value="世界史">🌍 世界史</option>
-                    </select>
 
-                    <span class="quiz-select-label">⚙️ 出題模式：</span>
-                    <select id="cfgType" class="quiz-select-input">
-                        <option value="MIX">🎲 混合題型</option>
-                        <option value="YEAR">📅 西元年代配對</option>
-                        <option value="DESC">📖 歷史事實描述</option>
-                    </select>
+🧠 主動提取與間隔重複學習系統
+請先設定好學習範疇與數量，點擊按鈕開啟記憶體驗。
 
-                    <span class="quiz-select-label">🔢 題目數量：</span>
-                    <select id="cfgCount" class="quiz-select-input">
-                        <option value="5">5 題 (快速刷題)</option>
-                        <option value="10" selected>10 題 (標準模考)</option>
-                        <option value="15">15 題 (深度測驗)</option>
-                        <option value="20">20 題 (挑戰模式)</option>
-                    </select>
-                </div>
-                <button class="btn-start-quiz" onclick="startConfiguredQuiz()">🚀 開始測驗</button>
-            </div>
 
-            <div class="quiz-card" id="quizCardBox" style="display:none">
-                <div class="q-progress">
-                    <span id="qProgressText">題目 1 / 10</span>
-                    <span id="qCategoryTag" style="color:#f59e0b;font-weight:bold">測驗</span>
-                </div>
-                <div class="q-question" id="qQuestionText">題目載入中...</div>
-                <div class="q-options" id="qOptionsGroup"></div>
 
-                <div class="q-explanation-box" id="qExpBox">
-                    <h4>💡 考點解析</h4>
-                    <div class="q-exp-text" id="qExpText">--</div>
-                    <button class="btn-card-detail" style="width:100%;margin-top:10px" onclick="nextQuizQuestion()">下一題 ➔</button>
-                </div>
-            </div>
 
-            <div id="quizStartPrompt" style="text-align:center; padding:40px 20px; color:#94a3b8; background:#1e293b; border:1px solid #334155; border-radius:14px;">
-                💡 請先設定上方「測驗範疇」、「出題模式」與「題目數量」，點擊<b>「🚀 開始測驗」</b>即可發動測驗。
-            </div>
-        </div>
+0已掌握
 
-        <!-- 錯題本區塊 -->
-        <div id="secMistakes" style="display:none">
-            <div style="margin-bottom:16px;display:flex;justify-content:space-between;align-items:center">
-                <h3 style="color:#ef4444">❌ 錯題記錄與重點強化</h3>
-                <button class="btn-load-more" style="font-size:0.78rem;padding:6px 14px" onclick="startMistakeQuiz()">🎯 針對錯題發動重測</button>
-            </div>
-            <div class="mistake-list" id="mistakeListContainer"></div>
-        </div>
-    </div>
 
-    <!-- 視圖 4：世界地圖 -->
-    <div id="view-map">
-        <div class="map-top-bar">
-            <div class="map-toolbar-row1">
-                <div class="timeline-box">
-                    <span class="hdr-era-badge" id="hdrYearText">全部時代</span>
-                    <input type="range" id="timeSlider" min="-3000" max="2000" step="100" value="2000" oninput="onSliderDrag(this.value)">
-                    <button class="btn-reset-slider" onclick="resetTimeSlider()">全部時代</button>
-                </div>
-                <input type="text" id="searchInput" class="simple-search-input" placeholder="搜尋地圖考點..." oninput="debouncedFilter()">
-            </div>
+0待複習
 
-            <div class="map-toolbar-row2">
-                <div class="filter-chip-group">
-                    <span>學階：</span>
-                    <button class="chip-btn-sm active" data-filter="level" data-val="ALL" onclick="setFilterChip(this, 'level', 'ALL')">全部</button>
-                    <button class="chip-btn-sm" data-filter="level" data-val="國小" onclick="setFilterChip(this, 'level', '國小')">國小歷史</button>
-                    <button class="chip-btn-sm" data-filter="level" data-val="國中" onclick="setFilterChip(this, 'level', '國中')">國中歷史</button>
-                    <button class="chip-btn-sm" data-filter="level" data-val="高中" onclick="setFilterChip(this, 'level', '高中')">高中歷史</button>
-                </div>
-                <div class="filter-chip-group">
-                    <span>領域：</span>
-                    <button class="chip-btn-sm active" data-filter="vol" data-val="ALL" onclick="setFilterChip(this, 'vol', 'ALL')">全部</button>
-                    <button class="chip-btn-sm" data-filter="vol" data-val="臺灣史" onclick="setFilterChip(this, 'vol', '臺灣史')">臺灣史</button>
-                    <button class="chip-btn-sm" data-filter="vol" data-val="中國史" onclick="setFilterChip(this, 'vol', '中國史')">中國史</button>
-                    <button class="chip-btn-sm" data-filter="vol" data-val="世界史" onclick="setFilterChip(this, 'vol', '世界史')">世界史</button>
-                </div>
-            </div>
-        </div>
 
-        <div id="map"></div>
-    </div>
+0錯題本
 
-    <!-- 視圖 5：年代對照 -->
-    <div id="view-timeline">
-        <div class="timeline-header">
-            <h2 class="timeline-title">⏳ 全景歷史年代對照數線</h2>
-            <p class="timeline-subtitle">（歷史時間軸採非等比例尺繪製，以提升各時期閱讀舒適度）</p>
-        </div>
 
-        <div class="chronology-container">
-            <div class="num-line-wrapper">
-                <div class="num-line-ticks">
-                    <div>史前 (~前3000)</div>
-                    <div>上古 (前3000~前500)</div>
-                    <div>古典/中古 (前500~1450)</div>
-                    <div>近世 (1450~1789)</div>
-                    <div>近代與現代 (1789~)</div>
-                </div>
-            </div>
 
-            <div class="chrono-row-group">
-                <div class="chrono-group-title">🇹🇼 臺灣史</div>
-                <div class="chrono-track-area" id="trackTaiwan"></div>
-            </div>
+🗂️ 閃卡記憶卡
+📝 模擬測驗
+🎯 閃卡範疇：
 
-            <div class="chrono-row-group">
-                <div class="chrono-group-title">🇨🇳 中國史</div>
-                <div class="chrono-track-area" id="trackChina"></div>
-            </div>
+✨ 全部
+🇹🇼 臺灣史
+🇨🇳 中國史
+🌍 世界史
+🔢 卡片數量：
 
-            <div class="chrono-row-group">
-                <div class="chrono-group-title">🌍 世界史</div>
-                <div class="chrono-track-area" id="trackWorld"></div>
-            </div>
-        </div>
+5 張 (快速刷卡)
+10 張 (標準卡組)
+15 張 (深度複習)
+20 張 (強化突破)
 
-        <div id="timelineEventsArea">
-            <div class="tl-events-header">
-                <div class="tl-events-title" id="tlEventsTitle">📌 點選時段考點展示</div>
-                <button class="btn-close-tl-events" onclick="closeTimelineEventsArea()">✕ 收起</button>
-            </div>
-            <div class="events-grid" id="tlEventsGrid"></div>
-        </div>
-    </div>
 
-</div>
+🚀 開始閃卡
+臺灣史
 
-<!-- 側邊欄 -->
-<div id="sidebarOverlay">
-    <div class="sidebar-header"><button class="btn-close-sidebar" onclick="toggleSidebar()">✕</button></div>
-    <div class="sidebar-menu">
-        <div class="menu-item active" id="menuItemHome" onclick="switchView('home'); toggleSidebar();">🏠 首頁儀表板</div>
-        <div class="menu-item" id="menuItemExams" onclick="switchView('exams'); toggleSidebar();">📄 歷屆試題</div>
-        <div class="menu-item" id="menuItemQuiz" onclick="switchView('quiz'); toggleSidebar();">🧠 測驗與閃卡</div>
-        <div class="menu-item" id="menuItemMap" onclick="switchView('map'); toggleSidebar();">🌍 世界地圖</div>
-        <div class="menu-item" id="menuItemTimeline" onclick="switchView('timeline'); toggleSidebar();">⏳ 年代發展</div>
-    </div>
-</div>
+考點載入中...
+點擊卡片翻轉查看【歷史細節與重點說明】
 
-<!-- 考點介紹 Modal -->
-<div id="eventDetailModal">
-    <div class="modal-content">
-        <div class="modal-header">
-            <div class="modal-title-area">
-                <div class="modal-badges">
-                    <span id="mdlDomainBadge" class="badge">歷史</span>
-                    <span id="mdlYearBadge" class="ev-year">年代</span>
-                </div>
-                <div id="mdlTitle" class="modal-title">考點名稱</div>
-                <div id="mdlSource" class="modal-source">冊次來源</div>
-            </div>
-            <button class="btn-close-modal" onclick="closeEventDetailModal()">✕</button>
-        </div>
+💡 點擊任意處翻面
 
-        <div class="modal-body">
-            <div>
-                <div class="modal-section-title">🏷️ 關鍵字標註</div>
-                <div class="modal-keywords-box" id="mdlKeywordsArea"></div>
 
-                <div class="modal-section-title">📍 發生地點與重點說明</div>
-                <div id="mdlLocText" class="modal-text-box">--</div>
-            </div>
 
-            <div>
-                <div class="modal-section-title">🔍 背景與發展說明</div>
-                <div id="mdlCauseText" class="modal-text-box">--</div>
+📍 年代與地點：--
+📖 核心說明：--
+🔍 時代背景 / 影響：--
 
-                <div class="modal-section-title">💡 長遠影響或比較重點</div>
-                <div id="mdlEffectText" class="modal-text-box">--</div>
-            </div>
-        </div>
+請評估您的記憶熟悉度：
 
-        <div class="modal-footer">
-            <button class="btn-fly-map" id="btnFlyMap" onclick="flyToCurrentModalEvent()">
-                🗺️ 切換至世界地圖並定位現場
-            </button>
-        </div>
-    </div>
-</div>
 
-<script src="{STATIC_CONFIG['leaflet_js']}"></script>
-<script src="{STATIC_CONFIG['cluster_js']}"></script>
-<script>
-const rawData = json.dumps(events_data, ensure_ascii=False);
-const rawDynasties = json.dumps(dynasties_data, ensure_ascii=False);
-const ceecExamsList = json.dumps(CEEC_PDF_LIST, ensure_ascii=False);
+🔴 忘了 (重排)
+🟡 模糊 (近期)
+🟢 記得 (已掌握)
 
+💡 請先設定上方「閃卡範疇」與「卡片數量」，點擊「🚀 開始閃卡」即可進行練習。
+
+🎯 測驗範疇：
+
+✨ 全部
+🇹🇼 臺灣史
+🇨🇳 中國史
+🌍 世界史
+⚙️ 出題模式：
+
+🎲 混合題型
+📅 西元年代配對
+📖 歷史事實描述
+🔢 題目數量：
+
+5 題 (快速刷題)
+10 題 (標準模考)
+15 題 (深度測驗)
+20 題 (挑戰模式)
+
+
+🚀 開始測驗
+題目 1 / 10
+測驗
+
+題目載入中...
+💡 考點解析
+--
+下一題 ➔
+
+💡 請先設定上方「測驗範疇」、「出題模式」與「題目數量」，點擊「🚀 開始測驗」即可發動測驗。
+
+❌ 錯題記錄與重點強化
+🎯 針對錯題發動重測
+
+
+
+全部時代
+
+全部時代
+
+
+學階：
+全部
+國小歷史
+國中歷史
+高中歷史
+
+
+領域：
+全部
+臺灣史
+中國史
+世界史
+
+
+⏳ 全景歷史年代對照數線
+（歷史時間軸採非等比例尺繪製，以提升各時期閱讀舒適度）
+史前 (~前3000)
+上古 (前3000~前500)
+古典/中古 (前500~1450)
+近世 (1450~1789)
+近代與現代 (1789~)
+
+🇹🇼 臺灣史
+
+🇨🇳 中國史
+
+🌍 世界史
+
+
+📌 點選時段考點展示
+✕ 收起
+
+
+
+✕
+
+🏠 首頁儀表板
+📄 歷屆試題
+🧠 測驗與閃卡
+🌍 世界地圖
+⏳ 年代發展
+
+歷史
+年代
+
+考點名稱
+冊次來源
+
+✕
+🏷️ 關鍵字標註
+📍 發生地點與重點說明
+--
+🔍 背景與發展說明
+--
+💡 長遠影響或比較重點
+--
+
+🗺️ 切換至世界地圖並定位現場
+
+
+
+// ==================== 修正後的 JavaScript 變數初始化 ====================
+const rawData = {json.dumps(events_data, ensure_ascii=False)};
+const rawDynasties = {json.dumps(dynasties_data, ensure_ascii=False)};
+const ceecExamsList = {json.dumps(CEEC_PDF_LIST, ensure_ascii=False)};
 function findEventById(id) {{
-    return rawData.find(e => e.id === id);
+return rawData.find(e => e.id === id);
 }}
-
 const domainColors = {{
-    '臺灣史': '#f59e0b', '台灣史': '#f59e0b',
-    '中國史': '#ef4444', '東亞史': '#ef4444',
-    '世界史': '#3b82f6'
+'臺灣史': '#f59e0b', '台灣史': '#f59e0b',
+'中國史': '#ef4444', '東亞史': '#ef4444',
+'世界史': '#3b82f6'
 }};
-
 let currentHomeCategory = 'ALL';
 let homeDisplayLimit = 12;
 let activeModalEvent = null;
-
 // 安全讀取與寫入 localStorage
 function loadUserData() {{
-    try {{
-        const stored = localStorage.getItem('history_hub_quiz_data');
-        return stored ? JSON.parse(stored) : {{ masteredIds: [], reviewingIds: [], mistakes: [] }};
-    }} catch (e) {{
-        console.warn('localStorage 讀取失敗:', e);
-        return {{ masteredIds: [], reviewingIds: [], mistakes: [] }};
-    }}
+try {{
+const stored = localStorage.getItem('history_hub_quiz_data');
+return stored ? JSON.parse(stored) : {{ masteredIds: [], reviewingIds: [], mistakes: [] }};
+}} catch (e) {{
+console.warn('localStorage 讀取失敗:', e);
+return {{ masteredIds: [], reviewingIds: [], mistakes: [] }};
 }}
-
+}}
 let userLearningData = loadUserData();
-
 function saveUserData() {{
-    try {{
-        localStorage.setItem('history_hub_quiz_data', JSON.stringify(userLearningData));
-    }} catch (e) {{
-        console.warn('localStorage 寫入失敗:', e);
-    }}
-    updateQuizHeaderStats();
+try {{
+localStorage.setItem('history_hub_quiz_data', JSON.stringify(userLearningData));
+}} catch (e) {{
+console.warn('localStorage 寫入失敗:', e);
 }}
-
+updateQuizHeaderStats();
+}}
 function updateQuizHeaderStats() {{
-    userLearningData.masteredIds = [...new Set(userLearningData.masteredIds)];
-    userLearningData.mistakes = [...new Set(userLearningData.mistakes)];
-
-    document.getElementById('statMastered').innerText = userLearningData.masteredIds.length;
-    document.getElementById('statReviewing').innerText = userLearningData.reviewingIds.length;
-    document.getElementById('statMistakes').innerText = userLearningData.mistakes.length;
+userLearningData.masteredIds = [...new Set(userLearningData.masteredIds)];
+userLearningData.mistakes = [...new Set(userLearningData.mistakes)];
+document.getElementById('statMastered').innerText = userLearningData.masteredIds.length;
+document.getElementById('statReviewing').innerText = userLearningData.reviewingIds.length;
+document.getElementById('statMistakes').innerText = userLearningData.mistakes.length;
 }}
-
 // 渲染歷屆試題獨立分頁
 function renderCEECExamsPage() {{
-    const grid = document.getElementById('ceecExamCardsGrid');
-    grid.innerHTML = '';
-    ceecExamsList.forEach(item => {{
-        const card = document.createElement('div');
-        card.className = 'exam-pdf-card';
-        card.innerHTML = '<div><span class="exam-tag">' + item.year + '</span><div class="exam-card-title">' + item.title + '</div><div class="exam-card-desc">' + item.desc + '</div></div><a href="' + item.url + '" target="_blank" class="btn-download-pdf">📥 下載 / 開啟 PDF 試題</a>';
-        grid.appendChild(card);
-    }});
+const grid = document.getElementById('ceecExamCardsGrid');
+grid.innerHTML = '';
+ceecExamsList.forEach(item => {{
+const card = document.createElement('div');
+card.className = 'exam-pdf-card';
+card.innerHTML = '' + item.year + '' + item.title + '' + item.desc + '📥 下載 / 開啟 PDF 試題';
+grid.appendChild(card);
+}});
 }}
-
 // 初始化首頁動態統計數字
 function initDynamicStats() {{
-    const tw = rawData.filter(e => e.domain.includes('臺') || e.domain.includes('台')).length;
-    const cn = rawData.filter(e => e.domain.includes('中') || e.domain.includes('東亞')).length;
-    const wd = rawData.filter(e => e.domain.includes('世界')).length;
-    const total = rawData.length;
-
-    document.getElementById('statTW').innerText = tw;
-    document.getElementById('statCN').innerText = cn;
-    document.getElementById('statWD').innerText = wd;
-    document.getElementById('statTotal').innerText = total;
-
-    document.getElementById('portalTWTag').innerText = tw;
-    document.getElementById('portalCNTag').innerText = cn;
-    document.getElementById('portalWDTag').innerText = wd;
+const tw = rawData.filter(e => e.domain.includes('臺') || e.domain.includes('台')).length;
+const cn = rawData.filter(e => e.domain.includes('中') || e.domain.includes('東亞')).length;
+const wd = rawData.filter(e => e.domain.includes('世界')).length;
+const total = rawData.length;
+document.getElementById('statTW').innerText = tw;
+document.getElementById('statCN').innerText = cn;
+document.getElementById('statWD').innerText = wd;
+document.getElementById('statTotal').innerText = total;
+document.getElementById('portalTWTag').innerText = tw;
+document.getElementById('portalCNTag').innerText = cn;
+document.getElementById('portalWDTag').innerText = wd;
 }}
-
 let flashcardsList = [];
 let fcIndex = 0;
 let fcRetryCounts = {{}};
-
 function startConfiguredFlashcards() {{
-    const domainVal = document.getElementById('cfgFcDomain').value;
-    const countVal = parseInt(document.getElementById('cfgFcCount').value);
-
-    let filtered = rawData;
-    if (domainVal !== 'ALL') {{
-        filtered = rawData.filter(e => e.domain.includes(domainVal));
-    }}
-
-    flashcardsList = [...filtered].sort(() => 0.5 - Math.random()).slice(0, countVal);
-    fcIndex = 0;
-    fcRetryCounts = {{}};
-
-    if (flashcardsList.length === 0) {{
-        alert('該範疇下暫無考點資料。');
-        return;
-    }}
-
-    document.getElementById('fcStartPrompt').style.display = 'none';
-    document.getElementById('fcDisplayArea').style.display = 'block';
-    renderCurrentFlashcard();
+const domainVal = document.getElementById('cfgFcDomain').value;
+const countVal = parseInt(document.getElementById('cfgFcCount').value);
+let filtered = rawData;
+if (domainVal !== 'ALL') {{
+filtered = rawData.filter(e => e.domain.includes(domainVal));
 }}
-
+flashcardsList = [...filtered].sort(() => 0.5 - Math.random()).slice(0, countVal);
+fcIndex = 0;
+fcRetryCounts = {{}};
+if (flashcardsList.length === 0) {{
+alert('該範疇下暫無考點資料。');
+return;
+}}
+document.getElementById('fcStartPrompt').style.display = 'none';
+document.getElementById('fcDisplayArea').style.display = 'block';
+renderCurrentFlashcard();
+}}
 function renderCurrentFlashcard() {{
-    if (fcIndex >= flashcardsList.length) {{
-        alert('🎉 恭喜完成本組閃卡複習！');
-        document.getElementById('fcDisplayArea').style.display = 'none';
-        document.getElementById('fcStartPrompt').style.display = 'block';
-        return;
-    }}
-    const item = flashcardsList[fcIndex];
-    const c = domainColors[item.domain] || '#f59e0b';
-    const wrapper = document.getElementById('fcWrapper');
-    wrapper.classList.remove('flipped');
-
-    document.getElementById('fcDomainBadge').innerText = item.domain;
-    document.getElementById('fcDomainBadge').style.background = c;
-    document.getElementById('fcFrontTitle').innerText = item.title;
-    document.getElementById('fcFrontSub').innerText = '[' + item.stage + '] ' + item.sheet + ' - 點擊查看歷史細節與說明';
-
-    document.getElementById('fcBackYearLoc').innerText = item.year + ' | 📍 ' + item.loc;
-    document.getElementById('fcBackDesc').innerText = item.desc;
-    document.getElementById('fcBackCause').innerText = item.cause;
+if (fcIndex >= flashcardsList.length) {{
+alert('🎉 恭喜完成本組閃卡複習！');
+document.getElementById('fcDisplayArea').style.display = 'none';
+document.getElementById('fcStartPrompt').style.display = 'block';
+return;
 }}
-
+const item = flashcardsList[fcIndex];
+const c = domainColors[item.domain] || '#f59e0b';
+const wrapper = document.getElementById('fcWrapper');
+wrapper.classList.remove('flipped');
+document.getElementById('fcDomainBadge').innerText = item.domain;
+document.getElementById('fcDomainBadge').style.background = c;
+document.getElementById('fcFrontTitle').innerText = item.title;
+document.getElementById('fcFrontSub').innerText = '[' + item.stage + '] ' + item.sheet + ' - 點擊查看歷史細節與說明';
+document.getElementById('fcBackYearLoc').innerText = item.year + ' | 📍 ' + item.loc;
+document.getElementById('fcBackDesc').innerText = item.desc;
+document.getElementById('fcBackCause').innerText = item.cause;
+}}
 function toggleFCFlip() {{
-    document.getElementById('fcWrapper').classList.toggle('flipped');
+document.getElementById('fcWrapper').classList.toggle('flipped');
 }}
-
 function rateFlashcard(rating) {{
-    const item = flashcardsList[fcIndex];
-    if (rating === 'remembered') {{
-        if (!userLearningData.masteredIds.includes(item.id)) userLearningData.masteredIds.push(item.id);
-        userLearningData.reviewingIds = userLearningData.reviewingIds.filter(id => id !== item.id);
-    }} else if (rating === 'fuzzy') {{
-        if (!userLearningData.reviewingIds.includes(item.id)) userLearningData.reviewingIds.push(item.id);
-    }} else {{ // forgot
-        const retryCount = (fcRetryCounts[item.id] || 0) + 1;
-        fcRetryCounts[item.id] = retryCount;
-        if (retryCount <= 2) {{
-            flashcardsList.push(item);
-        }}
-        if (!userLearningData.mistakes.includes(item.id)) userLearningData.mistakes.push(item.id);
-    }}
-    saveUserData();
-    fcIndex++;
-    renderCurrentFlashcard();
+const item = flashcardsList[fcIndex];
+if (rating === 'remembered') {{
+if (!userLearningData.masteredIds.includes(item.id)) userLearningData.masteredIds.push(item.id);
+userLearningData.reviewingIds = userLearningData.reviewingIds.filter(id => id !== item.id);
+}} else if (rating === 'fuzzy') {{
+if (!userLearningData.reviewingIds.includes(item.id)) userLearningData.reviewingIds.push(item.id);
+}} else {{ // forgot
+const retryCount = (fcRetryCounts[item.id] || 0) + 1;
+fcRetryCounts[item.id] = retryCount;
+if (retryCount <= 2) {{
+flashcardsList.push(item);
 }}
-
+if (!userLearningData.mistakes.includes(item.id)) userLearningData.mistakes.push(item.id);
+}}
+saveUserData();
+fcIndex++;
+renderCurrentFlashcard();
+}}
 // 測驗引擎
 let quizQuestions = [];
 let currentQIndex = 0;
-
 function startConfiguredQuiz() {{
-    const domainVal = document.getElementById('cfgDomain').value;
-    const typeVal = document.getElementById('cfgType').value;
-    const countVal = parseInt(document.getElementById('cfgCount').value);
-
-    let filteredPool = rawData;
-    if (domainVal !== 'ALL') {{
-        filteredPool = rawData.filter(e => e.domain.includes(domainVal));
-    }}
-
-    generateQuizBatch(filteredPool, typeVal, countVal);
+const domainVal = document.getElementById('cfgDomain').value;
+const typeVal = document.getElementById('cfgType').value;
+const countVal = parseInt(document.getElementById('cfgCount').value);
+let filteredPool = rawData;
+if (domainVal !== 'ALL') {{
+filteredPool = rawData.filter(e => e.domain.includes(domainVal));
 }}
-
+generateQuizBatch(filteredPool, typeVal, countVal);
+}}
 function generateQuizBatch(customList = null, quizType = 'MIX', qCount = 10) {{
-    const source = customList && customList.length > 0 ? customList : rawData;
-    const pool = [...source].sort(() => 0.5 - Math.random()).slice(0, qCount);
-    
-    quizQuestions = pool.map(item => {{
-        let selectedType = quizType;
-        if (quizType === 'MIX') {{
-            selectedType = Math.random() > 0.5 ? 'YEAR' : 'DESC';
-        }}
-
-        let questionText = '', correctAnswer = '', distractors = [];
-
-        if (selectedType === 'YEAR') {{
-            questionText = '歷史事件【' + item.title + '】主要發生於下列哪一個西元年代或時期？';
-            correctAnswer = item.year;
-            distractors = rawData
-                .filter(x => x.id !== item.id && x.domain === item.domain)
-                .sort((a, b) => Math.abs(a.num_year - item.num_year) - Math.abs(b.num_year - item.num_year))
-                .map(x => x.year);
-        }} else {{
-            questionText = '下列何者描述了「' + item.desc + '」之歷史事實？';
-            correctAnswer = item.title;
-            distractors = rawData
-                .filter(x => x.id !== item.id && x.domain === item.domain)
-                .map(x => x.title);
-        }}
-
-        const shuffledDistractors = [...new Set(distractors)].slice(0, 3);
-        const options = [correctAnswer, ...shuffledDistractors].sort(() => 0.5 - Math.random());
-        const correctOptIdx = options.indexOf(correctAnswer);
-
-        return {{ item, questionText, correctAnswer, options, correctOptIdx }};
-    }});
-
-    currentQIndex = 0;
-    document.getElementById('quizStartPrompt').style.display = 'none';
-    document.getElementById('quizCardBox').style.display = 'block';
-    renderCurrentQuestion();
+const source = customList && customList.length > 0 ? customList : rawData;
+const pool = [...source].sort(() => 0.5 - Math.random()).slice(0, qCount);
+quizQuestions = pool.map(item => {{
+let selectedType = quizType;
+if (quizType === 'MIX') {{
+selectedType = Math.random() > 0.5 ? 'YEAR' : 'DESC';
 }}
-
+let questionText = '', correctAnswer = '', distractors = [];
+if (selectedType === 'YEAR') {{
+questionText = '歷史事件【' + item.title + '】主要發生於下列哪一個西元年代或時期？';
+correctAnswer = item.year;
+distractors = rawData
+.filter(x => x.id !== item.id && x.domain === item.domain)
+.sort((a, b) => Math.abs(a.num_year - item.num_year) - Math.abs(b.num_year - item.num_year))
+.map(x => x.year);
+}} else {{
+questionText = '下列何者描述了「' + item.desc + '」之歷史事實？';
+correctAnswer = item.title;
+distractors = rawData
+.filter(x => x.id !== item.id && x.domain === item.domain)
+.map(x => x.title);
+}}
+const shuffledDistractors = [...new Set(distractors)].slice(0, 3);
+const options = [correctAnswer, ...shuffledDistractors].sort(() => 0.5 - Math.random());
+const correctOptIdx = options.indexOf(correctAnswer);
+return {{ item, questionText, correctAnswer, options, correctOptIdx }};
+}});
+currentQIndex = 0;
+document.getElementById('quizStartPrompt').style.display = 'none';
+document.getElementById('quizCardBox').style.display = 'block';
+renderCurrentQuestion();
+}}
 function renderCurrentQuestion() {{
-    if (currentQIndex >= quizQuestions.length) {{
-        document.getElementById('qQuestionText').innerText = '🎉 恭喜完成本輪測驗！';
-        document.getElementById('qOptionsGroup').innerHTML = '';
-        document.getElementById('qExpBox').style.display = 'none';
-        return;
-    }}
-
-    const q = quizQuestions[currentQIndex];
-    document.getElementById('qProgressText').innerText = '題目 ' + (currentQIndex + 1) + ' / ' + quizQuestions.length;
-    document.getElementById('qCategoryTag').innerText = q.item.domain;
-    document.getElementById('qQuestionText').innerText = q.questionText;
-    document.getElementById('qExpBox').style.display = 'none';
-
-    const optsGroup = document.getElementById('qOptionsGroup');
-    optsGroup.innerHTML = '';
-
-    q.options.forEach((opt, idx) => {{
-        const btn = document.createElement('button');
-        btn.className = 'q-opt-btn';
-        btn.innerText = String.fromCharCode(65 + idx) + '. ' + opt;
-        btn.setAttribute('data-opt-idx', idx);
-        btn.onclick = () => answerQuizQuestion(btn, idx, q);
-        optsGroup.appendChild(btn);
-    }});
+if (currentQIndex >= quizQuestions.length) {{
+document.getElementById('qQuestionText').innerText = '🎉 恭喜完成本輪測驗！';
+document.getElementById('qOptionsGroup').innerHTML = '';
+document.getElementById('qExpBox').style.display = 'none';
+return;
 }}
-
+const q = quizQuestions[currentQIndex];
+document.getElementById('qProgressText').innerText = '題目 ' + (currentQIndex + 1) + ' / ' + quizQuestions.length;
+document.getElementById('qCategoryTag').innerText = q.item.domain;
+document.getElementById('qQuestionText').innerText = q.questionText;
+document.getElementById('qExpBox').style.display = 'none';
+const optsGroup = document.getElementById('qOptionsGroup');
+optsGroup.innerHTML = '';
+q.options.forEach((opt, idx) => {{
+const btn = document.createElement('button');
+btn.className = 'q-opt-btn';
+btn.innerText = String.fromCharCode(65 + idx) + '. ' + opt;
+btn.setAttribute('data-opt-idx', idx);
+btn.onclick = () => answerQuizQuestion(btn, idx, q);
+optsGroup.appendChild(btn);
+}});
+}}
 function answerQuizQuestion(btn, selectedIdx, q) {{
-    const allBtns = document.querySelectorAll('.q-opt-btn');
-    allBtns.forEach(b => b.disabled = true);
-
-    if (selectedIdx === q.correctOptIdx) {{
-        btn.classList.add('correct');
-        if (!userLearningData.masteredIds.includes(q.item.id)) userLearningData.masteredIds.push(q.item.id);
-        userLearningData.mistakes = userLearningData.mistakes.filter(mId => mId !== q.item.id);
-    }} else {{
-        btn.classList.add('wrong');
-        allBtns.forEach(b => {{
-            if (parseInt(b.getAttribute('data-opt-idx')) === q.correctOptIdx) {{
-                b.classList.add('correct');
-            }}
-        }});
-        if (!userLearningData.mistakes.includes(q.item.id)) userLearningData.mistakes.push(q.item.id);
-    }}
-
-    saveUserData();
-
-    const expBox = document.getElementById('qExpBox');
-    document.getElementById('qExpText').innerHTML = '<b>【年代地點】</b>' + q.item.year + ' (' + q.item.loc + ')<br><br><b>【詳細說明】</b>' + q.item.desc;
-    expBox.style.display = 'block';
+const allBtns = document.querySelectorAll('.q-opt-btn');
+allBtns.forEach(b => b.disabled = true);
+if (selectedIdx === q.correctOptIdx) {{
+btn.classList.add('correct');
+if (!userLearningData.masteredIds.includes(q.item.id)) userLearningData.masteredIds.push(q.item.id);
+userLearningData.mistakes = userLearningData.mistakes.filter(mId => mId !== q.item.id);
+}} else {{
+btn.classList.add('wrong');
+allBtns.forEach(b => {{
+if (parseInt(b.getAttribute('data-opt-idx')) === q.correctOptIdx) {{
+b.classList.add('correct');
 }}
+}});
+if (!userLearningData.mistakes.includes(q.item.id)) userLearningData.mistakes.push(q.item.id);
+}}
+saveUserData();
+const expBox = document.getElementById('qExpBox');
+document.getElementById('qExpText').innerHTML = '【年代地點】' + q.item.year + ' (' + q.item.loc + ')
 
+【詳細說明】' + q.item.desc;
+expBox.style.display = 'block';
+}}
 function nextQuizQuestion() {{
-    currentQIndex++;
-    renderCurrentQuestion();
+currentQIndex++;
+renderCurrentQuestion();
 }}
-
 function switchQuizSubTab(tab) {{
-    const btnFC = document.getElementById('subTabFC');
-    const btnTest = document.getElementById('subTabTest');
-
-    if (btnFC) btnFC.classList.remove('active');
-    if (btnTest) btnTest.classList.remove('active');
-
-    document.getElementById('secFlashcards').style.display = 'none';
-    document.getElementById('secQuiz').style.display = 'none';
-    document.getElementById('secMistakes').style.display = 'none';
-
-    if (tab === 'flashcards') {{
-        if (btnFC) btnFC.classList.add('active');
-        document.getElementById('secFlashcards').style.display = 'block';
-    }} else if (tab === 'quiz') {{
-        if (btnTest) btnTest.classList.add('active');
-        document.getElementById('secQuiz').style.display = 'block';
-    }} else if (tab === 'mistakes') {{
-        document.getElementById('secMistakes').style.display = 'block';
-        renderMistakesList();
-    }} else if (tab === 'fc_mastered') {{
-        if (btnFC) btnFC.classList.add('active');
-        document.getElementById('secFlashcards').style.display = 'block';
-        const masteredItems = userLearningData.masteredIds.map(id => findEventById(id)).filter(Boolean);
-        if (masteredItems.length === 0) {{ alert('尚無已掌握項目，繼續加油！'); return; }}
-        flashcardsList = [...masteredItems];
-        fcIndex = 0;
-        document.getElementById('fcStartPrompt').style.display = 'none';
-        document.getElementById('fcDisplayArea').style.display = 'block';
-        renderCurrentFlashcard();
-    }} else if (tab === 'fc_reviewing') {{
-        if (btnFC) btnFC.classList.add('active');
-        document.getElementById('secFlashcards').style.display = 'block';
-        const revItems = userLearningData.reviewingIds.map(id => findEventById(id)).filter(Boolean);
-        if (revItems.length === 0) {{ alert('目前無待複習項目！'); return; }}
-        flashcardsList = [...revItems];
-        fcIndex = 0;
-        document.getElementById('fcStartPrompt').style.display = 'none';
-        document.getElementById('fcDisplayArea').style.display = 'block';
-        renderCurrentFlashcard();
-    }}
+const btnFC = document.getElementById('subTabFC');
+const btnTest = document.getElementById('subTabTest');
+if (btnFC) btnFC.classList.remove('active');
+if (btnTest) btnTest.classList.remove('active');
+document.getElementById('secFlashcards').style.display = 'none';
+document.getElementById('secQuiz').style.display = 'none';
+document.getElementById('secMistakes').style.display = 'none';
+if (tab === 'flashcards') {{
+if (btnFC) btnFC.classList.add('active');
+document.getElementById('secFlashcards').style.display = 'block';
+}} else if (tab === 'quiz') {{
+if (btnTest) btnTest.classList.add('active');
+document.getElementById('secQuiz').style.display = 'block';
+}} else if (tab === 'mistakes') {{
+document.getElementById('secMistakes').style.display = 'block';
+renderMistakesList();
+}} else if (tab === 'fc_mastered') {{
+if (btnFC) btnFC.classList.add('active');
+document.getElementById('secFlashcards').style.display = 'block';
+const masteredItems = userLearningData.masteredIds.map(id => findEventById(id)).filter(Boolean);
+if (masteredItems.length === 0) {{ alert('尚無已掌握項目，繼續加油！'); return; }}
+flashcardsList = [...masteredItems];
+fcIndex = 0;
+document.getElementById('fcStartPrompt').style.display = 'none';
+document.getElementById('fcDisplayArea').style.display = 'block';
+renderCurrentFlashcard();
+}} else if (tab === 'fc_reviewing') {{
+if (btnFC) btnFC.classList.add('active');
+document.getElementById('secFlashcards').style.display = 'block';
+const revItems = userLearningData.reviewingIds.map(id => findEventById(id)).filter(Boolean);
+if (revItems.length === 0) {{ alert('目前無待複習項目！'); return; }}
+flashcardsList = [...revItems];
+fcIndex = 0;
+document.getElementById('fcStartPrompt').style.display = 'none';
+document.getElementById('fcDisplayArea').style.display = 'block';
+renderCurrentFlashcard();
 }}
-
+}}
 function renderMistakesList() {{
-    const container = document.getElementById('mistakeListContainer');
-    container.innerHTML = '';
-
-    if (userLearningData.mistakes.length === 0) {{
-        container.innerHTML = '<div style="text-align:center;color:#94a3b8;padding:30px">尚無錯題記錄，表現優異！</div>';
-        return;
-    }}
-
-    userLearningData.mistakes.forEach(id => {{
-        const item = findEventById(id);
-        if (!item) return;
-
-        const card = document.createElement('div');
-        card.className = 'mistake-card';
-        card.innerHTML = '<div class="mistake-info"><h4>[' + item.domain + '] ' + item.title + ' (' + item.year + ')</h4><p>📍 ' + item.loc + ' - ' + item.desc + '</p></div><button class="btn-remove-mistake" onclick="removeMistake(' + item.id + ')">移出錯題本</button>';
-        container.appendChild(card);
-    }});
+const container = document.getElementById('mistakeListContainer');
+container.innerHTML = '';
+if (userLearningData.mistakes.length === 0) {{
+container.innerHTML = '尚無錯題記錄，表現優異！';
+return;
 }}
-
+userLearningData.mistakes.forEach(id => {{
+const item = findEventById(id);
+if (!item) return;
+const card = document.createElement('div');
+card.className = 'mistake-card';
+card.innerHTML = '[' + item.domain + '] ' + item.title + ' (' + item.year + ')📍 ' + item.loc + ' - ' + item.desc + '移出錯題本';
+container.appendChild(card);
+}});
+}}
 function removeMistake(id) {{
-    userLearningData.mistakes = userLearningData.mistakes.filter(mId => mId !== id);
-    saveUserData();
-    renderMistakesList();
+userLearningData.mistakes = userLearningData.mistakes.filter(mId => mId !== id);
+saveUserData();
+renderMistakesList();
 }}
-
 function startMistakeQuiz() {{
-    if (userLearningData.mistakes.length === 0) {{ alert('目前錯題本空空如也！'); return; }}
-    const mistakeItems = userLearningData.mistakes.map(id => findEventById(id)).filter(Boolean);
-    switchQuizSubTab('quiz');
-    generateQuizBatch(mistakeItems, 'MIX', mistakeItems.length);
+if (userLearningData.mistakes.length === 0) {{ alert('目前錯題本空空如也！'); return; }}
+const mistakeItems = userLearningData.mistakes.map(id => findEventById(id)).filter(Boolean);
+switchQuizSubTab('quiz');
+generateQuizBatch(mistakeItems, 'MIX', mistakeItems.length);
 }}
-
 // 通用畫面切換
 function switchView(viewName) {{
-    ['home', 'exams', 'quiz', 'map', 'timeline'].forEach(v => {{
-        const el = document.getElementById('view-' + v);
-        const btn = document.getElementById('navBtn' + v.charAt(0).toUpperCase() + v.slice(1));
-        if (el) el.style.display = 'none';
-        if (btn) btn.classList.remove('active');
-    }});
-
-    if (viewName === 'home') {{
-        document.getElementById('view-home').style.display = 'block';
-        document.getElementById('navBtnHome').classList.add('active');
-    }} else if (viewName === 'exams') {{
-        document.getElementById('view-exams').style.display = 'block';
-        document.getElementById('navBtnExams').classList.add('active');
-        renderCEECExamsPage();
-    }} else if (viewName === 'quiz') {{
-        document.getElementById('view-quiz').style.display = 'block';
-        document.getElementById('navBtnQuiz').classList.add('active');
-        updateQuizHeaderStats();
-    }} else if (viewName === 'map') {{
-        document.getElementById('view-map').style.display = 'flex';
-        document.getElementById('navBtnMap').classList.add('active');
-        setTimeout(() => {{ map.invalidateSize(); map.setView([23.8, 121.0], 7); }}, 200);
-    }} else if (viewName === 'timeline') {{
-        document.getElementById('view-timeline').style.display = 'block';
-        document.getElementById('navBtnTimeline').classList.add('active');
-        renderTimelineChronology();
-    }}
+['home', 'exams', 'quiz', 'map', 'timeline'].forEach(v => {{
+const el = document.getElementById('view-' + v);
+const btn = document.getElementById('navBtn' + v.charAt(0).toUpperCase() + v.slice(1));
+if (el) el.style.display = 'none';
+if (btn) btn.classList.remove('active');
+}});
+if (viewName === 'home') {{
+document.getElementById('view-home').style.display = 'block';
+document.getElementById('navBtnHome').classList.add('active');
+}} else if (viewName === 'exams') {{
+document.getElementById('view-exams').style.display = 'block';
+document.getElementById('navBtnExams').classList.add('active');
+renderCEECExamsPage();
+}} else if (viewName === 'quiz') {{
+document.getElementById('view-quiz').style.display = 'block';
+document.getElementById('navBtnQuiz').classList.add('active');
+updateQuizHeaderStats();
+}} else if (viewName === 'map') {{
+document.getElementById('view-map').style.display = 'flex';
+document.getElementById('navBtnMap').classList.add('active');
+setTimeout(() => {{ map.invalidateSize(); map.setView([23.8, 121.0], 7); }}, 200);
+}} else if (viewName === 'timeline') {{
+document.getElementById('view-timeline').style.display = 'block';
+document.getElementById('navBtnTimeline').classList.add('active');
+renderTimelineChronology();
 }}
-
+}}
 function toggleSidebar() {{
-    document.getElementById('sidebarOverlay').classList.toggle('active');
+document.getElementById('sidebarOverlay').classList.toggle('active');
 }}
-
 // 年代發展條塊繪製
 function renderTimelineChronology() {{
-    const trackTW = document.getElementById('trackTaiwan');
-    const trackCN = document.getElementById('trackChina');
-    const trackWD = document.getElementById('trackWorld');
-    trackTW.innerHTML = ''; trackCN.innerHTML = ''; trackWD.innerHTML = '';
-
-    rawDynasties.forEach(item => {{
-        const bar = document.createElement('div');
-        bar.className = 'dynasty-bar';
-        bar.style.backgroundColor = item.color;
-
-        let rawWidth = ((item.end - item.start) / 12026) * 100;
-        let flexWidth = Math.max(4.5, rawWidth);
-        bar.style.flex = flexWidth + ' 0 auto';
-
-        let startStr = item.start < 0 ? '前' + Math.abs(item.start) : item.start;
-        let endStr = item.end < 0 ? '前' + Math.abs(item.end) : item.end;
-        bar.title = item.name + ' (' + startStr + ' ~ ' + endStr + '年)';
-        bar.innerText = item.name;
-
-        bar.onclick = (e) => {{
-            e.stopPropagation();
-            document.querySelectorAll('.dynasty-bar').forEach(b => b.classList.remove('selected'));
-            bar.classList.add('selected');
-            onDynastyClick(item);
-        }};
-
-        if (item.cat === 'taiwan') trackTW.appendChild(bar);
-        if (item.cat === 'china') trackCN.appendChild(bar);
-        if (item.cat === 'world') trackWD.appendChild(bar);
-    }});
+const trackTW = document.getElementById('trackTaiwan');
+const trackCN = document.getElementById('trackChina');
+const trackWD = document.getElementById('trackWorld');
+trackTW.innerHTML = ''; trackCN.innerHTML = ''; trackWD.innerHTML = '';
+rawDynasties.forEach(item => {{
+const bar = document.createElement('div');
+bar.className = 'dynasty-bar';
+bar.style.backgroundColor = item.color;
+let rawWidth = ((item.end - item.start) / 12026) * 100;
+let flexWidth = Math.max(4.5, rawWidth);
+bar.style.flex = flexWidth + ' 0 auto';
+let startStr = item.start < 0 ? '前' + Math.abs(item.start) : item.start;
+let endStr = item.end < 0 ? '前' + Math.abs(item.end) : item.end;
+bar.title = item.name + ' (' + startStr + ' ~ ' + endStr + '年)';
+bar.innerText = item.name;
+bar.onclick = (e) => {{
+e.stopPropagation();
+document.querySelectorAll('.dynasty-bar').forEach(b => b.classList.remove('selected'));
+bar.classList.add('selected');
+onDynastyClick(item);
+}};
+if (item.cat === 'taiwan') trackTW.appendChild(bar);
+if (item.cat === 'china') trackCN.appendChild(bar);
+if (item.cat === 'world') trackWD.appendChild(bar);
+}});
 }}
-
 function onDynastyClick(dynasty) {{
-    const area = document.getElementById('timelineEventsArea');
-    const titleEl = document.getElementById('tlEventsTitle');
-    const grid = document.getElementById('tlEventsGrid');
-
-    const domainKey = dynasty.cat === 'taiwan' ? '臺灣史' : (dynasty.cat === 'china' ? '中國史' : '世界史');
-    const matched = rawData.filter(e => {{
-        const isDomMatch = e.domain === domainKey || (domainKey === '臺灣史' && e.domain === '台灣史');
-        return isDomMatch && e.num_year >= dynasty.start && e.num_year <= dynasty.end;
-    }});
-
-    let startStr = dynasty.start < 0 ? '前' + Math.abs(dynasty.start) : dynasty.start;
-    let endStr = dynasty.end < 0 ? '前' + Math.abs(dynasty.end) : dynasty.end;
-
-    titleEl.innerHTML = "📌 點選時期：<b style='color:#fff;margin:0 4px'>" + dynasty.name + "</b> (" + startStr + " ~ " + endStr + "年) - 共 " + matched.length + " 筆考點";
-
-    grid.innerHTML = '';
-    if (matched.length === 0) {{
-        grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;color:#94a3b8;padding:20px">尚無於此時段登錄之專屬考點。</div>';
-    }} else {{
-        matched.forEach(i => grid.appendChild(createEventCardElement(i)));
-    }}
-
-    area.style.display = 'block';
-    area.scrollIntoView({{ behavior: 'smooth', block: 'nearest' }});
+const area = document.getElementById('timelineEventsArea');
+const titleEl = document.getElementById('tlEventsTitle');
+const grid = document.getElementById('tlEventsGrid');
+const domainKey = dynasty.cat === 'taiwan' ? '臺灣史' : (dynasty.cat === 'china' ? '中國史' : '世界史');
+const matched = rawData.filter(e => {{
+const isDomMatch = e.domain === domainKey || (domainKey === '臺灣史' && e.domain === '台灣史');
+return isDomMatch && e.num_year >= dynasty.start && e.num_year <= dynasty.end;
+}});
+let startStr = dynasty.start < 0 ? '前' + Math.abs(dynasty.start) : dynasty.start;
+let endStr = dynasty.end < 0 ? '前' + Math.abs(dynasty.end) : dynasty.end;
+titleEl.innerHTML = "📌 點選時期：" + dynasty.name + " (" + startStr + " ~ " + endStr + "年) - 共 " + matched.length + " 筆考點";
+grid.innerHTML = '';
+if (matched.length === 0) {{
+grid.innerHTML = '尚無於此時段登錄之專屬考點。';
+}} else {{
+matched.forEach(i => grid.appendChild(createEventCardElement(i)));
 }}
-
+area.style.display = 'block';
+area.scrollIntoView({{ behavior: 'smooth', block: 'nearest' }});
+}}
 function closeTimelineEventsArea() {{
-    document.getElementById('timelineEventsArea').style.display = 'none';
-    document.querySelectorAll('.dynasty-bar').forEach(b => b.classList.remove('selected'));
+document.getElementById('timelineEventsArea').style.display = 'none';
+document.querySelectorAll('.dynasty-bar').forEach(b => b.classList.remove('selected'));
 }}
-
 // 地圖初始化
 const map = L.map('map', {{
-    preferCanvas: true, scrollWheelZoom: true, zoomControl: false,
-    minZoom: 2, maxZoom: 18, worldCopyJump: false
+preferCanvas: true, scrollWheelZoom: true, zoomControl: false,
+minZoom: 2, maxZoom: 18, worldCopyJump: false
 }}).setView([23.8, 121.0], 7);
-
-const tileLayer = L.tileLayer('{STATIC_CONFIG["tile_url"]}', {{ maxZoom: 18, minZoom: 2, attribution: 'Tiles &copy; Esri' }}).addTo(map);
-
+const tileLayer = L.tileLayer('{STATIC_CONFIG["tile_url"]}', {{ maxZoom: 18, minZoom: 2, attribution: 'Tiles © Esri' }}).addTo(map);
 tileLayer.on('tileerror', function() {{
-    console.warn('底圖載入失敗，請檢查網路連線。');
+console.warn('底圖載入失敗，請檢查網路連線。');
 }});
-
 L.control.zoom({{ position: 'bottomright' }}).addTo(map);
-
 let markerClusterGroup = L.markerClusterGroup({{
-    spiderfyOnMaxZoom: true, showCoverageOnHover: false, zoomToBoundsOnClick: true, disableClusteringAtZoom: 12
+spiderfyOnMaxZoom: true, showCoverageOnHover: false, zoomToBoundsOnClick: true, disableClusteringAtZoom: 12
 }}).addTo(map);
-
 let markerMap = new Map();
 let isAll = true;
 let selectedSlot = 2000;
 let debounceTimer = null;
 let filterLevel = "ALL";
 let filterVol = "ALL";
-
 function renderMapMarkers(items) {{
-    markerClusterGroup.clearLayers();
-    markerMap.clear();
-
-    items.forEach(i => {{
-        const c = domainColors[i.domain] || '#f59e0b';
-        const kwChips = (i.keywords || []).map(k => '<span class="pop-kw-chip">#' + k + '</span>').join(' ');
-
-        const popupHTML = '<div class="popup-box"><div class="popup-head"><span class="badge" style="background:' + c + '">' + i.domain + '</span><span class="year">' + i.year + '</span></div><div class="popup-source">📚 [' + i.stage + '] ' + i.sheet + '</div><div class="popup-title">' + i.title + '</div><div class="popup-kw-container">' + kwChips + '</div><div class="popup-loc">📍 ' + i.loc + '</div><div class="popup-desc">' + i.desc + '</div><button class="btn-popup-detail" data-event-id="' + i.id + '">📖 查看詳情與背景說明</button></div>';
-
-        const marker = L.circleMarker([i.lat, i.lng], {{
-            radius: 6, fillColor: c, color: '#ffffff', weight: 1.5, opacity: 1, fillOpacity: 0.9
-        }}).bindPopup(popupHTML);
-
-        markerClusterGroup.addLayer(marker);
-        markerMap.set(i.id, marker);
-    }});
+markerClusterGroup.clearLayers();
+markerMap.clear();
+items.forEach(i => {{
+const c = domainColors[i.domain] || '#f59e0b';
+const kwChips = (i.keywords || []).map(k => '#' + k + '').join(' ');
+const popupHTML = '' + i.domain + '' + i.year + '📚 [' + i.stage + '] ' + i.sheet + '' + i.title + '' + kwChips + '📍 ' + i.loc + '' + i.desc + '📖 查看詳情與背景說明';
+const marker = L.circleMarker([i.lat, i.lng], {{
+radius: 6, fillColor: c, color: '#ffffff', weight: 1.5, opacity: 1, fillOpacity: 0.9
+}}).bindPopup(popupHTML);
+markerClusterGroup.addLayer(marker);
+markerMap.set(i.id, marker);
+}});
 }}
-
 // 地圖 Popup 事件委派
 document.addEventListener('click', function(e) {{
-    if (e.target && e.target.classList.contains('btn-popup-detail')) {{
-        const eventId = parseInt(e.target.getAttribute('data-event-id'));
-        const item = findEventById(eventId);
-        if (item) openEventDetailModal(item);
-    }}
-}});
-
-function createEventCardElement(i) {{
-    const c = domainColors[i.domain] || '#f59e0b';
-    const card = document.createElement('div');
-    card.className = 'event-card';
-
-    card.onclick = () => openEventDetailModal(i);
-
-    card.innerHTML = '<div><div class="ev-card-top"><span class="ev-badge" style="background:' + c + '">' + i.domain + '</span><span class="ev-year">' + i.year + '</span></div><div class="ev-source">[' + i.stage + '] ' + i.sheet + '</div><div class="ev-title">' + i.title + '</div><div class="ev-loc">📍 ' + i.loc + '</div><div class="ev-desc">' + i.desc + '</div></div><div style="display:flex;gap:6px;margin-top:10px"><button class="btn-card-detail" style="flex:1" onclick="event.stopPropagation(); openEventDetailModal(findEventById(' + i.id + '));">📖 查看詳情與背景說明</button></div>';
-    return card;
+if (e.target && e.target.classList.contains('btn-popup-detail')) {{
+const eventId = parseInt(e.target.getAttribute('data-event-id'));
+const item = findEventById(eventId);
+if (item) openEventDetailModal(item);
 }}
-
+}});
+function createEventCardElement(i) {{
+const c = domainColors[i.domain] || '#f59e0b';
+const card = document.createElement('div');
+card.className = 'event-card';
+card.onclick = () => openEventDetailModal(i);
+card.innerHTML = '' + i.domain + '' + i.year + '[' + i.stage + '] ' + i.sheet + '' + i.title + '📍 ' + i.loc + '' + i.desc + '📖 查看詳情與背景說明';
+return card;
+}}
 function resetHomePagination() {{ homeDisplayLimit = 12; }}
 function loadMoreHomeCards() {{ homeDisplayLimit += 12; renderHomeCards(); }}
-
 function renderHomeCards() {{
-    const grid = document.getElementById('eventsGrid');
-    const q = (document.getElementById('homeSearchInput').value || "").toLowerCase().trim();
-    const loadMoreBox = document.getElementById('loadMoreBox');
-
-    const filtered = rawData.filter(i => {{
-        if (currentHomeCategory !== 'ALL' && !i.domain.includes(currentHomeCategory)) return false;
-        if (q) {{
-            const kwMatch = (i.keywords || []).some(k => k.toLowerCase().includes(q));
-            return i.title.toLowerCase().includes(q) ||
-                   i.loc.toLowerCase().includes(q) ||
-                   i.desc.toLowerCase().includes(q) ||
-                   i.sheet.toLowerCase().includes(q) || kwMatch;
-        }}
-        return true;
-    }});
-
-    grid.innerHTML = '';
-    if (filtered.length === 0) {{
-        grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;color:#94a3b8;padding:30px">找不到符合條件的考點。</div>';
-        loadMoreBox.style.display = 'none';
-        return;
-    }}
-
-    const visibleItems = filtered.slice(0, homeDisplayLimit);
-    visibleItems.forEach(i => grid.appendChild(createEventCardElement(i)));
-
-    loadMoreBox.style.display = homeDisplayLimit >= filtered.length ? 'none' : 'block';
+const grid = document.getElementById('eventsGrid');
+const q = (document.getElementById('homeSearchInput').value || "").toLowerCase().trim();
+const loadMoreBox = document.getElementById('loadMoreBox');
+const filtered = rawData.filter(i => {{
+if (currentHomeCategory !== 'ALL' && !i.domain.includes(currentHomeCategory)) return false;
+if (q) {{
+const kwMatch = (i.keywords || []).some(k => k.toLowerCase().includes(q));
+return i.title.toLowerCase().includes(q) ||
+i.loc.toLowerCase().includes(q) ||
+i.desc.toLowerCase().includes(q) ||
+i.sheet.toLowerCase().includes(q) || kwMatch;
 }}
-
+return true;
+}});
+grid.innerHTML = '';
+if (filtered.length === 0) {{
+grid.innerHTML = '找不到符合條件的考點。';
+loadMoreBox.style.display = 'none';
+return;
+}}
+const visibleItems = filtered.slice(0, homeDisplayLimit);
+visibleItems.forEach(i => grid.appendChild(createEventCardElement(i)));
+loadMoreBox.style.display = homeDisplayLimit >= filtered.length ? 'none' : 'block';
+}}
 function filterHomeCategory(cat) {{
-    currentHomeCategory = cat;
-    ['tabAll', 'tabTW', 'tabCN', 'tabWD'].forEach(id => {{
-        const el = document.getElementById(id);
-        if (el) el.classList.remove('active');
-    }});
-
-    if (cat === 'ALL') document.getElementById('tabAll').classList.add('active');
-    if (cat === '臺灣史') document.getElementById('tabTW').classList.add('active');
-    if (cat === '中國史') document.getElementById('tabCN').classList.add('active');
-    if (cat === '世界史') document.getElementById('tabWD').classList.add('active');
-
-    resetHomePagination();
-    renderHomeCards();
+currentHomeCategory = cat;
+['tabAll', 'tabTW', 'tabCN', 'tabWD'].forEach(id => {{
+const el = document.getElementById(id);
+if (el) el.classList.remove('active');
+}});
+if (cat === 'ALL') document.getElementById('tabAll').classList.add('active');
+if (cat === '臺灣史') document.getElementById('tabTW').classList.add('active');
+if (cat === '中國史') document.getElementById('tabCN').classList.add('active');
+if (cat === '世界史') document.getElementById('tabWD').classList.add('active');
+resetHomePagination();
+renderHomeCards();
 }}
-
 function openEventDetailModal(item) {{
-    activeModalEvent = item;
-    const c = domainColors[item.domain] || '#f59e0b';
+activeModalEvent = item;
+const c = domainColors[item.domain] || '#f59e0b';
+document.getElementById('mdlDomainBadge').innerText = item.domain;
+document.getElementById('mdlDomainBadge').style.background = c;
+document.getElementById('mdlYearBadge').innerText = item.year;
+document.getElementById('mdlTitle').innerText = item.title;
+document.getElementById('mdlSource').innerText = "📚 [" + item.stage + "] " + item.sheet;
+const kwArea = document.getElementById('mdlKeywordsArea');
+kwArea.innerHTML = '';
+(item.keywords || []).forEach(kw => {{
+const chip = document.createElement('span');
+chip.className = 'kw-chip';
+chip.innerText = "# " + kw;
+kwArea.appendChild(chip);
+}});
+document.getElementById('mdlLocText').innerHTML = "地點：" + item.loc + "
 
-    document.getElementById('mdlDomainBadge').innerText = item.domain;
-    document.getElementById('mdlDomainBadge').style.background = c;
-    document.getElementById('mdlYearBadge').innerText = item.year;
-    document.getElementById('mdlTitle').innerText = item.title;
-    document.getElementById('mdlSource').innerText = "📚 [" + item.stage + "] " + item.sheet;
-
-    const kwArea = document.getElementById('mdlKeywordsArea');
-    kwArea.innerHTML = '';
-    (item.keywords || []).forEach(kw => {{
-        const chip = document.createElement('span');
-        chip.className = 'kw-chip';
-        chip.innerText = "# " + kw;
-        kwArea.appendChild(chip);
-    }});
-
-    document.getElementById('mdlLocText').innerHTML = "<b>地點：</b>" + item.loc + "<br><br>" + item.desc;
-    document.getElementById('mdlCauseText').innerText = item.cause || '暫無資訊';
-    document.getElementById('mdlEffectText').innerText = item.effect || '暫無資訊';
-
-    document.getElementById('eventDetailModal').classList.add('active');
+" + item.desc;
+document.getElementById('mdlCauseText').innerText = item.cause || '暫無資訊';
+document.getElementById('mdlEffectText').innerText = item.effect || '暫無資訊';
+document.getElementById('eventDetailModal').classList.add('active');
 }}
-
 function closeEventDetailModal() {{
-    document.getElementById('eventDetailModal').classList.remove('active');
+document.getElementById('eventDetailModal').classList.remove('active');
 }}
-
 function flyToCurrentModalEvent() {{
-    if (!activeModalEvent) return;
-    closeEventDetailModal();
-
-    filterLevel = "ALL";
-    filterVol = "ALL";
-    isAll = true;
-    document.getElementById('searchInput').value = "";
-    document.querySelectorAll('[data-filter]').forEach(b => b.classList.remove('active'));
-    document.querySelectorAll('[data-val="ALL"]').forEach(b => b.classList.add('active'));
-
-    filterData();
-    switchView('map');
-
-    setTimeout(() => {{
-        map.flyTo([activeModalEvent.lat, activeModalEvent.lng], 9, {{ duration: 1.2 }});
-        setTimeout(() => {{
-            const marker = markerMap.get(activeModalEvent.id);
-            if (marker) {{
-                markerClusterGroup.zoomToShowLayer(marker, () => {{ marker.openPopup(); }});
-            }}
-        }}, 1300);
-    }}, 300);
+if (!activeModalEvent) return;
+closeEventDetailModal();
+filterLevel = "ALL";
+filterVol = "ALL";
+isAll = true;
+document.getElementById('searchInput').value = "";
+document.querySelectorAll('[data-filter]').forEach(b => b.classList.remove('active'));
+document.querySelectorAll('[data-val="ALL"]').forEach(b => b.classList.add('active'));
+filterData();
+switchView('map');
+setTimeout(() => {{
+map.flyTo([activeModalEvent.lat, activeModalEvent.lng], 9, {{ duration: 1.2 }});
+setTimeout(() => {{
+const marker = markerMap.get(activeModalEvent.id);
+if (marker) {{
+markerClusterGroup.zoomToShowLayer(marker, () => {{ marker.openPopup(); }});
 }}
-
+}}, 1300);
+}}, 300);
+}}
 function setFilterChip(btn, group, val) {{
-    const parent = btn.parentElement;
-    parent.querySelectorAll('[data-filter="' + group + '"]').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    if (group === 'level') filterLevel = val;
-    if (group === 'vol') filterVol = val;
-    filterData();
+const parent = btn.parentElement;
+parent.querySelectorAll('[data-filter="' + group + '"]').forEach(b => b.classList.remove('active'));
+btn.classList.add('active');
+if (group === 'level') filterLevel = val;
+if (group === 'vol') filterVol = val;
+filterData();
 }}
-
 function onSliderDrag(val) {{
-    isAll = false;
-    selectedSlot = parseInt(val);
-    updateSliderLabel();
-    clearTimeout(debounceTimer);
-    debounceTimer = setTimeout(() => filterData(), 60);
+isAll = false;
+selectedSlot = parseInt(val);
+updateSliderLabel();
+clearTimeout(debounceTimer);
+debounceTimer = setTimeout(() => filterData(), 60);
 }}
-
 function resetTimeSlider() {{
-    isAll = true;
-    document.getElementById('timeSlider').value = 2000;
-    updateSliderLabel();
-    filterData();
+isAll = true;
+document.getElementById('timeSlider').value = 2000;
+updateSliderLabel();
+filterData();
 }}
-
 function updateSliderLabel() {{
-    const targetEl = document.getElementById('hdrYearText');
-    if (isAll) {{ targetEl.innerText = "全部時代"; return; }}
-    if (selectedSlot <= -3000) targetEl.innerText = "史前 (~前3000)";
-    else if (selectedSlot < 0) targetEl.innerText = "前 " + Math.abs(selectedSlot) + " 年 ~ 前 " + Math.abs(selectedSlot + 99) + " 年";
-    else if (selectedSlot === 0) targetEl.innerText = "西元 1 ~ 99 年";
-    else targetEl.innerText = "西元 " + selectedSlot + " ~ " + (selectedSlot + 99) + " 年";
+const targetEl = document.getElementById('hdrYearText');
+if (isAll) {{ targetEl.innerText = "全部時代"; return; }}
+if (selectedSlot <= -3000) targetEl.innerText = "史前 (~前3000)";
+else if (selectedSlot < 0) targetEl.innerText = "前 " + Math.abs(selectedSlot) + " 年 ~ 前 " + Math.abs(selectedSlot + 99) + " 年";
+else if (selectedSlot === 0) targetEl.innerText = "西元 1 ~ 99 年";
+else targetEl.innerText = "西元 " + selectedSlot + " ~ " + (selectedSlot + 99) + " 年";
 }}
-
 function debouncedFilter() {{
-    clearTimeout(debounceTimer);
-    debounceTimer = setTimeout(() => filterData(), 120);
+clearTimeout(debounceTimer);
+debounceTimer = setTimeout(() => filterData(), 120);
 }}
-
 function filterData() {{
-    const q = (document.getElementById('searchInput').value || "").toLowerCase().trim();
-
-    const filtered = rawData.filter(i => {{
-        if (filterLevel !== "ALL" && !i.stage.includes(filterLevel)) return false;
-        if (filterVol !== "ALL" && !i.domain.includes(filterVol)) return false;
-
-        if (q) {{
-            const kwMatch = (i.keywords || []).some(k => k.toLowerCase().includes(q));
-            const matchQuery = i.title.toLowerCase().includes(q) ||
-                               i.loc.toLowerCase().includes(q) ||
-                               i.desc.toLowerCase().includes(q) ||
-                               i.sheet.toLowerCase().includes(q) || kwMatch;
-            if (!matchQuery) return false;
-        }}
-
-        if (isAll) return true;
-        if (selectedSlot <= -3000) return i.num_year <= -2901;
-        else if (selectedSlot >= 2000) return i.num_year >= 2000;
-        else return i.num_year >= selectedSlot && i.num_year < (selectedSlot + 100);
-    }});
-
-    renderMapMarkers(filtered);
+const q = (document.getElementById('searchInput').value || "").toLowerCase().trim();
+const filtered = rawData.filter(i => {{
+if (filterLevel !== "ALL" && !i.stage.includes(filterLevel)) return false;
+if (filterVol !== "ALL" && !i.domain.includes(filterVol)) return false;
+if (q) {{
+const kwMatch = (i.keywords || []).some(k => k.toLowerCase().includes(q));
+const matchQuery = i.title.toLowerCase().includes(q) ||
+i.loc.toLowerCase().includes(q) ||
+i.desc.toLowerCase().includes(q) ||
+i.sheet.toLowerCase().includes(q) || kwMatch;
+if (!matchQuery) return false;
 }}
-
+if (isAll) return true;
+if (selectedSlot <= -3000) return i.num_year <= -2901;
+else if (selectedSlot >= 2000) return i.num_year >= 2000;
+else return i.num_year >= selectedSlot && i.num_year < (selectedSlot + 100);
+}});
+renderMapMarkers(filtered);
+}}
 document.addEventListener('keydown', (e) => {{ if (e.key === 'Escape') closeEventDetailModal(); }});
 document.getElementById('eventDetailModal').onclick = (e) => {{ if (e.target.id === 'eventDetailModal') closeEventDetailModal(); }};
-
 // 頁面初始化
 initDynamicStats();
 renderHomeCards();
 renderMapMarkers(rawData);
 updateQuizHeaderStats();
-</script>
-</body>
-</html>
-"""
 
+
+
+"""
 html_filename = "world_history_map.html"
 with open(html_filename, "w", encoding="utf-8") as f:
-    f.write(html_content)
-
+f.write(html_content)
 print(f"✅ 網頁檔 {html_filename} 已完全更新！")
