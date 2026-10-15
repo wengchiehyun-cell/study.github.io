@@ -1,622 +1,582 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>108課綱歷史數位地圖與測驗系統</title>
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
-<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css" />
-<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css" />
-
-<style>
-*{box-sizing:border-box;margin:0;padding:0;}
-body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;background:#0f172a;color:#f8fafc;height:100vh;display:flex;flex-direction:column;overflow:hidden;}
-
-/* 頂部 Sticky 導覽列 */
-nav.top-nav{
-    background:#1e293be6;backdrop-filter:blur(12px);border-bottom:1px solid #334155;
-    padding:10px 16px;display:flex;justify-content:space-between;align-items:center;gap:12px;z-index:900;
-}
-.nav-left{display:flex;align-items:center;gap:10px;}
-.btn-menu-trigger{background:#334155;color:#f59e0b;border:1px solid #475569;padding:6px 12px;border-radius:6px;font-size:0.9rem;font-weight:bold;cursor:pointer;}
-.nav-brand{font-size:1.1rem;font-weight:bold;color:#f59e0b;display:flex;align-items:center;gap:6px;cursor:pointer;}
-.nav-links{display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
-.nav-btn{background:transparent;color:#cbd5e1;border:none;padding:6px 12px;border-radius:20px;font-size:0.82rem;font-weight:bold;cursor:pointer;transition:all 0.2s;}
-.nav-btn:hover, .nav-btn.active{background:#f59e0b;color:#0f172a;}
-
-.btn-backup-auth{background:#334155;color:#38bdf8;border:1px solid #38bdf8;padding:5px 12px;border-radius:16px;font-size:0.78rem;font-weight:bold;cursor:pointer;transition:all 0.2s;}
-.btn-backup-auth:hover{background:#38bdf8;color:#0f172a;}
-
-.view-container{flex:1;position:relative;width:100%;height:100%;overflow:hidden;}
-
-/* 視圖 1：首頁 Dashboard */
-#view-home{width:100%;height:100%;overflow-y:auto;padding:20px 16px 60px;max-width:1240px;margin:0 auto;display:block;}
-.home-hero{background:linear-gradient(135deg, #1e293b 0%, #0f172a 100%);border:1px solid #334155;border-radius:16px;padding:24px 20px;margin-bottom:24px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:12px;}
-.hero-badge-group{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;}
-.hero-stat-pill{background:#0f172a;border:1px solid #334155;padding:4px 10px;border-radius:16px;font-size:0.75rem;font-weight:bold;color:#cbd5e1;}
-.hero-stat-pill span{color:#f59e0b;font-weight:800;}
-.home-title{font-size:1.8rem;font-weight:800;color:#f8fafc;}
-.home-title span{color:#f59e0b;}
-.home-subtitle{font-size:0.88rem;color:#94a3b8;max-width:680px;line-height:1.5;}
-
-.portal-grid{display:grid;grid-template-columns:repeat(auto-fit, minmax(260px, 1fr));gap:16px;margin-bottom:28px;}
-.portal-card{background:#1e293b;border:2px solid #334155;border-radius:14px;padding:18px;display:flex;flex-direction:column;justify-content:space-between;transition:all 0.25s;cursor:pointer;position:relative;overflow:hidden;}
-.portal-card::before{content:"";position:absolute;top:0;left:0;width:100%;height:4px;}
-.portal-card.tw::before{background:#f59e0b;} .portal-card.cn::before{background:#ef4444;} .portal-card.wd::before{background:#3b82f6;}
-.portal-card:hover{transform:translateY(-4px);box-shadow:0 10px 20px rgba(0,0,0,0.4);}
-.portal-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;}
-.portal-icon{font-size:1.8rem;}
-.portal-count-tag{padding:3px 8px;border-radius:10px;font-size:0.72rem;font-weight:bold;color:#fff;}
-.portal-title{font-size:1.15rem;font-weight:bold;color:#fff;margin-bottom:4px;}
-.portal-desc{font-size:0.8rem;color:#cbd5e1;line-height:1.4;margin-bottom:12px;}
-
-.home-filter-section{background:#1e293b;border:1px solid #334155;border-radius:12px;padding:12px 16px;margin-bottom:20px;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;}
-.home-filter-tabs{display:flex;gap:6px;flex-wrap:wrap;}
-.tab-btn{background:#0f172a;border:1px solid #334155;color:#cbd5e1;padding:6px 14px;border-radius:18px;font-size:0.82rem;font-weight:bold;cursor:pointer;}
-.tab-btn.active, .tab-btn:hover{background:#f59e0b;color:#0f172a;border-color:#f59e0b;}
-.home-search-input{background:#0f172a;border:1px solid #475569;color:#fff;padding:7px 12px;border-radius:8px;font-size:0.82rem;outline:none;width:220px;}
-
-.events-grid{display:grid;grid-template-columns:repeat(auto-fill, minmax(280px, 1fr));gap:16px;}
-.event-card{background:#1e293b;border:1px solid #334155;border-radius:12px;padding:14px;display:flex;flex-direction:column;justify-content:space-between;transition:all 0.2s;cursor:pointer;}
-.event-card:hover{border-color:#f59e0b;transform:translateY(-3px);}
-.ev-card-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;}
-.ev-badge{padding:2px 7px;border-radius:4px;font-size:0.7rem;color:#fff;font-weight:bold;}
-.ev-year{font-size:0.75rem;color:#94a3b8;font-weight:bold;}
-.ev-source{font-size:0.72rem;color:#38bdf8;margin-bottom:4px;font-weight:bold;}
-.ev-title{font-size:1rem;font-weight:bold;color:#f8fafc;margin-bottom:4px;}
-.ev-loc{font-size:0.75rem;color:#94a3b8;margin-bottom:6px;}
-.ev-desc{font-size:0.78rem;color:#cbd5e1;line-height:1.4;margin-bottom:10px;flex:1;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
-.btn-card-detail{background:#0f172a;color:#f59e0b;border:1px solid #f59e0b;padding:6px 10px;border-radius:6px;font-size:0.78rem;font-weight:bold;cursor:pointer;text-align:center;}
-
-.load-more-box{text-align:center;margin-top:24px;}
-.btn-load-more{background:#334155;color:#f59e0b;border:1px solid #475569;padding:8px 24px;border-radius:20px;font-size:0.85rem;font-weight:bold;cursor:pointer;}
-
-/* 視圖 2：歷屆試題專頁 */
-#view-exams{width:100%;height:100%;overflow-y:auto;padding:20px 16px 60px;max-width:1150px;margin:0 auto;display:none;}
-.exams-header{background:linear-gradient(135deg, #1e293b, #0f172a);border:1px solid #334155;border-radius:16px;padding:22px 28px;margin-bottom:20px;display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;}
-.exams-header h2{font-size:1.5rem;color:#38bdf8;margin-bottom:4px;}
-.exams-header p{font-size:0.88rem;color:#cbd5e1;line-height:1.5;}
-
-.exam-cards-list{display:flex;flex-direction:column;gap:12px;}
-.exam-pdf-card-row{
-    background:#1e293b;border:1px solid #334155;border-radius:14px;padding:16px 20px;
-    display:flex;flex-direction:row;align-items:center;justify-content:space-between;gap:16px;
-    transition:all 0.2s;box-shadow:0 4px 10px rgba(0,0,0,0.2);
-}
-.exam-pdf-card-row:hover{border-color:#38bdf8;transform:translateX(4px);background:#243347;}
-.exam-left-info{display:flex;align-items:center;gap:16px;flex:1;}
-.exam-tag-pill{background:#0284c7;color:#fff;padding:6px 14px;border-radius:14px;font-size:0.82rem;font-weight:800;white-space:nowrap;}
-.exam-text-group{display:flex;flex-direction:column;gap:4px;}
-.exam-card-title-row{font-size:1.05rem;font-weight:bold;color:#f8fafc;}
-.exam-card-desc-row{font-size:0.82rem;color:#cbd5e1;line-height:1.4;}
-.exam-action-btns{display:flex;align-items:center;gap:10px;white-space:nowrap;}
-
-.btn-download-pdf{background:#0284c7;color:#fff;padding:8px 16px;border-radius:8px;text-decoration:none;font-size:0.85rem;font-weight:bold;transition:background 0.2s;display:inline-flex;align-items:center;gap:4px;}
-.btn-download-pdf:hover{background:#0369a1;}
-.btn-cite-quiz{background:#059669;color:#fff;border:none;padding:8px 16px;border-radius:8px;font-size:0.85rem;font-weight:bold;cursor:pointer;transition:background 0.2s;display:inline-flex;align-items:center;gap:4px;}
-.btn-cite-quiz:hover{background:#047857;}
-
-/* 視圖 3：測驗與閃卡 */
-#view-quiz{width:100%;height:100%;overflow-y:auto;padding:20px 16px 60px;max-width:1150px;margin:0 auto;display:none;}
-
-.quiz-header{background:#1e293b;border:1px solid #334155;border-radius:16px;padding:20px 24px;margin-bottom:20px;display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;}
-.quiz-title-box h2{font-size:1.45rem;color:#f59e0b;margin-bottom:4px;}
-.quiz-title-box p{font-size:0.85rem;color:#94a3b8;}
-
-.quiz-stats-bar{display:flex;gap:10px;background:#0f172a;padding:8px 16px;border-radius:14px;border:1px solid #334155;}
-.q-stat-item{text-align:center;font-size:0.8rem;color:#cbd5e1;cursor:pointer;padding:4px 12px;border-radius:8px;transition:all 0.2s;}
-.q-stat-item:hover{background:#1e293b;transform:scale(1.05);}
-.q-stat-item b{display:block;font-size:1.2rem;color:#f59e0b;}
-
-.quiz-tab-group{display:flex;gap:8px;margin-bottom:20px;border-bottom:1px solid #334155;padding-bottom:10px;}
-.q-tab-btn{background:#0f172a;border:1px solid #334155;color:#cbd5e1;padding:10px 22px;border-radius:20px;font-size:0.92rem;font-weight:bold;cursor:pointer;}
-.q-tab-btn.active{background:#f59e0b;color:#0f172a;border-color:#f59e0b;}
-
-.quiz-config-card{
-    background:#1e293b;border:1px solid #334155;border-radius:16px;padding:18px 24px;
-    margin-bottom:24px;display:flex;gap:16px;align-items:center;flex-wrap:wrap;justify-content:space-between;
-    box-shadow:0 4px 12px rgba(0,0,0,0.3);
-}
-.quiz-config-group{display:flex;gap:12px;align-items:center;flex-wrap:wrap;}
-.quiz-select-label{font-size:0.9rem;color:#f8fafc;font-weight:bold;}
-.quiz-select-input{background:#0f172a;border:1px solid #475569;color:#fff;padding:8px 12px;border-radius:10px;font-size:0.88rem;outline:none;cursor:pointer;}
-.custom-count-input{background:#0f172a;border:1px solid #475569;color:#f59e0b;padding:8px 12px;border-radius:10px;font-size:0.88rem;width:120px;outline:none;font-weight:bold;}
-.btn-start-quiz{background:#f59e0b;color:#0f172a;border:none;padding:10px 24px;border-radius:10px;font-weight:800;font-size:0.95rem;cursor:pointer;transition:all 0.2s;}
-.btn-start-quiz:hover{transform:scale(1.05);box-shadow:0 0 12px rgba(245,158,11,0.5);}
-.btn-danger-action{background:#ef4444;color:#fff;border:none;padding:10px 18px;border-radius:10px;font-weight:bold;font-size:0.88rem;cursor:pointer;transition:all 0.2s;}
-.btn-danger-action:hover{background:#dc2626;}
-
-.quiz-cited-info{width:100%;background:#0284c71a;border:1px solid #38bdf8;color:#38bdf8;padding:8px 14px;border-radius:8px;font-size:0.88rem;font-weight:bold;margin-bottom:10px;display:none;}
-
-/* 閃卡卡片 3D Flip 樣式 */
-.flashcard-wrapper{perspective:1000px;width:100%;max-width:750px;margin:0 auto 24px;height:380px;cursor:pointer;}
-.flashcard-inner{position:relative;width:100%;height:100%;text-align:center;transition:transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);transform-style:preserve-3d;}
-.flashcard-wrapper.flipped .flashcard-inner{transform:rotateY(180deg);}
-
-.flashcard-front, .flashcard-back{
-    position:absolute;width:100%;height:100%;backface-visibility:hidden;
-    border-radius:20px;border:2px solid #334155;padding:28px;
-    display:flex;flex-direction:column;justify-content:space-between;align-items:center;
-    box-shadow:0 16px 36px rgba(0,0,0,0.5);
-}
-.flashcard-front{background:linear-gradient(135deg, #1e293b, #0f172a);color:#fff;}
-.flashcard-back{background:linear-gradient(135deg, #0f172a, #1e293b);color:#f8fafc;transform:rotateY(180deg);border-color:#f59e0b;overflow-y:auto;}
-
-.fc-badge{padding:4px 12px;border-radius:14px;font-size:0.82rem;font-weight:bold;color:#fff;}
-.fc-hint{font-size:0.8rem;color:#94a3b8;margin-top:8px;}
-.fc-title{font-size:1.8rem;font-weight:800;color:#f59e0b;margin:16px 0;line-height:1.4;}
-.fc-box{background:#0f172a;padding:12px 16px;border-radius:10px;border:1px solid #334155;text-align:left;width:100%;font-size:0.9rem;line-height:1.5;margin-bottom:8px;}
-.fc-box b{color:#f59e0b;}
-
-.flashcard-controls{display:flex;justify-content:center;gap:14px;max-width:750px;margin:0 auto;}
-.btn-fc-rating{flex:1;padding:12px;border-radius:10px;border:none;font-size:0.95rem;font-weight:bold;cursor:pointer;color:#fff;transition:all 0.2s;}
-.btn-fc-forgot{background:#ef4444;} .btn-fc-fuzzy{background:#f59e0b;} .btn-fc-remembered{background:#10b981;}
-.btn-fc-rating:hover{transform:scale(1.03);}
-
-/* 選擇題測驗卡片與選項 */
-.quiz-card{background:#1e293b;border:2px solid #334155;border-radius:20px;padding:32px;max-width:850px;margin:0 auto;box-shadow:0 12px 30px rgba(0,0,0,0.4);position:relative;}
-.q-top-ctrl-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;}
-.q-progress{font-size:0.9rem;color:#94a3b8;font-weight:bold;}
-.btn-quit-quiz{background:#334155;color:#f8fafc;border:1px solid #ef4444;padding:4px 12px;border-radius:12px;font-size:0.78rem;font-weight:bold;cursor:pointer;transition:all 0.2s;}
-.btn-quit-quiz:hover{background:#ef4444;color:#fff;}
-
-.q-question{font-size:1.3rem;font-weight:800;color:#f8fafc;margin-bottom:24px;line-height:1.6;letter-spacing:0.3px;}
-.q-options{display:flex;flex-direction:column;gap:12px;margin-bottom:24px;}
-.q-opt-btn{background:#0f172a;border:2px solid #334155;color:#e2e8f0;padding:14px 20px;border-radius:12px;font-size:1.02rem;font-weight:bold;cursor:pointer;text-align:left;transition:all 0.2s;line-height:1.4;}
-.q-opt-btn:hover{border-color:#f59e0b;color:#fff;background:#1e293b;transform:translateX(4px);}
-.q-opt-btn.correct{background:#064e3b;border-color:#10b981;color:#fff;}
-.q-opt-btn.wrong{background:#7f1d1d;border-color:#ef4444;color:#fff;}
-
-.q-explanation-box{background:#0f172a;border:2px solid #f59e0b;border-radius:14px;padding:20px;margin-top:20px;display:none;animation:fadeIn 0.3s;}
-.q-explanation-box h4{color:#f59e0b;font-size:1.1rem;margin-bottom:10px;}
-.q-exp-text{font-size:0.95rem;color:#cbd5e1;line-height:1.6;margin-bottom:10px;}
-
-.quiz-result-card{background:#1e293b;border:2px solid #f59e0b;border-radius:20px;padding:32px;max-width:850px;margin:0 auto;text-align:center;box-shadow:0 12px 30px rgba(0,0,0,0.4);display:none;}
-.result-score{font-size:3rem;font-weight:900;color:#f59e0b;margin:12px 0;}
-.result-desc{font-size:1rem;color:#cbd5e1;margin-bottom:24px;line-height:1.6;}
-
-.mistake-list{display:flex;flex-direction:column;gap:14px;max-width:1150px;margin:0 auto;}
-.mistake-card-row{background:#1e293b;border:1px solid #ef4444;border-radius:14px;padding:18px;display:flex;justify-content:space-between;align-items:center;gap:14px;box-shadow:0 4px 10px rgba(0,0,0,0.2);}
-.mistake-info h4{font-size:1.05rem;color:#f8fafc;margin-bottom:6px;}
-.mistake-info p{font-size:0.85rem;color:#cbd5e1;line-height:1.5;}
-.btn-remove-mistake{background:#334155;color:#ef4444;border:1px solid #ef4444;padding:8px 14px;border-radius:8px;font-size:0.8rem;font-weight:bold;cursor:pointer;white-space:nowrap;}
-
-/* 視圖 4：世界地圖 */
-#view-map{width:100%;height:100%;display:none;flex-direction:column;position:relative;}
-.map-top-bar{background:#1e293b;padding:10px 14px;display:flex;flex-direction:column;gap:8px;border-bottom:1px solid #334155;z-index:10;}
-.map-toolbar-row1{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;}
-.timeline-box{display:flex;align-items:center;gap:8px;flex:1;min-width:260px;background:#0f172a;padding:5px 12px;border-radius:18px;border:1px solid #334155;}
-.hdr-era-badge{background:#1e293b;color:#f59e0b;padding:2px 8px;border-radius:10px;font-size:0.72rem;font-weight:bold;white-space:nowrap;}
-.btn-reset-slider{background:#334155;color:#fff;border:none;padding:2px 8px;border-radius:10px;font-size:0.7rem;cursor:pointer;white-space:nowrap;}
-input[type="range"]{flex:1;-webkit-appearance:none;background:#334155;height:5px;border-radius:3px;outline:none;cursor:pointer;}
-input[type="range"]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;height:14px;border-radius:50%;background:#f59e0b;cursor:pointer;border:2px solid #fff;}
-.simple-search-input{background:#334155;border:1px solid #475569;color:#fff;padding:5px 10px;border-radius:6px;font-size:0.8rem;outline:none;width:180px;}
-
-#map{flex:1;width:100%;height:100%;background:#0f172a;}
-
-/* 視圖 5：年代對照 */
-#view-timeline{width:100%;height:100%;overflow-y:auto;padding:20px 16px 60px;max-width:1240px;margin:0 auto;display:none;}
-.timeline-header{text-align:center;margin-bottom:20px;}
-.timeline-title{font-size:1.6rem;font-weight:bold;color:#f8fafc;margin-bottom:4px;}
-.timeline-subtitle{font-size:0.85rem;color:#94a3b8;}
-
-.chronology-container{background:#1e293b;border:1px solid #334155;border-radius:14px;padding:16px;margin-bottom:20px;overflow-x:auto;-webkit-overflow-scrolling:touch;}
-.num-line-wrapper{position:relative;height:35px;border-bottom:2px solid #f59e0b;margin-bottom:16px;min-width:850px;}
-.num-line-ticks{display:flex;justify-content:space-between;position:absolute;width:100%;bottom:4px;font-size:0.72rem;color:#94a3b8;font-weight:bold;}
-
-.chrono-row-group{margin-bottom:18px;min-width:850px;}
-.chrono-group-title{font-size:0.9rem;font-weight:bold;color:#f59e0b;margin-bottom:8px;}
-.chrono-track-area{position:relative;height:38px;background:#0f172a;border-radius:8px;border:1px solid #334155;display:flex;align-items:center;padding:0 4px;gap:6px;overflow-x:auto;}
-
-.dynasty-bar{height:28px;border-radius:5px;display:flex;align-items:center;justify-content:center;padding:0 8px;font-size:0.75rem;font-weight:bold;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;box-shadow:0 2px 4px rgba(0,0,0,0.3);cursor:pointer;transition:all 0.2s;border:1px solid rgba(255,255,255,0.3);flex-shrink:0;}
-.dynasty-bar:hover, .dynasty-bar.selected{transform:scale(1.03);z-index:20;box-shadow:0 0 10px rgba(245,158,11,0.8);border-color:#fff;}
-
-#timelineEventsArea{background:#1e293b;border:1px solid #334155;border-radius:14px;padding:18px;display:none;animation:fadeIn 0.25s ease-out;}
-@keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
-.tl-events-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;border-bottom:1px solid #334155;padding-bottom:8px;}
-.tl-events-title{font-size:1rem;font-weight:bold;color:#f59e0b;}
-.btn-close-tl-events{background:#334155;color:#fff;border:none;padding:4px 8px;border-radius:4px;font-size:0.72rem;cursor:pointer;}
-
-/* 側邊欄 Sidebar Overlay */
-#sidebarOverlay{position:fixed;top:0;left:0;width:280px;height:100vh;background:#0f172af2;backdrop-filter:blur(16px);border-right:1px solid #334155;z-index:1000;display:flex;flex-direction:column;padding:18px;overflow-y:auto;transform:translateX(-100%);transition:transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);}
-#sidebarOverlay.active{ transform:translateX(0); }
-.sidebar-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;border-bottom:1px solid #334155;padding-bottom:12px;}
-.sidebar-title{font-size:1.1rem;font-weight:bold;color:#f59e0b;}
-.btn-close-sidebar{background:#334155;color:#fff;border:none;width:28px;height:28px;border-radius:50%;cursor:pointer;font-weight:bold;}
-.sidebar-menu{display:flex;flex-direction:column;gap:8px;margin-bottom:20px;}
-.menu-item{background:#1e293b;border:1px solid #334155;color:#f8fafc;padding:12px 16px;border-radius:8px;font-size:0.9rem;font-weight:bold;cursor:pointer;display:flex;align-items:center;gap:8px;transition:all 0.2s;}
-.menu-item:hover, .menu-item.active{background:#f59e0b;color:#0f172a;border-color:#f59e0b;}
-
-/* Modal 彈窗 */
-#eventDetailModal{position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(15,23,42,0.85);backdrop-filter:blur(12px);z-index:2000;display:none;justify-content:center;align-items:center;padding:16px;}
-#eventDetailModal.active{ display:flex; }
-.modal-content{background:#1e293b;border:1px solid #334155;border-radius:16px;width:100%;max-width:920px;max-height:88vh;overflow-y:auto;display:flex;flex-direction:column;position:relative;}
-.modal-header{background:#0f172a;padding:18px 24px;border-bottom:1px solid #334155;display:flex;justify-content:space-between;align-items:flex-start;position:sticky;top:0;z-index:10;}
-.modal-title-area{display:flex;flex-direction:column;gap:4px;}
-.modal-badges{display:flex;gap:6px;align-items:center;}
-.modal-title{font-size:1.45rem;font-weight:bold;color:#f8fafc;}
-.modal-source{font-size:0.8rem;color:#38bdf8;font-weight:bold;}
-.btn-close-modal{background:#334155;color:#fff;border:none;width:30px;height:30px;border-radius:50%;cursor:pointer;font-weight:bold;}
-.modal-body{padding:24px;display:grid;grid-template-columns:1fr 1fr;gap:24px;}
-
-.modal-section-title{font-size:0.92rem;color:#f59e0b;font-weight:bold;margin-bottom:8px;border-bottom:1px solid #334155;padding-bottom:4px;}
-.modal-text-box{font-size:0.9rem;color:#cbd5e1;line-height:1.6;margin-bottom:16px;background:#0f172a;padding:12px 16px;border-radius:10px;border:1px solid #334155;}
-.modal-keywords-box{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px;}
-.kw-chip{background:#0f172a;color:#38bdf8;border:1px solid #0284c7;padding:4px 12px;border-radius:14px;font-size:0.75rem;font-weight:bold;}
-
-.modal-footer{background:#0f172a;padding:14px 24px;border-top:1px solid #334155;display:flex;justify-content:flex-end;gap:10px;}
-.btn-fly-map{background:#f59e0b;color:#0f172a;border:none;padding:10px 20px;border-radius:8px;font-size:0.9rem;font-weight:bold;cursor:pointer;}
-
-/* 手機與窄螢幕 RWD */
-@media (max-width: 768px) {
-    .nav-brand-text { display: none; }
-    .nav-links { gap: 4px; }
-    .nav-btn { padding: 4px 8px; font-size: 0.78rem; }
-    .modal-body { grid-template-columns:1fr; padding: 16px; }
-    .map-toolbar-row1, .map-toolbar-row2 { flex-direction:column; align-items:stretch; gap: 6px; }
-    .simple-search-input, .home-search-input { width:100%; }
-    .timeline-box { width: 100%; min-width: auto; }
-    .exam-pdf-card-row { flex-direction: column; align-items: flex-start; }
-    .exam-action-btns { width: 100%; justify-content: flex-end; margin-top: 10px; }
-    .quiz-card { padding: 20px; }
-    .q-question { font-size: 1.15rem; }
-    .q-opt-btn { font-size: 0.92rem; padding: 12px 14px; }
-}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>歷史與地理數位學習地圖 v2.0</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
+  <style>
+    :root {
+      --primary: #2563eb;
+      --primary-hover: #1d4ed8;
+      --success: #10b981;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+      --bg: #f8fafc;
+      --card-bg: #ffffff;
+      --text: #1e293b;
+      --border: #e2e8f0;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    body { background-color: var(--bg); color: var(--text); line-height: 1.5; padding-bottom: 2rem; }
+    header { background: #1e293b; color: white; padding: 1rem 1.5rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
+    .logo { font-size: 1.25rem; font-weight: bold; }
+    .sync-status { display: flex; align-items: center; gap: 0.75rem; font-size: 0.875rem; }
+    .btn { background: var(--primary); color: white; border: none; padding: 0.5rem 1rem; border-radius: 0.375rem; cursor: pointer; font-weight: 500; transition: background 0.2s; }
+    .btn:hover { background: var(--primary-hover); }
+    .btn-secondary { background: #64748b; }
+    .btn-secondary:hover { background: #475569; }
+    .btn-danger { background: var(--danger); }
+    .btn-success { background: var(--success); }
+    .btn-warning { background: var(--warning); }
+    nav { background: white; border-bottom: 1px solid var(--border); display: flex; overflow-x: auto; }
+    nav button { background: none; border: none; padding: 0.75rem 1.25rem; font-size: 0.95rem; font-weight: 500; color: #64748b; cursor: pointer; border-bottom: 2px solid transparent; white-space: nowrap; }
+    nav button.active { color: var(--primary); border-bottom-color: var(--primary); }
+    .stats-bar { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 1rem; padding: 1rem 1.5rem; max-width: 1000px; margin: 0 auto; }
+    .stat-card { background: white; padding: 0.75rem 1rem; border-radius: 0.5rem; border: 1px solid var(--border); text-align: center; }
+    .stat-value { font-size: 1.5rem; font-weight: bold; }
+    .main-content { max-width: 1000px; margin: 1rem auto; padding: 0 1.5rem; }
+    .view-panel { display: none; }
+    .view-panel.active { display: block; }
+    #map { height: 450px; width: 100%; border-radius: 0.5rem; border: 1px solid var(--border); z-index: 1; }
+    .card { background: white; border-radius: 0.5rem; border: 1px solid var(--border); padding: 1.5rem; margin-bottom: 1rem; }
+    .quiz-options { display: flex; flex-direction: column; gap: 0.75rem; margin-top: 1rem; }
+    .quiz-option { padding: 0.75rem 1rem; border: 1px solid var(--border); border-radius: 0.375rem; cursor: pointer; text-align: left; background: white; transition: all 0.2s; }
+    .quiz-option:hover { background: #f1f5f9; }
+    .quiz-option.correct { background: #d1fae5; border-color: var(--success); color: #065f46; }
+    .quiz-option.wrong { background: #fee2e2; border-color: var(--danger); color: #991b1b; }
+    .flashcard { min-height: 200px; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; cursor: pointer; border: 2px dashed var(--border); border-radius: 0.5rem; padding: 1.5rem; background: #fff; margin-bottom: 1rem; }
+    .flashcard-actions { display: flex; gap: 0.5rem; justify-content: center; }
+    .badge { display: inline-block; padding: 0.25rem 0.5rem; border-radius: 0.25rem; font-size: 0.75rem; font-weight: bold; }
+    .badge-mastered { background: #d1fae5; color: #065f46; }
+    .badge-reviewing { background: #fef3c7; color: #92400e; }
+    .badge-mistake { background: #fee2e2; color: #991b1b; }
+  </style>
 </head>
 <body>
 
-<nav class="top-nav">
-    <div class="nav-left">
-        <button class="btn-menu-trigger" onclick="toggleSidebar()">☰ 選單</button>
-        <div class="nav-brand" onclick="switchView('home')">📜 <span class="nav-brand-text">108課綱歷史總覽</span></div>
-    </div>
-    <div class="nav-links">
-        <button id="navBtnHome" class="nav-btn active" onclick="switchView('home')">🏠 首頁</button>
-        <button id="navBtnExams" class="nav-btn" onclick="switchView('exams')">📄 歷屆試題</button>
-        <button id="navBtnQuiz" class="nav-btn" onclick="switchView('quiz')">🧠 測驗與閃卡</button>
-        <button id="navBtnMap" class="nav-btn" onclick="switchView('map')">🗺️ 世界地圖</button>
-        <button id="navBtnTimeline" class="nav-btn" onclick="switchView('timeline')">⏳ 年代發展</button>
-        <button id="btnGoogleSync" class="btn-backup-auth" onclick="onGoogleBtnClick()">☁️ Google 登入同步</button>
-        <button class="btn-backup-auth" onclick="exportBackupData()">📥 匯出備份</button>
-        <button class="btn-backup-auth" onclick="importBackupData()">📤 匯入備份</button>
-    </div>
+<header>
+  <div class="logo">歷史與地理數位學習系統 v2.0</div>
+  <div class="sync-status">
+    <span id="sync-text">資料夾狀態：未連結</span>
+    <button id="btnFolderSync" class="btn" onclick="onFolderBtnClick()">📁 連結本地資料夾 (自動儲存)</button>
+  </div>
+</header>
+
+<nav>
+  <button class="nav-btn active" onclick="switchTab('map', this)">地圖探勘</button>
+  <button class="nav-btn" onclick="switchTab('flashcard', this)">閃卡複習</button>
+  <button class="nav-btn" onclick="switchTab('quiz', this)">測驗模式</button>
+  <button class="nav-btn" onclick="switchTab('settings', this)">資料管理</button>
 </nav>
 
-<div class="view-container">
-
-    <!-- 視圖 1：首頁 Dashboard -->
-    <div id="view-home">
-        <div class="home-hero">
-            <div class="hero-badge-group">
-                <div class="hero-stat-pill">🇹🇼 臺灣史：<span id="statTW">0</span></div>
-                <div class="hero-stat-pill">🇨🇳 中國史：<span id="statCN">0</span></div>
-                <div class="hero-stat-pill">🌍 世界史：<span id="statWD">0</span></div>
-            </div>
-            <h1 class="home-title">108課綱歷史考點 <span>數位時空指南</span></h1>
-            <p class="home-subtitle">收錄共 <span id="statTotal">0</span> 筆歷史考點，支援地圖點狀聚合、因果對比分析、歷屆試題庫與自動化測驗模組。</p>
-        </div>
-
-        <div class="portal-grid">
-            <div class="portal-card tw" onclick="filterHomeCategory('臺灣史')">
-                <div class="portal-top"><span class="portal-icon">🇹🇼</span><span class="portal-count-tag" id="portalTWTag" style="background:#f59e0b">0</span></div>
-                <div><div class="portal-title">臺灣史</div><div class="portal-desc">包含史前文化、大航海時代、清領轉折、日治變遷與戰後民主。</div></div>
-            </div>
-            <div class="portal-card cn" onclick="filterHomeCategory('中國史')">
-                <div class="portal-top"><span class="portal-icon">🇨🇳</span><span class="portal-count-tag" id="portalCNTag" style="background:#ef4444">0</span></div>
-                <div><div class="portal-title">中國史</div><div class="portal-desc">涵蓋華夏早期文明、歷代朝代制度、東亞交流與近代變革。</div></div>
-            </div>
-            <div class="portal-card wd" onclick="filterHomeCategory('世界史')">
-                <div class="portal-top"><span class="portal-icon">🌍</span><span class="portal-count-tag" id="portalWDTag" style="background:#3b82f6">0</span></div>
-                <div><div class="portal-title">世界史</div><div class="portal-desc">收錄四大古文明、古典希臘羅馬、大航海探索與現代秩序。</div></div>
-            </div>
-        </div>
-
-        <div class="home-filter-section">
-            <div class="home-filter-tabs">
-                <button class="tab-btn active" id="tabAll" onclick="filterHomeCategory('ALL')">✨ 全部</button>
-                <button class="tab-btn" id="tabTW" onclick="filterHomeCategory('臺灣史')">🇹🇼 臺灣史</button>
-                <button class="tab-btn" id="tabCN" onclick="filterHomeCategory('中國史')">🇨🇳 中國史</button>
-                <button class="tab-btn" id="tabWD" onclick="filterHomeCategory('世界史')">🌍 世界史</button>
-            </div>
-            <input type="text" id="homeSearchInput" class="home-search-input" placeholder="🔍 搜尋考點、地點或關鍵字..." oninput="resetHomePagination(); renderHomeCards();">
-        </div>
-
-        <div class="events-grid" id="eventsGrid"></div>
-        <div class="load-more-box" id="loadMoreBox">
-            <button class="btn-load-more" onclick="loadMoreHomeCards()">載入更多考點...</button>
-        </div>
-    </div>
-
-    <!-- 視圖 2：歷屆試題專頁 -->
-    <div id="view-exams">
-        <div class="exams-header">
-            <div>
-                <h2>📄 大考中心官方社會科歷屆試題庫 (83~115 學年度)</h2>
-                <p>收錄 83 至 115 學年度大學學測與聯考社會考科試題原檔。可下載 PDF 或點擊按鈕帶入測驗。</p>
-            </div>
-        </div>
-        <div class="exam-cards-list" id="ceecExamCardsList"></div>
-    </div>
-
-    <!-- 視圖 3：測驗與閃卡 (完整重構版本) -->
-    <div id="view-quiz">
-        <div class="quiz-header">
-            <div class="quiz-title-box">
-                <h2>🧠 主動提取與間隔重複學習系統</h2>
-                <p>支援離線高畫質記憶儲存，透過 Flashcards 閃卡與多功能選擇題強化考點記憶。</p>
-            </div>
-            <div class="quiz-stats-bar">
-                <div class="q-stat-item" onclick="switchQuizSubTab('fc_mastered')" title="查看已掌握項目"><b id="statMastered">0</b>已掌握</div>
-                <div class="q-stat-item" onclick="switchQuizSubTab('fc_reviewing')" title="查看待複習項目"><b id="statReviewing">0</b>待複習</div>
-                <div class="q-stat-item" onclick="switchQuizSubTab('mistakes')" title="查看錯題本" style="border-left:1px solid #334155; padding-left:12px;"><b id="statMistakes" style="color:#ef4444">0</b>錯題本</div>
-            </div>
-        </div>
-
-        <div class="quiz-tab-group">
-            <button class="q-tab-btn active" id="subTabFC" onclick="switchQuizSubTab('flashcards')">🗂️ 閃卡記憶卡</button>
-            <button class="q-tab-btn" id="subTabTest" onclick="switchQuizSubTab('quiz')">📝 模擬測驗</button>
-            <button class="q-tab-btn" id="subTabMistakes" onclick="switchQuizSubTab('mistakes')">❌ 錯題本紀錄</button>
-        </div>
-
-        <!-- 閃卡區塊 -->
-        <div id="secFlashcards">
-            <div class="quiz-config-card">
-                <div class="quiz-config-group">
-                    <span class="quiz-select-label">🎯 閃卡範疇：</span>
-                    <select id="cfgFcDomain" class="quiz-select-input">
-                        <option value="ALL">✨ 全部歷史領域</option>
-                        <option value="臺灣史">🇹🇼 臺灣史</option>
-                        <option value="中國史">🇨🇳 中國史</option>
-                        <option value="世界史">🌍 世界史</option>
-                    </select>
-
-                    <span class="quiz-select-label">🔢 卡片數量：</span>
-                    <select id="cfgFcCount" class="quiz-select-input">
-                        <option value="5">5 張</option>
-                        <option value="10" selected>10 張</option>
-                        <option value="15">15 張</option>
-                        <option value="20">20 張</option>
-                        <option value="ALL">ALL (全套)</option>
-                    </select>
-                    <input type="number" id="cfgFcCustomCount" class="custom-count-input" placeholder="自訂數量" min="1">
-                </div>
-                <button class="btn-start-quiz" onclick="startConfiguredFlashcards()">🚀 開始閃卡</button>
-            </div>
-
-            <div id="fcDisplayArea" style="display:none">
-                <div class="flashcard-wrapper" id="fcWrapper" onclick="toggleFCFlip()">
-                    <div class="flashcard-inner">
-                        <div class="flashcard-front">
-                            <span class="fc-badge" id="fcDomainBadge" style="background:#f59e0b">臺灣史</span>
-                            <div style="flex:1;display:flex;flex-direction:column;justify-content:center">
-                                <div class="fc-title" id="fcFrontTitle">考點載入中...</div>
-                                <div style="font-size:0.9rem;color:#cbd5e1" id="fcFrontSub">點擊卡片翻轉查看歷史細節與重點說明</div>
-                            </div>
-                            <div class="fc-hint">💡 點擊卡片任意處翻面</div>
-                        </div>
-                        <div class="flashcard-back">
-                            <div style="width:100%">
-                                <div class="fc-box"><b>📍 年代與地點：</b><span id="fcBackYearLoc">--</span></div>
-                                <div class="fc-box"><b>📖 核心說明：</b><div id="fcBackDesc">--</div></div>
-                                <div class="fc-box"><b>🔍 時代背景與影響：</b><div id="fcBackCause">--</div></div>
-                            </div>
-                            <div class="fc-hint">請評估您的記憶熟悉度：</div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="flashcard-controls">
-                    <button class="btn-fc-rating btn-fc-forgot" onclick="rateFlashcard('forgot')">🔴 忘了 (重排)</button>
-                    <button class="btn-fc-rating btn-fc-fuzzy" onclick="rateFlashcard('fuzzy')">🟡 模糊 (近期)</button>
-                    <button class="btn-fc-rating btn-fc-remembered" onclick="rateFlashcard('remembered')">🟢 記得 (已掌握)</button>
-                </div>
-            </div>
-
-            <div id="fcStartPrompt" style="text-align:center; padding:48px 20px; color:#cbd5e1; background:#1e293b; border:1px solid #334155; border-radius:16px; font-size:1.05rem;">
-                💡 請設定上方範疇與數量，點擊<b style="color:#f59e0b; margin:0 4px">「🚀 開始閃卡」</b>即可展開卡片記憶訓練。
-            </div>
-        </div>
-
-        <!-- 選擇題測驗區塊 -->
-        <div id="secQuiz" style="display:none">
-            <div class="quiz-config-card">
-                <div class="quiz-config-group">
-                    <span class="quiz-select-label">🎯 測驗範疇：</span>
-                    <select id="cfgDomain" class="quiz-select-input">
-                        <option value="ALL">✨ 全部歷史領域</option>
-                        <option value="臺灣史">🇹🇼 臺灣史</option>
-                        <option value="中國史">🇨🇳 中國史</option>
-                        <option value="世界史">🌍 世界史</option>
-                    </select>
-
-                    <span class="quiz-select-label">⚙️ 出題模式：</span>
-                    <select id="cfgType" class="quiz-select-input">
-                        <option value="MIX">🎲 混合題型</option>
-                        <option value="YEAR">📅 西元年代配對</option>
-                        <option value="DESC">📖 歷史事實描述</option>
-                    </select>
-
-                    <span class="quiz-select-label">🔢 題目數量：</span>
-                    <select id="cfgCount" class="quiz-select-input">
-                        <option value="5">5 題</option>
-                        <option value="10" selected>10 題</option>
-                        <option value="15">15 題</option>
-                        <option value="20">20 題</option>
-                        <option value="ALL">ALL (全套)</option>
-                    </select>
-                    <input type="number" id="cfgCustomCount" class="custom-count-input" placeholder="自訂題數" min="1">
-                </div>
-                <button class="btn-start-quiz" onclick="startConfiguredQuiz()">🚀 開始測驗</button>
-            </div>
-
-            <div class="quiz-cited-info" id="quizCiteInfo"></div>
-
-            <div class="quiz-card" id="quizCardBox" style="display:none">
-                <div class="q-top-ctrl-row">
-                    <div class="q-progress">
-                        <span id="qProgressText">題目 1 / 10</span>
-                        <span id="qCategoryTag" style="color:#f59e0b;font-weight:bold;margin-left:10px">測驗</span>
-                    </div>
-                    <button class="btn-quit-quiz" onclick="finishAndSettleQuiz(true)">⏹️ 結束測驗</button>
-                </div>
-                <div class="q-question" id="qQuestionText">題目載入中...</div>
-                <div class="q-options" id="qOptionsGroup"></div>
-
-                <div class="q-explanation-box" id="qExpBox">
-                    <h4>💡 考點解析</h4>
-                    <div class="q-exp-text" id="qExpText">--</div>
-                    <button class="btn-card-detail" style="width:100%;margin-top:12px;padding:12px;font-size:0.95rem" onclick="nextQuizQuestion()">下一題 ➔</button>
-                </div>
-            </div>
-
-            <div class="quiz-result-card" id="quizResultBox">
-                <h3 style="color:#38bdf8;font-size:1.4rem">📊 模擬測驗報告</h3>
-                <div class="result-score" id="resultScoreText">100 分</div>
-                <div class="result-desc" id="resultDescText">您已順利完成本次歷史模考！</div>
-                <div style="display:flex;gap:12px;justify-content:center">
-                    <button class="btn-start-quiz" onclick="switchQuizSubTab('quiz')">🔄 再測一次</button>
-                    <button class="btn-start-quiz" style="background:#ef4444;color:#fff" onclick="switchQuizSubTab('mistakes')">❌ 查看錯題本</button>
-                </div>
-            </div>
-
-            <div id="quizStartPrompt" style="text-align:center; padding:48px 20px; color:#cbd5e1; background:#1e293b; border:1px solid #334155; border-radius:16px; font-size:1.05rem;">
-                💡 請設定上方「測驗範疇」、「出題模式」與「題目數量」，點擊<b style="color:#f59e0b; margin:0 4px">「🚀 開始測驗」</b>即可開始發動測驗。
-            </div>
-        </div>
-
-        <!-- 錯題本區塊 -->
-        <div id="secMistakes" style="display:none">
-            <div class="quiz-config-card">
-                <div class="quiz-config-group">
-                    <span class="quiz-select-label">🎯 錯題篩選範疇：</span>
-                    <select id="cfgMistakeFilter" class="quiz-select-input" onchange="renderMistakesList()">
-                        <option value="ALL">✨ 全部錯題庫</option>
-                        <option value="臺灣史">🇹🇼 臺灣史錯題</option>
-                        <option value="中國史">🇨🇳 中國史錯題</option>
-                        <option value="世界史">🌍 世界史錯題</option>
-                    </select>
-                </div>
-                <div style="display:flex;gap:10px">
-                    <button class="btn-start-quiz" onclick="startMistakeQuiz()">🎯 發動錯題重測</button>
-                    <button class="btn-danger-action" onclick="clearAllMistakes()">🗑️ 清空錯題本</button>
-                </div>
-            </div>
-
-            <div class="mistake-list" id="mistakeListContainer"></div>
-        </div>
-    </div>
-
-    <!-- 視圖 4：世界地圖 -->
-    <div id="view-map">
-        <div class="map-top-bar">
-            <div class="map-toolbar-row1">
-                <div class="timeline-box">
-                    <span class="hdr-era-badge" id="hdrYearText">全部時代</span>
-                    <input type="range" id="timeSlider" min="-3000" max="2000" step="100" value="2000" oninput="onSliderDrag(this.value)">
-                    <button class="btn-reset-slider" onclick="resetTimeSlider()">全部時代</button>
-                </div>
-                <input type="text" id="searchInput" class="simple-search-input" placeholder="搜尋地圖考點..." oninput="debouncedFilter()">
-            </div>
-        </div>
-        <div id="map"></div>
-    </div>
-
-    <!-- 視圖 5：年代對照 -->
-    <div id="view-timeline">
-        <div class="timeline-header">
-            <h2 class="timeline-title">⏳ 全景歷史年代對照數線</h2>
-            <p class="timeline-subtitle">（歷史時間軸採分段次線性對數比例尺，包含西元前 50000 年舊石器時代文化）</p>
-        </div>
-
-        <div class="chronology-container">
-            <div class="chrono-row-group">
-                <div class="chrono-group-title">🇹🇼 臺灣史</div>
-                <div class="chrono-track-area" id="trackTaiwan"></div>
-            </div>
-            <div class="chrono-row-group">
-                <div class="chrono-group-title">🇨🇳 中國史</div>
-                <div class="chrono-track-area" id="trackChina"></div>
-            </div>
-            <div class="chrono-row-group">
-                <div class="chrono-group-title">🌍 世界史</div>
-                <div class="chrono-track-area" id="trackWorld"></div>
-            </div>
-        </div>
-
-        <div id="timelineEventsArea">
-            <div class="tl-events-header">
-                <div class="tl-events-title" id="tlEventsTitle">📌 點選時段考點展示</div>
-                <button class="btn-close-tl-events" onclick="closeTimelineEventsArea()">✕ 收起</button>
-            </div>
-            <div class="events-grid" id="tlEventsGrid"></div>
-        </div>
-    </div>
-
+<div class="stats-bar">
+  <div class="stat-card">
+    <div style="font-size: 0.8rem; color: #64748b;">總考點數</div>
+    <div class="stat-value" id="statTotal">0</div>
+  </div>
+  <div class="stat-card">
+    <div style="font-size: 0.8rem; color: var(--success);">已掌握</div>
+    <div class="stat-value" id="statMastered" style="color: var(--success);">0</div>
+  </div>
+  <div class="stat-card">
+    <div style="font-size: 0.8rem; color: var(--warning);">模糊複習中</div>
+    <div class="stat-value" id="statReviewing" style="color: var(--warning);">0</div>
+  </div>
+  <div class="stat-card">
+    <div style="font-size: 0.8rem; color: var(--danger);">錯題本</div>
+    <div class="stat-value" id="statMistakes" style="color: var(--danger);">0</div>
+  </div>
 </div>
 
-<!-- 側邊欄 Sidebar Overlay -->
-<div id="sidebarOverlay">
-    <div class="sidebar-header">
-        <div class="sidebar-title">📜 歷史學習地圖</div>
-        <button class="btn-close-sidebar" onclick="toggleSidebar()">✕</button>
+<div class="main-content">
+  <!-- 地圖面板 -->
+  <div id="panel-map" class="view-panel active">
+    <div class="card">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 0.75rem;">
+        <h3>考點地理分佈</h3>
+        <button class="btn btn-secondary" onclick="resetMapView()">重置地圖視角</button>
+      </div>
+      <div id="map"></div>
     </div>
-    <div class="sidebar-menu">
-        <div class="menu-item active" id="menuItemHome" onclick="switchView('home'); toggleSidebar();">🏠 首頁儀表板</div>
-        <div class="menu-item" id="menuItemExams" onclick="switchView('exams'); toggleSidebar();">📄 歷屆試題庫 (83~115)</div>
-        <div class="menu-item" id="menuItemQuiz" onclick="switchView('quiz'); toggleSidebar();">🧠 測驗與閃卡</div>
-        <div class="menu-item" id="menuItemMap" onclick="switchView('map'); toggleSidebar();">🌍 世界地圖定位</div>
-        <div class="menu-item" id="menuItemTimeline" onclick="switchView('timeline'); toggleSidebar();">⏳ 年代發展對照</div>
+  </div>
+
+  <!-- 閃卡面板 -->
+  <div id="panel-flashcard" class="view-panel">
+    <div class="card">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
+        <h3>閃卡複習卡片</h3>
+        <select id="flashcard-filter" onchange="renderFlashcard()" style="padding: 0.25rem 0.5rem; border-radius: 0.25rem;">
+          <option value="all">全部考點</option>
+          <option value="reviewing">僅模糊複習中</option>
+          <option value="mistake">僅錯題本</option>
+        </select>
+      </div>
+      <div id="flashcard-container"></div>
     </div>
+  </div>
+
+  <!-- 測驗面板 -->
+  <div id="panel-quiz" class="view-panel">
+    <div class="card">
+      <h3>刷題測驗</h3>
+      <div style="margin: 1rem 0; display:flex; gap:1rem; align-items:center; flex-wrap:wrap;">
+        <label>
+          篩選範疇：
+          <select id="quiz-filter-stage" style="padding:0.25rem 0.5rem;">
+            <option value="ALL">全部範圍</option>
+            <option value="史前與早期">史前與早期</option>
+            <option value="清領時期">清領時期</option>
+            <option value="日治時期">日治時期</option>
+          </select>
+        </label>
+        <button class="btn" onclick="startNewQuiz()">開始測驗 (10題)</button>
+        <button class="btn btn-secondary" onclick="citeExamToQuiz('115學年度')">帶入 115 學年度範疇</button>
+      </div>
+      <div id="quiz-container"></div>
+    </div>
+  </div>
+
+  <!-- 設定面板 -->
+  <div id="panel-settings" class="view-panel">
+    <div class="card">
+      <h3>資料備份與匯入</h3>
+      <p style="font-size:0.875rem; color:#64748b; margin-top:0.5rem;">
+        匯入與連結會自動進行「雙向時間戳合併」，不會覆蓋或遺失數據。
+      </p>
+      <div style="margin-top:1rem; display:flex; gap:1rem; flex-wrap:wrap;">
+        <button class="btn btn-secondary" onclick="exportBackupData()">📥 匯出 JSON 備份</button>
+        <button class="btn btn-success" onclick="importBackupData()">📤 安全匯入備份</button>
+        <button class="btn btn-danger" onclick="resetAllData()">⚠️ 重置本地學習紀錄</button>
+      </div>
+    </div>
+  </div>
 </div>
 
-<!-- Modal 彈窗 -->
-<div id="eventDetailModal">
-    <div class="modal-content">
-        <div class="modal-header">
-            <div class="modal-title-area">
-                <div class="modal-badges">
-                    <span id="mdlDomainBadge" class="ev-badge">歷史</span>
-                    <span id="mdlYearBadge" class="ev-year">年代</span>
-                </div>
-                <div id="mdlTitle" class="modal-title">考點名稱</div>
-                <div id="mdlSource" class="modal-source">冊次來源</div>
-            </div>
-            <button class="btn-close-modal" onclick="closeEventDetailModal()">✕</button>
-        </div>
-
-        <div class="modal-body">
-            <div>
-                <div class="modal-section-title">🏷️ 關鍵字標註</div>
-                <div class="modal-keywords-box" id="mdlKeywordsArea"></div>
-
-                <div class="modal-section-title">📍 發生地點與重點說明</div>
-                <div id="mdlLocText" class="modal-text-box">--</div>
-
-                <div class="modal-section-title">📖 歷史故事與敘事</div>
-                <div id="mdlStoryText" class="modal-text-box">--</div>
-            </div>
-
-            <div>
-                <div class="modal-section-title">🔍 前因與時代背景</div>
-                <div id="mdlCauseText" class="modal-text-box">--</div>
-
-                <div class="modal-section-title">💡 長遠影響</div>
-                <div id="mdlEffectText" class="modal-text-box">--</div>
-
-                <div class="modal-section-title" id="mdlCompTitle">⚡ 易混淆對比</div>
-                <div id="mdlCompText" class="modal-text-box">--</div>
-            </div>
-        </div>
-
-        <div class="modal-footer">
-            <button class="btn-fly-map" onclick="flyToCurrentModalEvent()">
-                🗺️ 切換至世界地圖並定位現場
-            </button>
-        </div>
-    </div>
-</div>
-
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
-<script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 <script>
-const rawData = [{"domain": "臺灣史", "sheet": "史前文明", "stage": "國小、國中", "year": "約5萬~5千年前", "start_year": -48000, "end_year": -3000, "num_year": -48000, "lat": 23.3011, "lng": 121.4433, "loc": "臺東縣長濱鄉", "title": "長濱文化", "desc": "臺灣已知最早的舊石器時代文化,遺址在臺東長濱", "cause": "末次冰期海平面較低,臺灣與大陸相連,人群得以遷入", "effect": "留下臺灣最早的人類活動證據,是後續史前文化的起點", "comparison": "長濱文化(舊石器、無陶)≠大坌坑文化(新石器、繩紋陶)", "story": "八仙洞的海蝕洞裡,先民用敲打的石片當刀,靠採集、狩獵與捕魚維生,還沒有陶器。他們留下的石器與骨角器,是認識臺灣最早居民的第一扇窗。", "keywords": ["臺灣史", "史前文明", "舊石器", "八仙洞", "先陶文化"], "id": 1}, {"domain": "臺灣史", "sheet": "史前文明", "stage": "國小", "year": "約1.5萬年前", "start_year": -13000, "end_year": -13000, "num_year": -13000, "lat": 23.0463, "lng": 120.3463, "loc": "臺南市左鎮區", "title": "左鎮人", "desc": "臺南左鎮發現的人類頭骨化石,是臺灣早期人類的重要證據", "cause": "菜寮溪河床出土頭骨化石,可推知舊石器晚期已有人群活動", "effect": "成為臺灣早期人類的重要實證,補充器物以外的人骨證據", "comparison": "左鎮人(人骨化石)≠長濱文化(石器文化遺存),性質不同", "story": "臺南菜寮溪的河床上陸續發現了一些人類頭骨化石碎片。研究者拼合並鑑定後,左鎮人讓臺灣的人類故事,第一次有了「人」的面孔。", "keywords": ["臺灣史", "史前文明", "人類化石", "臺南左鎮", "晚期智人"], "id": 2}, {"domain": "臺灣史", "sheet": "史前文明", "stage": "國小、國中", "year": "約6000年前", "start_year": -4000, "end_year": -4000, "num_year": -4000, "lat": 25.1269, "lng": 121.3852, "loc": "新北市八里區", "title": "大坌坑文化", "desc": "新石器時代早期,臺灣南島語族祖先文化之一", "cause": "冰期結束、氣候暖化,沿海資源豐富,人群定居聚落", "effect": "奠定臺灣新石器文化基礎,與南島語族起源討論有關", "comparison": "大坌坑(早期、繩紋陶)≠圓山(貝塚、有段石錛)≠十三行(鐵器)", "story": "約六千年前,新北八里的先民用繩子在陶器上壓出紋路,也吃貝類、捕魚。這些繩紋陶,被認為與後來的南島語族祖先有關。", "keywords": ["臺灣史", "史前文明", "新石器早期", "繩紋陶", "八里"], "id": 3}, {"domain": "世界史", "sheet": "古文明與希臘羅馬", "stage": "國小", "year": "約前3500年", "start_year": -3500, "end_year": -3500, "num_year": -3500, "lat": 32.5243, "lng": 44.4088, "loc": "兩河流域/古埃及/印度/黃河", "title": "四大古文明", "desc": "兩河流域、古埃及、印度河、黃河流域文明興起", "cause": "大河流域土壤肥沃,農業發達,促成城市與國家興起", "effect": "形成文字、曆法、宗教與政治制度,奠定人類文明基礎", "comparison": "四大古文明(大河流域、農業)≠希臘羅馬(地中海、城邦)", "story": "尼羅河、兩河流域、印度河與黃河,這些大河帶來肥沃土壤與水源,讓人類發展出農業、城市與文字。這四個地方,是人類文明最早的搖籃。", "keywords": ["世界史", "古文明與希臘羅馬", "兩河流域", "古埃及", "印度河", "黃河", "大河文明"], "id": 4}, {"domain": "世界史", "sheet": "古文明與希臘羅馬", "stage": "國中", "year": "約前3500年", "start_year": -3500, "end_year": -3500, "num_year": -3500, "lat": 32.5273, "lng": 44.4088, "loc": "伊拉克巴比倫", "title": "兩河流域文明", "desc": "蘇美人發明楔形文字", "cause": "兩河流域農業發達,城邦興起", "effect": "發明楔形文字,留下《漢摩拉比法典》", "comparison": "兩河(楔形文字、泥板)≠埃及(象形文字、紙草)", "story": "蘇美人在泥板上用蘆葦桿壓出楔形符號,記錄買賣、法律與故事。後來的漢摩拉比王把法律刻在石柱上,提出「以牙還牙」式的同態復仇原則。", "keywords": ["世界史", "古文明與希臘羅馬", "蘇美人", "楔形文字", "漢摩拉比法典"], "id": 5}, {"domain": "臺灣史", "sheet": "史前文明", "stage": "高中", "year": "約4000~5000年前", "start_year": -3000, "end_year": -2000, "num_year": -3000, "lat": 23.588, "lng": 120.888, "loc": "臺灣全島", "title": "南島語族起源討論", "desc": "臺灣為南島語族重要起源地之一", "cause": "臺灣原住民語言歧異度高,考古與語言學證據相互對照", "effect": "多數學者認為臺灣是南島語族重要的擴散起點之一(仍有學說爭議)", "comparison": "「臺灣為重要起源地」是主流論述之一,並非唯一定論", "story": "從臺灣的阿美、泰雅,到菲律賓、夏威夷、紐西蘭的毛利人,語言竟有親戚關係。學者因此推測:古代有一群人從臺灣出發,乘船向太平洋各島擴散。", "keywords": ["臺灣史", "史前文明", "南島語族", "語言學", "考古證據"], "id": 6}, {"domain": "中國史", "sheet": "先秦", "stage": "國小", "year": "約5000年前", "start_year": -3000, "end_year": -3000, "num_year": -3000, "lat": 34.5713, "lng": 109.188, "loc": "陝西黃陵/黃河流域", "title": "傳說中的黃帝、炎帝", "desc": "華夏民族早期的傳說領袖", "cause": "黃河流域部落聯盟逐漸形成共同祖先敘述", "effect": "成為「炎黃子孫」等民族認同的象徵", "comparison": "傳說(神話與史料混合)≠有文字記載的夏商周", "story": "傳說黃帝與炎帝先後統領黃河流域的部落,又在涿鹿聯手擊敗蚩尤。後人自稱「炎黃子孫」,正是把他們視為共同祖先的象徵。", "keywords": ["中國史", "先秦", "黃帝", "炎帝", "華夏", "涿鹿之戰"], "id": 7}, {"domain": "世界史", "sheet": "古文明與希臘羅馬", "stage": "國中", "year": "約前3000年", "start_year": -3000, "end_year": -3000, "num_year": -3000, "lat": 30.0324, "lng": 31.2237, "loc": "埃及開羅/尼羅河流域", "title": "古埃及統一", "desc": "金字塔、象形文字", "cause": "尼羅河定期氾濫,農業發達,需要集中管理", "effect": "形成神權統治與高度文明,留下金字塔與象形文字", "comparison": "埃及(尼羅河、法老、金字塔)≠兩河(楔形文字、城邦)", "story": "尼羅河每年氾濫帶來肥沃泥土,埃及人因此發展出發達農業,也發明了曆法。法老被視為神的化身,為死後世界建造金字塔,並製作木乃伊。", "keywords": ["世界史", "古文明與希臘羅馬", "法老", "金字塔", "象形文字", "尼羅河"], "id": 8}, {"domain": "中國史", "sheet": "先秦", "stage": "國小、國中", "year": "約前2070年", "start_year": -2070, "end_year": -2070, "num_year": -2070, "lat": 34.6713, "lng": 112.838, "loc": "河南偃師二里頭", "title": "夏朝", "desc": "傳統上認為中國第一個世襲王朝", "cause": "治水成功的禹由部落聯盟領袖逐漸演變為世襲統治", "effect": "傳統上被視為第一個世襲王朝,考古證據仍在討論", "comparison": "夏(傳統上第一個王朝、文字史料少)≠商(有甲骨文為證)", "story": "傳說大禹治水十三年,三過家門而不入。因治水有功,他的兒子啟接位,開啟「家天下」的世襲制,夏因此被視為第一個世襲王朝(考古證據仍在討論)。", "keywords": ["中國史", "先秦", "禹", "世襲制", "二里頭"], "id": 9}, {"domain": "中國史", "sheet": "先秦", "stage": "國中", "year": "約前1600年", "start_year": -1600, "end_year": -1600, "num_year": -1600, "lat": 36.091, "lng": 114.338, "loc": "河南安陽殷墟", "title": "商朝建立", "desc": "使用甲骨文與青銅器", "cause": "商族勢力壯大,滅夏建立政權", "effect": "留下甲骨文與青銅文明,為最早成熟文字之一", "comparison": "商(甲骨文、青銅、神權)≠周(封建、宗法、天命)", "story": "商朝人在龜甲或獸骨上刻字,占卜祭祀、戰爭與天氣,這就是甲骨文。他們也鑄出精美的青銅器,殷墟出土的后母戊(司母戊)鼎是代表之一。", "keywords": ["中國史", "先秦", "甲骨文", "青銅器", "殷墟", "占卜"], "id": 10}, {"domain": "中國史", "sheet": "先秦", "stage": "國中、高中", "year": "約前1046年", "start_year": -1046, "end_year": -1046, "num_year": -1046, "lat": 35.294, "lng": 113.894, "loc": "河南牧野(新鄉)", "title": "周武王滅商", "desc": "建立西周,實行封建制度", "cause": "商紂政治腐敗,諸侯離心", "effect": "建立西周,實行封建與宗法制度", "comparison": "封建(分封土地與爵位)≠郡縣(中央派官)", "story": "周武王聯合諸侯在牧野與商軍決戰,商紂兵敗。周建立後把土地與爵位分封給親族與功臣,形成封建制度,並以「天命」說明改朝換代的正當性。", "keywords": ["中國史", "先秦", "封建制度", "宗法", "天命", "牧野之戰"], "id": 11}, {"domain": "世界史", "sheet": "古文明與希臘羅馬", "stage": "高中", "year": "前8~前5世紀", "start_year": -800, "end_year": -401, "num_year": -800, "lat": 37.9718, "lng": 23.7155, "loc": "希臘雅典", "title": "希臘城邦", "desc": "雅典與斯巴達;民主政治萌芽", "cause": "希臘地形破碎,形成獨立城邦", "effect": "發展出民主、哲學、戲劇與競技文化", "comparison": "雅典(民主、商業、文化)≠斯巴達(軍事、寡頭)", "story": "希臘山多地少,人們散居成一個個小國。雅典重視公民參與與藝術哲學,斯巴達則把男孩從小訓練成戰士。這種多元發展,孕育出西方文化的重要根基。", "keywords": ["世界史", "古文明與希臘羅馬", "雅典", "斯巴達", "城邦", "公民"], "id": 12}, {"domain": "中國史", "sheet": "先秦", "stage": "國中、高中", "year": "前770年", "start_year": -770, "end_year": -770, "num_year": -770, "lat": 34.614, "lng": 112.444, "loc": "河南洛陽", "title": "東周(春秋時代)開始", "desc": "周室東遷,諸侯爭霸", "cause": "犬戎入侵,周室東遷洛陽,王室衰微", "effect": "諸侯爭霸,封建秩序逐漸瓦解", "comparison": "春秋(尊王攘夷、霸主)≠戰國(兼併、變法)", "story": "犬戎攻破鎬京後,周平王把都城遷到洛陽。天子威信大不如前,諸侯紛紛稱霸,「尊王攘夷」成為號召,春秋時代揭開序幕。", "keywords": ["中國史", "先秦", "平王東遷", "春秋五霸", "尊王攘夷"], "id": 13}, {"domain": "中國史", "sheet": "先秦", "stage": "國中、高中", "year": "前551年", "start_year": -551, "end_year": -551, "num_year": -551, "lat": 35.594, "lng": 116.984, "loc": "山東曲阜", "title": "孔子誕生", "desc": "儒家創始人,諸子百家興起", "cause": "春秋禮壞樂崩,士階層興起", "effect": "儒家成為影響中國文化的重要學派", "comparison": "孔子(儒家、仁禮)≠老子(道家)≠墨子(兼愛)≠韓非(法家)", "story": "魯國的孔子年輕時做過管倉庫、管牛羊的小官,後來周遊列國,想以「仁」與「禮」恢復社會秩序。他收學生不分貴賤,開創私人講學風氣。", "keywords": ["中國史", "先秦", "孔子", "儒家", "仁", "有教無類"], "id": 14}, {"domain": "世界史", "sheet": "古文明與希臘羅馬", "stage": "高中", "year": "前509年", "start_year": -509, "end_year": -509, "num_year": -509, "lat": 41.8908, "lng": 12.4844, "loc": "義大利羅馬", "title": "羅馬共和", "desc": "建立共和政體", "cause": "羅馬推翻王政,建立貴族為主的共和政體", "effect": "奠定羅馬法與制度基礎,後向外擴張", "comparison": "羅馬共和(元老院、執政官)≠羅馬帝國(皇帝統治)", "story": "羅馬人趕走國王後,由兩位執政官共同治理,元老院掌握實權。平民為爭取權利,後來也取得護民官等職位,逐漸形成混合的共和政體。", "keywords": ["世界史", "古文明與希臘羅馬", "元老院", "執政官", "共和政體"], "id": 15}, {"domain": "世界史", "sheet": "古文明與希臘羅馬", "stage": "國中", "year": "前508年", "start_year": -508, "end_year": -508, "num_year": -508, "lat": 37.9748, "lng": 23.7155, "loc": "希臘雅典", "title": "雅典民主改革", "desc": "克里斯提尼改革,古希臘民主政治", "cause": "雅典貴族與平民矛盾,需要政治改革", "effect": "奠定直接民主政治基礎(僅限男性公民)", "comparison": "雅典(直接民主)≠斯巴達(軍事寡頭)", "story": "克里斯提尼改革讓公民可在公民大會直接表決國家大事,還設有「陶片放逐法」防止獨裁。不過,婦女、奴隸與外邦人沒有政治權利。", "keywords": ["世界史", "古文明與希臘羅馬", "克里斯提尼", "公民大會", "陶片放逐法"], "id": 16}, {"domain": "世界史", "sheet": "古文明與希臘羅馬", "stage": "國中、高中", "year": "前5世紀", "start_year": -500, "end_year": -401, "num_year": -500, "lat": 37.9778, "lng": 23.7155, "loc": "希臘雅典", "title": "波希戰爭", "desc": "希臘城邦聯合抗波斯", "cause": "波斯擴張,希臘城邦援助小亞細亞反抗", "effect": "希臘城邦擊退波斯,雅典崛起並組成提洛同盟", "comparison": "波希戰爭(希臘vs波斯)≠伯羅奔尼撒戰爭(雅典vs斯巴達)", "story": "波斯大軍遠征希臘,雅典在馬拉松擊敗波斯,後來斯巴達與雅典又在海戰與陸戰中聯手勝利。戰後雅典聲望大增,成為希臘的領導者。", "keywords": ["世界史", "古文明與希臘羅馬", "馬拉松戰役", "薩拉米斯海戰", "雅典", "波斯"], "id": 17}, {"domain": "中國史", "sheet": "先秦", "stage": "國中、高中", "year": "前475年", "start_year": -475, "end_year": -475, "num_year": -475, "lat": 37.864, "lng": 112.544, "loc": "山西太原(晉國故地)", "title": "戰國時代開始", "desc": "七雄爭霸,百家爭鳴", "cause": "晉國被韓趙魏三家瓜分,周王室名存實亡", "effect": "各國變法圖強,走向統一趨勢", "comparison": "春秋(霸主尊王)≠戰國(七雄兼併)", "story": "晉國被韓、趙、魏三家瓜分後,周天子還承認他們為諸侯(前403年),等於默認舊秩序瓦解;因此也有以前403年為戰國開端的說法。此後七雄爭戰、人才流動,也出現百家爭鳴的熱鬧局面。", "keywords": ["中國史", "先秦", "七雄", "三家分晉", "百家爭鳴", "兼併戰爭"], "id": 18}, {"domain": "中國史", "sheet": "先秦", "stage": "高中", "year": "前356年", "start_year": -356, "end_year": -356, "num_year": -356, "lat": 34.324, "lng": 108.704, "loc": "陝西咸陽", "title": "商鞅變法", "desc": "秦國變法,奠定強國基礎", "cause": "秦國落後,需要富國強兵", "effect": "奠定秦國強盛基礎,推動郡縣制與軍功制", "comparison": "商鞅(法家、變法)≠王安石(宋代新法)", "story": "商鞅為了讓人民相信新法,先在城門立木,誰能搬到另一端就賞金,搬了就真的給賞。他以軍功授爵、推行郡縣,讓秦國由弱轉強。", "keywords": ["中國史", "先秦", "商鞅", "法家", "郡縣", "軍功爵"], "id": 19}, {"domain": "世界史", "sheet": "古文明與希臘羅馬", "stage": "國中、高中", "year": "前334年", "start_year": -334, "end_year": -334, "num_year": -334, "lat": 40.754, "lng": 22.514, "loc": "馬其頓佩拉", "title": "亞歷山大東征", "desc": "建立橫跨歐亞非的大帝國", "cause": "馬其頓統一希臘後,向東擴張征服波斯", "effect": "建立橫跨歐亞非帝國,促成希臘化文化", "comparison": "亞歷山大(希臘化文化)≠羅馬(拉丁文化、羅馬法)", "story": "亞歷山大二十歲繼位,率軍征服波斯、埃及,遠至印度河流域。他死後帝國分裂,但希臘語言與文化在各地傳播,形成「希臘化文化」。", "keywords": ["世界史", "古文明與希臘羅馬", "亞歷山大", "希臘化", "馬其頓", "東西交流"], "id": 20}, {"domain": "中國史", "sheet": "秦漢", "stage": "國小、國中、高中", "year": "前221年", "start_year": -221, "end_year": -221, "num_year": -221, "lat": 34.327, "lng": 108.704, "loc": "陝西咸陽", "title": "秦始皇統一中國", "desc": "建立中央集權,統一文字、貨幣、度量衡", "cause": "秦國長期變法富強,逐步消滅六國", "effect": "建立中央集權,統一文字、貨幣、度量衡", "comparison": "秦(郡縣制、法家)≠周(封建制、宗法)", "story": "秦王嬴政滅六國後,自稱「皇帝」,廢封建改行郡縣,派官員管理地方,又統一文字、貨幣與度量衡。這些制度讓中國形成中央集權的大一統國家。", "keywords": ["中國史", "秦漢", "郡縣制", "皇帝", "書同文", "車同軌"], "id": 21}, {"domain": "中國史", "sheet": "秦漢", "stage": "國小、國中、高中", "year": "前202年", "start_year": -202, "end_year": -202, "num_year": -202, "lat": 34.264, "lng": 108.944, "loc": "陝西西安(長安)", "title": "漢朝建立", "desc": "劉邦建立漢朝,漢武帝時國力強盛", "cause": "秦末民變,楚漢相爭後劉邦稱帝", "effect": "建立長達四百年的漢帝國", "comparison": "西漢(郡國並行)≠秦(完全郡縣)", "story": "劉邦出身亭長,在秦末亂世中與項羽爭天下,最後在垓下大勝稱帝。漢初曾採郡國並行,後來逐步削弱諸侯王,朝廷統一管理。", "keywords": ["中國史", "秦漢", "劉邦", "郡國並行", "休養生息"], "id": 22}, {"domain": "中國史", "sheet": "秦漢", "stage": "高中", "year": "前141~前87年", "start_year": -141, "end_year": -87, "num_year": -141, "lat": 34.267, "lng": 108.944, "loc": "陝西西安(長安)", "title": "漢武帝統治", "desc": "推恩令、獨尊儒術、擴張疆域、鹽鐵專賣", "cause": "前期休養生息使國力充實,需要中央集權與對外用兵", "effect": "加強皇權、擴張疆域,但財政負擔加重", "comparison": "文景之治(休養生息)≠武帝(積極擴張、集權)", "story": "漢武帝以推恩令分化諸侯王,接受董仲舒建議「獨尊儒術」,並派衛青、霍去病北伐匈奴。連年戰爭使國庫吃緊,於是推行鹽鐵專賣增加收入。", "keywords": ["中國史", "秦漢", "推恩令", "獨尊儒術", "鹽鐵專賣", "擴張"], "id": 23}, {"domain": "中國史", "sheet": "秦漢", "stage": "國小、國中、高中", "year": "前138年", "start_year": -138, "end_year": -138, "num_year": -138, "lat": 40.0238, "lng": 94.7908, "loc": "甘肅敦煌/絲綢之路", "title": "張騫通西域", "desc": "開啟絲路,促進東西交流", "cause": "漢朝欲聯合大月氏對抗匈奴", "effect": "開啟絲綢之路,促進東西方交流", "comparison": "張騫(通西域、漢)≠鄭和(下西洋、明)", "story": "張騫奉命出使大月氏,途中被匈奴扣留十多年仍不忘使命。他雖然沒有說服大月氏聯盟,卻帶回西域的見聞,為後來絲路貿易鋪路。", "keywords": ["中國史", "秦漢", "張騫", "絲路", "匈奴", "大月氏"], "id": 24}, {"domain": "世界史", "sheet": "古文明與希臘羅馬", "stage": "國中、高中", "year": "前27年", "start_year": -27, "end_year": -27, "num_year": -27, "lat": 41.8938, "lng": 12.4844, "loc": "義大利羅馬", "title": "羅馬帝國建立", "desc": "奧古斯都開啟帝國時代", "cause": "共和末期內戰不斷,需要強力統治", "effect": "開啟帝國時代,帶來兩百年羅馬和平", "comparison": "羅馬共和(元老院)≠羅馬帝國(皇帝)", "story": "屋大維結束內戰後,獲元老院授予「奧古斯都」尊號,實質上成為皇帝,卻自稱「第一公民」。此後兩百年的和平繁榮,被稱為「羅馬和平」。", "keywords": ["世界史", "古文明與希臘羅馬", "奧古斯都", "元首制", "羅馬和平"], "id": 25}, {"domain": "臺灣史", "sheet": "史前文明", "stage": "國小", "year": "約2000年前", "start_year": 0, "end_year": 0, "num_year": 0, "lat": 25.149, "lng": 121.386, "loc": "新北市八里區", "title": "鐵器時代(十三行文化等)", "desc": "開始使用鐵器,與外界交流增加", "cause": "與東南亞及中國沿海交流增加,金屬技術傳入", "effect": "出現冶鐵、玻璃與瑪瑙飾品交易,社會分工更複雜", "comparison": "新石器(石器)≠鐵器時代(冶鐵);十三行是北臺灣代表", "story": "當中國沿海商人把鐵器、玻璃珠帶上岸,臺灣原住民開始學會冶鐵,也用山產與外人交換珍奇物品。石器時代的生活,逐漸被金屬與貿易改寫。", "keywords": ["臺灣史", "史前文明", "鐵器", "冶鐵", "對外貿易"], "id": 26}, {"domain": "臺灣史", "sheet": "史前文明", "stage": "國中", "year": "約2000~500年前", "start_year": 0, "end_year": 1500, "num_year": 0, "lat": 25.152, "lng": 121.386, "loc": "新北市八里區", "title": "十三行文化", "desc": "鐵器時代,北臺灣,已有冶鐵與對外貿易", "cause": "與外界貿易頻繁,金屬技術傳入北臺灣", "effect": "遺址出土煉鐵爐與外來物品,顯示當時已有對外交流", "comparison": "十三行(北部、鐵器、貿易)≠圓山(北部、新石器)", "story": "淡水河口的八里,曾有一座繁忙的鐵器時代村落。考古人員在這裡挖出煉鐵爐、中國錢幣與外來珠飾,說明先民早就與海外往來。", "keywords": ["臺灣史", "史前文明", "八里", "冶鐵", "對外貿易"], "id": 27}, {"domain": "臺灣史", "sheet": "史前文明", "stage": "高中", "year": "約2000~400年前", "start_year": 0, "end_year": 1600, "num_year": 0, "lat": 23.591, "lng": 120.888, "loc": "臺灣全島", "title": "鐵器時代原住民文化", "desc": "凱達格蘭、西拉雅等原住民族社會", "cause": "鐵器傳入與族群分化,各地形成不同社會組織", "effect": "各族以部落自治為主,後與荷蘭、漢人陸續接觸", "comparison": "平埔族(凱達格蘭、西拉雅等)≠高山族,分布與漢化程度不同", "story": "荷蘭人到來前,臺灣島上已有凱達格蘭、西拉雅等許多族群,各有語言與習俗,以部落為單位生活。他們是臺灣歷史故事的第一批主人。", "keywords": ["臺灣史", "史前文明", "凱達格蘭", "西拉雅", "部落社會"], "id": 28}, {"domain": "中國史", "sheet": "秦漢", "stage": "國中、高中", "year": "25年", "start_year": 25, "end_year": 25, "num_year": 25, "lat": 34.617, "lng": 112.444, "loc": "河南洛陽", "title": "東漢建立", "desc": "劉秀重建漢朝", "cause": "王莽新政失敗,天下大亂", "effect": "重建漢朝,定都洛陽", "comparison": "西漢(長安)≠東漢(洛陽)", "story": "王莽改制失敗後天下大亂,劉秀憑軍事與政治才能逐一平定群雄,在洛陽重建漢朝,史稱東漢,他就是漢光武帝。", "keywords": ["中國史", "秦漢", "劉秀", "光武中興", "洛陽"], "id": 29}, {"domain": "中國史", "sheet": "秦漢", "stage": "國中", "year": "105年", "start_year": 105, "end_year": 105, "num_year": 105, "lat": 34.62, "lng": 112.444, "loc": "河南洛陽", "title": "蔡倫改良造紙術", "desc": "紙的普及促進文化傳播", "cause": "書寫材料不便,需要更便宜的載體", "effect": "紙張普及,促進文化與知識傳播", "comparison": "蔡倫(改良造紙)≠畢昇(活字印刷)", "story": "當時人們多在竹簡或絹帛上寫字,不是笨重就是昂貴。蔡倫改用樹皮、破布、麻頭製紙,成本低又好用,紙從此在中國逐漸普及。", "keywords": ["中國史", "秦漢", "蔡倫", "造紙術", "東漢"], "id": 30}, {"domain": "中國史", "sheet": "秦漢", "stage": "國中、高中", "year": "184年", "start_year": 184, "end_year": 184, "num_year": 184, "lat": 37.214, "lng": 115.024, "loc": "河北鉅鹿", "title": "黃巾之亂", "desc": "東漢衰亡,群雄並起", "cause": "外戚宦官專政,天災與農民困苦", "effect": "削弱東漢中央,軍閥割據興起", "comparison": "黃巾之亂(農民、宗教)≠太平天國(清末、洪秀全)", "story": "張角以太平道傳教,聚集大量信徒,頭綁黃巾,喊出「蒼天已死,黃天當立」,起兵反漢。東漢雖平定亂事,卻使地方軍閥崛起,朝廷權威大減。", "keywords": ["中國史", "秦漢", "黃巾", "張角", "太平道"], "id": 31}, {"domain": "中國史", "sheet": "魏晉南北朝", "stage": "國中", "year": "220年", "start_year": 220, "end_year": 220, "num_year": 220, "lat": 34.623, "lng": 112.444, "loc": "河南洛陽", "title": "三國時代", "desc": "魏、蜀、吳三國鼎立", "cause": "黃巾之亂後軍閥割據,逐漸形成三方勢力", "effect": "形成魏、蜀、吳三國鼎立", "comparison": "三國(魏蜀吳鼎立)≠兩晉(司馬氏統一再分裂)", "story": "赤壁之戰中,孫權與劉備聯軍擊敗曹操,使天下形成三方勢力。曹丕代漢建立魏,劉備在蜀稱帝,孫權在吳稱帝,三國鼎立。", "keywords": ["中國史", "魏晉南北朝", "魏蜀吳", "赤壁之戰", "曹操", "劉備", "孫權"], "id": 32}, {"domain": "中國史", "sheet": "魏晉南北朝", "stage": "高中", "year": "220年", "start_year": 220, "end_year": 220, "num_year": 220, "lat": 34.626, "lng": 112.444, "loc": "河南洛陽", "title": "魏晉南北朝開始", "desc": "九品官人法,門閥士族興起", "cause": "漢末動亂,中央權威衰弱,士族勢力興起", "effect": "形成門閥政治與長期南北分裂", "comparison": "九品官人法(門第取士)≠科舉(考試取士)", "story": "曹魏推行九品官人法,由地方官評定人物品級,結果高官多出自世家大族,形成門閥政治。長期分裂的時代,也讓佛教與玄學蓬勃發展。", "keywords": ["中國史", "魏晉南北朝", "九品官人法", "門閥士族", "佛教", "玄學"], "id": 33}, {"domain": "中國史", "sheet": "魏晉南北朝", "stage": "國中、高中", "year": "280年", "start_year": 280, "end_year": 280, "num_year": 280, "lat": 34.614, "lng": 112.447, "loc": "河南洛陽", "title": "西晉統一", "desc": "八王之亂與五胡亂華(304年)", "cause": "司馬氏取代曹魏後滅吳統一", "effect": "統一短暫,八王之亂後北方陷入五胡亂華", "comparison": "西晉(統一但短暫)≠隋(再次統一並長久)", "story": "司馬炎取代曹魏後滅吳,終結三國,但他大封宗室為王。不久爆發八王之亂,北方少數民族趁機南下,西晉隨之衰亡。", "keywords": ["中國史", "魏晉南北朝", "司馬炎", "八王之亂", "五胡亂華"], "id": 34}, {"domain": "世界史", "sheet": "古文明與希臘羅馬", "stage": "國中、高中", "year": "313年", "start_year": 313, "end_year": 313, "num_year": 313, "lat": 45.454, "lng": 9.184, "loc": "義大利米蘭", "title": "米蘭敕令", "desc": "羅馬帝國承認基督教", "cause": "基督教徒受迫害,帝國需要整合信仰", "effect": "羅馬承認基督教合法,後成為國教", "comparison": "米蘭敕令(313承認合法)≠狄奧多西(392定為國教)", "story": "君士坦丁與李錫尼在米蘭達成協議,承認基督徒信仰自由。從遭受迫害到合法存在,基督教後來在狄奧多西皇帝時成為羅馬國教。", "keywords": ["世界史", "古文明與希臘羅馬", "君士坦丁", "基督教", "宗教寬容"], "id": 35}, {"domain": "中國史", "sheet": "魏晉南北朝", "stage": "國中、高中", "year": "317年", "start_year": 317, "end_year": 317, "num_year": 317, "lat": 32.054, "lng": 118.794, "loc": "江蘇南京(建康)", "title": "東晉建立", "desc": "五胡入華,北方分裂", "cause": "北方淪陷,晉室南遷", "effect": "北方人口南遷,促進江南開發", "comparison": "東晉(南方、士族)≠十六國(北方)", "story": "晉室被迫南遷建康,大批中原士族與百姓隨之南渡,史稱「衣冠南渡」。人口與技術南移,促進江南開發。", "keywords": ["中國史", "魏晉南北朝", "五胡亂華", "衣冠南渡", "建康"], "id": 36}, {"domain": "世界史", "sheet": "中古時期", "stage": "國中、高中", "year": "476年", "start_year": 476, "end_year": 476, "num_year": 476, "lat": 44.414, "lng": 12.194, "loc": "義大利拉溫納", "title": "西羅馬帝國滅亡", "desc": "歐洲進入中世紀", "cause": "日耳曼人入侵與帝國財政軍事衰弱", "effect": "歐洲進入中世紀,東羅馬繼續存在", "comparison": "西羅馬(476滅亡)≠東羅馬(1453滅亡)", "story": "日耳曼將領奧多亞克廢黜年幼皇帝,西羅馬帝國滅亡。歷史上常以此作為中古時期的開端,但東羅馬帝國仍繼續延續近千年。", "keywords": ["世界史", "中古時期", "日耳曼人", "476", "中世紀", "奧多亞克"], "id": 37}, {"domain": "中國史", "sheet": "魏晉南北朝", "stage": "國中、高中", "year": "494年", "start_year": 494, "end_year": 494, "num_year": 494, "lat": 34.6077, "lng": 112.4422, "loc": "河南洛陽", "title": "北魏孝文帝遷都洛陽", "desc": "推行漢化政策", "cause": "鮮卑政權需要有效統治中原", "effect": "推行漢化政策,促進胡漢融合", "comparison": "孝文帝漢化(鮮卑)≠五胡亂華(胡漢衝突)", "story": "鮮卑出身的孝文帝想深入治理中原,遷都洛陽,並下令改穿漢服、說漢話、改漢姓。這場漢化改革促進胡漢融合,也引發部分鮮卑貴族不滿。", "keywords": ["中國史", "魏晉南北朝", "孝文帝", "漢化", "洛陽", "均田制"], "id": 38}, {"domain": "中國史", "sheet": "隋唐五代", "stage": "國中、高中", "year": "581年", "start_year": 581, "end_year": 581, "num_year": 581, "lat": 34.27, "lng": 108.944, "loc": "陝西西安(大興)", "title": "隋朝建立", "desc": "589年統一南北方;開鑿大運河,創科舉", "cause": "南北朝長期分裂,社會渴望統一", "effect": "589年統一南北,創科舉與大運河", "comparison": "隋(統一、科舉、運河)≠西晉(短暫統一)", "story": "楊堅結束南北分裂後,創立三省六部、改革選官制度,後來更設立科舉。隋煬帝開鑿大運河,連接南北交通,卻因頻繁徵役與征戰,使隋朝迅速滅亡。", "keywords": ["中國史", "隋唐五代", "楊堅", "大運河", "科舉", "三省六部"], "id": 39}, {"domain": "中國史", "sheet": "隋唐五代", "stage": "國小、國中、高中", "year": "618年", "start_year": 618, "end_year": 618, "num_year": 618, "lat": 34.2538, "lng": 108.9421, "loc": "陝西西安/長安", "title": "唐朝建立", "desc": "貞觀之治(627~649)、開元之治;長安為國際大都會", "cause": "隋末民變,隋煬帝暴政", "effect": "建立強盛國際帝國,長安為國際都會", "comparison": "隋(短命)≠唐(長久、盛世)", "story": "李淵父子在隋末亂世中起兵,建立唐朝,定都長安。唐朝開放包容,有許多外國商人、使節與僧侶,長安成為當時世界上最國際化的大城市之一。", "keywords": ["中國史", "隋唐五代", "李淵", "長安", "貞觀之治", "開元之治"], "id": 40}, {"domain": "世界史", "sheet": "中古時期", "stage": "國中", "year": "622年", "start_year": 622, "end_year": 622, "num_year": 622, "lat": 24.464, "lng": 39.604, "loc": "沙烏地阿拉伯麥地那", "title": "穆罕默德遷徙麥地那", "desc": "伊斯蘭教曆元年", "cause": "麥加貴族迫害早期信徒", "effect": "622年成為伊斯蘭曆元年,建立穆斯林社群", "comparison": "聖遷(622、麥加至麥地那)≠創教(麥加啟示)", "story": "穆罕默德在麥加傳播一神信仰,遭到貴族迫害,於622年帶領信徒遷往麥地那。這次「聖遷」後來被定為伊斯蘭曆元年。", "keywords": ["世界史", "中古時期", "聖遷", "麥地那", "伊斯蘭", "穆罕默德"], "id": 41}, {"domain": "世界史", "sheet": "中古時期", "stage": "高中", "year": "622年", "start_year": 622, "end_year": 622, "num_year": 622, "lat": 24.467, "lng": 39.604, "loc": "沙烏地阿拉伯麥地那", "title": "伊斯蘭教曆元年", "desc": "穆罕默德遷徙到麥地那", "cause": "穆罕默德遷往麥地那後建立宗教社群", "effect": "伊斯蘭教逐漸擴張為重要文明", "comparison": "伊斯蘭曆(622起)≠西曆", "story": "伊斯蘭曆以聖遷之年為起點,依月亮盈虧計算,一年約354天。穆斯林社群在麥地那建立後迅速發展,逐漸擴及整個阿拉伯半島與更廣的地區。", "keywords": ["世界史", "中古時期", "伊斯蘭曆", "聖遷", "麥地那"], "id": 42}, {"domain": "中國史", "sheet": "隋唐五代", "stage": "高中", "year": "627~649年", "start_year": 627, "end_year": 649, "num_year": 627, "lat": 34.3, "lng": 108.894, "loc": "中國主要區域", "title": "貞觀之治", "desc": "唐太宗時期,國力強盛", "cause": "隋亡教訓使唐太宗注重納諫與休養生息", "effect": "政治清明、國力強盛,奠定盛唐基礎", "comparison": "貞觀之治(太宗)≠開元之治(玄宗)", "story": "唐太宗常以隋亡為鑑,廣開言路,讓魏徵直言勸諫;重視人才,完善科舉與法律,國家安定富庶,被後人稱為「貞觀之治」。", "keywords": ["中國史", "隋唐五代", "唐太宗", "魏徵", "三省六部", "科舉"], "id": 43}, {"domain": "中國史", "sheet": "隋唐五代", "stage": "國中、高中", "year": "755~763年", "start_year": 755, "end_year": 763, "num_year": 755, "lat": 39.894, "lng": 116.394, "loc": "北京(范陽)", "title": "安史之亂", "desc": "藩鎮割據,唐朝衰落", "cause": "府兵制崩壞、節度使權力過大", "effect": "藩鎮割據,唐朝由盛轉衰", "comparison": "安史之亂(755至763)≠黃巢之亂(唐末)", "story": "安祿山與史思明起兵叛唐,攻陷洛陽、長安,唐玄宗倉皇逃往四川。亂事雖平,但朝廷更依賴地方節度使,藩鎮割據,唐由盛轉衰。", "keywords": ["中國史", "隋唐五代", "安祿山", "史思明", "藩鎮", "節度使"], "id": 44}, {"domain": "中國史", "sheet": "隋唐五代", "stage": "高中", "year": "780年", "start_year": 780, "end_year": 780, "num_year": 780, "lat": 34.273, "lng": 108.944, "loc": "陝西西安(長安)", "title": "兩稅法", "desc": "土地租稅制度改革", "cause": "均田制瓦解,租庸調制難以維持", "effect": "依資產課稅、改為夏秋兩季徵收", "comparison": "租庸調(依人丁)≠兩稅法(依資產)≠一條鞭法(明)", "story": "唐德宗時,宰相楊炎推行兩稅法,不再按人丁而是按財產多寡徵稅,分夏、秋兩季繳納。這項改革適應均田制崩壞後的社會,也影響後世賦稅制度。", "keywords": ["中國史", "隋唐五代", "兩稅法", "楊炎", "租庸調制崩壞"], "id": 45}, {"domain": "世界史", "sheet": "中古時期", "stage": "國中、高中", "year": "800年", "start_year": 800, "end_year": 800, "num_year": 800, "lat": 41.894, "lng": 12.494, "loc": "義大利羅馬", "title": "查理曼加冕為皇帝", "desc": "西歐封建社會發展", "cause": "法蘭克王國擴張,與教皇合作", "effect": "西歐出現帝國,封建制度發展", "comparison": "查理曼(西歐帝國)≠神聖羅馬帝國(962)", "story": "800年聖誕節,教皇在羅馬為法蘭克王國的查理曼加冕為「羅馬皇帝」。這象徵西歐出現新的帝國,也強化教皇與世俗君主之間的關係。", "keywords": ["世界史", "中古時期", "查理曼", "教皇", "法蘭克", "封建社會"], "id": 46}, {"domain": "中國史", "sheet": "隋唐五代", "stage": "國中、高中", "year": "907年", "start_year": 907, "end_year": 907, "num_year": 907, "lat": 34.794, "lng": 114.294, "loc": "河南開封", "title": "唐亡,五代十國", "desc": "分裂局面", "cause": "藩鎮割據與黃巢之亂後唐朝衰亡", "effect": "分裂局面持續,後由宋朝結束", "comparison": "五代(北方)≠十國(南方)", "story": "朱溫滅唐建後梁後,北方短短數十年換了五個朝代,南方與山西則有多個割據政權,合稱「五代十國」。長期混亂讓人民渴望統一。", "keywords": ["中國史", "隋唐五代", "朱溫", "藩鎮", "五代十國"], "id": 47}, {"domain": "中國史", "sheet": "宋元", "stage": "國小、國中、高中", "year": "960年", "start_year": 960, "end_year": 960, "num_year": 960, "lat": 34.797, "lng": 114.294, "loc": "河南開封", "title": "宋朝建立", "desc": "經濟與科技發達,有活字印刷、指南針、火藥", "cause": "五代十國長期分裂,需要結束武人專政", "effect": "重文輕武,商業與科技發達", "comparison": "宋(重文輕武、經濟)≠唐(開放、武力)", "story": "趙匡胤在陳橋兵變中黃袍加身,建立宋朝。相傳他以宴席請將領交出兵權(杯酒釋兵權),重文輕武,避免武將專權,也讓宋朝文化與經濟特別發達。", "keywords": ["中國史", "宋元", "趙匡胤", "陳橋兵變", "杯酒釋兵權", "重文輕武"], "id": 48}, {"domain": "中國史", "sheet": "宋元", "stage": "高中", "year": "1041年", "start_year": 1041, "end_year": 1041, "num_year": 1041, "lat": 30.264, "lng": 120.154, "loc": "浙江杭州", "title": "畢昇發明活字印刷", "desc": "宋代科技發達", "cause": "印刷需求增加,雕版印刷成本高", "effect": "促進書籍普及與知識傳播", "comparison": "畢昇(活字印刷)≠蔡倫(造紙)", "story": "雕版印刷每印一本書都要刻整塊版,畢昇改用膠泥刻成單字活字,可以重複排版使用。這項發明讓書籍印刷更有效率,知識傳播更廣。", "keywords": ["中國史", "宋元", "畢昇", "活字印刷", "宋代科技"], "id": 49}, {"domain": "世界史", "sheet": "中古時期", "stage": "高中", "year": "1054年", "start_year": 1054, "end_year": 1054, "num_year": 1054, "lat": 41.004, "lng": 28.974, "loc": "土耳其君士坦丁堡", "title": "東西教會大分裂", "desc": "羅馬公教與東正教分立", "cause": "東西教會在教義、教皇權威與政治上長期對立", "effect": "基督教分裂為羅馬公教與東正教", "comparison": "1054大分裂≠16世紀宗教改革", "story": "1054年,羅馬教皇與君士坦丁堡牧首互相開除教籍。此後,西方稱羅馬公教(天主教),東方稱東正教,基督教世界正式分裂。", "keywords": ["世界史", "中古時期", "羅馬公教", "東正教", "1054"], "id": 50}, {"domain": "中國史", "sheet": "宋元", "stage": "高中", "year": "1069年", "start_year": 1069, "end_year": 1069, "num_year": 1069, "lat": 34.8, "lng": 114.294, "loc": "河南開封", "title": "王安石變法", "desc": "青苗法、免役法等,引發新舊黨爭", "cause": "宋朝財政困難、冗官冗兵", "effect": "引發新舊黨爭,北宋政局動盪", "comparison": "王安石(宋)≠商鞅(秦)≠張居正(明)", "story": "宋神宗支持王安石改革財政與軍事,推出青苗法、募役法、保甲法等。支持與反對的官員分成新黨與舊黨,爭論不休,影響北宋政局。", "keywords": ["中國史", "宋元", "王安石", "青苗法", "免役法", "新舊黨爭"], "id": 51}, {"domain": "世界史", "sheet": "中古時期", "stage": "國中、高中", "year": "1096~1291年", "start_year": 1096, "end_year": 1291, "num_year": 1096, "lat": 31.764, "lng": 35.204, "loc": "耶路撒冷", "title": "十字軍東征開始", "desc": "到1291年共數次,增進東西交流", "cause": "教皇號召收復聖地,並因應拜占庭求援", "effect": "增進東西交流,削弱封建領主與教皇威信", "comparison": "十字軍(宗教動機)≠大航海(經濟動機)", "story": "1095年教皇烏爾班二世號召基督徒奪回聖地耶路撒冷,第一次十字軍東征出發。後來多次遠征雖多以失敗告終,卻促進東西貿易與文化交流。", "keywords": ["世界史", "中古時期", "教皇", "耶路撒冷", "東西交流"], "id": 52}, {"domain": "中國史", "sheet": "宋元", "stage": "國中、高中", "year": "1127年", "start_year": 1127, "end_year": 1127, "num_year": 1127, "lat": 34.803, "lng": 114.294, "loc": "河南開封", "title": "靖康之難、南宋建立", "desc": "金滅北宋,經濟重心南移", "cause": "金軍南下攻破開封,擄走徽欽二帝", "effect": "北宋滅亡,南宋偏安江南", "comparison": "北宋(開封)≠南宋(臨安)", "story": "金軍攻破開封,俘虜徽宗與欽宗,北宋滅亡。宋高宗在南方即位,後來定都臨安(杭州),史稱南宋,中國經濟重心也加速南移。", "keywords": ["中國史", "宋元", "金", "靖康", "宋高宗", "臨安"], "id": 53}, {"domain": "中國史", "sheet": "宋元", "stage": "國中", "year": "1206年", "start_year": 1206, "end_year": 1206, "num_year": 1206, "lat": 47.894, "lng": 106.894, "loc": "蒙古高原", "title": "成吉思汗建立蒙古帝國", "desc": "蒙古擴張", "cause": "蒙古各部統一,鐵木真稱汗", "effect": "開啟蒙古大規模擴張", "comparison": "蒙古帝國(1206)≠元朝(1271)", "story": "1206年,鐵木真被推為「成吉思汗」,統一蒙古各部。他以嚴密的軍事組織與快速騎兵向外擴張,成為世界史上橫跨歐亞的重要力量。", "keywords": ["中國史", "宋元", "成吉思汗", "鐵木真", "蒙古"], "id": 54}, {"domain": "中國史", "sheet": "宋元", "stage": "高中", "year": "1206年", "start_year": 1206, "end_year": 1206, "num_year": 1206, "lat": 47.897, "lng": 106.894, "loc": "蒙古高原", "title": "蒙古帝國成立", "desc": "成吉思汗統一蒙古", "cause": "蒙古各部統一與軍事擴張", "effect": "疆域橫跨歐亞,促進東西交流", "comparison": "蒙古帝國(跨歐亞)≠元朝(中國部分)", "story": "蒙古帝國征服領土後,後代分封成不同汗國,從東亞延伸到東歐。驛站與貿易路線讓東西方交流更加密切。", "keywords": ["中國史", "宋元", "成吉思汗", "四大汗國", "蒙古"], "id": 55}, {"domain": "世界史", "sheet": "中古時期", "stage": "國中、高中", "year": "1215年", "start_year": 1215, "end_year": 1215, "num_year": 1215, "lat": 51.4954, "lng": -0.1398, "loc": "英國倫敦", "title": "英國大憲章", "desc": "限制王權的重要文件", "cause": "約翰王失敗與重稅,貴族反抗", "effect": "限制王權,成為法治與議會政治的重要起點", "comparison": "大憲章(1215)≠權利法案(1689)", "story": "約翰王因戰敗與重稅引起貴族反抗,被迫簽署大憲章。條文規定國王不可任意徵稅或逮捕人民,成為限制王權與保障權利的重要象徵。", "keywords": ["世界史", "中古時期", "約翰王", "貴族", "限制王權"], "id": 56}, {"domain": "中國史", "sheet": "宋元", "stage": "國小、國中、高中", "year": "1271年", "start_year": 1271, "end_year": 1271, "num_year": 1271, "lat": 39.897, "lng": 116.394, "loc": "北京(大都)", "title": "元朝建立", "desc": "忽必烈建國,1279年滅南宋", "cause": "蒙古帝國擴張後,忽必烈建立中國式王朝", "effect": "1279年滅南宋,統一中國", "comparison": "元(蒙古人、色目人等四等人制)≠明(漢人)", "story": "忽必烈在大都建立元朝,後來滅南宋統一中國。元朝實行行省制度,影響後世地方制度;常見說法還把人民分成蒙古人、色目人、漢人、南人(學界對其是否為正式制度仍有討論)。", "keywords": ["中國史", "宋元", "忽必烈", "大都", "四等人制", "行省"], "id": 57}, {"domain": "世界史", "sheet": "中古時期", "stage": "國中、高中", "year": "14~16世紀", "start_year": 1301, "end_year": 1600, "num_year": 1301, "lat": 43.764, "lng": 11.254, "loc": "義大利佛羅倫斯", "title": "文藝復興", "desc": "強調人文主義,達文西、米開朗基羅", "cause": "商業繁榮與古典文化復興,人們重視現世價值", "effect": "促進藝術、科學與人文發展,為宗教改革鋪路", "comparison": "文藝復興(人文)≠宗教改革(宗教)", "story": "佛羅倫斯的富商贊助藝術家,畫家達文西、雕刻家米開朗基羅在此創作名作。人們重新閱讀古希臘羅馬經典,強調人的價值與現世生活。", "keywords": ["世界史", "中古時期", "人文主義", "達文西", "米開朗基羅", "佛羅倫斯"], "id": 58}, {"domain": "世界史", "sheet": "中古時期", "stage": "高中", "year": "1347年", "start_year": 1347, "end_year": 1347, "num_year": 1347, "lat": 38.184, "lng": 15.544, "loc": "義大利墨西拿", "title": "黑死病蔓延", "desc": "歐洲人口大減,衝擊封建社會", "cause": "鼠疫經貿易路線傳入歐洲", "effect": "人口大減,勞動力缺乏,農奴地位上升", "comparison": "黑死病(14世紀)≠工業革命(18世紀)", "story": "1347年,商船將鼠疫帶入歐洲,短短幾年奪走大量人命。勞動力缺乏使農民工資提高,領主權力下降,也動搖了舊有封建秩序。", "keywords": ["世界史", "中古時期", "黑死病", "人口銳減", "封建崩解"], "id": 59}, {"domain": "中國史", "sheet": "明清", "stage": "國小、國中、高中", "year": "1368年", "start_year": 1368, "end_year": 1368, "num_year": 1368, "lat": 32.057, "lng": 118.794, "loc": "江蘇南京", "title": "明朝建立", "desc": "朱元璋推翻元朝建立,鄭和下西洋(1405年)", "cause": "元末民變,朱元璋推翻元朝", "effect": "強化君權,實行里甲制與廢除丞相", "comparison": "元(蒙古)≠明(漢人王朝)", "story": "朱元璋出身貧苦農家,曾當過和尚與乞丐,後來加入紅巾軍,最終推翻元朝。他登基後整頓吏治、嚴懲貪官,也加強君權。", "keywords": ["中國史", "明清", "朱元璋", "廢宰相", "錦衣衛", "里甲"], "id": 60}, {"domain": "中國史", "sheet": "明清", "stage": "高中", "year": "1380年", "start_year": 1380, "end_year": 1380, "num_year": 1380, "lat": 32.06, "lng": 118.794, "loc": "江蘇南京", "title": "胡惟庸案、廢宰相", "desc": "君權極度集中,設內閣", "cause": "朱元璋為加強皇權,取消宰相", "effect": "君權高度集中,後設內閣協助皇帝", "comparison": "明初(廢宰相)≠清代(軍機處)", "story": "朱元璋以謀反罪處死宰相胡惟庸,索性廢除宰相,由皇帝直接統領六部。後來設內閣協助處理文書,卻讓皇帝的工作量暴增。", "keywords": ["中國史", "明清", "胡惟庸", "廢宰相", "內閣", "君權"], "id": 61}, {"domain": "中國史", "sheet": "明清", "stage": "國中、高中", "year": "1405~1433年", "start_year": 1405, "end_year": 1433, "num_year": 1405, "lat": 31.444, "lng": 121.094, "loc": "江蘇太倉(劉家港)", "title": "鄭和下西洋", "desc": "七次遠航,促進海上交流", "cause": "明成祖欲宣揚國威、鞏固朝貢體系", "effect": "促進海上交流,但非為殖民或貿易擴張", "comparison": "鄭和(1405,朝貢)≠哥倫布(1492,探索與殖民)", "story": "明成祖派鄭和率領龐大艦隊,載著絲綢、瓷器出航,拜訪東南亞、南亞與非洲沿岸。目的是宣揚國威、鞏固朝貢關係,而不是殖民征服。", "keywords": ["中國史", "明清", "鄭和", "朝貢體系", "永樂帝", "航海"], "id": 62}, {"domain": "中國史", "sheet": "明清", "stage": "國中、高中", "year": "1449年", "start_year": 1449, "end_year": 1449, "num_year": 1449, "lat": 40.394, "lng": 115.494, "loc": "河北懷來土木堡", "title": "土木堡之變", "desc": "明英宗被俘,明朝由盛轉衰", "cause": "宦官王振專權,英宗御駕親征失敗", "effect": "明英宗被俘,明朝由盛轉衰", "comparison": "土木堡之變(明英宗被俘)≠靖康之難(徽欽二帝被俘)", "story": "明英宗在宦官王振鼓動下御駕親征瓦剌,卻在土木堡兵敗被俘。朝廷改立景帝並堅守北京,但明朝國力也因此受到打擊。", "keywords": ["中國史", "明清", "土木堡", "明英宗", "也先", "北虜"], "id": 63}, {"domain": "世界史", "sheet": "近代早期", "stage": "國中、高中", "year": "1453年", "start_year": 1453, "end_year": 1453, "num_year": 1453, "lat": 41.007, "lng": 28.974, "loc": "土耳其伊斯坦堡", "title": "君士坦丁堡陷落", "desc": "鄂圖曼帝國滅東羅馬", "cause": "鄂圖曼帝國擴張,攻陷君士坦丁堡", "effect": "東羅馬滅亡,歐亞貿易路線改變,促使航海探索", "comparison": "1453君士坦丁堡陷落≠1492哥倫布航行", "story": "1453年,鄂圖曼蘇丹穆罕默德二世用大砲攻破君士坦丁堡城牆,東羅馬帝國滅亡。歐亞陸路貿易受鄂圖曼控制,促使歐洲尋找新的海上路線。", "keywords": ["世界史", "近代早期", "鄂圖曼", "1453", "東羅馬滅亡"], "id": 64}, {"domain": "世界史", "sheet": "近代早期", "stage": "國小、國中、高中", "year": "1492年", "start_year": 1492, "end_year": 1492, "num_year": 1492, "lat": 25.0223, "lng": -77.4083, "loc": "巴哈馬/加勒比海", "title": "哥倫布到達美洲", "desc": "大航海時代,歐洲與美洲接觸", "cause": "歐洲尋找通往亞洲的新航路", "effect": "歐洲與美洲接觸,開啟殖民擴張", "comparison": "哥倫布(向西)≠達伽馬(繞非洲)", "story": "哥倫布得到西班牙王室支持,向西橫渡大西洋,希望抵達亞洲,結果抵達加勒比海的島嶼。他的航行開啟歐洲殖民美洲的時代,也使物種、疾病與人口大規模交流。", "keywords": ["世界史", "近代早期", "哥倫布", "西班牙", "新大陸", "哥倫布大交換"], "id": 65}, {"domain": "世界史", "sheet": "近代早期", "stage": "國中", "year": "1498年", "start_year": 1498, "end_year": 1498, "num_year": 1498, "lat": 11.2468, "lng": 75.7684, "loc": "印度卡利卡特", "title": "達伽馬抵達印度", "desc": "開通歐亞海路", "cause": "葡萄牙尋找繞過中東的新航路", "effect": "開通歐亞海路,葡萄牙取得香料貿易優勢", "comparison": "達伽馬(1498好望角)≠哥倫布(1492向西)", "story": "達伽馬繞過非洲南端的好望角,穿越印度洋,抵達印度西岸的卡利卡特。這條航路讓葡萄牙直接進入香料貿易,繞過中東中間商。", "keywords": ["世界史", "近代早期", "達伽馬", "葡萄牙", "好望角", "香料"], "id": 66}, {"domain": "世界史", "sheet": "近代早期", "stage": "國中", "year": "16~17世紀", "start_year": 1501, "end_year": 1700, "num_year": 1501, "lat": 45.404, "lng": 11.874, "loc": "義大利帕多瓦(伽利略)/英國(牛頓)", "title": "科學革命", "desc": "哥白尼、伽利略、牛頓", "cause": "天文觀測與數學方法發展", "effect": "形成近代科學方法,影響啟蒙運動", "comparison": "科學革命(自然)≠啟蒙運動(社會政治)", "story": "伽利略用望遠鏡觀察木星衛星,牛頓以萬有引力解釋天體運行。強調觀察、實驗與數學推理的方法,改變了人們理解世界的方式。", "keywords": ["世界史", "近代早期", "哥白尼", "伽利略", "牛頓", "實驗方法"], "id": 67}, {"domain": "世界史", "sheet": "近代早期", "stage": "國中、高中", "year": "1517年", "start_year": 1517, "end_year": 1517, "num_year": 1517, "lat": 51.864, "lng": 12.644, "loc": "德國維騰堡", "title": "宗教改革", "desc": "馬丁路德發表《九十五條論綱》", "cause": "教會腐敗與贖罪券販售,批評聲浪高漲", "effect": "基督教分裂出新教,歐洲宗教戰爭頻繁", "comparison": "宗教改革(教會)≠啟蒙運動(理性)", "story": "1517年,馬丁路德針對教會販賣贖罪券提出《九十五條論綱》。他主張「因信稱義」,引起廣泛迴響,最終形成新教各教派,歐洲宗教信仰分裂。", "keywords": ["世界史", "近代早期", "馬丁路德", "九十五條論綱", "新教"], "id": 68}, {"domain": "世界史", "sheet": "近代早期", "stage": "國中", "year": "1522年", "start_year": 1522, "end_year": 1522, "num_year": 1522, "lat": 10.3037, "lng": 123.8734, "loc": "菲律賓宿霧", "title": "麥哲倫船隊完成環球航行", "desc": "證明地球為球體", "cause": "航海技術提升與香料貿易需求", "effect": "證明地球為球體,擴展世界地理認識", "comparison": "麥哲倫(環球)≠哥倫布(橫渡大西洋)", "story": "麥哲倫的船隊從西班牙出發,往西航行繞過南美洲,抵達菲律賓。麥哲倫雖在當地衝突中身亡,剩餘船員繼續航行,最終完成人類首次環球航行。", "keywords": ["世界史", "近代早期", "麥哲倫", "環球航行", "地圓說"], "id": 69}, {"domain": "臺灣史", "sheet": "大航海", "stage": "高中", "year": "16世紀中", "start_year": 1530, "end_year": 1570, "num_year": 1530, "lat": 23.597, "lng": 120.888, "loc": "臺灣全島", "title": "大航海時代下的臺灣", "desc": "葡萄牙稱「福爾摩沙」;倭寇、海盜與漁民活動", "cause": "明代海禁使走私海商與海盜活躍,臺灣成為活動據點", "effect": "吸引歐洲勢力與漢人海商前來,為荷西占據鋪路", "comparison": "倭寇、海盜以貿易與劫掠為主,尚無正式統治政權", "story": "十六世紀的臺灣是海上世界的中途站:日本與中國的商人、海盜、漁民在此停靠交易、避風補給。這座尚無統一政權的島嶼,吸引了歐洲人的注意。", "keywords": ["臺灣史", "大航海", "倭寇", "海盜", "漁民", "轉口貿易"], "id": 70}, {"domain": "世界史", "sheet": "近代早期", "stage": "高中", "year": "1543年", "start_year": 1543, "end_year": 1543, "num_year": 1543, "lat": 54.354, "lng": 19.674, "loc": "波蘭弗龍堡", "title": "哥白尼《天體運行論》", "desc": "科學革命開端;1687年牛頓發表《原理》", "cause": "天文觀測與對托勒密體系質疑", "effect": "奠定科學革命開端,挑戰教會宇宙觀", "comparison": "哥白尼(日心說)≠托勒密(地心說)", "story": "哥白尼提出太陽才是宇宙中心,地球與其他行星繞著太陽轉。這本書在他去世那年出版,挑戰了長期流行的地心說,也被視為科學革命的起點。", "keywords": ["世界史", "近代早期", "哥白尼", "日心說", "科學革命"], "id": 71}, {"domain": "臺灣史", "sheet": "大航海", "stage": "國小、國中", "year": "1544年", "start_year": 1544, "end_year": 1544, "num_year": 1544, "lat": 23.594, "lng": 120.888, "loc": "臺灣全島", "title": "「福爾摩沙」之名", "desc": "葡萄牙水手稱臺灣為Ilha Formosa", "cause": "大航海時代葡萄牙船員航經臺灣海峽,見島嶼蒼翠", "effect": "「福爾摩沙」成為西方稱呼臺灣的名稱,臺灣進入世界地圖", "comparison": "葡萄牙(命名、無長期統治)≠荷蘭(據南)≠西班牙(據北)", "story": "一艘葡萄牙船航過臺灣海峽,水手望見綠意盎然的島嶼,驚呼「Ilha Formosa(美麗之島)」。這個名字從此寫進歐洲地圖,成為臺灣最著名的外號。", "keywords": ["臺灣史", "大航海", "Ilha", "Formosa", "葡萄牙", "航海"], "id": 72}, {"domain": "中國史", "sheet": "明清", "stage": "高中", "year": "1581年", "start_year": 1581, "end_year": 1581, "num_year": 1581, "lat": 39.9, "lng": 116.394, "loc": "北京", "title": "一條鞭法", "desc": "張居正推動賦役改革", "cause": "明朝財政困難,賦役制度紊亂", "effect": "賦役合併、以銀繳稅,促進白銀貨幣化", "comparison": "一條鞭法(明、折銀)≠兩稅法(唐)", "story": "張居正任內丈量土地、整頓財政,推行一條鞭法,把各種賦稅與徭役合併,折成白銀繳納。這讓稅制簡化,卻也使白銀需求大增。", "keywords": ["中國史", "明清", "張居正", "一條鞭法", "賦役合併", "白銀"], "id": 73}, {"domain": "臺灣史", "sheet": "大航海", "stage": "國小、國中", "year": "1624年", "start_year": 1624, "end_year": 1624, "num_year": 1624, "lat": 22.9896, "lng": 120.1481, "loc": "臺南市安平區", "title": "荷蘭人占據大員(臺南)", "desc": "建熱蘭遮城(安平古堡)與普羅民遮城(赤崁樓)", "cause": "荷蘭競逐東亞貿易,被明軍逐出澎湖後轉往大員", "effect": "建立轉口貿易據點與殖民統治,臺灣進入國際貿易網絡", "comparison": "荷蘭(南、貿易、熱蘭遮城)≠西班牙(北、傳教、聖薩爾瓦多城)", "story": "荷蘭人在澎湖被明朝勸退後轉進大員(今安平),築起熱蘭遮城,把這裡變成連接日本、中國與東南亞的貿易轉運站。", "keywords": ["臺灣史", "大航海", "荷蘭東印度公司", "熱蘭遮城", "普羅民遮城"], "id": 74}, {"domain": "臺灣史", "sheet": "大航海", "stage": "高中", "year": "1624~1662年", "start_year": 1624, "end_year": 1662, "num_year": 1624, "lat": 22.9926, "lng": 120.1481, "loc": "臺南市安平區", "title": "荷蘭統治", "desc": "以大員為轉口貿易據點,引進漢人農業勞力,收取贌社與人頭稅", "cause": "荷蘭東印度公司需要糧食與貨源,招募漢人農民來臺", "effect": "促進漢人墾殖與糖米生產,但稅賦繁重引發反抗", "comparison": "荷蘭(商業殖民、課稅)≠明鄭(漢人政權、軍屯)", "story": "為了讓土地生產糖與米,荷蘭人從福建招來大批漢人農民,又向原住民與漢人徵稅。臺灣第一次成為世界貿易網的一環,也第一次出現大規模漢人墾殖。", "keywords": ["臺灣史", "大航海", "贌社", "人頭稅", "轉口貿易", "引進漢人"], "id": 75}, {"domain": "臺灣史", "sheet": "大航海", "stage": "國小、國中、高中", "year": "1626年", "start_year": 1626, "end_year": 1626, "num_year": 1626, "lat": 25.1569, "lng": 121.4302, "loc": "新北市淡水區", "title": "西班牙人占領北臺灣", "desc": "在基隆、淡水建城,1642年被荷蘭人趕走", "cause": "西班牙欲在北臺灣建立對中國、日本貿易與傳教據點", "effect": "1642年被荷蘭驅逐,北臺灣納入荷蘭勢力", "comparison": "西班牙(北、傳教)≠荷蘭(南、貿易),統治期短", "story": "西班牙人從馬尼拉出發,在基隆建聖薩爾瓦多城,後來又到淡水。他們想傳教與貿易,卻只維持十餘年,就被荷蘭人從北部趕走。", "keywords": ["臺灣史", "大航海", "聖薩爾瓦多城", "基隆", "淡水", "傳教"], "id": 76}, {"domain": "中國史", "sheet": "明清", "stage": "國小、國中、高中", "year": "1644年", "start_year": 1644, "end_year": 1644, "num_year": 1644, "lat": 39.994, "lng": 119.754, "loc": "河北山海關", "title": "清軍入關", "desc": "清朝取代明朝,統治中國近三百年", "cause": "李自成攻入北京,吳三桂引清兵入關", "effect": "清朝取代明朝,統治中國近三百年", "comparison": "滿洲(八旗、入關)≠明(漢人王朝)", "story": "李自成攻入北京,崇禎帝自縊。明將吳三桂與清軍聯手,在山海關擊敗李自成,清軍趁機入關,定都北京,逐步統一中國。", "keywords": ["中國史", "明清", "清軍入關", "順治", "李自成", "山海關"], "id": 77}, {"domain": "世界史", "sheet": "近代早期", "stage": "高中", "year": "1648年", "start_year": 1648, "end_year": 1648, "num_year": 1648, "lat": 51.954, "lng": 7.624, "loc": "德國明斯特", "title": "西發里亞和約", "desc": "確立近代主權國家體系", "cause": "三十年戰爭造成巨大破壞", "effect": "確立近代主權國家體系與宗教寬容原則", "comparison": "西發里亞(1648)≠維也納會議(1815)", "story": "1648年,歐洲各國簽訂和約,結束三十年戰爭。條約承認各國擁有主權、領土與宗教選擇權,被視為近代國際關係與主權國家體系的起點。", "keywords": ["世界史", "近代早期", "主權國家", "三十年戰爭", "1648"], "id": 78}, {"domain": "臺灣史", "sheet": "大航海", "stage": "國中、高中", "year": "1652年", "start_year": 1652, "end_year": 1652, "num_year": 1652, "lat": 22.994, "lng": 120.194, "loc": "臺南市(赤崁一帶)", "title": "郭懷一事件", "desc": "漢人反抗荷蘭統治,遭荷蘭鎮壓", "cause": "荷蘭課徵人頭稅等重稅,漢人農民不滿", "effect": "遭荷蘭鎮壓,顯示漢人與荷蘭統治的矛盾", "comparison": "郭懷一(反荷、1652)≠朱一貴(反清、1721)", "story": "在赤崁一帶種田的漢人農民,不堪荷蘭人沉重的稅負。漢人領袖郭懷一率眾起事,最後遭荷蘭人與原住民聯手鎮壓,顯示統治者與漢人農年間的緊張。", "keywords": ["臺灣史", "大航海", "郭懷一", "漢人農民", "反荷"], "id": 79}, {"domain": "臺灣史", "sheet": "大航海", "stage": "國小、國中", "year": "1661~1662年", "start_year": 1661, "end_year": 1662, "num_year": 1661, "lat": 23.034, "lng": 120.114, "loc": "臺南市鹿耳門", "title": "鄭成功驅逐荷蘭人", "desc": "由鹿耳門登陸,荷蘭人投降,鄭氏建立漢人政權", "cause": "清兵入關後鄭氏需新根據地,荷蘭統治又面臨內部反抗", "effect": "荷蘭統治結束,臺灣出現第一個漢人政權", "comparison": "鄭成功(驅荷、漢人政權)≠施琅(攻臺、清朝)", "story": "1661年,鄭成功的大軍從鹿耳門水道進入臺江內海,包圍熱蘭遮城。經過約九個月圍困,荷蘭長官揆一投降,荷蘭統治告終。", "keywords": ["臺灣史", "大航海", "鹿耳門", "熱蘭遮城", "反清復明"], "id": 80}, {"domain": "臺灣史", "sheet": "鄭", "stage": "高中", "year": "1661~1683年", "start_year": 1661, "end_year": 1683, "num_year": 1661, "lat": 22.984, "lng": 120.194, "loc": "臺南市(承天府)", "title": "明鄭統治", "desc": "鄭成功、鄭經、鄭克塽,設承天府,與清朝對抗", "cause": "以臺灣為反清基地,需解決糧食與兵源", "effect": "推動屯田與漢人移墾,奠定漢人社會基礎;1683年降清", "comparison": "明鄭(軍屯、反清)≠荷蘭(商業、重稅)", "story": "鄭氏在臺灣設承天府,讓軍隊屯田自給,並接納大陸移民。他們始終以「反清復明」為號召,卻也讓臺灣首次出現漢人政權與較完整的漢式制度。", "keywords": ["臺灣史", "鄭", "承天府", "屯田", "鄭成功", "鄭經", "鄭克塽"], "id": 81}, {"domain": "臺灣史", "sheet": "鄭", "stage": "國中、高中", "year": "1665年", "start_year": 1665, "end_year": 1665, "num_year": 1665, "lat": 22.987, "lng": 120.194, "loc": "臺南市(孔廟)", "title": "陳永華建孔廟、設學校", "desc": "鄭氏時期推廣漢文化教育", "cause": "鄭經時期政局較穩,需要培養人才與教化", "effect": "儒學教育與科舉制度傳入,漢文化在臺灣紮根", "comparison": "陳永華(鄭經時期)≠沈葆楨(清末牡丹社事件後)", "story": "陳永華向鄭經建議興學,在承天府蓋起孔廟、設立學校,讓子弟讀書。這座孔廟成為漢文化在島上扎根的象徵。", "keywords": ["臺灣史", "鄭", "陳永華", "孔廟", "儒學", "教育"], "id": 82}, {"domain": "臺灣史", "sheet": "鄭", "stage": "國小、國中", "year": "1683~1684年", "start_year": 1683, "end_year": 1684, "num_year": 1683, "lat": 22.99, "lng": 120.194, "loc": "臺南市(臺灣府)", "title": "清朝統治臺灣", "desc": "施琅攻臺,鄭克塽投降;清朝將臺灣納入福建省", "cause": "清朝平定三藩後,出兵消滅明鄭政權", "effect": "臺灣納入清帝國版圖,隸屬福建省", "comparison": "1683施琅攻臺(清朝統治開始)≠1661鄭成功驅荷", "story": "1683年,施琅在澎湖海戰擊敗鄭軍,鄭克塽投降。次年,清廷把臺灣設為臺灣府,隸屬福建省,臺灣第一次正式納入中國王朝的版圖。", "keywords": ["臺灣史", "鄭", "施琅", "澎湖海戰", "臺灣府", "福建省"], "id": 83}, {"domain": "臺灣史", "sheet": "鄭", "stage": "高中", "year": "1684年", "start_year": 1684, "end_year": 1684, "num_year": 1684, "lat": 22.993, "lng": 120.194, "loc": "臺南市(臺灣府)", "title": "清朝納入版圖", "desc": "臺灣府隸福建省;初期嚴格限制移民", "cause": "清廷初期視臺灣為邊疆,防範反清勢力聚集", "effect": "實施渡臺禁令與劃界封山,移民受到限制", "comparison": "清前期(消極治理)≠清晚期(積極經營、建省)", "story": "清廷對這座新領土心存戒心,擔心它再成為反抗基地,因此限制移民,也劃界封山。臺灣因此長期被視為海外邊陲,而非重點經營之地。", "keywords": ["臺灣史", "鄭", "臺灣府", "福建省", "一府三縣", "消極治理"], "id": 84}, {"domain": "臺灣史", "sheet": "清", "stage": "國中", "year": "清領前期", "start_year": 1684, "end_year": 1760, "num_year": 1684, "lat": 23.591, "lng": 120.894, "loc": "臺灣全島", "title": "渡臺禁令", "desc": "限制攜眷與移民,造成羅漢腳等社會現象", "cause": "清廷防範反清勢力,限制移民來臺", "effect": "形成單身漢社會與偷渡現象", "comparison": "渡臺禁令(1684起限制)→廢止(1875)", "story": "清廷為了防範反抗勢力,規定渡臺必須取得許可,不得攜眷。許多人冒險偷渡,形成大量單身男性,有些無依無靠者被稱為「羅漢腳」。", "keywords": ["臺灣史", "清", "渡臺禁令", "羅漢腳", "偷渡"], "id": 85}, {"domain": "世界史", "sheet": "近代早期", "stage": "國中、高中", "year": "1688年", "start_year": 1688, "end_year": 1688, "num_year": 1688, "lat": 51.4984, "lng": -0.1398, "loc": "英國倫敦", "title": "英國光榮革命", "desc": "1689年權利法案,君主立憲", "cause": "詹姆士二世專制與宗教政策引發不滿", "effect": "確立議會主權與君主立憲", "comparison": "光榮革命(英,和平)≠法國大革命(激烈)", "story": "詹姆士二世的天主教政策與專制引起不滿,英國議會邀請荷蘭的威廉夫婦即位,詹姆士逃亡。隔年通過《權利法案》,確立議會權力高於國王。", "keywords": ["世界史", "近代早期", "光榮革命", "權利法案", "君主立憲", "洛克"], "id": 86}, {"domain": "中國史", "sheet": "明清", "stage": "國中", "year": "1689年", "start_year": 1689, "end_year": 1689, "num_year": 1689, "lat": 51.944, "lng": 116.494, "loc": "俄羅斯尼布楚", "title": "尼布楚條約", "desc": "中俄第一個邊界條約", "cause": "俄國勢力東擴,清俄邊界衝突", "effect": "中俄第一個對等邊界條約", "comparison": "尼布楚(康熙,對等)≠鴉片戰爭後的不平等條約", "story": "清與俄國因黑龍江流域衝突,1689年在尼布楚簽約劃定邊界。這是中國第一個與外國簽訂的正式邊界條約,且雙方地位較為對等。", "keywords": ["中國史", "明清", "尼布楚條約", "康熙", "俄國", "邊界"], "id": 87}, {"domain": "臺灣史", "sheet": "清", "stage": "高中", "year": "18世紀", "start_year": 1701, "end_year": 1800, "num_year": 1701, "lat": 23.594, "lng": 120.894, "loc": "臺灣全島", "title": "移墾社會與械鬥", "desc": "漳泉、閩客、分類械鬥盛行", "cause": "移民缺乏宗族,依地緣血緣結群並爭奪資源", "effect": "形成械鬥頻繁的移墾社會,後逐漸土著化、定著化", "comparison": "移墾社會(男多女少、尚武)≠定著社會(重教育、仕紳)", "story": "早期渡海的多是單身男子,沒有宗族,只能靠同鄉、同姓互相支持。為了爭水、爭地,漳州人、泉州人與客家人常起衝突,爆發「分類械鬥」。", "keywords": ["臺灣史", "清", "漳泉械鬥", "閩客", "羅漢腳", "分類械鬥"], "id": 88}, {"domain": "臺灣史", "sheet": "清", "stage": "高中", "year": "18世紀", "start_year": 1701, "end_year": 1800, "num_year": 1701, "lat": 24.054, "lng": 120.424, "loc": "彰化縣鹿港鎮", "title": "郊商與市街發展", "desc": "鹿港、艋舺、大稻埕等港市繁榮", "cause": "農產外銷與對岸貿易興盛,港口城鎮崛起", "effect": "形成「一府二鹿三艋舺」的市街格局", "comparison": "郊商(同業行會、對渡貿易)≠洋行(開港後外商)", "story": "港口邊,郊商把米糖運到對岸,再把布匹與日用品換回來。鹿港、艋舺、大稻埕就在這樣的貿易中興起,留下「一府二鹿三艋舺」的俗諺。", "keywords": ["臺灣史", "清", "郊商", "鹿港", "艋舺", "大稻埕"], "id": 89}, {"domain": "世界史", "sheet": "啟蒙革命與工業時代", "stage": "國中、高中", "year": "18世紀", "start_year": 1701, "end_year": 1800, "num_year": 1701, "lat": 48.854, "lng": 2.344, "loc": "法國巴黎", "title": "啟蒙運動", "desc": "洛克、孟德斯鳩、盧梭提倡理性與自由", "cause": "科學革命推動理性思考", "effect": "影響美國獨立與法國大革命", "comparison": "洛克(天賦人權)≠孟德斯鳩(三權分立)≠盧梭(人民主權)", "story": "洛克主張天賦人權,孟德斯鳩倡導三權分立,盧梭強調人民主權,伏爾泰批判宗教不寬容。這些思想像火種一樣,影響了美國與法國的革命。", "keywords": ["世界史", "啟蒙革命與工業時代", "洛克", "孟德斯鳩", "盧梭", "理性"], "id": 90}, {"domain": "臺灣史", "sheet": "清", "stage": "國小、國中、高中", "year": "1721年", "start_year": 1721, "end_year": 1721, "num_year": 1721, "lat": 22.944, "lng": 120.454, "loc": "高雄市內門(羅漢門)", "title": "朱一貴事件", "desc": "清領時期民變,有「三年一小反,五年一大亂」之說", "cause": "官員貪腐,地方社會矛盾尖銳", "effect": "清廷派兵平定,並調整治臺政策", "comparison": "朱一貴(1721南部)≠林爽文(1786天地會)≠戴潮春(1862中部)", "story": "傳說朱一貴曾以養鴨維生,因官府苛擾在南部起事,一度攻下臺灣府城。清廷出兵後很快平亂,卻也讓人看見吏治腐敗引發的社會不安。", "keywords": ["臺灣史", "清", "朱一貴", "鴨母王", "吏治敗壞"], "id": 91}, {"domain": "中國史", "sheet": "明清", "stage": "高中", "year": "1729年", "start_year": 1729, "end_year": 1729, "num_year": 1729, "lat": 39.903, "lng": 116.394, "loc": "北京", "title": "設軍機處", "desc": "雍正時期強化皇權", "cause": "雍正強化皇權、提高行政效率", "effect": "皇權達到高峰,內閣權力下降", "comparison": "明內閣(輔佐)≠清軍機處(皇帝親信)", "story": "雍正為了更快處理軍國大事,設立軍機處,由皇帝挑選少數親信參與機要。軍機大臣只是「承旨辦事」,皇權因此達到高峰。", "keywords": ["中國史", "明清", "軍機處", "雍正", "君權", "內閣"], "id": 92}, {"domain": "世界史", "sheet": "啟蒙革命與工業時代", "stage": "國小、國中、高中", "year": "18世紀中~19世紀", "start_year": 1750, "end_year": 1900, "num_year": 1750, "lat": 53.474, "lng": -2.246, "loc": "英國曼徹斯特", "title": "工業革命", "desc": "蒸汽機改變生產方式與社會", "cause": "英國有煤鐵、資本、市場與科技", "effect": "生產方式改變,產生資本主義與勞工階級", "comparison": "工業革命(生產)≠科學革命(思想)", "story": "瓦特改良蒸汽機後,紡織廠、鐵路與輪船相繼出現。大量人口湧入城市當工人,資本家與勞工的關係改變,也產生許多新的社會問題。", "keywords": ["世界史", "啟蒙革命與工業時代", "蒸汽機", "工廠制", "紡織業", "英國"], "id": 93}, {"domain": "中國史", "sheet": "明清", "stage": "高中", "year": "1757年", "start_year": 1757, "end_year": 1757, "num_year": 1757, "lat": 23.124, "lng": 113.254, "loc": "廣東廣州", "title": "一口通商", "desc": "限廣州一地對外貿易", "cause": "清廷限制對外貿易,防止外人接觸", "effect": "限廣州一地通商,後引發英國不滿", "comparison": "一口通商(清前期限制)≠五口通商(南京條約後)", "story": "清廷限制外國商人只能在廣州貿易,由「十三行」負責仲介。英國對這種限制不滿,希望打開更多港口,埋下鴉片戰爭的伏筆。", "keywords": ["中國史", "明清", "廣州", "十三行", "乾隆", "朝貢貿易"], "id": 94}, {"domain": "世界史", "sheet": "啟蒙革命與工業時代", "stage": "國小、國中、高中", "year": "1776年", "start_year": 1776, "end_year": 1776, "num_year": 1776, "lat": 39.944, "lng": -75.166, "loc": "美國費城", "title": "美國獨立", "desc": "成立美利堅合眾國", "cause": "英國課稅與殖民地反抗,無代表不納稅", "effect": "成立美利堅合眾國,影響法國大革命", "comparison": "美國獨立(殖民地反英)≠法國大革命(推翻王權)", "story": "英國向殖民地課稅,殖民地人民高喊「無代表,不納稅」。1776年《獨立宣言》發表,北美十三州脫離英國,後來經過戰爭取得獨立。", "keywords": ["世界史", "啟蒙革命與工業時代", "獨立宣言", "波士頓茶會", "1776"], "id": 95}, {"domain": "臺灣史", "sheet": "清", "stage": "國小、國中、高中", "year": "1786~1788年", "start_year": 1786, "end_year": 1788, "num_year": 1786, "lat": 24.094, "lng": 120.674, "loc": "臺中市大里", "title": "林爽文事件", "desc": "天地會組織起事,清廷派福康安平亂", "cause": "吏治腐敗,民間祕密會社勢力擴大", "effect": "清廷耗費大量兵力平亂,是清代臺灣規模最大民變之一", "comparison": "林爽文(天地會、1786)≠朱一貴(1721)", "story": "林爽文與天地會成員在彰化起事,聲勢浩大,圍攻臺灣府。清廷派福康安率大軍渡海,耗費大批兵力才平定,是清代臺灣規模最大的民變之一。", "keywords": ["臺灣史", "清", "林爽文", "天地會", "福康安", "彰化"], "id": 96}, {"domain": "世界史", "sheet": "啟蒙革命與工業時代", "stage": "國小、國中、高中", "year": "1789年", "start_year": 1789, "end_year": 1789, "num_year": 1789, "lat": 48.8566, "lng": 2.3462, "loc": "法國巴黎", "title": "法國大革命", "desc": "推翻君主專制,倡導自由、平等、博愛", "cause": "舊制度財政危機與社會不平等", "effect": "推翻君主專制,傳播自由民主思想", "comparison": "法國大革命(1789)≠光榮革命(1688)", "story": "1789年巴黎群眾攻占巴士底監獄,國民議會發表《人權宣言》,宣示自由、平等與主權在民。後來國王路易十六被處死,法國走向共和。", "keywords": ["世界史", "啟蒙革命與工業時代", "人權宣言", "自由平等博愛", "巴士底監獄"], "id": 97}, {"domain": "世界史", "sheet": "啟蒙革命與工業時代", "stage": "高中", "year": "1804~1815年", "start_year": 1804, "end_year": 1815, "num_year": 1804, "lat": 50.674, "lng": 4.404, "loc": "比利時滑鐵盧", "title": "拿破崙時代", "desc": "1815年滑鐵盧戰役、維也納會議", "cause": "法國大革命後局勢動盪,拿破崙掌權", "effect": "傳播民法與民族主義,最終失敗,歐洲召開維也納會議", "comparison": "拿破崙(帝國擴張)≠維也納會議(保守復辟)", "story": "拿破崙從軍官一路成為皇帝,頒布《拿破崙法典》,保障財產權與法律平等。他的遠征雖在滑鐵盧失敗,卻把革命理念與民族主義傳遍歐洲。", "keywords": ["世界史", "啟蒙革命與工業時代", "拿破崙", "法典", "滑鐵盧", "維也納會議"], "id": 98}, {"domain": "中國史", "sheet": "晚清", "stage": "國小、國中、高中", "year": "1840年", "start_year": 1840, "end_year": 1840, "num_year": 1840, "lat": 32.0483, "lng": 118.7849, "loc": "江蘇南京", "title": "鴉片戰爭", "desc": "中國近代史開端,1842年簽訂南京條約", "cause": "英國因貿易逆差而走私鴉片,清廷禁煙", "effect": "簽訂南京條約,中國進入近代史", "comparison": "鴉片戰爭(1840,英)≠英法聯軍(1856至1860)", "story": "林則徐在虎門銷毀鴉片,英國以保護貿易為由出兵,清軍戰敗,被迫簽訂《南京條約》,割讓香港島、賠款並開放五口通商,中國進入近代史。", "keywords": ["中國史", "晚清", "林則徐", "虎門銷煙", "南京條約", "五口通商"], "id": 99}, {"domain": "世界史", "sheet": "啟蒙革命與工業時代", "stage": "高中", "year": "1848年", "start_year": 1848, "end_year": 1848, "num_year": 1848, "lat": 48.857, "lng": 2.344, "loc": "法國巴黎", "title": "歐洲革命、《共產黨宣言》", "desc": "自由主義與民族主義高漲", "cause": "工業化帶來貧富差距,民族與自由要求高漲", "effect": "多數革命失敗,但自由與民族主義持續發展", "comparison": "1848革命(歐洲)≠1789法國大革命", "story": "1848年,法、德、奧等地爆發革命,人民要求憲法與民族統一。同年,馬克思與恩格斯發表《共產黨宣言》,主張無產階級團結,影響後來的社會主義運動。", "keywords": ["世界史", "啟蒙革命與工業時代", "1848", "自由主義", "民族主義", "馬克思"], "id": 100}, {"domain": "中國史", "sheet": "晚清", "stage": "國中、高中", "year": "1851~1864年", "start_year": 1851, "end_year": 1864, "num_year": 1851, "lat": 32.063, "lng": 118.794, "loc": "江蘇南京(天京)", "title": "太平天國運動", "desc": "洪秀全領導,削弱清朝統治", "cause": "鴉片戰爭後民生困苦,洪秀全創辦拜上帝會", "effect": "削弱清朝統治,地方督撫勢力興起", "comparison": "太平天國(農民、宗教)≠黃巾之亂(東漢)", "story": "洪秀全創立拜上帝會,在廣西起事,後來定都南京改稱天京。他們提倡平等,卻因內鬥與戰火,削弱清朝,也讓曾國藩等地方勢力崛起。", "keywords": ["中國史", "晚清", "洪秀全", "拜上帝會", "天京", "曾國藩"], "id": 101}, {"domain": "世界史", "sheet": "啟蒙革命與工業時代", "stage": "高中", "year": "1853~1868年", "start_year": 1853, "end_year": 1868, "num_year": 1853, "lat": 35.244, "lng": 139.714, "loc": "日本浦賀(黑船來航)", "title": "日本開國與明治維新", "desc": "培里來航;富國強兵", "cause": "美國艦隊迫使日本開國,幕府威信下降", "effect": "促成明治維新,日本走向近代化", "comparison": "黑船來航(1853)≠明治維新(1868)", "story": "1853年,美國培里率黑船抵達浦賀,要求日本開港。幕府被迫簽約,引發尊王攘夷與倒幕運動,最終促成明治維新。", "keywords": ["世界史", "啟蒙革命與工業時代", "培里來航", "黑船", "尊王攘夷", "明治"], "id": 102}, {"domain": "臺灣史", "sheet": "清", "stage": "國小、高中", "year": "1860年代", "start_year": 1860, "end_year": 1869, "num_year": 1860, "lat": 25.1659, "lng": 121.4302, "loc": "新北市淡水區", "title": "開港通商", "desc": "安平、淡水、基隆、打狗相繼開港,茶、糖、樟腦出口", "cause": "第二次鴉片戰爭後,條約規定臺灣港口對外開放", "effect": "茶、糖、樟腦成為出口大宗,經濟重心北移", "comparison": "開港前(郊商、對渡)≠開港後(洋行、國際市場)", "story": "安平、淡水、雞籠、打狗相繼開放,洋行搶進臺灣,茶葉、糖與樟腦大量外銷。從此,臺灣的經濟重心由南部漸漸轉向北部。", "keywords": ["臺灣史", "清", "安平", "淡水", "雞籠", "打狗", "洋行"], "id": 103}, {"domain": "臺灣史", "sheet": "清", "stage": "國中", "year": "1860年", "start_year": 1860, "end_year": 1860, "num_year": 1860, "lat": 25.1213, "lng": 121.7213, "loc": "基隆市", "title": "天津條約與北京條約後開港", "desc": "安平、淡水、雞籠、打狗陸續開港", "cause": "第二次鴉片戰爭失敗,清廷被迫開放通商口岸", "effect": "臺灣被納入世界貿易體系,茶糖樟腦外銷", "comparison": "天津條約(1858)、北京條約(1860)為開港的條約依據", "story": "第二次鴉片戰爭後,清廷在條約中答應開放臺灣港口。外國商人與傳教士跟著上岸,臺灣自此被拉進世界貿易的大網絡。", "keywords": ["臺灣史", "清", "天津條約", "北京條約", "開港"], "id": 104}, {"domain": "中國史", "sheet": "晚清", "stage": "國中", "year": "1860年", "start_year": 1860, "end_year": 1860, "num_year": 1860, "lat": 39.8922, "lng": 116.3954, "loc": "北京", "title": "英法聯軍", "desc": "圓明園被焚,簽北京條約", "cause": "第二次鴉片戰爭,列強要求擴大通商", "effect": "簽訂天津條約與北京條約,增開通商口岸", "comparison": "英法聯軍(1860)≠八國聯軍(1900)", "story": "第二次鴉片戰爭中,英法聯軍攻入北京,焚毀圓明園。清廷被迫簽訂《北京條約》,增開通商口岸,允許外國傳教士在內地傳教。", "keywords": ["中國史", "晚清", "英法聯軍", "圓明園", "北京條約"], "id": 105}, {"domain": "中國史", "sheet": "晚清", "stage": "國中、高中", "year": "1861年", "start_year": 1861, "end_year": 1861, "num_year": 1861, "lat": 39.906, "lng": 116.394, "loc": "北京(總理衙門)", "title": "自強運動", "desc": "洋務運動,設總理衙門、辦新式工業", "cause": "太平天國與列強衝擊,清廷欲學習西方技術", "effect": "創辦新式工業,但未改革制度", "comparison": "自強運動(「中體西用」,技術)≠戊戌變法(制度)", "story": "面對西方船堅炮利,曾國藩、李鴻章等人設立江南製造局、福州船政局,學習西方技術。口號是「中學為體,西學為用」,但只改技術,不改制度。", "keywords": ["中國史", "晚清", "洋務運動", "總理衙門", "曾國藩", "李鴻章"], "id": 106}, {"domain": "世界史", "sheet": "啟蒙革命與工業時代", "stage": "國中", "year": "1861~1865年", "start_year": 1861, "end_year": 1865, "num_year": 1861, "lat": 38.9042, "lng": -77.0489, "loc": "美國華盛頓", "title": "美國南北戰爭", "desc": "廢除奴隸制度", "cause": "南北經濟與奴隸制度分歧", "effect": "廢除奴隸制度,聯邦統一", "comparison": "南方(農業、奴隸)≠北方(工業、自由勞動)", "story": "南方依賴奴隸勞動種植棉花,北方則走工業化。林肯當選後南方各州脫離聯邦,內戰爆發。戰後美國廢除奴隸制度,聯邦統一更為鞏固。", "keywords": ["世界史", "啟蒙革命與工業時代", "林肯", "奴隸制度", "聯邦", "南北戰爭"], "id": 107}, {"domain": "世界史", "sheet": "啟蒙革命與工業時代", "stage": "高中", "year": "1861年", "start_year": 1861, "end_year": 1861, "num_year": 1861, "lat": 45.064, "lng": 7.684, "loc": "義大利都靈", "title": "義大利統一", "desc": "1871年德意志統一", "cause": "義大利長期分裂,民族主義高漲", "effect": "1861年建立義大利王國", "comparison": "義大利統一(1861)≠德意志統一(1871)", "story": "加富爾以外交與戰爭手段推動統一,加里波底率千人紅衫軍攻占西西里與南義。1861年義大利王國成立,首位國王是維托里奧·伊曼紐爾二世。", "keywords": ["世界史", "啟蒙革命與工業時代", "加富爾", "加里波底", "義大利王國"], "id": 108}, {"domain": "臺灣史", "sheet": "清", "stage": "高中", "year": "1862~1865年", "start_year": 1862, "end_year": 1865, "num_year": 1862, "lat": 24.0695, "lng": 120.5263, "loc": "彰化縣", "title": "戴潮春事件", "desc": "彰化發生大規模民變", "cause": "地方團練與民間會社勢力坐大,官府處理失當", "effect": "歷時數年,清廷藉地方仕紳協助平定", "comparison": "戴潮春(中部、八卦會)≠林爽文(天地會)", "story": "戴潮春原是地方團練領袖,因官府處理失當而起事,拉起八卦會眾攻下彰化。事件延燒數年,最後清廷靠地方仕紳與團練才得以平定。", "keywords": ["臺灣史", "清", "戴潮春", "八卦會", "彰化", "團練"], "id": 109}, {"domain": "臺灣史", "sheet": "清", "stage": "高中", "year": "1865年起", "start_year": 1865, "end_year": 1872, "num_year": 1865, "lat": 22.984, "lng": 120.204, "loc": "臺南市(馬雅各,1865)", "title": "馬偕、馬雅各等傳教", "desc": "基督教長老教會傳入,傳播醫療與教育", "cause": "開港後條約允許傳教,外國教會來臺", "effect": "傳入西式醫療與教育,影響近代化", "comparison": "馬雅各(南部、醫療)≠馬偕(北部、淡水)", "story": "馬雅各在臺南行醫傳教,馬偕則在北部淡水設診所、辦學校,甚至替人拔牙。西方醫療與教育,就這樣隨著傳教士進入臺灣社會。", "keywords": ["臺灣史", "清", "長老教會", "馬偕", "馬雅各", "醫療教育"], "id": 110}, {"domain": "臺灣史", "sheet": "清", "stage": "國中", "year": "1867年", "start_year": 1867, "end_year": 1867, "num_year": 1867, "lat": 21.994, "lng": 120.744, "loc": "屏東縣恆春鎮", "title": "羅妹號事件", "desc": "美國商船在恆春遇難,船員遭殺害", "cause": "美國商船在臺灣南部遇難,船員遭原住民殺害", "effect": "美國介入交涉,日本因此注意到臺灣", "comparison": "羅妹號(1867、美國)≠牡丹社(1874、日本)", "story": "1867年,美國商船羅妹號在恆春外海觸礁,船員上岸後遭殺害。美國派兵報複一度受挫,後由李仙得出面談判,事件讓列強注意到臺灣南部的原住民地區。", "keywords": ["臺灣史", "清", "羅妹號", "恆春", "李仙得", "美國"], "id": 111}, {"domain": "世界史", "sheet": "啟蒙革命與工業時代", "stage": "國中", "year": "1868年", "start_year": 1868, "end_year": 1868, "num_year": 1868, "lat": 35.6732, "lng": 139.6413, "loc": "日本東京", "title": "日本明治維新", "desc": "日本走向近代化", "cause": "西方壓力與幕府統治崩潰", "effect": "日本迅速近代化,成為亞洲強權", "comparison": "明治維新(日本、成功)≠自強運動(中國、局部)", "story": "明治政府廢藩置縣、建立新式陸海軍與學校、推動工業化,提出「富國強兵」。日本迅速近代化,甲午戰爭戰勝清朝後成為東亞強權。", "keywords": ["世界史", "啟蒙革命與工業時代", "明治維新", "富國強兵", "殖產興業"], "id": 112}, {"domain": "世界史", "sheet": "啟蒙革命與工業時代", "stage": "國中", "year": "19世紀末", "start_year": 1870, "end_year": 1900, "num_year": 1870, "lat": -0.006, "lng": 19.994, "loc": "非洲中部(列強瓜分)", "title": "帝國主義", "desc": "列強瓜分非洲與亞洲", "cause": "工業革命後列強需要原料與市場", "effect": "列強瓜分亞非,埋下一戰衝突", "comparison": "帝國主義(經濟與政治支配)≠早期殖民(重商主義)", "story": "工業化國家為了取得原料、市場與投資場所,在非洲與亞洲搶占殖民地。列強競爭激烈,後來引發一戰。", "keywords": ["世界史", "啟蒙革命與工業時代", "殖民地", "原料市場", "瓜分", "非洲"], "id": 113}, {"domain": "臺灣史", "sheet": "清", "stage": "國小、國中、高中", "year": "1874年", "start_year": 1874, "end_year": 1874, "num_year": 1874, "lat": 22.0713, "lng": 120.7047, "loc": "屏東縣牡丹鄉", "title": "牡丹社事件", "desc": "日本出兵臺灣,清廷開始重視臺灣防務", "cause": "琉球漁民遇害,日本藉口出兵臺灣", "effect": "清廷重視臺灣防務,沈葆楨來臺並推動開山撫番", "comparison": "牡丹社(1874日本出兵)≠清法戰爭(1884法軍)", "story": "琉球船民漂流到臺灣南部遭殺害,日本藉機出兵牡丹社。清廷這才警覺海防空虛,派沈葆楨渡海,加強防務並改採「開山撫番」。", "keywords": ["臺灣史", "清", "牡丹社", "日本出兵", "沈葆楨"], "id": 114}, {"domain": "臺灣史", "sheet": "清", "stage": "國中", "year": "1875年", "start_year": 1875, "end_year": 1875, "num_year": 1875, "lat": 23.588, "lng": 120.897, "loc": "臺灣全島", "title": "廢除渡臺禁令", "desc": "開放漢人移民與開墾", "cause": "牡丹社事件後,清廷改採積極治臺", "effect": "開放漢人移墾,後山開發加速", "comparison": "渡臺禁令(限制移民)→廢止(開放移墾)", "story": "牡丹社事件後,清廷改變過去限制移民的態度,廢除渡臺禁令,鼓勵人民前往開墾,希望以人口與開發來鞏固臺灣防線。", "keywords": ["臺灣史", "清", "沈葆楨", "開山撫番", "移民開墾"], "id": 115}, {"domain": "臺灣史", "sheet": "清", "stage": "國小、國中、高中", "year": "1884~1885年", "start_year": 1884, "end_year": 1885, "num_year": 1884, "lat": 25.1689, "lng": 121.4302, "loc": "新北市淡水區", "title": "清法戰爭", "desc": "法軍進攻基隆、淡水,劉銘傳守臺", "cause": "法國進攻越南後,再攻擊臺灣北部", "effect": "促使清廷臺灣建省,加強防務與建設", "comparison": "清法戰爭(1884、法)≠牡丹社(1874、日)", "story": "1884年法軍進攻基隆、淡水。清軍在淡水(滬尾)擊退登陸的法軍,劉銘傳則在基隆堅守,臺灣沒有被占領。戰後清廷明白臺灣位置重要,決定加強經營。", "keywords": ["臺灣史", "清", "劉銘傳", "基隆", "淡水", "滬尾"], "id": 116}, {"domain": "世界史", "sheet": "啟蒙革命與工業時代", "stage": "高中", "year": "1884~1885年", "start_year": 1884, "end_year": 1885, "num_year": 1884, "lat": 52.508, "lng": 13.393, "loc": "德國柏林", "title": "柏林會議", "desc": "列強瓜分非洲", "cause": "列強爭奪非洲殖民地", "effect": "確立「有效占領」原則,加速瓜分非洲", "comparison": "柏林會議(非洲)≠萬隆會議(亞非反殖民)", "story": "1884至1885年,列強在柏林開會,規定占領非洲土地需「有效占領」,並確認剛果自由邦的歸屬。結果使列強爭相瓜分非洲,忽略當地人民意願。", "keywords": ["世界史", "啟蒙革命與工業時代", "柏林會議", "非洲瓜分", "帝國主義"], "id": 117}, {"domain": "臺灣史", "sheet": "清", "stage": "國小、國中、高中", "year": "1885~1891年", "start_year": 1885, "end_year": 1891, "num_year": 1885, "lat": 25.034, "lng": 121.504, "loc": "臺北市", "title": "臺灣建省", "desc": "1887年劉銘傳任首任巡撫,推動清賦、鐵路、電報", "cause": "清法戰爭後,清廷體認臺灣戰略地位重要", "effect": "推動清賦、鐵路、電報,成為較具近代化的一省", "comparison": "建省(清末)≠日治時期的統治建設", "story": "清法戰爭後,臺灣成為獨立一省,劉銘傳出任首任巡撫。他丈量土地、修鐵路、架電報,想讓臺灣走上近代化。", "keywords": ["臺灣史", "清", "劉銘傳", "首任巡撫", "清賦", "鐵路"], "id": 118}, {"domain": "臺灣史", "sheet": "清", "stage": "國小", "year": "1891年", "start_year": 1891, "end_year": 1891, "num_year": 1891, "lat": 25.037, "lng": 121.504, "loc": "臺北市", "title": "基隆至臺北鐵路完成", "desc": "劉銘傳建設的鐵路,為臺灣近代化起點", "cause": "自強運動與臺灣建省的建設需求", "effect": "成為臺灣近代交通起點,後被日本接續擴建", "comparison": "劉銘傳鐵路(基隆至新竹段)≠日治縱貫鐵路(基隆至高雄)", "story": "1891年,火車從基隆開到臺北,原本費時的路程大幅縮短。劉銘傳鋪下的鐵軌,成為臺灣近代化鐵路的起點。", "keywords": ["臺灣史", "清", "劉銘傳", "鐵路", "電報", "近代化"], "id": 119}, {"domain": "中國史", "sheet": "晚清", "stage": "國中、高中", "year": "1894~1895年", "start_year": 1894, "end_year": 1895, "num_year": 1894, "lat": 37.494, "lng": 122.094, "loc": "山東威海衛、黃海", "title": "甲午戰爭", "desc": "中日戰爭,次年簽訂馬關條約", "cause": "朝鮮問題與日本擴張,清日衝突", "effect": "簽訂馬關條約,割讓臺灣,刺激維新與革命", "comparison": "甲午戰爭(1894)≠鴉片戰爭(1840)", "story": "1894年中日爆發戰爭,北洋艦隊在黃海海戰後戰敗,清廷被迫簽訂《馬關條約》割讓臺灣、澎湖,賠款二億兩。這場戰敗使人們質疑「只學技術」的自強運動。", "keywords": ["中國史", "晚清", "北洋艦隊", "馬關條約", "日本", "朝鮮"], "id": 120}, {"domain": "臺灣史", "sheet": "清", "stage": "國小、國中、高中", "year": "1895年", "start_year": 1895, "end_year": 1895, "num_year": 1895, "lat": 33.954, "lng": 130.934, "loc": "日本山口縣下關(春帆樓)", "title": "馬關條約、割讓臺灣", "desc": "清朝戰敗,臺灣、澎湖割讓給日本,日治時期開始", "cause": "清朝甲午戰敗", "effect": "臺灣、澎湖割讓給日本,日治時期開始", "comparison": "馬關條約(1895割臺)≠南京條約(1842割香港)", "story": "甲午戰敗的清朝與日本簽下馬關條約,臺灣與澎湖割讓給日本。許多臺灣人在簽約後才得知消息,同年便爆發抵抗日軍的戰爭。", "keywords": ["臺灣史", "清", "甲午戰爭", "李鴻章", "伊藤博文", "割讓"], "id": 121}, {"domain": "臺灣史", "sheet": "日治", "stage": "國小、國中、高中", "year": "1895年", "start_year": 1895, "end_year": 1895, "num_year": 1895, "lat": 25.04, "lng": 121.504, "loc": "臺北市", "title": "臺灣民主國", "desc": "臺灣人抗日,成立短暫的臺灣民主國", "cause": "馬關條約割臺,臺灣士紳與官員不願被割讓", "effect": "僅維持數月,日軍占領臺灣,各地抗日持續", "comparison": "臺灣民主國(1895武裝抗日)≠議會請願運動(1920年代非武裝)", "story": "消息傳到臺灣,紳民不願被割讓,在臺北宣布成立「臺灣民主國」,推舉唐景崧為總統。民主國僅維持數個月,日軍南下後瓦解,但各地抗日仍持續。", "keywords": ["臺灣史", "日治", "唐景崧", "劉永福", "乙未戰爭"], "id": 122}, {"domain": "臺灣史", "sheet": "日治", "stage": "高中", "year": "1896年", "start_year": 1896, "end_year": 1896, "num_year": 1896, "lat": 25.043, "lng": 121.504, "loc": "臺北市(總督府)", "title": "六三法", "desc": "賦予臺灣總督律令權,確立特別統治體制", "cause": "日本剛取得臺灣,認為須採特別統治", "effect": "總督掌握行政與立法權,成為專制統治基礎", "comparison": "六三法(1896)→三一法(1906)→法三號(1921)", "story": "日本帝國議會通過六三法,授權臺灣總督可發布具有法律效力的命令。總督同時握有行政與立法大權,日治初期的統治特色就此確立。", "keywords": ["臺灣史", "日治", "律令權", "總督", "特別統治"], "id": 123}, {"domain": "臺灣史", "sheet": "日治", "stage": "國中", "year": "1898年", "start_year": 1898, "end_year": 1898, "num_year": 1898, "lat": 25.046, "lng": 121.504, "loc": "臺北市(總督府)", "title": "兒玉源太郎、後藤新平", "desc": "推動土地調查、人口調查、舊慣調查等基礎建設", "cause": "臺灣治安與財政不穩,需要有效統治", "effect": "推動土地、人口、舊慣調查與基礎建設", "comparison": "兒玉、後藤(第四任總督與民政長官)≠樺山資紀(首任總督)", "story": "兒玉擔任總督,後藤新平任民政長官。他們主張依臺灣實際情況治理,先調查土地、人口與舊慣,再推動建設。", "keywords": ["臺灣史", "日治", "總督", "民政長官", "三大調查", "舊慣調查"], "id": 124}, {"domain": "臺灣史", "sheet": "日治", "stage": "高中", "year": "1898~1905年", "start_year": 1898, "end_year": 1905, "num_year": 1898, "lat": 23.588, "lng": 120.9, "loc": "臺灣全島", "title": "土地調查事業", "desc": "清查土地,確立大租權廢除與地稅制度", "cause": "整理土地權利與確保稅收", "effect": "廢除大租權、確定地租來源,有利糖業與稅收", "comparison": "土地調查(1898至1905)≠舊慣調查(法制與習俗)", "story": "日本派人測量全島土地、釐清地主權利,把複雜的大租、小租關係整理成單一地主。政府因此能穩定徵收地稅,也為製糖業取得土地鋪路。", "keywords": ["臺灣史", "日治", "大租權", "地籍", "地稅", "小租戶"], "id": 125}, {"domain": "中國史", "sheet": "晚清", "stage": "國中、高中", "year": "1898年", "start_year": 1898, "end_year": 1898, "num_year": 1898, "lat": 39.894, "lng": 116.397, "loc": "北京", "title": "戊戌變法", "desc": "康有為、梁啟超推動維新,百日而敗", "cause": "甲午戰敗刺激,維新派要求制度改革", "effect": "百日而敗,慈禧發動政變", "comparison": "戊戌變法(制度改革)≠自強運動(技術改革)", "story": "光緒帝任用康有為、梁啟超推行新政,包括辦學堂、改革官制、發展工商。但保守派反對,慈禧發動政變,變法僅持續一百零三天,譚嗣同等人犧牲。", "keywords": ["中國史", "晚清", "康有為", "梁啟超", "光緒帝", "百日維新"], "id": 126}, {"domain": "臺灣史", "sheet": "日治", "stage": "高中", "year": "1899年", "start_year": 1899, "end_year": 1899, "num_year": 1899, "lat": 25.034, "lng": 121.507, "loc": "臺北市", "title": "臺灣銀行成立", "desc": "統一貨幣、金融", "cause": "統一貨幣與金融,以配合殖民開發", "effect": "發行臺灣銀行券,穩固殖民經濟", "comparison": "臺灣銀行(日治)≠新臺幣(1949發行)", "story": "日本在臺北成立臺灣銀行,發行銀行券,統一各式各樣的貨幣。金融整合讓殖民政府的投資與糖業開發更為順暢。", "keywords": ["臺灣史", "日治", "臺灣銀行", "貨幣", "金融"], "id": 127}, {"domain": "臺灣史", "sheet": "日治", "stage": "高中", "year": "1900年代", "start_year": 1900, "end_year": 1909, "num_year": 1900, "lat": 22.744, "lng": 120.304, "loc": "高雄市橋頭區(新式糖廠)", "title": "糖業與殖民經濟", "desc": "「工業日本、農業臺灣」", "cause": "日本需要原料與市場,殖民地經濟結構成形", "effect": "臺灣成為日本糖與米的供應地,也引發蔗農抗爭", "comparison": "日治前期(糖業、農業臺灣)≠戰時(工業化)", "story": "日本政府保護新式糖廠,把臺灣定位成「農業臺灣、工業日本」。蔗農只能把甘蔗賣給指定製糖會社,價格偏低,日後引發二林蔗農事件。", "keywords": ["臺灣史", "日治", "工業日本", "農業臺灣", "製糖會社"], "id": 128}, {"domain": "中國史", "sheet": "晚清", "stage": "國中、高中", "year": "1900年", "start_year": 1900, "end_year": 1900, "num_year": 1900, "lat": 39.897, "lng": 116.397, "loc": "北京", "title": "義和團事件、八國聯軍", "desc": "八國聯軍,簽《辛丑條約》(1901)", "cause": "列強侵略與教案頻發,民間排外情緒高", "effect": "簽訂《辛丑條約》,中國陷入半殖民地困境", "comparison": "義和團(排外、民間)≠太平天國(起義建國)", "story": "義和團以「扶清滅洋」為口號攻擊教堂與外國人,清廷一度支持,導致八國聯軍攻入北京。1901年《辛丑條約》要求巨額賠款,中國半殖民地程度加深。", "keywords": ["中國史", "晚清", "義和團", "八國聯軍", "辛丑條約"], "id": 129}, {"domain": "臺灣史",
+  // 1. 考點資料庫
+  const rawData = [
+    { id: 1, title: "長濱文化", year: "-48000", stage: "史前與早期", coords: [22.25, 121.43], desc: "長濱文化是台灣發現最早的新石器以前舊石器時代文化遺跡。" },
+    { id: 2, title: "熱蘭遮城興建", year: "1624", stage: "史前與早期", coords: [23.00, 120.16], desc: "荷蘭東印度公司於安平興建熱蘭遮城，建立在台商業據點。" },
+    { id: 3, title: "鄭成功攻台", year: "1661", stage: "史前與早期", coords: [23.01, 120.18], desc: "鄭成功率軍登陸鹿耳門，結束荷蘭在台灣的殖民統治。" },
+    { id: 4, title: "施琅攻台與立碑", year: "1683", stage: "清領時期", coords: [23.56, 119.57], desc: "施琅於澎湖海戰擊敗鄭軍，清朝隨後將台灣納入版圖。" },
+    { id: 5, title: "朱一貴事件", year: "1721", stage: "清領時期", coords: [22.88, 120.44], desc: "清領時期台灣三大民變之一，發生於高雄內門地區。" },
+    { id: 6, title: "開港通商", year: "1860", stage: "清領時期", coords: [25.17, 121.44], desc: "天津條約後淡水、安平、打狗與雞籠先後開港，加入國際貿易體系。" },
+    { id: 7, title: "牡丹社事件", year: "1874", stage: "清領時期", coords: [22.13, 120.76], desc: "日本藉口琉球漂民事件出兵恆春半島，影響清廷重視台灣海防。" },
+    { id: 8, title: "台灣建省", year: "1885", stage: "清領時期", coords: [25.04, 121.51], desc: "清廷正式將台灣劃為獨立省份，劉銘傳出任首任台灣巡撫。" },
+    { id: 9, title: "乙未抗日", year: "1895", stage: "日治時期", coords: [24.80, 120.97], desc: "馬關條約簽訂後台灣民主國成立並進行乙未戰爭抵抗日軍接管。" },
+    { id: 10, title: "噍吧哖事件", year: "1915", stage: "日治時期", coords: [23.05, 120.48], desc: "余清芳等於玉井發動大規模武裝抗日事件，為日治時期最後一次武裝抗日。" },
+    { id: 11, title: "台灣文化協會成立", year: "1921", stage: "日治時期", coords: [25.05, 121.51], desc: "林獻堂、蔣渭水等於台北大稻埕成立台灣文化協會，開啟政治與文化啟蒙運動。" },
+    { id: 12, title: "霧社事件", year: "1930", stage: "日治時期", coords: [24.02, 121.13], desc: "莫那·魯道率領賽德克族於霧社發起反日起義。" }
+  ];
+
+  // 2. 學習狀態管理
+  const STORAGE_KEY = 'history_hub_quiz_data';
+
+  function migrateUserData(raw) {
+    if (raw && raw.v === 2 && raw.items) return raw;
+    const items = {};
+    const now = Date.now();
+    if (raw) {
+      (raw.mastered || []).forEach(id => { items[String(id)] = { s: 'mastered', t: now }; });
+      (raw.reviewing || []).forEach(id => { items[String(id)] = { s: 'reviewing', t: now }; });
+      (raw.mistakes || []).forEach(id => { items[String(id)] = { s: 'mistake', t: now }; });
+    }
+    return { v: 2, items };
+  }
+
+  function loadUserData() {
+    try {
+      const stored = localStorage.getItem(STORAGE_KEY);
+      return migrateUserData(stored ? JSON.parse(stored) : null);
+    } catch (e) {
+      return { v: 2, items: {} };
+    }
+  }
+
+  let userLearningData = loadUserData();
+
+  function setStatus(id, s) {
+    userLearningData.items[String(id)] = { s, t: Date.now() };
+    saveUserData();
+    updateStats();
+  }
+
+  function getItemStatus(id) {
+    return userLearningData.items[String(id)]?.s || 'none';
+  }
+
+  function mergeUserData(a, b) {
+    const local = migrateUserData(a);
+    const remote = migrateUserData(b);
+    const merged = { v: 2, items: { ...local.items } };
+    for (const [id, r] of Object.entries(remote.items || {})) {
+      if (!merged.items[id] || r.t > merged.items[id].t) {
+        merged.items[id] = r;
+      }
+    }
+    return merged;
+  }
+
+  function saveUserData() {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(userLearningData));
+    } catch (e) {}
+    scheduleFsSync();
+  }
+
+  function updateStats() {
+    let mastered = 0, reviewing = 0, mistake = 0;
+    rawData.forEach(e => {
+      const st = getItemStatus(e.id);
+      if (st === 'mastered') mastered++;
+      else if (st === 'reviewing') reviewing++;
+      else if (st === 'mistake') mistake++;
+    });
+
+    const elTotal = document.getElementById('statTotal');
+    const elMastered = document.getElementById('statMastered');
+    const elReviewing = document.getElementById('statReviewing');
+    const elMistakes = document.getElementById('statMistakes');
+
+    if (elTotal) elTotal.innerText = rawData.length;
+    if (elMastered) elMastered.innerText = mastered;
+    if (elReviewing) elReviewing.innerText = reviewing;
+    if (elMistakes) elMistakes.innerText = mistake;
+  }
+
+  // 3. 本地資料夾自動同步
+  const FILE_NAME = 'history_quiz_progress.json';
+  let gDirHandle = null, gFileHandle = null;
+  let gFsSyncTimer = null, gFsDirty = false, gWriting = false;
+
+  function setSyncStatus(text) {
+    const el = document.getElementById('sync-text');
+    if (el) el.innerText = text;
+  }
+
+  function getFSDB() {
+    return new Promise((resolve, reject) => {
+      const req = indexedDB.open('HistoryHubFSDB', 1);
+      req.onupgradeneeded = () => req.result.createObjectStore('handles');
+      req.onsuccess = () => resolve(req.result);
+      req.onerror = () => reject(req.error);
+    });
+  }
+
+  async function getStoredDirHandle() {
+    try {
+      const db = await getFSDB();
+      return new Promise((resolve) => {
+        const tx = db.transaction('handles', 'readonly');
+        const req = tx.objectStore('handles').get('folderHandle');
+        req.onsuccess = () => resolve(req.result || null);
+        req.onerror = () => resolve(null);
+      });
+    } catch (e) { return null; }
+  }
+
+  async function storeDirHandle(handle) {
+    try {
+      const db = await getFSDB();
+      const tx = db.transaction('handles', 'readwrite');
+      tx.objectStore('handles').put(handle, 'folderHandle');
+    } catch (e) { }
+  }
+
+  async function connectDirHandle(dirHandle) {
+    gDirHandle = dirHandle;
+    gFileHandle = await gDirHandle.getFileHandle(FILE_NAME, { create: true });
+    await storeDirHandle(gDirHandle);
+    await syncFromLocalFolder();
+  }
+
+  async function syncFromLocalFolder() {
+    if (!gFileHandle) return;
+    try {
+      const file = await gFileHandle.getFile();
+      const text = await file.text();
+      if (text && text.trim()) {
+        const remoteData = migrateUserData(JSON.parse(text));
+        userLearningData = mergeUserData(userLearningData, remoteData);
+        saveUserData();
+        updateStats();
+      }
+      await writeToLocalFolderNow();
+      setSyncStatus('📁 已連結資料夾 (自動儲存中)');
+    } catch (err) {
+      setSyncStatus('📁 資料夾連線失敗');
+    }
+  }
+
+  async function selectLocalFolder() {
+    if (!('showDirectoryPicker' in window)) {
+      alert('您的瀏覽器不支援本地資料夾存取，請使用桌面版 Chrome 或 Edge 瀏覽器！');
+      return;
+    }
+    try {
+      const handle = await window.showDirectoryPicker({ id: 'history_hub_folder', mode: 'readwrite', startIn: 'documents' });
+      await connectDirHandle(handle);
+      alert('🎉 成功連結資料夾！後續進度將自動寫入該資料夾內。');
+    } catch (err) {
+      if (err.name !== 'AbortError') alert('連結失敗：' + err.message);
+    }
+  }
+
+  function onFolderBtnClick() {
+    selectLocalFolder();
+  }
+
+  function scheduleFsSync() {
+    gFsDirty = true;
+    if (!gFileHandle) return;
+    clearTimeout(gFsSyncTimer);
+    gFsSyncTimer = setTimeout(() => writeToLocalFolderNow(), 2000);
+  }
+
+  async function writeToLocalFolderNow() {
+    if (!gFileHandle || !gFsDirty || gWriting) return;
+    gWriting = true;
+    try {
+      gFsDirty = false;
+      const writable = await gFileHandle.createWritable();
+      await writable.write(JSON.stringify(userLearningData, null, 2));
+      await writable.close();
+      const d = new Date();
+      const hh = String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0');
+      setSyncStatus('📁 自動儲存於 ' + hh);
+    } catch (err) {
+      gFsDirty = true;
+    } finally { gWriting = false; }
+  }
+
+  // 4. 頁面切換與地圖防爆控制
+  let mapInstance = null;
+
+  function switchTab(tabName, btnEl) {
+    document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.view-panel').forEach(p => p.classList.remove('active'));
+
+    if (btnEl) btnEl.classList.add('active');
+    const targetPanel = document.getElementById(`panel-${tabName}`);
+    if (targetPanel) targetPanel.classList.add('active');
+
+    if (tabName === 'map') switchViewToMap();
+    else if (tabName === 'flashcard') renderFlashcard();
+  }
+
+  function switchViewToMap() {
+    try {
+      if (typeof L === 'undefined') {
+        document.getElementById('map').innerHTML = '<p style="padding:2rem; text-align:center; color:#64748b;">地圖資源載入中，請稍後...</p>';
+        return;
+      }
+      if (!mapInstance) {
+        mapInstance = L.map('map').setView([23.6, 120.9], 7);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '&copy; OpenStreetMap' }).addTo(mapInstance);
+        rawData.forEach(ev => {
+          L.marker(ev.coords).addTo(mapInstance).bindPopup(`<b>${ev.title} (${ev.year}年)</b><br>${ev.desc}`);
+        });
+      }
+      setTimeout(() => { if (mapInstance) mapInstance.invalidateSize(); }, 150);
+    } catch (err) {
+      console.error('地圖初始化異常:', err);
+    }
+  }
+
+  function resetMapView() {
+    if (mapInstance) mapInstance.flyTo([23.6, 120.9], 7);
+  }
+
+  // 5. 閃卡邏輯
+  let fcIndex = 0;
+  function renderFlashcard() {
+    const filterEl = document.getElementById('flashcard-filter');
+    const filter = filterEl ? filterEl.value : 'all';
+    const list = rawData.filter(e => {
+      const st = getItemStatus(e.id);
+      if (filter === 'reviewing') return st === 'reviewing';
+      if (filter === 'mistake') return st === 'mistake';
+      return true;
+    });
+
+    const container = document.getElementById('flashcard-container');
+    if (!container) return;
+
+    if (list.length === 0) {
+      container.innerHTML = '<p style="text-align:center; padding:2rem; color:#64748b;">無符合條件的卡片。</p>';
+      return;
+    }
+
+    if (fcIndex >= list.length) fcIndex = 0;
+    const item = list[fcIndex];
+    const status = getItemStatus(item.id);
+
+    container.innerHTML = `
+      <div class="flashcard" onclick="this.querySelector('.desc-box').style.display = (this.querySelector('.desc-box').style.display === 'none' ? 'block' : 'none')">
+        <div style="font-size: 1.25rem; font-weight: bold;">${item.title} (${item.year}年)</div>
+        <div class="badge badge-${status}" style="margin:0.5rem 0;">狀態: ${status}</div>
+        <div class="desc-box" style="display:none; color:#475569;">${item.desc}</div>
+        <div style="font-size:0.75rem; color:#94a3b8; margin-top:0.5rem;">(點擊卡片顯示/隱藏說明)</div>
+      </div>
+      <div class="flashcard-actions">
+        <button class="btn btn-success" onclick="setStatus(${item.id}, 'mastered'); fcIndex++; renderFlashcard();">記得 (已掌握)</button>
+        <button class="btn btn-warning" onclick="setStatus(${item.id}, 'reviewing'); fcIndex++; renderFlashcard();">模糊 (複習中)</button>
+        <button class="btn btn-danger" onclick="setStatus(${item.id}, 'mistake'); fcIndex++; renderFlashcard();">忘記 (錯題本)</button>
+      </div>
+    `;
+  }
+
+  // 6. 測驗邏輯
+  let quizState = { questions: [], currentIndex: 0, correctCount: 0, answeredCount: 0 };
+
+  function citeExamToQuiz(examName) {
+    const sel = document.getElementById('quiz-filter-stage');
+    if (sel) sel.value = '日治時期';
+    alert(`已套用「${examName}」測驗範疇！`);
+  }
+
+  function startNewQuiz() {
+    const sel = document.getElementById('quiz-filter-stage');
+    const stage = sel ? sel.value : 'ALL';
+    let pool = stage === 'ALL' ? rawData : rawData.filter(e => e.stage === stage);
+    if (pool.length === 0) return alert('無可用考點！');
+
+    const shuffled = [...pool].sort(() => 0.5 - Math.random()).slice(0, 10);
+    quizState = {
+      questions: shuffled.map(e => {
+        const isYear = Math.random() > 0.5;
+        const correctAnswer = isYear ? String(e.year) : e.title;
+        const distractors = rawData
+          .filter(x => x.id !== e.id)
+          .map(x => isYear ? String(x.year) : x.title)
+          .filter(val => val !== correctAnswer);
+        
+        const uniqueDistractors = Array.from(new Set(distractors)).sort(() => 0.5 - Math.random()).slice(0, 3);
+        const options = [correctAnswer, ...uniqueDistractors].sort(() => 0.5 - Math.random());
+        const maskedDesc = e.desc.replace(new RegExp(e.title, 'g'), '「＿＿＿」');
+
+        return {
+          id: e.id,
+          prompt: isYear ? `請問考點「${e.title}」發生的西元年份是？` : `請問「${maskedDesc}」是指哪一個歷史事件？`,
+          options, correctAnswer
+        };
+      }),
+      currentIndex: 0, correctCount: 0, answeredCount: 0
+    };
+    renderQuizQuestion();
+  }
+
+  function renderQuizQuestion() {
+    const container = document.getElementById('quiz-container');
+    if (!container) return;
+
+    if (quizState.questions.length === 0) {
+      container.innerHTML = '<p style="color:#64748b;">請點擊上方按鈕開始測驗。</p>';
+      return;
+    }
+
+    if (quizState.currentIndex >= quizState.questions.length) {
+      const score = quizState.answeredCount > 0 ? Math.round((quizState.correctCount / quizState.answeredCount) * 100) : 0;
+      container.innerHTML = `
+        <div style="text-align:center; padding: 2rem 0;">
+          <h2>測驗完成！</h2>
+          <div style="font-size: 3rem; font-weight: bold; color: var(--primary); margin: 1rem 0;">${score} 分</div>
+          <p>共回答 ${quizState.answeredCount} 題，答對 ${quizState.correctCount} 題。</p>
+          <button class="btn" style="margin-top:1rem;" onclick="startNewQuiz()">再次挑戰</button>
+        </div>
+      `;
+      return;
+    }
+
+    const q = quizState.questions[quizState.currentIndex];
+    const score = quizState.answeredCount > 0 ? Math.round((quizState.correctCount / quizState.answeredCount) * 100) : 0;
+
+    container.innerHTML = `
+      <div style="display:flex; justify-content:space-between; margin-bottom:1rem; font-size:0.875rem; color:#64748b;">
+        <span>第 ${quizState.currentIndex + 1} / ${quizState.questions.length} 題</span>
+        <span>當前實測得分：${score} 分</span>
+      </div>
+      <h4 style="font-size:1.1rem; margin-bottom: 1rem;">${q.prompt}</h4>
+      <div class="quiz-options">
+        ${q.options.map((opt, idx) => `<button class="quiz-option" onclick="submitAnswer('${opt.replace(/'/g, "\\'")}', this)">${String.fromCharCode(65 + idx)}.${opt}</button>`).join('')}
+      </div>
+    `;
+  }
+
+  function submitAnswer(selectedOpt, btn) {
+    const q = quizState.questions[quizState.currentIndex];
+    document.querySelectorAll('.quiz-option').forEach(o => o.disabled = true);
+    quizState.answeredCount++;
+
+    if (selectedOpt === q.correctAnswer) {
+      btn.classList.add('correct');
+      quizState.correctCount++;
+      setStatus(q.id, 'mastered');
+    } else {
+      btn.classList.add('wrong');
+      setStatus(q.id, 'mistake');
+    }
+
+    setTimeout(() => {
+      quizState.currentIndex++;
+      renderQuizQuestion();
+    }, 1000);
+  }
+
+  // 7. 備份與恢復
+  function exportBackupData() {
+    const blob = new Blob([JSON.stringify(userLearningData, null, 2)], { type: 'application/json' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = `learning_backup_${new Date().toISOString().slice(0,10)}.json`;
+    a.click();
+  }
+
+  function importBackupData() {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = '.json';
+    input.onchange = e => {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = evt => {
+        try {
+          const imported = JSON.parse(evt.target.result);
+          userLearningData = mergeUserData(userLearningData, imported);
+          saveUserData();
+          updateStats();
+          alert('備份資料已成功雙向合併！');
+        } catch (err) { alert('匯入失敗：檔案格式不正確'); }
+      };
+      reader.readAsText(file);
+    };
+    input.click();
+  }
+
+  function resetAllData() {
+    if (confirm('確定要重置所有學習紀錄嗎？')) {
+      userLearningData = { v: 2, items: {} };
+      saveUserData();
+      updateStats();
+    }
+  }
+
+  // 8. 頁面初始化
+  window.addEventListener('DOMContentLoaded', async () => {
+    updateStats();
+    switchViewToMap();
+    
+    try {
+      const storedHandle = await getStoredDirHandle();
+      if (storedHandle) {
+        const perm = await storedHandle.queryPermission({ mode: 'readwrite' });
+        if (perm === 'granted') await connectDirHandle(storedHandle);
+      }
+    } catch (e) {}
+  });
+</script>
+</body>
+</html>
