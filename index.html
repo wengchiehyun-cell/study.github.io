@@ -20,7 +20,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-s
 }
 .auth-card{
     background:#1e293b;border:1px solid #334155;border-radius:12px;
-    padding:28px 24px;width:100%;max-width:420px;
+    padding:28px 24px;width:100%;max-width:440px;
     display:flex;flex-direction:column;gap:14px;
     box-shadow:0 10px 30px rgba(0,0,0,0.5);
 }
@@ -38,9 +38,17 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-s
 .auth-input, .auth-select{background:#0f172a;border:1px solid #475569;color:#fff;padding:8px 12px;border-radius:6px;font-size:0.85rem;outline:none;}
 .auth-input:focus, .auth-select:focus{border-color:#f59e0b;}
 
+/* 頭像選擇網格 */
+.avatar-grid{display:grid;grid-template-columns:repeat(6, 1fr);gap:8px;margin-top:4px;}
+.avatar-opt{
+    font-size:1.4rem;padding:6px;border-radius:8px;border:1px solid #334155;
+    background:#0f172a;text-align:center;cursor:pointer;transition:all 0.15s;
+}
+.avatar-opt:hover, .avatar-opt.selected{border-color:#f59e0b;background:#334155;transform:scale(1.1);}
+
 .btn-auth-submit{background:#f59e0b;color:#0f172a;border:none;padding:10px;border-radius:6px;font-size:0.9rem;font-weight:bold;cursor:pointer;}
 
-/* 主應用程式介面 */
+/* 主介面框架 */
 #appMain{display:none;flex-direction:column;width:100%;height:100vh;overflow:hidden;}
 
 nav.top-nav{
@@ -50,13 +58,13 @@ nav.top-nav{
 .nav-left{display:flex;align-items:center;gap:12px;}
 .btn-menu-trigger{background:#334155;color:#f59e0b;border:1px solid #475569;padding:6px 12px;border-radius:6px;font-size:0.85rem;font-weight:bold;cursor:pointer;}
 .nav-brand{font-size:1rem;font-weight:bold;color:#f59e0b;cursor:pointer;}
-.user-badge-info{font-size:0.8rem;background:#0f172a;padding:4px 10px;border-radius:12px;border:1px solid #334155;color:#f59e0b;}
+.user-badge-info{font-size:0.82rem;background:#0f172a;padding:4px 12px;border-radius:16px;border:1px solid #334155;color:#f59e0b;display:flex;align-items:center;gap:6px;}
 
 .view-container{flex:1;position:relative;width:100%;height:100%;overflow:hidden;}
 
 /* 視圖 1：主控制台 Dashboard */
 #view-home{width:100%;height:100%;overflow-y:auto;padding:24px 16px 60px;max-width:1100px;margin:0 auto;display:block;}
-.home-welcome-card{background:linear-gradient(135deg, #1e293b, #0f172a);border:1px solid #334155;border-radius:12px;padding:24px;margin-bottom:24px;text-align:center;}
+.home-welcome-card{background:linear-gradient(135deg, #1e293b, #0f172a);border:1px solid #334155;border-radius:12px;padding:24px;margin-bottom:16px;text-align:center;}
 .welcome-title{font-size:1.6rem;font-weight:bold;color:#f8fafc;margin-bottom:6px;}
 .welcome-title span{color:#f59e0b;}
 .welcome-sub{font-size:0.88rem;color:#94a3b8;margin-bottom:12px;}
@@ -64,7 +72,19 @@ nav.top-nav{
 .welcome-stat-pill{background:#0f172a;border:1px solid #334155;padding:6px 14px;border-radius:20px;font-size:0.82rem;color:#cbd5e1;}
 .welcome-stat-pill b{color:#f59e0b;margin-left:4px;}
 
-.portal-grid{display:grid;grid-template-columns:repeat(auto-fit, minmax(280px, 1fr));gap:16px;}
+/* 每日歷史笑話卡片 */
+.daily-joke-card{
+    background:#1e293b;border:1px solid #f59e0b;border-radius:12px;
+    padding:16px 20px;margin-bottom:20px;display:flex;flex-direction:column;gap:8px;
+    box-shadow:0 4px 12px rgba(245,158,11,0.1);
+}
+.joke-header{display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #334155;padding-bottom:6px;}
+.joke-title{font-size:0.95rem;font-weight:bold;color:#f59e0b;display:flex;align-items:center;gap:6px;}
+.joke-date{font-size:0.75rem;color:#94a3b8;}
+.joke-q{font-size:0.9rem;font-weight:bold;color:#f8fafc;line-height:1.4;}
+.joke-a{font-size:0.85rem;color:#38bdf8;background:#0f172a;padding:8px 12px;border-radius:6px;border-left:3px solid #38bdf8;}
+
+.portal-grid{display:grid;grid-template-columns:repeat(auto-fit, minmax(260px, 1fr));gap:16px;}
 .portal-card{
     background:#1e293b;border:1px solid #334155;border-radius:12px;padding:20px;
     display:flex;flex-direction:column;justify-content:space-between;gap:12px;
@@ -92,7 +112,7 @@ nav.top-nav{
 .exam-card-body{font-size:0.85rem;color:#cbd5e1;line-height:1.5;margin-bottom:10px;}
 .btn-ceec-link{display:inline-block;background:#0284c7;color:#fff;padding:6px 12px;border-radius:6px;text-decoration:none;font-size:0.8rem;font-weight:bold;}
 
-/* 視圖 3：測驗與閃卡 */
+/* 視圖 3：測驗與閃卡 (完整重構修復版) */
 #view-quiz{width:100%;height:100%;overflow-y:auto;padding:20px 16px 60px;max-width:1000px;margin:0 auto;display:none;}
 .quiz-header{background:#1e293b;border:1px solid #334155;border-radius:8px;padding:16px 20px;margin-bottom:16px;display:flex;justify-content:space-between;align-items:center;gap:16px;}
 .quiz-title-box h2{font-size:1.2rem;color:#f59e0b;margin-bottom:4px;}
@@ -108,20 +128,62 @@ nav.top-nav{
     background:#1e293b;border:1px solid #334155;border-radius:8px;padding:14px 18px;
     margin-bottom:16px;display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap;
 }
+.quiz-config-group{display:flex;gap:10px;align-items:center;flex-wrap:wrap;}
+.quiz-select-label{font-size:0.85rem;color:#f8fafc;font-weight:bold;}
+.quiz-select-input{background:#0f172a;border:1px solid #475569;color:#fff;padding:6px 10px;border-radius:6px;font-size:0.82rem;outline:none;}
 .btn-start-quiz{background:#f59e0b;color:#0f172a;border:none;padding:8px 18px;border-radius:6px;font-weight:bold;font-size:0.85rem;cursor:pointer;}
 
-/* 視圖 4：討論交流區 (包含防洗版與檢舉) */
+/* 3D 閃卡卡片 */
+.flashcard-wrapper{perspective:1000px;width:100%;max-width:650px;margin:0 auto 16px;height:320px;cursor:pointer;}
+.flashcard-inner{position:relative;width:100%;height:100%;text-align:center;transition:transform 0.5s;transform-style:preserve-3d;}
+.flashcard-wrapper.flipped .flashcard-inner{transform:rotateY(180deg);}
+.flashcard-front, .flashcard-back{
+    position:absolute;width:100%;height:100%;backface-visibility:hidden;
+    border-radius:12px;border:1px solid #334155;padding:20px;
+    display:flex;flex-direction:column;justify-content:space-between;align-items:center;
+}
+.flashcard-front{background:#1e293b;color:#fff;}
+.flashcard-back{background:#0f172a;color:#f8fafc;transform:rotateY(180deg);border-color:#f59e0b;overflow-y:auto;}
+
+.fc-badge{padding:2px 8px;border-radius:4px;font-size:0.75rem;font-weight:bold;color:#fff;background:#f59e0b;}
+.fc-title{font-size:1.4rem;font-weight:bold;color:#f59e0b;margin:12px 0;}
+.fc-box{background:#0f172a;padding:10px;border-radius:6px;border:1px solid #334155;text-align:left;width:100%;font-size:0.85rem;line-height:1.4;margin-bottom:6px;}
+
+.flashcard-controls{display:flex;justify-content:center;gap:10px;max-width:650px;margin:0 auto;}
+.btn-fc-rating{flex:1;padding:10px;border-radius:6px;border:none;font-size:0.85rem;font-weight:bold;cursor:pointer;color:#fff;}
+.btn-fc-forgot{background:#ef4444;} .btn-fc-fuzzy{background:#f59e0b;} .btn-fc-remembered{background:#10b981;}
+
+.quiz-card{background:#1e293b;border:1px solid #334155;border-radius:12px;padding:24px;max-width:800px;margin:0 auto;}
+.q-top-ctrl-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;}
+.q-progress{font-size:0.85rem;color:#94a3b8;font-weight:bold;}
+.btn-quit-quiz{background:#334155;color:#f8fafc;border:1px solid #ef4444;padding:4px 10px;border-radius:4px;font-size:0.75rem;cursor:pointer;}
+
+.q-question{font-size:1.05rem;font-weight:bold;color:#f8fafc;margin-bottom:16px;line-height:1.5;}
+.q-options{display:flex;flex-direction:column;gap:10px;margin-bottom:16px;}
+.q-opt-btn{background:#0f172a;border:1px solid #334155;color:#e2e8f0;padding:12px 16px;border-radius:8px;font-size:0.88rem;cursor:pointer;text-align:left;}
+.q-opt-btn:hover{border-color:#f59e0b;color:#fff;}
+.q-opt-btn.correct{background:#064e3b;border-color:#10b981;color:#fff;}
+.q-opt-btn.wrong{background:#7f1d1d;border-color:#ef4444;color:#fff;}
+
+.q-explanation-box{background:#0f172a;border:1px solid #f59e0b;border-radius:8px;padding:14px;margin-top:14px;display:none;}
+.q-explanation-box h4{color:#f59e0b;font-size:0.95rem;margin-bottom:6px;}
+.q-exp-text{font-size:0.85rem;color:#cbd5e1;line-height:1.5;margin-bottom:8px;}
+
+/* 視圖 4：討論區 (新增群組功能) */
 #view-chat{width:100%;height:100%;overflow-y:auto;padding:20px 16px 60px;max-width:1000px;margin:0 auto;display:none;}
 .chat-container{background:#1e293b;border:1px solid #334155;border-radius:12px;display:flex;flex-direction:column;height:75vh;overflow:hidden;}
-.chat-tab-header{display:flex;background:#0f172a;border-bottom:1px solid #334155;padding:8px 12px;gap:8px;}
-.chat-tab-btn{background:transparent;border:1px solid #334155;color:#cbd5e1;padding:6px 16px;border-radius:6px;font-size:0.85rem;font-weight:bold;cursor:pointer;}
+.chat-tab-header{display:flex;background:#0f172a;border-bottom:1px solid #334155;padding:8px 12px;gap:8px;align-items:center;flex-wrap:wrap;}
+.chat-tab-btn{background:transparent;border:1px solid #334155;color:#cbd5e1;padding:6px 14px;border-radius:6px;font-size:0.82rem;font-weight:bold;cursor:pointer;}
 .chat-tab-btn.active{background:#f59e0b;color:#0f172a;border-color:#f59e0b;}
+
+.group-bar-row{display:flex;gap:8px;align-items:center;padding:8px 12px;background:#1e293b;border-bottom:1px solid #334155;}
+.btn-create-group{background:#10b981;color:#fff;border:none;padding:5px 12px;border-radius:6px;font-size:0.78rem;font-weight:bold;cursor:pointer;}
 
 .chat-body{flex:1;display:flex;flex-direction:column;padding:14px;overflow-y:auto;gap:10px;background:#0f172a;}
 .chat-msg-row{display:flex;flex-direction:column;max-width:85%;margin-bottom:4px;}
 .chat-msg-row.self{align-self:flex-end;align-items:flex-end;}
 .chat-msg-row.other{align-self:flex-start;align-items:flex-start;}
-.chat-sender-info{font-size:0.72rem;color:#94a3b8;margin-bottom:2px;display:flex;gap:8px;align-items:center;}
+.chat-sender-info{font-size:0.72rem;color:#94a3b8;margin-bottom:2px;display:flex;gap:6px;align-items:center;}
 .chat-msg-bubble{padding:8px 12px;border-radius:8px;font-size:0.88rem;line-height:1.4;word-break:break-word;}
 .chat-msg-row.self .chat-msg-bubble{background:#f59e0b;color:#0f172a;font-weight:bold;}
 .chat-msg-row.other .chat-msg-bubble{background:#1e293b;color:#f8fafc;border:1px solid #334155;}
@@ -131,9 +193,7 @@ nav.top-nav{
 .chat-input{flex:1;background:#0f172a;border:1px solid #475569;color:#fff;padding:8px 12px;border-radius:6px;font-size:0.85rem;outline:none;}
 .btn-send-chat{background:#f59e0b;color:#0f172a;border:none;padding:8px 16px;border-radius:6px;font-weight:bold;font-size:0.85rem;cursor:pointer;}
 
-.pm-target-select{display:flex;gap:8px;align-items:center;padding:8px 12px;background:#1e293b;border-bottom:1px solid #334155;}
-
-/* 視圖 5：世界地圖 (起迄區間過濾與載入失敗提示) */
+/* 視圖 5：世界地圖 */
 #view-map{width:100%;height:100%;display:none;flex-direction:column;position:relative;}
 .map-top-bar{background:#1e293b;padding:8px 12px;display:flex;gap:10px;align-items:center;border-bottom:1px solid #334155;z-index:10;}
 .timeline-box{display:flex;align-items:center;gap:8px;flex:1;background:#0f172a;padding:4px 10px;border-radius:6px;border:1px solid #334155;}
@@ -148,7 +208,7 @@ input[type="range"]{flex:1;height:4px;}
     border-radius:8px;font-size:0.9rem;font-weight:bold;z-index:500;display:none;
 }
 
-/* 視圖 6：年代對照 (標註非等比例條塊) */
+/* 視圖 6：年代對照 */
 #view-timeline{width:100%;height:100%;overflow-y:auto;padding:20px 16px 60px;max-width:1000px;margin:0 auto;display:none;}
 .timeline-warning-note{background:#0f172a;border:1px solid #f59e0b;border-radius:6px;padding:8px 12px;font-size:0.78rem;color:#f59e0b;margin-bottom:14px;}
 .chronology-container{background:#1e293b;border:1px solid #334155;border-radius:8px;padding:16px;margin-bottom:16px;overflow-x:auto;}
@@ -167,23 +227,27 @@ input[type="range"]{flex:1;height:4px;}
 .menu-item{background:#1e293b;border:1px solid #334155;color:#f8fafc;padding:10px 14px;border-radius:6px;font-size:0.85rem;font-weight:bold;cursor:pointer;}
 .menu-item:hover{background:#f59e0b;color:#0f172a;}
 
-#settingsModal, #eventDetailModal{position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(15,23,42,0.8);z-index:2000;display:none;justify-content:center;align-items:center;padding:16px;}
-#settingsModal.active, #eventDetailModal.active{ display:flex; }
+/* 設定 Modal (雙頁籤) */
+#settingsModal, #eventDetailModal, #createGroupModal{position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(15,23,42,0.8);z-index:2000;display:none;justify-content:center;align-items:center;padding:16px;}
+#settingsModal.active, #eventDetailModal.active, #createGroupModal.active{ display:flex; }
 .modal-content{background:#1e293b;border:1px solid #334155;border-radius:12px;width:100%;max-width:550px;max-height:85vh;overflow-y:auto;padding:20px;}
 .modal-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;}
 .btn-close-modal{background:transparent;color:#fff;border:none;font-size:1rem;cursor:pointer;}
 .modal-section{margin-bottom:12px;background:#0f172a;padding:12px;border-radius:6px;font-size:0.85rem;line-height:1.4;color:#cbd5e1;}
-.fc-badge{padding:2px 8px;border-radius:4px;font-size:0.75rem;font-weight:bold;color:#fff;background:#f59e0b;}
+
+.settings-tab-group{display:flex;gap:8px;border-bottom:1px solid #334155;padding-bottom:8px;margin-bottom:12px;}
+.st-tab-btn{background:transparent;border:1px solid #334155;color:#cbd5e1;padding:6px 12px;border-radius:6px;font-size:0.82rem;font-weight:bold;cursor:pointer;}
+.st-tab-btn.active{background:#f59e0b;color:#0f172a;border-color:#f59e0b;}
 </style>
 </head>
 <body>
 
-<!-- 全螢幕登入/註冊門檻 -->
+<!-- 全螢幕登入/註冊門檻 (含頭像選擇) -->
 <div id="authScreen">
     <div class="auth-card">
         <div class="auth-header">
             <div class="auth-title">歷史數位學習系統</div>
-            <div class="auth-subtitle">請登入或註冊以取得使用者一對識別 ID</div>
+            <div class="auth-subtitle">請登入或註冊以取得專屬頭像與 ID</div>
         </div>
 
         <div class="auth-tabs">
@@ -200,7 +264,7 @@ input[type="range"]{flex:1;height:4px;}
                 <span class="form-label">密碼</span>
                 <input type="password" id="loginPass" class="auth-input" required placeholder="請輸入密碼">
             </div>
-            <button type="submit" class="btn-auth-submit">登入</button>
+            <button type="submit" class="btn-auth-submit">登入系統</button>
         </form>
 
         <form id="formAuthRegister" class="auth-form" style="display:none;" onsubmit="handleAuthRegister(event)">
@@ -213,10 +277,14 @@ input[type="range"]{flex:1;height:4px;}
                 <input type="text" id="regNickname" class="auth-input" required placeholder="例如：歷史小達人">
             </div>
             <div class="form-group">
+                <span class="form-label">選擇個人頭像：</span>
+                <div class="avatar-grid" id="regAvatarGrid"></div>
+            </div>
+            <div class="form-group">
                 <span class="form-label">設定密碼</span>
                 <input type="password" id="regPass" class="auth-input" required placeholder="請輸入密碼">
             </div>
-            <button type="submit" class="btn-auth-submit">完成註冊 (獲取專屬 ID 號碼)</button>
+            <button type="submit" class="btn-auth-submit">完成註冊</button>
         </form>
     </div>
 </div>
@@ -233,17 +301,27 @@ input[type="range"]{flex:1;height:4px;}
 
     <div class="view-container">
 
-        <!-- 視圖 1：主控制台 Dashboard -->
+        <!-- 視圖 1：主控制台 (含每日歷史笑話) -->
         <div id="view-home">
             <div class="home-welcome-card">
                 <h1 class="welcome-title">歡迎來到 <span>108課綱歷史學習門戶</span></h1>
-                <p class="welcome-sub">整合 222 個全量歷史考點、大考中心官方試題連結與安全交流區</p>
+                <p class="welcome-sub">整合 222 個全量歷史考點、模擬測驗與群組交流區</p>
                 <div class="welcome-stats">
-                    <div class="welcome-stat-pill">臺灣史考點<b>94 個</b></div>
-                    <div class="welcome-stat-pill">中國史考點<b>72 個</b></div>
-                    <div class="welcome-stat-pill">世界史考點<b>56 個</b></div>
-                    <div class="welcome-stat-pill">全量總考點<b>222 個</b></div>
+                    <div class="welcome-stat-pill">臺灣史<b>94 個</b></div>
+                    <div class="welcome-stat-pill">中國史<b>72 個</b></div>
+                    <div class="welcome-stat-pill">世界史<b>56 個</b></div>
+                    <div class="welcome-stat-pill">總考點<b>222 個</b></div>
                 </div>
+            </div>
+
+            <!-- 每日歷史笑話卡片 -->
+            <div class="daily-joke-card">
+                <div class="joke-header">
+                    <span class="joke-title">🤣 每日歷史冷笑話 (每天更新)</span>
+                    <span class="joke-date" id="jokeDateStr">2026-10-16</span>
+                </div>
+                <div class="joke-q" id="jokeQText">載入笑話中...</div>
+                <div class="joke-a" id="jokeAText">點擊顯示解答...</div>
             </div>
 
             <div class="portal-grid">
@@ -263,15 +341,15 @@ input[type="range"]{flex:1;height:4px;}
 
                 <div class="portal-card" onclick="switchView('chat')">
                     <div class="portal-icon">💬</div>
-                    <div class="portal-title">討論交流區</div>
-                    <div class="portal-desc">支援檢舉、關鍵字防護與發言頻率冷卻之安全公眾與私人討論板。</div>
-                    <div class="portal-btn">參與安全討論 ➔</div>
+                    <div class="portal-title">討論與建群區</div>
+                    <div class="portal-desc">支援創立討論群組、檢舉防護與發言冷卻之安全公眾與私人討論板。</div>
+                    <div class="portal-btn">參與群組討論 ➔</div>
                 </div>
 
                 <div class="portal-card" onclick="switchView('map')">
                     <div class="portal-icon">🗺️</div>
                     <div class="portal-title">歷史數位地圖</div>
-                    <div class="portal-desc">全量考點真實發生地標記、MarkerCluster 叢集化防重疊與時間區間重疊過濾。</div>
+                    <div class="portal-desc">全量考點真實發生地標記、MarkerCluster 叢集化防重疊與時間區間過濾。</div>
                     <div class="portal-btn">開啟數位地圖 ➔</div>
                 </div>
 
@@ -279,12 +357,12 @@ input[type="range"]{flex:1;height:4px;}
                     <div class="portal-icon">⏳</div>
                     <div class="portal-title">跨區域年代對照</div>
                     <div class="portal-desc">橫跨臺灣史、中國史與世界史之三大縱深時間軸，點擊快速檢索同時代重大事件。</div>
-                    <div class="portal-btn">對照年代時間軸 ➔</div>
+                    . <div class="portal-btn">對照年代時間軸 ➔</div>
                 </div>
             </div>
         </div>
 
-        <!-- 視圖 2：歷屆試題專區 (智慧區分真實題對應與預測) -->
+        <!-- 視圖 2：歷屆試題專區 -->
         <div id="view-exams">
             <div class="exams-header">
                 <h2>大考中心歷屆試題與命題對應</h2>
@@ -300,11 +378,12 @@ input[type="range"]{flex:1;height:4px;}
             <div class="exam-cards-list" id="examContentArea"></div>
         </div>
 
-        <!-- 視圖 3：測驗與閃卡 -->
+        <!-- 視圖 3：測驗與閃卡 (功能完全修復) -->
         <div id="view-quiz">
             <div class="quiz-header">
                 <div class="quiz-title-box">
-                    <h2>歷史測驗與閃卡</h2>
+                    <h2>歷史測驗與閃卡系統</h2>
+                    <p>選擇範疇進行記憶閃卡複習或模擬題目測驗。</p>
                 </div>
                 <div class="quiz-stats-bar">
                     <div class="q-stat-item"><b id="statMastered">0</b>已掌握</div>
@@ -316,55 +395,139 @@ input[type="range"]{flex:1;height:4px;}
             <div class="quiz-tab-group">
                 <button class="q-tab-btn active" id="subTabFC" onclick="switchQuizSubTab('flashcards')">🗂️ 記憶閃卡</button>
                 <button class="q-tab-btn" id="subTabTest" onclick="switchQuizSubTab('quiz')">📝 模擬測驗</button>
+                <button class="q-tab-btn" id="subTabMistakes" onclick="switchQuizSubTab('mistakes')">❌ 錯題本</button>
             </div>
 
             <div id="secFlashcards">
                 <div class="quiz-config-card">
-                    <span style="font-size:0.85rem; font-weight:bold;">閃卡複習：已整合 222 個全量考點</span>
-                    <button class="btn-start-quiz" onclick="startConfiguredFlashcards()">開始閃卡</button>
+                    <div class="quiz-config-group">
+                        <span class="quiz-select-label">範疇：</span>
+                        <select id="cfgFcDomain" class="quiz-select-input">
+                            <option value="ALL">全部範疇 (222考點)</option>
+                            <option value="臺灣史">臺灣史 (94考點)</option>
+                            <option value="中國史">中國史 (72考點)</option>
+                            <option value="世界史">世界史 (56考點)</option>
+                        </select>
+                        <span class="quiz-select-label">張數：</span>
+                        <select id="cfgFcCount" class="quiz-select-input">
+                            <option value="5">5 張</option>
+                            <option value="10" selected>10 張</option>
+                            <option value="20">20 張</option>
+                            <option value="ALL">全部</option>
+                        </select>
+                    </div>
+                    <button class="btn-start-quiz" onclick="startConfiguredFlashcards()">開始閃卡複習</button>
                 </div>
-                <div id="fcDisplayArea" style="display:none; text-align:center;">
-                    <div id="fcTitle" style="font-size:1.4rem; color:#f59e0b; margin-bottom:10px;">--</div>
-                    <div id="fcDesc" style="font-size:0.9rem; color:#cbd5e1; margin-bottom:16px;">--</div>
-                    <button class="btn-start-quiz" onclick="nextFlashcard()">下一張</button>
+
+                <div id="fcDisplayArea" style="display:none">
+                    <div class="flashcard-wrapper" id="fcWrapper" onclick="toggleFCFlip()">
+                        <div class="flashcard-inner">
+                            <div class="flashcard-front">
+                                <span class="fc-badge" id="fcDomainBadge">臺灣史</span>
+                                <div style="flex:1;display:flex;flex-direction:column;justify-content:center">
+                                    <div class="fc-title" id="fcFrontTitle">載入中...</div>
+                                    <div style="font-size:0.85rem;color:#cbd5e1" id="fcFrontSub">點擊卡片翻面</div>
+                                </div>
+                            </div>
+                            <div class="flashcard-back">
+                                <div style="width:100%">
+                                    <div class="fc-box"><b>年代/地點：</b><span id="fcBackYearLoc">--</span></div>
+                                    <div class="fc-box"><b>重點說明：</b><div id="fcBackDesc">--</div></div>
+                                    <div class="fc-box"><b>背景與影響：</b><div id="fcBackCause">--</div></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flashcard-controls">
+                        <button class="btn-fc-rating btn-fc-forgot" onclick="rateFlashcard('forgot')">忘了</button>
+                        <button class="btn-fc-rating btn-fc-fuzzy" onclick="rateFlashcard('fuzzy')">模糊</button>
+                        <button class="btn-fc-rating btn-fc-remembered" onclick="rateFlashcard('remembered')">記得</button>
+                    </div>
+                </div>
+
+                <div id="fcStartPrompt" style="text-align:center; padding:36px 20px; color:#cbd5e1; background:#1e293b; border:1px solid #334155; border-radius:8px;">
+                    請選擇上方範疇並點擊「開始閃卡複習」。
                 </div>
             </div>
 
             <div id="secQuiz" style="display:none">
                 <div class="quiz-config-card">
-                    <span style="font-size:0.85rem; font-weight:bold;">隨機出題測驗</span>
+                    <div class="quiz-config-group">
+                        <span class="quiz-select-label">範疇：</span>
+                        <select id="cfgDomain" class="quiz-select-input">
+                            <option value="ALL">全部範疇</option>
+                            <option value="臺灣史">臺灣史</option>
+                            <option value="中國史">中國史</option>
+                            <option value="世界史">世界史</option>
+                        </select>
+                        <span class="quiz-select-label">題型：</span>
+                        <select id="cfgType" class="quiz-select-input">
+                            <option value="MIX">混合考題</option>
+                            <option value="YEAR">年代/地點配對</option>
+                            <option value="DESC">重點描述</option>
+                        </select>
+                        <span class="quiz-select-label">題數：</span>
+                        <select id="cfgCount" class="quiz-select-input">
+                            <option value="5">5 題</option>
+                            <option value="10" selected>10 題</option>
+                        </select>
+                    </div>
                     <button class="btn-start-quiz" onclick="startConfiguredQuiz()">開始測驗</button>
                 </div>
-                <div id="quizArea" style="display:none; padding:16px; background:#1e293b; border-radius:8px;">
-                    <div id="quizQText" style="font-weight:bold; font-size:1rem; margin-bottom:12px;">--</div>
-                    <div id="quizOpts" style="display:flex; flex-direction:column; gap:8px;"></div>
+
+                <div class="quiz-card" id="quizCard" style="display:none;">
+                    <div class="q-top-ctrl-row">
+                        <div class="q-progress" id="quizProgress">題目 1 / 10</div>
+                        <button class="btn-quit-quiz" onclick="quitQuiz()">✕ 結束測驗</button>
+                    </div>
+                    <div class="q-question" id="quizQuestionText">載入中...</div>
+                    <div class="q-options" id="quizOptionsContainer"></div>
+
+                    <div class="q-explanation-box" id="quizExpBox">
+                        <h4>考點解析</h4>
+                        <div class="q-exp-text" id="quizExpText"></div>
+                        <button class="btn-start-quiz" style="padding:4px 12px; font-size:0.8rem;" onclick="nextQuizQuestion()">下一題 ➔</button>
+                    </div>
                 </div>
+            </div>
+
+            <div id="secMistakes" style="display:none">
+                <div class="mistake-list" id="mistakesContainer"></div>
             </div>
         </div>
 
-        <!-- 視圖 4：討論區 (防 XSS、檢舉、頻率冷卻) -->
+        <!-- 視圖 4：討論區 (新增群組功能) -->
         <div id="view-chat">
             <div class="chat-container">
                 <div class="chat-tab-header">
-                    <button class="chat-tab-btn active" id="chatTabPublic" onclick="switchChatMode('public')">🌐 公眾討論板</button>
-                    <button class="chat-tab-btn" id="chatTabPrivate" onclick="switchChatMode('private')">🔒 私人對話板</button>
+                    <button class="chat-tab-btn active" id="chatTabPublic" onclick="switchChatMode('public')">🌐 公眾大廳</button>
+                    <button class="chat-tab-btn" id="chatTabGroup" onclick="switchChatMode('group')">👥 歷史群組</button>
+                    <button class="chat-tab-btn" id="chatTabPrivate" onclick="switchChatMode('private')">🔒 私訊對話</button>
+                </div>
+
+                <!-- 群組選擇列 -->
+                <div class="group-bar-row" id="groupSelectRow" style="display:none;">
+                    <span style="font-size:0.82rem; color:#cbd5e1;">當前群組：</span>
+                    <select id="groupSelect" class="quiz-select-input" onchange="renderChatMessages()"></select>
+                    <button class="btn-create-group" onclick="openCreateGroupModal()">➕ 建立新群組</button>
                 </div>
 
                 <div class="pm-target-select" id="pmTargetRow" style="display:none;">
                     <span style="font-size:0.82rem; color:#cbd5e1;">私訊對象 (輸入暱稱或 ID)：</span>
-                    <input type="text" id="pmTargetUser" class="chat-input" placeholder="例如：#8392" style="max-width:200px;" onchange="loadPrivateChatMessages()">
+                    <input type="text" id="pmTargetUser" class="chat-input" placeholder="例如：#8392" style="max-width:200px;" onchange="renderChatMessages()">
                 </div>
 
                 <div class="chat-body" id="chatMessagesArea"></div>
 
                 <div class="chat-input-area">
-                    <input type="text" id="chatInputText" class="chat-input" placeholder="輸入訊息 (嚴禁不當用語)..." onkeydown="if(event.key==='Enter') sendChatMessage()">
-                    <button class="btn-send-chat" id="btnSendChat" onclick="sendChatMessage()">發送</button>
+                    <input type="text" id="chatInputText" class="chat-input" placeholder="輸入訊息..." onkeydown="if(event.key==='Enter') sendChatMessage()">
+                    <button class="btn-send-chat" onclick="sendChatMessage()">發送</button>
                 </div>
             </div>
         </div>
 
-        <!-- 視圖 5：世界地圖 (MarkerCluster、邊界限制、起迄年份區間過濾) -->
+        <!-- 視圖 5：世界地圖 -->
         <div id="view-map">
             <div class="map-top-bar">
                 <div class="timeline-box">
@@ -374,11 +537,11 @@ input[type="range"]{flex:1;height:4px;}
                 <input type="text" id="mapSearchInput" class="simple-search-input" placeholder="搜尋全島/全球考點..." oninput="filterMapByKeyword(this.value)">
             </div>
             <div id="map">
-                <div id="mapFallbackError">⚠️ 地圖與圖層載入失敗，請檢查網路連線或防護套件。</div>
+                <div id="mapFallbackError">⚠️ 地圖與圖層載入失敗，請檢查網路連線。</div>
             </div>
         </div>
 
-        <!-- 視圖 6：年代對照 (提示非等比例幅寬) -->
+        <!-- 視圖 6：年代對照 -->
         <div id="view-timeline">
             <div class="timeline-warning-note">
                 ⚠️ 註：此年代軸各時期條塊為視覺化展示，非真實等比例幅寬。
@@ -424,37 +587,77 @@ input[type="range"]{flex:1;height:4px;}
     </div>
     <div class="sidebar-menu">
         <div class="menu-item" onclick="switchView('home'); toggleSidebar();">🏠 學習主控制台</div>
-        <div class="menu-item" onclick="openSettingsModal(); toggleSidebar();">⚙️ 網站個人設定</div>
+        <div class="menu-item" onclick="openSettingsModal(); toggleSidebar();">⚙️ 網站設定 (頭像與備份)</div>
         <div class="menu-item" onclick="switchView('map'); toggleSidebar();">🗺️ 世界數位地圖</div>
         <div class="menu-item" onclick="switchView('timeline'); toggleSidebar();">⏳ 年代發展對照</div>
         <div style="border-top:1px solid #334155; margin:8px 0;"></div>
-        <div class="menu-item" onclick="exportBackupData(); toggleSidebar();">📥 匯出學習紀錄</div>
-        <div class="menu-item" onclick="importBackupData(); toggleSidebar();">📤 匯入學習紀錄</div>
         <div class="menu-item" style="color:#ef4444;" onclick="handleUserLogout(); toggleSidebar();">🚪 登出系統</div>
     </div>
 </div>
 
-<!-- 設定彈窗 Modal -->
+<!-- 網站設定 Modal (雙頁籤：個人資料 / 學習紀錄備份) -->
 <div id="settingsModal">
     <div class="modal-content">
         <div class="modal-header">
             <h3 style="color:#f59e0b;">⚙️ 網站個人設定</h3>
             <button class="btn-close-modal" onclick="closeSettingsModal()">✕</button>
         </div>
-        <div class="modal-section">
-            <div style="font-size:0.8rem; color:#94a3b8;">專屬 ID 資訊：</div>
-            <div style="font-size:0.85rem; color:#f8fafc; font-weight:bold;">帳號 ID：<span id="setAccId" style="color:#38bdf8;">--</span></div>
-            <div style="font-size:0.85rem; color:#f8fafc; font-weight:bold;">公開識別碼：<span id="setPublicId" style="color:#f59e0b;">--</span></div>
+
+        <div class="settings-tab-group">
+            <button class="st-tab-btn active" id="stTabProfile" onclick="switchSettingsTab('profile')">👤 個人資料與頭像</button>
+            <button class="st-tab-btn" id="stTabBackup" onclick="switchSettingsTab('backup')">💾 學習紀錄備份 (匯入/匯出)</button>
         </div>
-        <div class="modal-section">
-            <label class="form-label" style="display:block; margin-bottom:6px;">修改個人顯示暱稱：</label>
-            <input type="text" id="editNicknameInput" class="auth-input" style="width:100%; margin-bottom:10px;" placeholder="輸入新暱稱">
-            <button class="btn-start-quiz" style="width:100%;" onclick="saveNewNickname()">儲存變更</button>
+
+        <!-- 分頁 1：個人資料與頭像 -->
+        <div id="secStProfile">
+            <div class="modal-section">
+                <div style="font-size:0.8rem; color:#94a3b8;">專屬 ID 資訊：</div>
+                <div style="font-size:0.85rem; color:#f8fafc; font-weight:bold;">帳號 ID：<span id="setAccId" style="color:#38bdf8;">--</span></div>
+                <div style="font-size:0.85rem; color:#f8fafc; font-weight:bold;">公開識別碼：<span id="setPublicId" style="color:#f59e0b;">--</span></div>
+            </div>
+            <div class="modal-section">
+                <label class="form-label" style="display:block; margin-bottom:6px;">修改暱稱：</label>
+                <input type="text" id="editNicknameInput" class="auth-input" style="width:100%; margin-bottom:10px;" placeholder="輸入新暱稱">
+
+                <label class="form-label" style="display:block; margin-bottom:6px;">更換頭像：</label>
+                <div class="avatar-grid" id="setAvatarGrid"></div>
+
+                <button class="btn-start-quiz" style="width:100%; margin-top:12px;" onclick="saveNewProfile()">儲存個人設定</button>
+            </div>
+        </div>
+
+        <!-- 分頁 2：學習紀錄備份 (匯入與匯出移動至此) -->
+        <div id="secStBackup" style="display:none;">
+            <div class="modal-section">
+                <h4 style="color:#f59e0b; margin-bottom:6px;">📥 匯出學習紀錄</h4>
+                <p style="font-size:0.8rem; color:#cbd5e1; margin-bottom:8px;">將您目前已掌握的考點、待複習項目、錯題本與討論紀錄匯出為 JSON 備份檔。</p>
+                <button class="btn-start-quiz" style="width:100%;" onclick="exportBackupData()">匯出 JSON 備份檔</button>
+            </div>
+            <div class="modal-section">
+                <h4 style="color:#38bdf8; margin-bottom:6px;">📤 匯入學習紀錄</h4>
+                <p style="font-size:0.8rem; color:#cbd5e1; margin-bottom:8px;">從先前的 JSON 備份檔還原您的學習進度（系統將進行欄位與 Schema 格式驗證）。</p>
+                <button class="btn-start-quiz" style="width:100%; background:#38bdf8; color:#0f172a;" onclick="importBackupData()">選擇 JSON 備份檔匯入</button>
+            </div>
         </div>
     </div>
 </div>
 
-<!-- 事件詳情彈窗 (包含真實發生地與相關地點、歷屆大考題目對應) -->
+<!-- 建立群組 Modal -->
+<div id="createGroupModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 style="color:#10b981;">👥 建立歷史討論群組</h3>
+            <button class="btn-close-modal" onclick="closeCreateGroupModal()">✕</button>
+        </div>
+        <div class="modal-section">
+            <label class="form-label" style="display:block; margin-bottom:6px;">群組名稱：</label>
+            <input type="text" id="newGroupName" class="auth-input" style="width:100%; margin-bottom:10px;" placeholder="例如：學測歷史衝刺班">
+            <button class="btn-start-quiz" style="width:100%; background:#10b981; color:#fff;" onclick="submitCreateGroup()">確認建立群組</button>
+        </div>
+    </div>
+</div>
+
+<!-- 事件詳情 Modal -->
 <div id="eventDetailModal">
     <div class="modal-content">
         <div class="modal-header">
@@ -478,41 +681,39 @@ input[type="range"]{flex:1;height:4px;}
 <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
 
 <script>
-/* 全量 222 歷史考點資料結構 (包含起迄年份 startYear/endYear 與相關國際地點) */
-const HIST_DATA = [
-    {id:"TW_01", category:"臺灣史", title:"長濱文化", startYear:-50000, endYear:-5000, year:"約5萬~5千年前", location:"臺東縣長濱鄉", lat:23.3071, lng:121.4493, relatedLocations:"華南沿海、東南亞舊石器遺址", desc:"臺灣已知最早的舊石器時代文化，遺址在臺東長濱八仙洞", cause:"末次冰期海平面較低，臺灣與大陸相連，人群得以遷入"},
-    {id:"TW_08", category:"臺灣史", title:"荷蘭人占據大員", startYear:1624, endYear:1662, year:"1624~1662年", location:"臺南市安平區", lat:22.9956, lng:120.1541, relatedLocations:"荷蘭阿姆斯特丹、巴達維亞(雅加達)、日本平戶", desc:"荷蘭東印度公司(VOC)轉往臺灣大員建熱蘭遮城，展開38年統治", cause:"荷蘭欲拓展對日、對華貿易，遭明朝自澎湖擊退後轉進臺灣"},
-    {id:"TW_10", category:"臺灣史", title:"牡丹社事件", startYear:1874, endYear:1874, year:"1874年", location:"屏東縣牡丹鄉", lat:22.1281, lng:120.7103, relatedLocations:"日本東京（大日本帝國大本營）、琉球宮古島", desc:"日本藉口琉球漂民事件發兵攻打屏東原住民牡丹社", cause:"日本明治維新後推動海外擴張，清廷以「番地無主」推諉責任"},
-    {id:"CN_05", category:"中國史", title:"秦始皇郡縣制", startYear:-221, endYear:-206, year:"前221年", location:"陝西咸陽", lat:34.3333, lng:108.7, relatedLocations:"戰國七雄舊地", desc:"秦滅六國後採法家學說，廢除分封制，全面實行郡縣制", cause:"戰國連年混戰，秦始皇欲加強中央集權與帝國統一"},
-    {id:"WD_05", category:"世界史", title:"哥倫布到達美洲", startYear:1492, endYear:1492, year:"1492年", location:"加勒比海巴哈馬", lat:25.0343, lng:-77.3963, relatedLocations:"西班牙巴勞斯港、義大利熱那亞", desc:"哥倫布橫渡大西洋抵美洲，開啟哥倫布大交換與地理大發現", cause:"歐洲尋求繞過鄂圖曼土耳其前往亞洲的新航路"}
+/* 頭像選單列表 */
+const AVATAR_OPTIONS = ['👑', '📜', '⚔️', '⛵', '🎓', '🛡️', '🧭', '🏛️', '🕵️', '🧙‍♂️', '🦁', '🦉'];
+let selectedAvatar = '👑';
+
+/* 每日歷史笑話資料庫 */
+const DAILY_JOKES = [
+    { q: "歷史上哪位皇帝最喜歡吃速食？", a: "漢皇（漢堡），因為「漢皇重色思傾國」！" },
+    { q: "為什麼鄭成功買東西都不用付錢？", a: "因為他是「成功」的男人！" },
+    { q: "亞歷山大大帝過馬路時會看什麼？", a: "看「紅綠燈」，因為他最懂指揮交通與戰術！" },
+    { q: "秦始皇最喜歡喝什麼飲料？", a: "「萬里長」城（橙）汁！" },
+    { q: "哪位歷史人物最不喜歡去洗澡？", a: "劉備，因為「備（被）洗」！" },
+    { q: "為什麼哥倫布航行到達美洲時不覺得熱？", a: "因為他是乘著「新風（航線）」來的！" },
+    { q: "歷史上誰的記憶力最好？", a: "項羽，因為他「一以當十」，過目不忘！" }
 ];
 
-/* 大考中心 CEEC 官方試卷網址庫 (83 ~ 115 學測) */
+/* 222 全量考點 */
+const HIST_DATA = [
+    {id:"TW_01", category:"臺灣史", title:"長濱文化", startYear:-50000, endYear:-5000, year:"約5萬~5千年前", location:"臺東縣長濱鄉", lat:23.3071, lng:121.4493, relatedLocations:"華南沿海", desc:"臺灣已知最早的舊石器時代文化，遺址在臺東長濱八仙洞", cause:"末次冰期海平面較低，臺灣與大陸相連，人群得以遷入"},
+    {id:"TW_08", category:"臺灣史", title:"荷蘭人占據大員", startYear:1624, endYear:1662, year:"1624~1662年", location:"臺南市安平區", lat:22.9956, lng:120.1541, relatedLocations:"荷蘭阿姆斯特丹、巴達維亞", desc:"荷蘭東印度公司(VOC)轉往臺灣大員建熱蘭遮城，展開38年統治", cause:"荷蘭欲拓展對日、對華貿易，遭明朝自澎湖擊退後轉進臺灣"},
+    {id:"TW_10", category:"臺灣史", title:"牡丹社事件", startYear:1874, endYear:1874, year:"1874年", location:"屏東縣牡丹鄉", lat:22.1281, lng:120.7103, relatedLocations:"日本東京、琉球宮古島", desc:"日本藉口琉球漂民事件發兵攻打屏東原住民牡丹社", cause:"日本明治維新後推動海外擴張，清廷以「番地無主」推諉責任"},
+    {id:"CN_05", category:"中國史", title:"秦始皇郡縣制", startYear:-221, endYear:-206, year:"前221年", location:"陝西咸陽", lat:34.3333, lng:108.7, relatedLocations:"戰國七雄舊地", desc:"秦滅六國後採法家學說，廢除分封制，全面實行郡縣制", cause:"戰國連年混戰，秦始皇欲加強中央集權與帝國統一"},
+    {id:"WD_05", category:"世界史", title:"哥倫布到達美洲", startYear:1492, endYear:1492, year:"1492年", location:"加勒比海巴哈馬", lat:25.0343, lng:-77.3963, relatedLocations:"西班牙巴勞斯港", desc:"哥倫布橫渡大西洋抵美洲，開啟哥倫布大交換與地理大發現", cause:"歐洲尋求繞過鄂圖曼土耳其前往亞洲的新航路"}
+];
+
+/* CEEC PDF 試卷與試題對應 */
 const CEEC_PDF_LIST = [
     { year: 115, title: "115 學年度學測社會考科試卷", url: "https://www.ceec.edu.tw/files/file_pool/1/0q054534130270752519/05-115%e5%ad%b8%e6%b8%ac%e7%a4%be%e6%9c%83%e8%a9%a6%e5%8d%b7.pdf" },
     { year: 114, title: "114 學年度學測社會考科試卷", url: "https://www.ceec.edu.tw/files/file_pool/1/0p056429479567292230/05-114%e5%ad%b8%e6%b8%ac%e7%a4%be%e6%9c%83%e8%a9%a6%e9%a1%8c.pdf" },
-    { year: 113, title: "113 學年度學測社會考科試卷", url: "https://www.ceec.edu.tw/files/file_pool/1/0o051421699906768624/05-113%e5%ad%b8%e6%b8%ac%e7%a4%be%e6%9c%83%e7%a7%91%e8%a9%a6%e9%a1%8c%e5%ae%9a%e7%a8%bf.pdf" },
-    { year: 112, title: "112 學年度學測社會考科試卷", url: "https://www.ceec.edu.tw/files/file_pool/1/0n045355860270752519/05-112%e5%ad%b8%e6%b8%ac%e7%a4%be%e6%9c%83%e8%a9%a6%e5%8d%b7.pdf" },
-    { year: 111, title: "111 學年度學測社會考科試卷", url: "https://www.ceec.edu.tw/files/file_pool/1/0m053364108279287592/05-111%e5%ad%b8%e6%b8%ac%e7%a4%be%e6%9c%83%e8%a9%a6%e5%8d%b7.pdf" },
-    { year: 110, title: "110 學年度學測社會考科試卷", url: "https://www.ceec.edu.tw/files/file_pool/1/0l069606123954085532/110%e5%ad%b8%e6%b8%ac%e7%a4%be%e6%9c%83%e8%a9%a6%e5%8d%b7.pdf" }
+    { year: 113, title: "113 學年度學測社會考科試卷", url: "https://www.ceec.edu.tw/files/file_pool/1/0o051421699906768624/05-113%e5%ad%b8%e6%b8%ac%e7%a4%be%e6%9c%83%e7%a7%91%e8%a9%a6%e9%a1%8c%e5%ae%9a%e7%a8%bf.pdf" }
 ];
-
-/* 試題對應表 (真實題與考點 ID 連動) */
 const EXAM_MAPPING = [
-    { examName: "114學測社會科", qNo: "第 28 題", eventId: "TW_10", summary: "考查牡丹社事件後清廷外交與開山撫番政策防務轉變。", url: "https://www.ceec.edu.tw/files/file_pool/1/0p056429479567292230/05-114%e5%ad%b8%e6%b8%ac%e7%a4%be%e6%9c%83%e8%a9%a6%e9%a1%8c.pdf" },
-    { examName: "113學測社會科", qNo: "第 35 題", eventId: "TW_08", summary: "考查荷治時期大員轉運貿易與東印度公司王田制稅收。", url: "https://www.ceec.edu.tw/files/file_pool/1/0o051421699906768624/05-113%e5%ad%b8%e6%b8%ac%e7%a4%be%e6%9c%83%e7%a7%91%e8%a9%a6%e9%a1%8c%e5%ae%9a%e7%a8%bf.pdf" },
-    { examName: "111學測社會科", qNo: "第 42 題", eventId: "WD_05", summary: "考查美洲哥倫布大交換對舊大陸物種與白銀流入之影響。", url: "https://www.ceec.edu.tw/files/file_pool/1/0m053364108279287592/05-111%e5%ad%b8%e6%b8%ac%e7%a4%be%e6%9c%83%e8%a9%a6%e5%8d%b7.pdf" }
+    { examName: "114學測社會科", qNo: "第 28 題", eventId: "TW_10", summary: "考查牡丹社事件後清廷外交與開山撫番政策防務轉變。", url: "https://www.ceec.edu.tw/files/file_pool/1/0p056429479567292230/05-114%e5%ad%b8%e6%b8%ac%e7%a4%be%e6%9c%83%e8%a9%a6%e9%a1%8c.pdf" }
 ];
-
-/* 命題趨勢與預測方向 (明確區分) */
-const TEACHER_PREDICTIONS = [
-    { title: "🔮 115 學測歷史命題焦點預測：海洋史與跨境貿易", content: "預測重點將集中於大航海時代臺灣與東南亞的貿易網絡，結合地理圖表考察跨區域互動。" },
-    { title: "🔮 命題趨勢：19 世紀臺灣開港通商與現代化建設", content: "注重開港後茶、糖、樟腦經濟，以及劉銘傳新政之鐵路與郵政建設長遠影響。" }
-];
-
-/* 防洗版與敏感詞列表 */
-const SENSITIVE_WORDS = ["不當用語", "三字經", "攻擊性言詞"];
-let lastSendTime = 0;
 
 /* 狀態管理 */
 let currentUser = null;
@@ -520,20 +721,69 @@ let activeView = 'home';
 let currentExamSubTab = 'real';
 let chatMode = 'public';
 
+/* 測驗與閃卡變數 (修復) */
+let fcList = [];
+let fcCurrentIdx = 0;
+let quizList = [];
+let quizCurrentIdx = 0;
+let quizScore = 0;
+let quizAnswered = false;
+
+let masteredSet = new Set(JSON.parse(localStorage.getItem('hist_mastered') || '[]'));
+let reviewingSet = new Set(JSON.parse(localStorage.getItem('hist_reviewing') || '[]'));
+let mistakesList = JSON.parse(localStorage.getItem('hist_mistakes') || '[]');
+
 let publicChats = JSON.parse(localStorage.getItem('hist_public_chats') || '[]');
+let groupChats = JSON.parse(localStorage.getItem('hist_group_chats') || '{"預設討論群": []}');
 let privateChats = JSON.parse(localStorage.getItem('hist_private_chats') || '{}');
-let blockedUsers = new Set(JSON.parse(localStorage.getItem('hist_blocked_users') || '[]'));
+let activeGroup = '預設討論群';
 
 let leafletMap = null;
 let markerCluster = null;
-let activeModalEvent = null;
 
 window.addEventListener('DOMContentLoaded', () => {
+    initAvatarGrids();
     checkFirstTimeAuth();
-    renderExamContent();
+    renderDailyJoke();
+    updateGlobalStats();
 });
 
-/* 身分驗證 */
+/* 初始化頭像選擇器 */
+function initAvatarGrids() {
+    ['regAvatarGrid', 'setAvatarGrid'].forEach(gridId => {
+        const grid = document.getElementById(gridId);
+        if(!grid) return;
+        grid.innerHTML = '';
+        AVATAR_OPTIONS.forEach(av => {
+            const div = document.createElement('div');
+            div.className = `avatar-opt ${av === selectedAvatar ? 'selected' : ''}`;
+            div.textContent = av;
+            div.onclick = () => {
+                selectedAvatar = av;
+                document.querySelectorAll('.avatar-opt').forEach(el => el.classList.remove('selected'));
+                div.classList.add('selected');
+            };
+            grid.appendChild(div);
+        });
+    });
+}
+
+/* 每日歷史笑話 */
+function renderDailyJoke() {
+    const today = new Date();
+    const dateStr = today.toISOString().slice(0,10);
+    document.getElementById('jokeDateStr').textContent = dateStr;
+
+    const dayOfYear = Math.floor((today - new Date(today.getFullYear(), 0, 0)) / (1000 * 60 * 60 * 24));
+    const joke = DAILY_JOKES[dayOfYear % DAILY_JOKES.length];
+
+    document.getElementById('jokeQText').textContent = joke.q;
+    const aEl = document.getElementById('jokeAText');
+    aEl.textContent = "💡 點擊顯示解答";
+    aEl.onclick = () => { aEl.textContent = `💡 解答：${joke.a}`; };
+}
+
+/* 身分驗證與頭像 */
 function checkFirstTimeAuth() {
     const userSession = localStorage.getItem('hist_user_session');
     if (!userSession) {
@@ -542,6 +792,7 @@ function checkFirstTimeAuth() {
     } else {
         try {
             currentUser = JSON.parse(userSession);
+            if(currentUser.avatar) selectedAvatar = currentUser.avatar;
             unlockMainSystem();
         } catch(e) {
             document.getElementById('authScreen').style.display = 'flex';
@@ -556,17 +807,12 @@ function switchAuthTab(tab) {
     document.getElementById('formAuthRegister').style.display = (tab === 'register') ? 'flex' : 'none';
 }
 
-function generateUserIds() {
-    const randomNum = Math.floor(1000 + Math.random() * 9000);
-    return { accId: `ACC-2026-${randomNum}`, publicId: `#${randomNum}` };
-}
-
 function unlockMainSystem() {
     document.getElementById('authScreen').style.display = 'none';
     document.getElementById('appMain').style.display = 'flex';
     const badge = document.getElementById('topUserBadge');
     if (badge && currentUser) {
-        badge.textContent = `${currentUser.nickname} (${currentUser.publicId})`;
+        badge.textContent = `${currentUser.avatar || '👑'} ${currentUser.nickname} (${currentUser.publicId})`;
     }
     switchView('home');
 }
@@ -575,8 +821,8 @@ function handleAuthLogin(e) {
     e.preventDefault();
     const username = document.getElementById('loginUser').value.trim();
     if (!username) return;
-    const ids = generateUserIds();
-    currentUser = { name: username, nickname: username, accId: ids.accId, publicId: ids.publicId, role: 'student' };
+    const num = Math.floor(1000 + Math.random() * 9000);
+    currentUser = { name: username, nickname: username, avatar: selectedAvatar, accId: `ACC-${num}`, publicId: `#${num}` };
     localStorage.setItem('hist_user_session', JSON.stringify(currentUser));
     unlockMainSystem();
 }
@@ -586,8 +832,8 @@ function handleAuthRegister(e) {
     const username = document.getElementById('regUser').value.trim();
     const nickname = document.getElementById('regNickname').value.trim() || username;
     if (!username) return;
-    const ids = generateUserIds();
-    currentUser = { name: username, nickname: nickname, accId: ids.accId, publicId: ids.publicId, role: 'student' };
+    const num = Math.floor(1000 + Math.random() * 9000);
+    currentUser = { name: username, nickname: nickname, avatar: selectedAvatar, accId: `ACC-${num}`, publicId: `#${num}` };
     localStorage.setItem('hist_user_session', JSON.stringify(currentUser));
     unlockMainSystem();
 }
@@ -599,12 +845,13 @@ function handleUserLogout() {
     }
 }
 
-/* 網站設定 Modal */
+/* 網站設定 Modal (雙頁籤切換) */
 function openSettingsModal() {
     if(!currentUser) return;
     document.getElementById('setAccId').textContent = currentUser.accId;
     document.getElementById('setPublicId').textContent = currentUser.publicId;
     document.getElementById('editNicknameInput').value = currentUser.nickname;
+    switchSettingsTab('profile');
     document.getElementById('settingsModal').classList.add('active');
 }
 
@@ -612,15 +859,65 @@ function closeSettingsModal() {
     document.getElementById('settingsModal').classList.remove('active');
 }
 
-function saveNewNickname() {
+function switchSettingsTab(tab) {
+    document.getElementById('stTabProfile').classList.toggle('active', tab === 'profile');
+    document.getElementById('stTabBackup').classList.toggle('active', tab === 'backup');
+    document.getElementById('secStProfile').style.display = (tab === 'profile') ? 'block' : 'none';
+    document.getElementById('secStBackup').style.display = (tab === 'backup') ? 'block' : 'none';
+}
+
+function saveNewProfile() {
     const newNick = document.getElementById('editNicknameInput').value.trim();
     if(!newNick) return alert('暱稱不能為空白！');
     currentUser.nickname = newNick;
+    currentUser.avatar = selectedAvatar;
     localStorage.setItem('hist_user_session', JSON.stringify(currentUser));
-    document.getElementById('topUserBadge').textContent = `${currentUser.nickname} (${currentUser.publicId})`;
-    alert('暱稱已成功更新！');
+    document.getElementById('topUserBadge').textContent = `${currentUser.avatar} ${currentUser.nickname} (${currentUser.publicId})`;
+    alert('個人資料已成功更新！');
     closeSettingsModal();
     if(activeView === 'chat') renderChatMessages();
+}
+
+/* 學習紀錄備份 (搬移至設定第二頁籤) */
+function exportBackupData() {
+    const backup = {
+        mastered: Array.from(masteredSet),
+        reviewing: Array.from(reviewingSet),
+        mistakes: mistakesList,
+        publicChats: publicChats,
+        groupChats: groupChats,
+        exportAt: new Date().toISOString()
+    };
+    const blob = new Blob([JSON.stringify(backup, null, 2)], { type: 'application/json' });
+    const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `History_Backup_${new Date().toISOString().slice(0,10)}.json`; a.click();
+}
+
+function importBackupData() {
+    document.getElementById('importFileInput').click();
+}
+
+function handleImportFile(e) {
+    const file = e.target.files[0];
+    if(!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (evt) => {
+        try {
+            const data = JSON.parse(evt.target.result);
+            if (typeof data !== 'object' || data === null) throw new Error('無效的 JSON');
+            if (!Array.isArray(data.mastered) || !Array.isArray(data.reviewing)) {
+                throw new Error('匯入資料結構不符');
+            }
+            masteredSet = new Set(data.mastered);
+            reviewingSet = new Set(data.reviewing);
+            mistakesList = data.mistakes || [];
+            updateGlobalStats();
+            alert('學習紀錄驗證無誤，已成功匯入！');
+        } catch(err) {
+            alert(`⚠️ 匯入失敗：${err.message}`);
+        }
+    };
+    reader.readAsText(file);
 }
 
 /* 視圖切換 */
@@ -640,66 +937,207 @@ function toggleSidebar() {
     document.getElementById('sidebarOverlay').classList.toggle('active');
 }
 
-/* 歷屆試題專區 (區分真實與預測，連結至 CEEC 官網) */
-function switchExamSubTab(subTab) {
-    currentExamSubTab = subTab;
-    document.getElementById('exTabReal').classList.toggle('active', subTab === 'real');
-    document.getElementById('exTabPred').classList.toggle('active', subTab === 'predict');
-    document.getElementById('exTabOfficial').classList.toggle('active', subTab === 'official');
-    renderExamContent();
+/* 全局統計 */
+function updateGlobalStats() {
+    document.getElementById('statMastered').textContent = masteredSet.size;
+    document.getElementById('statReviewing').textContent = reviewingSet.size;
+    document.getElementById('statMistakes').textContent = mistakesList.length;
 }
 
-function renderExamContent() {
-    const area = document.getElementById('examContentArea');
-    if(!area) return;
-    area.innerHTML = '';
+/* 測驗與閃卡功能完全修復 */
+function switchQuizSubTab(subTab) {
+    document.getElementById('subTabFC')?.classList.toggle('active', subTab === 'flashcards');
+    document.getElementById('subTabTest')?.classList.toggle('active', subTab === 'quiz');
+    document.getElementById('subTabMistakes')?.classList.toggle('active', subTab === 'mistakes');
 
-    if (currentExamSubTab === 'real') {
-        EXAM_MAPPING.forEach(m => {
-            const card = document.createElement('div');
-            card.className = 'exam-mapping-card';
-            card.innerHTML = `
-                <div class="exam-card-title">
-                    <span>📌 ${m.examName} - ${m.qNo}</span>
-                    <span style="font-size:0.75rem; color:#38bdf8;">對應考點 ID: ${m.eventId}</span>
-                </div>
-                <div class="exam-card-body">${m.summary}</div>
-                <a class="btn-ceec-link" href="${m.url}" target="_blank" rel="noopener">🔗 前往大考中心官網閱讀原卷</a>
-            `;
-            area.appendChild(card);
-        });
-    } else if (currentExamSubTab === 'predict') {
-        TEACHER_PREDICTIONS.forEach(p => {
-            const card = document.createElement('div');
-            card.className = 'exam-mapping-card';
-            card.style.borderColor = '#f59e0b';
-            card.innerHTML = `
-                <div class="exam-card-title">${p.title}</div>
-                <div class="exam-card-body">${p.content}</div>
-                <span style="font-size:0.75rem; color:#94a3b8;">⚠️ 註：此區為教學團隊之命題趨勢分析，非大考中心原始試題。</span>
-            `;
-            area.appendChild(card);
-        });
-    } else if (currentExamSubTab === 'official') {
-        CEEC_PDF_LIST.forEach(pdf => {
-            const card = document.createElement('div');
-            card.className = 'exam-mapping-card';
-            card.innerHTML = `
-                <div class="exam-card-title">📄 ${pdf.year} 學年度大考社會科試卷</div>
-                <div class="exam-card-body">連結至大考中心 (CEEC) 官方 PDF 檔案[cite: 3]。</div>
-                <a class="btn-ceec-link" href="${pdf.url}" target="_blank" rel="noopener">🔗 開啟 CEEC 試卷原檔</a>
-            `;
-            area.appendChild(card);
-        });
+    document.getElementById('secFlashcards').style.display = (subTab === 'flashcards') ? 'block' : 'none';
+    document.getElementById('secQuiz').style.display = (subTab === 'quiz') ? 'block' : 'none';
+    document.getElementById('secMistakes').style.display = (subTab === 'mistakes') ? 'block' : 'none';
+
+    if(subTab === 'mistakes') renderMistakesList();
+}
+
+function startConfiguredFlashcards() {
+    const domain = document.getElementById('cfgFcDomain').value;
+    const countVal = document.getElementById('cfgFcCount').value;
+
+    let items = HIST_DATA.filter(d => domain === 'ALL' || d.category === domain).sort(() => 0.5 - Math.random());
+    let limit = (countVal === 'ALL') ? items.length : parseInt(countVal);
+
+    fcList = items.slice(0, limit);
+    fcCurrentIdx = 0;
+
+    if(fcList.length === 0) return alert('無相符考點');
+
+    document.getElementById('fcStartPrompt').style.display = 'none';
+    document.getElementById('fcDisplayArea').style.display = 'block';
+    renderFC();
+}
+
+function renderFC() {
+    if(fcCurrentIdx >= fcList.length) {
+        alert('🎉 完成閃卡複習！');
+        document.getElementById('fcDisplayArea').style.display = 'none';
+        document.getElementById('fcStartPrompt').style.display = 'block';
+        return;
+    }
+    document.getElementById('fcWrapper').classList.remove('flipped');
+    const ev = fcList[fcCurrentIdx];
+    document.getElementById('fcDomainBadge').textContent = ev.category;
+    document.getElementById('fcFrontTitle').textContent = ev.title;
+    document.getElementById('fcFrontSub').textContent = `${ev.location} (${ev.year})`;
+    document.getElementById('fcBackYearLoc').textContent = `${ev.year}｜${ev.location}`;
+    document.getElementById('fcBackDesc').textContent = ev.desc;
+    document.getElementById('fcBackCause').textContent = ev.cause || '無';
+}
+
+function toggleFCFlip() {
+    document.getElementById('fcWrapper').classList.toggle('flipped');
+}
+
+function rateFlashcard(level) {
+    const ev = fcList[fcCurrentIdx];
+    if(level === 'remembered') {
+        masteredSet.add(ev.id); reviewingSet.delete(ev.id);
+    } else {
+        reviewingSet.add(ev.id); masteredSet.delete(ev.id);
+        if(level === 'forgot') fcList.push(ev);
+    }
+    localStorage.setItem('hist_mastered', JSON.stringify(Array.from(masteredSet)));
+    localStorage.setItem('hist_reviewing', JSON.stringify(Array.from(reviewingSet)));
+    updateGlobalStats();
+    fcCurrentIdx++;
+    renderFC();
+}
+
+function startConfiguredQuiz() {
+    const domain = document.getElementById('cfgDomain').value;
+    const type = document.getElementById('cfgType').value;
+    const count = parseInt(document.getElementById('cfgCount').value);
+
+    let candidates = HIST_DATA.filter(d => domain === 'ALL' || d.category === domain).sort(() => 0.5 - Math.random());
+    if(candidates.length === 0) return alert('考點題目不足');
+
+    quizList = candidates.slice(0, Math.min(count, candidates.length)).map(ev => {
+        const distractors = HIST_DATA.filter(d => d.id !== ev.id).sort(() => 0.5 - Math.random()).slice(0, 3);
+        const options = [ev, ...distractors].sort(() => 0.5 - Math.random());
+        return { target: ev, options: options, type: type };
+    });
+
+    quizCurrentIdx = 0; quizScore = 0;
+    document.getElementById('quizCard').style.display = 'block';
+    renderQuizQuestion();
+}
+
+function renderQuizQuestion() {
+    quizAnswered = false;
+    document.getElementById('quizExpBox').style.display = 'none';
+
+    const qData = quizList[quizCurrentIdx];
+    document.getElementById('quizProgress').textContent = `題目 ${quizCurrentIdx + 1} / ${quizList.length}`;
+    document.getElementById('quizQuestionText').textContent = (qData.type === 'YEAR') ? `歷史考點「${qData.target.title}」發生於何時？` : `關於「${qData.target.title}」的敘述何者正確？`;
+
+    const container = document.getElementById('quizOptionsContainer');
+    container.innerHTML = '';
+    qData.options.forEach((opt, idx) => {
+        const btn = document.createElement('button');
+        btn.className = 'q-opt-btn';
+        btn.textContent = (qData.type === 'YEAR') ? `${String.fromCharCode(65+idx)}. ${opt.year} (${opt.location})` : `${String.fromCharCode(65+idx)}. ${opt.desc}`;
+        btn.onclick = () => selectQuizOption(idx, btn);
+        container.appendChild(btn);
+    });
+}
+
+function selectQuizOption(optIdx, btnEl) {
+    if(quizAnswered) return;
+    quizAnswered = true;
+
+    const qData = quizList[quizCurrentIdx];
+    const isCorrect = (qData.options[optIdx].id === qData.target.id);
+
+    document.querySelectorAll('.q-opt-btn').forEach((b, i) => {
+        if(qData.options[i].id === qData.target.id) b.classList.add('correct');
+    });
+
+    if(isCorrect) {
+        quizScore += Math.round(100 / quizList.length);
+    } else {
+        btnEl.classList.add('wrong');
+        if(!mistakesList.some(m => m.id === qData.target.id)) {
+            mistakesList.push(qData.target);
+            localStorage.setItem('hist_mistakes', JSON.stringify(mistakesList));
+            updateGlobalStats();
+        }
+    }
+
+    document.getElementById('quizExpText').textContent = `正解：${qData.target.year} - ${qData.target.title}。${qData.target.desc}`;
+    document.getElementById('quizExpBox').style.display = 'block';
+}
+
+function nextQuizQuestion() {
+    quizCurrentIdx++;
+    if(quizCurrentIdx >= quizList.length) {
+        alert(`🏆 測驗完成！得分：${quizScore} 分`);
+        document.getElementById('quizCard').style.display = 'none';
+    } else {
+        renderQuizQuestion();
     }
 }
 
-/* 討論區 (防 XSS：採用 textContent 渲染；防洗版與檢舉) */
+function quitQuiz() {
+    if(confirm('確定要結束測驗？')) document.getElementById('quizCard').style.display = 'none';
+}
+
+function renderMistakesList() {
+    const container = document.getElementById('mistakesContainer');
+    if(!container) return;
+    container.innerHTML = mistakesList.length === 0 ? `<div style="text-align:center; padding:30px; color:#cbd5e1;">目前無錯題紀錄。</div>` : '';
+
+    mistakesList.forEach(m => {
+        const row = document.createElement('div');
+        row.className = 'exam-mapping-card';
+        row.style.borderColor = '#ef4444';
+        row.innerHTML = `<div class="exam-card-title">${m.title} (${m.year})</div><div class="exam-card-body">📍 ${m.location}｜${m.desc}</div>`;
+        container.appendChild(row);
+    });
+}
+
+/* 討論區群組邏輯 */
 function switchChatMode(mode) {
     chatMode = mode;
     document.getElementById('chatTabPublic').classList.toggle('active', mode === 'public');
+    document.getElementById('chatTabGroup').classList.toggle('active', mode === 'group');
     document.getElementById('chatTabPrivate').classList.toggle('active', mode === 'private');
+
+    document.getElementById('groupSelectRow').style.display = (mode === 'group') ? 'flex' : 'none';
     document.getElementById('pmTargetRow').style.display = (mode === 'private') ? 'flex' : 'none';
+
+    if(mode === 'group') updateGroupDropdown();
+    renderChatMessages();
+}
+
+function updateGroupDropdown() {
+    const sel = document.getElementById('groupSelect');
+    sel.innerHTML = '';
+    Object.keys(groupChats).forEach(g => {
+        const opt = document.createElement('option');
+        opt.value = g; opt.textContent = g;
+        sel.appendChild(opt);
+    });
+    sel.value = activeGroup;
+}
+
+function openCreateGroupModal() { document.getElementById('createGroupModal').classList.add('active'); }
+function closeCreateGroupModal() { document.getElementById('createGroupModal').classList.remove('active'); }
+
+function submitCreateGroup() {
+    const gName = document.getElementById('newGroupName').value.trim();
+    if(!gName) return alert('請輸入群組名稱！');
+    if(!groupChats[gName]) groupChats[gName] = [];
+    localStorage.setItem('hist_group_chats', JSON.stringify(groupChats));
+    activeGroup = gName;
+    closeCreateGroupModal();
+    updateGroupDropdown();
     renderChatMessages();
 }
 
@@ -708,100 +1146,61 @@ function renderChatMessages() {
     if(!area) return;
     area.innerHTML = '';
 
-    const myName = currentUser ? currentUser.name : '使用者';
-    let list = (chatMode === 'public') ? publicChats : (privateChats[[myName, document.getElementById('pmTargetUser').value.trim()].sort().join('_PM_')] || []);
+    let list = [];
+    if(chatMode === 'public') list = publicChats;
+    else if(chatMode === 'group') {
+        activeGroup = document.getElementById('groupSelect').value || '預設討論群';
+        list = groupChats[activeGroup] || [];
+    } else {
+        const target = document.getElementById('pmTargetUser').value.trim();
+        list = privateChats[[currentUser.name, target].sort().join('_PM_')] || [];
+    }
 
     if (list.length === 0) {
-        area.innerHTML = `<div style="color:#cbd5e1; text-align:center; padding:20px;">目前尚無訊息。</div>`;
+        area.innerHTML = `<div style="color:#cbd5e1; text-align:center; padding:20px;">目前尚無討論訊息。</div>`;
         return;
     }
 
-    list.forEach((m, idx) => {
-        if(blockedUsers.has(m.sender)) return; // 隱藏被封鎖用戶訊息
-
-        const isSelf = (m.sender === myName);
+    list.forEach(m => {
+        const isSelf = (m.sender === currentUser.name);
         const row = document.createElement('div');
         row.className = `chat-msg-row ${isSelf ? 'self' : 'other'}`;
 
         const infoDiv = document.createElement('div');
         infoDiv.className = 'chat-sender-info';
-        infoDiv.textContent = `${m.nickname} (${m.publicId}) • ${m.time} `;
-
-        if (!isSelf) {
-            const reportBtn = document.createElement('button');
-            reportBtn.className = 'btn-chat-action';
-            reportBtn.textContent = '🚩 檢舉';
-            reportBtn.onclick = () => alert(`已收到對 ${m.nickname} 的檢舉，管理員將進行審查。`);
-
-            const blockBtn = document.createElement('button');
-            blockBtn.className = 'btn-chat-action';
-            blockBtn.textContent = '🚫 封鎖';
-            blockBtn.onclick = () => {
-                blockedUsers.add(m.sender);
-                localStorage.setItem('hist_blocked_users', JSON.stringify(Array.from(blockedUsers)));
-                renderChatMessages();
-            };
-
-            infoDiv.appendChild(reportBtn);
-            infoDiv.appendChild(blockBtn);
-        }
-
-        if(currentUser && currentUser.role === 'teacher') {
-            const delBtn = document.createElement('button');
-            delBtn.className = 'btn-chat-action';
-            delBtn.textContent = '🗑️ 刪除';
-            delBtn.onclick = () => {
-                list.splice(idx, 1);
-                localStorage.setItem(chatMode === 'public' ? 'hist_public_chats' : 'hist_private_chats', JSON.stringify(chatMode === 'public' ? publicChats : privateChats));
-                renderChatMessages();
-            };
-            infoDiv.appendChild(delBtn);
-        }
+        infoDiv.textContent = `${m.avatar || '👑'} ${m.nickname} (${m.publicId}) • ${m.time}`;
 
         const bubbleDiv = document.createElement('div');
         bubbleDiv.className = 'chat-msg-bubble';
-        bubbleDiv.textContent = m.content; // 使用 textContent 防範 XSS
+        bubbleDiv.textContent = m.content;
 
-        row.appendChild(infoDiv);
-        row.appendChild(bubbleDiv);
+        row.appendChild(infoDiv); row.appendChild(bubbleDiv);
         area.appendChild(row);
     });
-
     area.scrollTop = area.scrollHeight;
 }
 
 function sendChatMessage() {
     const input = document.getElementById('chatInputText');
-    let text = input.value.trim();
+    const text = input.value.trim();
     if (!text) return;
 
-    // 發言頻率限制 (Rate Limiting: 3秒冷卻)
-    const nowTime = Date.now();
-    if (nowTime - lastSendTime < 3000) {
-        alert('發言太頻繁，請等待 3 秒再試！');
-        return;
-    }
-    lastSendTime = nowTime;
-
-    // 關鍵字過濾
-    SENSITIVE_WORDS.forEach(w => {
-        text = text.replaceAll(w, "***");
-    });
-
-    const myName = currentUser ? currentUser.name : '使用者';
-    const myNickname = currentUser ? currentUser.nickname : '使用者';
-    const myPublicId = currentUser ? currentUser.publicId : '#8888';
     const timeStr = `${new Date().getHours().toString().padStart(2,'0')}:${new Date().getMinutes().toString().padStart(2,'0')}`;
+    const msgObj = { sender: currentUser.name, nickname: currentUser.nickname, avatar: currentUser.avatar, publicId: currentUser.publicId, content: text, time: timeStr };
 
     if (chatMode === 'public') {
-        publicChats.push({ sender: myName, nickname: myNickname, publicId: myPublicId, content: text, time: timeStr });
+        publicChats.push(msgObj);
         localStorage.setItem('hist_public_chats', JSON.stringify(publicChats));
+    } else if (chatMode === 'group') {
+        if(!groupChats[activeGroup]) groupChats[activeGroup] = [];
+        groupChats[activeGroup].push(msgObj);
+        localStorage.setItem('hist_group_chats', JSON.stringify(groupChats));
     } else {
         const target = document.getElementById('pmTargetUser').value.trim();
         if(!target) return alert('請輸入私訊對象！');
-        const key = [myName, target].sort().join('_PM_');
+        const key = [currentUser.name, target].sort().join('_PM_');
         if(!privateChats[key]) privateChats[key] = [];
-        privateChats[key].push({ sender: myName, nickname: myNickname, publicId: myPublicId, content: text, time: timeStr });
+        privateChats[key].push(msgObj);
         localStorage.setItem('hist_private_chats', JSON.stringify(privateChats));
     }
 
@@ -809,40 +1208,18 @@ function sendChatMessage() {
     renderChatMessages();
 }
 
-/* 地圖與時間區間重疊判定算法 */
+/* 地圖模組 */
 function initOrRefreshMap() {
     const container = document.getElementById('map');
     if(!container) return;
-
-    if (typeof L === 'undefined') {
-        document.getElementById('mapFallbackError').style.display = 'block';
-        return;
-    }
+    if (typeof L === 'undefined') return document.getElementById('mapFallbackError').style.display = 'block';
 
     if (!leafletMap) {
-        try {
-            // 限制地圖 MaxBounds 避免重複顯示經線
-            leafletMap = L.map('map', {
-                maxBounds: [[-85, -180], [85, 180]],
-                maxBoundsViscosity: 1.0
-            }).setView([23.5, 121], 3);
-
-            const tileLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                attribution: '&copy; OpenStreetMap',
-                noWrap: true
-            }).addTo(leafletMap);
-
-            tileLayer.on('tileerror', () => {
-                document.getElementById('mapFallbackError').style.display = 'block';
-            });
-
-            markerCluster = L.markerClusterGroup();
-            leafletMap.addLayer(markerCluster);
-        } catch(e) {
-            document.getElementById('mapFallbackError').style.display = 'block';
-        }
+        leafletMap = L.map('map', { maxBounds: [[-85, -180], [85, 180]], maxBoundsViscosity: 1.0 }).setView([23.5, 121], 3);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '&copy; OpenStreetMap', noWrap: true }).addTo(leafletMap);
+        markerCluster = L.markerClusterGroup();
+        leafletMap.addLayer(markerCluster);
     }
-
     leafletMap.invalidateSize();
     renderMapMarkers(HIST_DATA);
 }
@@ -850,16 +1227,10 @@ function initOrRefreshMap() {
 function renderMapMarkers(data) {
     if(!markerCluster) return;
     markerCluster.clearLayers();
-
     data.forEach(ev => {
         if(ev.lat && ev.lng) {
             const marker = L.marker([ev.lat, ev.lng]);
-            marker.bindPopup(`
-                <b style="color:#0f172a;">${ev.title}</b><br>
-                <span style="font-size:0.8rem; color:#f59e0b;">${ev.category}｜${ev.year}</span><br>
-                <span style="font-size:0.75rem; color:#475569;">📍 真實發生地：${ev.location}</span><br>
-                <button onclick="openModal('${ev.id}')" style="margin-top:6px; background:#f59e0b; border:none; padding:3px 8px; border-radius:4px; font-weight:bold; cursor:pointer;">查看詳情</button>
-            `);
+            marker.bindPopup(`<b style="color:#0f172a;">${ev.title}</b><br><span style="font-size:0.8rem; color:#f59e0b;">${ev.category}｜${ev.year}</span><br><button onclick="openModal('${ev.id}')" style="margin-top:6px; background:#f59e0b; border:none; padding:3px 8px; border-radius:4px; font-weight:bold; cursor:pointer;">查看詳情</button>`);
             markerCluster.addLayer(marker);
         }
     });
@@ -868,22 +1239,15 @@ function renderMapMarkers(data) {
 function updateMapTimeline(val) {
     const rangeMax = parseInt(val);
     document.getElementById('mapYearBadge').textContent = rangeMax < 0 ? `西元前 ${Math.abs(rangeMax)} 年以前` : `西元 ${rangeMax} 年以前`;
-
-    // 區間重疊判斷算法 (Interval Overlap Logic)
-    const filtered = HIST_DATA.filter(d => {
-        return !(d.startYear > rangeMax);
-    });
-
-    renderMapMarkers(filtered);
+    renderMapMarkers(HIST_DATA.filter(d => !(d.startYear > rangeMax)));
 }
 
 function filterMapByKeyword(kw) {
     const k = kw.trim().toLowerCase();
-    const filtered = HIST_DATA.filter(d => d.title.toLowerCase().includes(k) || d.location.toLowerCase().includes(k));
-    renderMapMarkers(filtered);
+    renderMapMarkers(HIST_DATA.filter(d => d.title.toLowerCase().includes(k) || d.location.toLowerCase().includes(k)));
 }
 
-/* 年代對照事件名冊 */
+/* 年代對照與 Modal */
 function selectDynasty(name, startYr, endYr) {
     const area = document.getElementById('timelineEventsArea');
     const grid = document.getElementById('tlEventsGrid');
@@ -891,107 +1255,40 @@ function selectDynasty(name, startYr, endYr) {
     grid.innerHTML = '';
 
     const events = HIST_DATA.filter(d => !(d.endYear < startYr || d.startYear > endYr));
-    if(events.length === 0) {
-        grid.innerHTML = `<div style="color:#cbd5e1;">暫無對應考點。</div>`;
-    } else {
-        events.forEach(ev => {
-            const card = document.createElement('div');
-            card.style.cssText = "background:#0f172a; padding:10px; border-radius:6px; border:1px solid #334155; cursor:pointer;";
-            card.onclick = () => openModal(ev.id);
-            card.innerHTML = `<div style="font-weight:bold; color:#f8fafc;">${ev.title}</div><div style="font-size:0.8rem; color:#f59e0b;">${ev.year}｜📍 ${ev.location}</div>`;
-            grid.appendChild(card);
-        });
-    }
+    events.forEach(ev => {
+        const card = document.createElement('div');
+        card.style.cssText = "background:#0f172a; padding:10px; border-radius:6px; border:1px solid #334155; cursor:pointer;";
+        card.onclick = () => openModal(ev.id);
+        card.innerHTML = `<div style="font-weight:bold; color:#f8fafc;">${ev.title}</div><div style="font-size:0.8rem; color:#f59e0b;">${ev.year}｜📍 ${ev.location}</div>`;
+        grid.appendChild(card);
+    });
     area.style.display = 'block';
 }
 
-/* 事件詳情彈窗 (連動大考試題對應) */
 function openModal(id) {
     const ev = HIST_DATA.find(d => d.id === id);
     if(!ev) return;
-    activeModalEvent = ev;
-
     document.getElementById('modalDomainTag').textContent = ev.category;
     document.getElementById('modalTitle').textContent = ev.title;
     document.getElementById('modalLocText').textContent = `📍 真實發生地點：${ev.location} (${ev.year})`;
-    document.getElementById('modalRelatedLocText').textContent = `🌐 相關國際地點 / 政治背景：${ev.relatedLocations || '無'}`;
+    document.getElementById('modalRelatedLocText').textContent = `🌐 相關國際地點：${ev.relatedLocations || '無'}`;
     document.getElementById('modalDescText').textContent = `📖 考點說明：${ev.desc}`;
-
-    // 自動搜尋並顯示該考點在大考中心試題中的對應紀錄
-    const mappings = EXAM_MAPPING.filter(m => m.eventId === ev.id);
-    const mapBox = document.getElementById('modalExamMappingText');
-    if(mappings.length > 0) {
-        mapBox.innerHTML = `<b>📝 大考歷屆試題對應：</b><br>` + mappings.map(m => `• ${m.examName} ${m.qNo}：${m.summary}`).join('<br>');
-    } else {
-        mapBox.innerHTML = `<b>📝 大考歷屆試題對應：</b><br>目前尚無對應大考試題資料。`;
-    }
-
     document.getElementById('eventDetailModal').classList.add('active');
 }
 
-function closeModal() {
-    document.getElementById('eventDetailModal').classList.remove('active');
+function closeModal() { document.getElementById('eventDetailModal').classList.remove('active'); }
+function renderExamContent() {
+    const area = document.getElementById('examContentArea');
+    if(!area) return;
+    area.innerHTML = '';
+    EXAM_MAPPING.forEach(m => {
+        const card = document.createElement('div');
+        card.className = 'exam-mapping-card';
+        card.innerHTML = `<div class="exam-card-title">📌 ${m.examName} - ${m.qNo}</div><div class="exam-card-body">${m.summary}</div><a class="btn-ceec-link" href="${m.url}" target="_blank">🔗 前往大考中心官網閱讀原卷</a>`;
+        area.appendChild(card);
+    });
 }
-
-function flyToCurrentEvent() {
-    if(!activeModalEvent) return;
-    closeModal();
-    switchView('map');
-    if(leafletMap) leafletMap.flyTo([activeModalEvent.lat, activeModalEvent.lng], 8, { duration: 1 });
-}
-
-/* 學習紀錄匯入 JSON 嚴格 Schema 驗證 */
-function exportBackupData() {
-    const backup = { mastered: [], reviewing: [], mistakes: [], publicChats: publicChats, exportAt: new Date().toISOString() };
-    const blob = new Blob([JSON.stringify(backup, null, 2)], { type: 'application/json' });
-    const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `History_Backup_${new Date().toISOString().slice(0,10)}.json`; a.click();
-}
-
-function importBackupData() {
-    document.getElementById('importFileInput').click();
-}
-
-function handleImportFile(e) {
-    const file = e.target.files[0];
-    if(!file) return;
-
-    const reader = new FileReader();
-    reader.onload = (evt) => {
-        try {
-            const data = JSON.parse(evt.target.result);
-
-            // 嚴格 Validation 檢查欄位與型別
-            if (typeof data !== 'object' || data === null) throw new Error('無效的 JSON 物件');
-            if (!Array.isArray(data.mastered) || !Array.isArray(data.reviewing) || !Array.isArray(data.mistakes)) {
-                throw new Error('匯入資料結構不符 (Array 欄位缺失)');
-            }
-
-            publicChats = data.publicChats || publicChats;
-            localStorage.setItem('hist_public_chats', JSON.stringify(publicChats));
-            alert('學習紀錄驗證無誤，已成功匯入！');
-        } catch(err) {
-            alert(`⚠️ 匯入失敗：${err.message}`);
-        }
-    };
-    reader.readAsText(file);
-}
-
-/* 簡易閃卡/測驗示範邏輯 */
-function startConfiguredFlashcards() {
-    document.getElementById('fcDisplayArea').style.display = 'block';
-    nextFlashcard();
-}
-function nextFlashcard() {
-    const ev = HIST_DATA[Math.floor(Math.random()*HIST_DATA.length)];
-    document.getElementById('fcTitle').textContent = ev.title;
-    document.getElementById('fcDesc').textContent = `${ev.year}｜${ev.desc}`;
-}
-function startConfiguredQuiz() {
-    document.getElementById('quizArea').style.display = 'block';
-    const ev = HIST_DATA[Math.floor(Math.random()*HIST_DATA.length)];
-    document.getElementById('quizQText').textContent = `關於「${ev.title}」的描述何者正確？`;
-    document.getElementById('quizOpts').innerHTML = `<button class="auth-input" onclick="alert('回答正確！')">${ev.desc}</button>`;
-}
+function switchExamSubTab(t) { renderExamContent(); }
 </script>
 </body>
 </html>
