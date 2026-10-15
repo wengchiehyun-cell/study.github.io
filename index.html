@@ -1,0 +1,603 @@
+# ============================================================
+# 108課綱歷史數位地圖：GitHub 版自動修補與產生腳本
+# 用法：
+#   1. 將此檔案放在與 world_history_map.html 相同的 GitHub 專案目錄下
+#   2. 執行：python patch_github.py
+#   3. 將產生的 index.html 與專案一起 commit & push 到 GitHub
+# ============================================================
+
+import os
+import re
+import shutil
+import subprocess
+
+INPUT_FILE = "world_history_map.html"
+OUTPUT_FILE = "index.html"  # 輸出為 index.html 可直接作為 GitHub Pages 首頁
+
+if not os.path.exists(INPUT_FILE):
+    raise FileNotFoundError(f"找不到 {INPUT_FILE}，請確認檔案放在相同的目錄下。")
+
+with open(INPUT_FILE, encoding="utf-8") as f:
+    html = f.read()
+
+REPORT = []
+
+
+def apply(label, old, new, count=1):
+    """精確取代，找不到或次數不符就中止，避免靜默失敗。"""
+    global html
+    found = html.count(old)
+    if found != count:
+        raise RuntimeError(
+            f"[{label}] 預期找到 {count} 處，實際 {found} 處。原檔可能已被修改。"
+        )
+    html = html.replace(old, new)
+    REPORT.append(label)
+
+
+def apply_between(label, start, end, new):
+    """把 start（含）到 end（不含）之間整段換成 new。"""
+    global html
+    if html.count(start) != 1:
+        raise RuntimeError(f"[{label}] 起點標記找到 {html.count(start)} 處")
+    s = html.index(start)
+    e = html.index(end, s)
+    html = html[:s] + new + html[e:]
+    REPORT.append(label)
+
+
+# ============================================================
+# 1. 資料層 + 本地資料夾自動同步 (File System Access API + IndexedDB)
+# ============================================================
+DATA_LAYER_JS = r"""/* ===== 學習資料 v2：每個考點「單一狀態 + 時間戳」 ===== */
+const STORAGE_KEY = 'history_hub_quiz_data';
+const VALID_STATUS = ['mastered', 'reviewing', 'mistake', 'none'];
+const validIdSet = new Set(rawData.map(e => e.id));
+
+function sanitizeUserData(d) {
+    const items = {};
+    Object.entries((d && d.items) || {}).forEach(([id, r]) => {
+        if (/^\d+$/.test(id) && r && VALID_STATUS.includes(r.s) && Number.isFinite(r.t)) {
+            items[id] = { s: r.s, t: r.t };
+        }
+    });
+    return { v: 2, items };
+}
+
+function migrateUserData(raw) {
+    if (raw && raw.v === 2 && raw.items && typeof raw.items === 'object') return sanitizeUserData(raw);
+    const items = {};
+    const put = (arr, s) => (Array.isArray(arr) ? arr : []).forEach(id => {
+        if (Number.isInteger(id)) items[id] = { s, t: 1 };
+    });
+    if (raw && typeof raw === 'object') {
+        put(raw.masteredIds, 'mastered');
+        put(raw.reviewingIds, 'reviewing');
+        put(raw.mistakes, 'mistake');
+    }
+    return { v: 2, items };
+}
+
+function loadUserData() {
+    try {
+        const stored = localStorage.getItem(STORAGE_KEY);
+        return migrateUserData(stored ? JSON.parse(stored) : null);
+    } catch (e) {
+        return { v: 2, items: {} };
+    }
+}
+let userLearningData = loadUserData();
+
+function getIdsByStatus(s) {
+    return Object.entries(userLearningData.items)
+        .filter(([id, r]) => r.s === s && validIdSet.has(Number(id)))
+        .map(([id]) => Number(id));
+}
+function setStatus(id, s) {
+    userLearningData.items[id] = { s, t: Date.now() };
+}
+function mergeUserData(a, b) {
+    const items = { ...a.items };
+    Object.entries(b.items || {}).forEach(([id, r]) => {
+        if (!items[id] || r.t > items[id].t) items[id] = r;
+    });
+    return { v: 2, items };
+}
+
+function persistLocal() {
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(userLearningData)); } catch (e) { }
+}
+function saveUserData() {
+    persistLocal();
+    updateStats();
+    scheduleFsSync();
+}
+function refreshLearningViews() {
+    updateStats();
+    const box = document.getElementById('secMistakes');
+    if (box && box.style.display === 'block') renderMistakesList();
+}
+
+function exportBackupData() {
+    const blob = new Blob([JSON.stringify(userLearningData)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'history_quiz_backup.json';
+    a.click();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+
+function importBackupData() {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = '.json,application/json';
+    input.onchange = e => {
+        const file = e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = event => {
+            try {
+                const parsed = JSON.parse(event.target.result);
+                const incoming = migrateUserData(parsed);
+                if (Object.keys(incoming.items).length === 0) {
+                    alert('這個檔案裡沒有可匯入的學習紀錄。');
+                    return;
+                }
+                userLearningData = mergeUserData(userLearningData, incoming);
+                saveUserData();
+                refreshLearningViews();
+                alert('🎉 備份匯入成功！（已與現有紀錄合併，同一考點取較新的狀態）');
+            } catch (err) {
+                alert('匯入失敗：檔案不是有效的備份檔。');
+            }
+        };
+        reader.readAsText(file);
+    };
+    input.click();
+}
+
+/* ===== File System Access API + IndexedDB 本地資料夾自動同步 ===== */
+const FILE_NAME = 'history_quiz_progress.json';
+let gDirHandle = null, gFileHandle = null;
+let gFsSyncTimer = null, gFsDirty = false, gWriting = false;
+
+function setSyncStatus(text, title) {
+    const btn = document.getElementById('btnFolderSync');
+    if (!btn) return;
+    btn.innerText = text;
+    btn.title = title || '';
+}
+
+function getFSDB() {
+    return new Promise((resolve, reject) => {
+        const req = indexedDB.open('HistoryHubFSDB', 1);
+        req.onupgradeneeded = () => req.result.createObjectStore('handles');
+        req.onsuccess = () => resolve(req.result);
+        req.onerror = () => reject(req.error);
+    });
+}
+async function getStoredDirHandle() {
+    try {
+        const db = await getFSDB();
+        return new Promise((resolve) => {
+            const tx = db.transaction('handles', 'readonly');
+            const req = tx.objectStore('handles').get('folderHandle');
+            req.onsuccess = () => resolve(req.result || null);
+            req.onerror = () => resolve(null);
+        });
+    } catch (e) { return null; }
+}
+async function storeDirHandle(handle) {
+    try {
+        const db = await getFSDB();
+        return new Promise((resolve, reject) => {
+            const tx = db.transaction('handles', 'readwrite');
+            tx.objectStore('handles').put(handle, 'folderHandle');
+            tx.oncomplete = () => resolve();
+            tx.onerror = () => reject(tx.error);
+        });
+    } catch (e) { }
+}
+
+async function connectDirHandle(dirHandle) {
+    gDirHandle = dirHandle;
+    gFileHandle = await gDirHandle.getFileHandle(FILE_NAME, { create: true });
+    await storeDirHandle(gDirHandle);
+    await syncFromLocalFolder();
+}
+
+async function syncFromLocalFolder() {
+    if (!gFileHandle) return;
+    try {
+        const file = await gFileHandle.getFile();
+        const text = await file.text();
+        if (text && text.trim()) {
+            const remoteData = migrateUserData(JSON.parse(text));
+            userLearningData = mergeUserData(userLearningData, remoteData);
+            persistLocal();
+            refreshLearningViews();
+        }
+        await writeToLocalFolderNow();
+        const d = new Date();
+        const hh = String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0');
+        setSyncStatus('📁 已連結資料夾 ' + hh, '點擊可切換或斷開資料夾連線');
+    } catch (err) {
+        console.error(err);
+        setSyncStatus('📁 資料夾連線失敗', '點擊重新連結');
+    }
+}
+
+async function selectLocalFolder() {
+    if (!('showDirectoryPicker' in window)) {
+        alert('您的瀏覽器不支援本地資料夾存取 API，請使用 Chrome 或 Edge 瀏覽器。');
+        return;
+    }
+    try {
+        const handle = await window.showDirectoryPicker({
+            id: 'history_hub_folder',
+            mode: 'readwrite',
+            startIn: 'documents'
+        });
+        await connectDirHandle(handle);
+        alert('🎉 已成功連結資料夾！後續學習進度將自動同步寫入該資料夾的 ' + FILE_NAME);
+    } catch (err) {
+        if (err.name !== 'AbortError') alert('連結資料夾失敗：' + err.message);
+    }
+}
+
+function onFolderBtnClick() {
+    if (gDirHandle) {
+        if (confirm('已連結資料夾。要重新選擇連線資料夾嗎？')) {
+            selectLocalFolder();
+        }
+    } else {
+        selectLocalFolder();
+    }
+}
+
+function scheduleFsSync() {
+    gFsDirty = true;
+    if (!gFileHandle) return;
+    clearTimeout(gFsSyncTimer);
+    gFsSyncTimer = setTimeout(() => writeToLocalFolderNow(), 3000);
+}
+
+async function writeToLocalFolderNow() {
+    if (!gFileHandle || !gFsDirty) return;
+    if (gWriting) return;
+    gWriting = true;
+    try {
+        gFsDirty = false;
+        const writable = await gFileHandle.createWritable();
+        await writable.write(JSON.stringify(userLearningData, null, 2));
+        await writable.close();
+        const d = new Date();
+        const hh = String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0');
+        setSyncStatus('📁 自動儲存於 ' + hh, '點擊可更換或重選資料夾');
+    } catch (err) {
+        gFsDirty = true;
+        console.error('寫入本地資料夾失敗：', err);
+        setSyncStatus('📁 寫入失敗 (點擊重試)', '點擊重新設定');
+    } finally {
+        gWriting = false;
+    }
+}
+
+async function initFolderSyncUi() {
+    document.addEventListener('visibilitychange', () => {
+        if (document.visibilityState === 'hidden' && gFsDirty) writeToLocalFolderNow();
+    });
+
+    const storedHandle = await getStoredDirHandle();
+    if (storedHandle) {
+        try {
+            const perm = await storedHandle.queryPermission({ mode: 'readwrite' });
+            if (perm === 'granted') {
+                await connectDirHandle(storedHandle);
+            } else if (perm === 'prompt') {
+                setSyncStatus('📁 恢復資料夾連線', '點擊授權恢復資料夾自動同步');
+                const btn = document.getElementById('btnFolderSync');
+                if (btn) {
+                    btn.onclick = async () => {
+                        const newPerm = await storedHandle.requestPermission({ mode: 'readwrite' });
+                        if (newPerm === 'granted') {
+                            await connectDirHandle(storedHandle);
+                        } else {
+                            selectLocalFolder();
+                        }
+                    };
+                }
+            }
+        } catch (e) {
+            setSyncStatus('📁 連結本地資料夾');
+        }
+    } else {
+        setSyncStatus('📁 連結本地資料夾');
+    }
+}
+
+"""
+
+apply_between(
+    "資料層 v2 + 本地資料夾同步",
+    "function loadUserData() {",
+    "function updateStats() {",
+    DATA_LAYER_JS,
+)
+
+# ============================================================
+# 2. updateStats：領域總數只算一次
+# ============================================================
+UPDATE_STATS_JS = r"""let _domainStatsDone = false;
+function updateStats() {
+    if (!_domainStatsDone) {
+        const tw = rawData.filter(e => e.domain.includes('臺') || e.domain.includes('台')).length;
+        const cn = rawData.filter(e => e.domain.includes('中')).length;
+        const wd = rawData.filter(e => e.domain.includes('世界')).length;
+
+        document.getElementById('statTW').innerText = tw;
+        document.getElementById('statCN').innerText = cn;
+        document.getElementById('statWD').innerText = wd;
+        document.getElementById('statTotal').innerText = rawData.length;
+
+        document.getElementById('portalTWTag').innerText = tw;
+        document.getElementById('portalCNTag').innerText = cn;
+        document.getElementById('portalWDTag').innerText = wd;
+        _domainStatsDone = true;
+    }
+    document.getElementById('statMastered').innerText = getIdsByStatus('mastered').length;
+    document.getElementById('statReviewing').innerText = getIdsByStatus('reviewing').length;
+    document.getElementById('statMistakes').innerText = getIdsByStatus('mistake').length;
+}
+
+"""
+apply_between(
+    "updateStats 精簡",
+    "function updateStats() {",
+    "/* ===== 閃卡核心邏輯 ===== */",
+    UPDATE_STATS_JS,
+)
+
+# ============================================================
+# 3. 閃卡：狀態互斥 + Fisher-Yates 洗牌
+# ============================================================
+RATE_FC_JS = r"""function rateFlashcard(rating) {
+    const item = flashcardsList[fcIndex];
+    if (rating === 'remembered') {
+        setStatus(item.id, 'mastered');
+    } else if (rating === 'fuzzy') {
+        setStatus(item.id, 'reviewing');
+    } else {
+        const retryCount = (fcRetryCounts[item.id] || 0) + 1;
+        fcRetryCounts[item.id] = retryCount;
+        if (retryCount <= 2) flashcardsList.push(item);
+        setStatus(item.id, 'mistake');
+    }
+    saveUserData();
+    fcIndex++;
+    renderCurrentFlashcard();
+}
+
+"""
+apply_between(
+    "閃卡狀態互斥",
+    "function rateFlashcard(rating) {",
+    "/* ===== 選擇題測驗核心邏輯 ===== */",
+    RATE_FC_JS,
+)
+
+apply(
+    "閃卡洗牌",
+    "flashcardsList = [...filtered].sort(() => 0.5 - Math.random()).slice(0, countVal);",
+    "flashcardsList = shuffleArr(filtered).slice(0, countVal);",
+)
+
+# ============================================================
+# 4. 測驗修復
+# ============================================================
+apply(
+    "計分欄位",
+    "let quizScoreStats = { correct: 0, total: 0 };",
+    "let quizScoreStats = { correct: 0, total: 0, answered: 0 };",
+)
+
+QUIZ_GEN_JS = r"""function shuffleArr(a) {
+    const r = [...a];
+    for (let i = r.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [r[i], r[j]] = [r[j], r[i]];
+    }
+    return r;
+}
+
+function maskTitle(desc, title) {
+    return title ? desc.split(title).join('＿＿') : desc;
+}
+
+function pickDistractors(item, type, correct) {
+    const val = x => (type === 'YEAR' ? x.year : x.title);
+    const sameDomain = rawData.filter(x => x.id !== item.id && x.domain === item.domain);
+    const others = rawData.filter(x => x.id !== item.id && x.domain !== item.domain);
+
+    let cands;
+    if (type === 'YEAR') {
+        const nearest = [...sameDomain]
+            .sort((a, b) => Math.abs(a.num_year - item.num_year) - Math.abs(b.num_year - item.num_year))
+            .map(val).filter(v => v !== correct);
+        cands = shuffleArr([...new Set(nearest)].slice(0, 10));
+    } else {
+        cands = shuffleArr([...new Set(sameDomain.map(val).filter(v => v !== correct))]);
+    }
+    if (cands.length < 3) {
+        const extra = shuffleArr([...new Set(others.map(val))]).filter(v => v !== correct && !cands.includes(v));
+        cands = cands.concat(extra);
+    }
+    return cands.slice(0, 3);
+}
+
+function generateQuizBatch(customList = null, quizType = 'MIX', qCount = 10) {
+    const source = customList && customList.length > 0 ? customList : rawData;
+    const pool = shuffleArr(source).slice(0, qCount);
+
+    quizQuestions = pool.map(item => {
+        const selectedType = quizType === 'MIX' ? (Math.random() > 0.5 ? 'YEAR' : 'DESC') : quizType;
+        let questionText = '', correctAnswer = '';
+
+        if (selectedType === 'YEAR') {
+            questionText = '歷史事件【' + item.title + '】主要發生於下列哪一個西元年代或時期？';
+            correctAnswer = item.year;
+        } else {
+            questionText = '下列何者符合「' + maskTitle(item.desc, item.title) + '」之歷史事實？';
+            correctAnswer = item.title;
+        }
+
+        const options = shuffleArr([correctAnswer, ...pickDistractors(item, selectedType, correctAnswer)]);
+        const correctOptIdx = options.indexOf(correctAnswer);
+
+        return { item, questionText, correctAnswer, options, correctOptIdx };
+    });
+
+    currentQIndex = 0;
+    quizScoreStats = { correct: 0, total: quizQuestions.length, answered: 0 };
+    document.getElementById('quizStartPrompt').style.display = 'none';
+    document.getElementById('quizResultBox').style.display = 'none';
+    document.getElementById('quizCardBox').style.display = 'block';
+    renderCurrentQuestion();
+}
+
+"""
+apply_between(
+    "測驗出題修正",
+    "function generateQuizBatch(",
+    "function renderCurrentQuestion() {",
+    QUIZ_GEN_JS,
+)
+
+ANSWER_JS = r"""function answerQuizQuestion(btn, selectedIdx, q) {
+    const allBtns = document.querySelectorAll('.q-opt-btn');
+    allBtns.forEach(b => b.disabled = true);
+    quizScoreStats.answered++;
+
+    if (selectedIdx === q.correctOptIdx) {
+        btn.classList.add('correct');
+        quizScoreStats.correct++;
+        setStatus(q.item.id, 'mastered');
+    } else {
+        btn.classList.add('wrong');
+        allBtns.forEach(b => {
+            if (parseInt(b.getAttribute('data-opt-idx')) === q.correctOptIdx) {
+                b.classList.add('correct');
+            }
+        });
+        setStatus(q.item.id, 'mistake');
+    }
+
+    saveUserData();
+
+    const expBox = document.getElementById('qExpBox');
+    document.getElementById('qExpText').innerHTML = '<b>【年代地點】</b>' + q.item.year + ' (' + q.item.loc + ')<br><br><b>【詳細說明】</b>' + q.item.desc + '<br><br><b>【前因背景】</b>' + (q.item.cause || '無');
+    expBox.style.display = 'block';
+}
+
+"""
+apply_between(
+    "作答流程",
+    "function answerQuizQuestion(",
+    "function nextQuizQuestion() {",
+    ANSWER_JS,
+)
+
+apply(
+    "計分改用實際作答題數",
+    "const answeredCount = isEarlyQuit ? currentQIndex : quizQuestions.length;",
+    "const answeredCount = quizScoreStats.answered;",
+)
+
+# ============================================================
+# 5. 錯題本與提示修復
+# ============================================================
+apply(
+    "錯題清單來源",
+    "userLearningData.mistakes.map(id => findEventById(id)).filter(Boolean)",
+    "getIdsByStatus('mistake').map(id => findEventById(id)).filter(Boolean)",
+    count=2,
+)
+
+MISTAKE_OPS_JS = r"""function removeMistake(id) {
+    setStatus(id, 'none');
+    saveUserData();
+    renderMistakesList();
+}
+
+function clearAllMistakes() {
+    const ids = getIdsByStatus('mistake');
+    if (ids.length === 0) return;
+    if (confirm("確定要清空錯題本嗎？")) {
+        ids.forEach(id => setStatus(id, 'none'));
+        saveUserData();
+        renderMistakesList();
+    }
+}
+
+"""
+apply_between(
+    "錯題移除",
+    "function removeMistake(id) {",
+    "function startMistakeQuiz() {",
+    MISTAKE_OPS_JS,
+)
+
+apply(
+    "帶入測驗提示",
+    "infoBox.innerText = `📌 已自動帶入 【${yearNum} 學年度】 歷屆考點範疇，請點擊下方「🚀 開始測驗」！`;",
+    "infoBox.innerText = `📌 目前題庫尚未依學年度（${yearNum}）分類，已切換到測驗設定，請選擇領域與題數後開始測驗。`;",
+)
+
+apply(
+    "地圖視角",
+    "setTimeout(() => { map.invalidateSize(); map.setView([23.8, 121.0], 7); }, 200);",
+    "setTimeout(() => { map.invalidateSize(); }, 200);",
+)
+
+# ============================================================
+# 6. UI 按鈕與啟動流程
+# ============================================================
+apply(
+    "資料夾同步按鈕",
+    '        <button class="btn-backup-auth" onclick="exportBackupData()">📥 匯出備份</button>',
+    '        <button id="btnFolderSync" class="btn-backup-auth" onclick="onFolderBtnClick()">📁 連結本地資料夾</button>\n'
+    '        <button class="btn-backup-auth" onclick="exportBackupData()">📥 匯出備份</button>',
+)
+
+apply(
+    "啟動同步 UI",
+    "renderMapMarkers(rawData);\n</script>",
+    "renderMapMarkers(rawData);\ninitFolderSyncUi();\n</script>",
+)
+
+# ============================================================
+# 7. 寫入 index.html 並進行 JavaScript 語法檢查
+# ============================================================
+with open(OUTPUT_FILE, "w", encoding="utf-8") as f:
+    f.write(html)
+
+print("✅ 已成功修補 %d 項邏輯與同步機制：" % len(REPORT))
+for r in REPORT:
+    print("  •", r)
+
+if shutil.which("node"):
+    m = re.search(r"<script>\n(.*)</script>\s*</body>", html, re.S)
+    if m:
+        with open("_check.js", "w", encoding="utf-8") as f:
+            f.write(m.group(1))
+        res = subprocess.run(
+            ["node", "--check", "_check.js"], capture_output=True, text=True
+        )
+        if res.returncode == 0:
+            print("✅ JavaScript 語法驗證通過！")
+        else:
+            print("❌ JavaScript 語法檢查發現錯誤：\n" + res.stderr)
+        os.remove("_check.js")
+
+print(f"\n🎉 成功產生 GitHub 部署檔案：{OUTPUT_FILE}")
