@@ -1,266 +1,590 @@
-<!DOCTYPE html>
+# ==============================================================================
+# 部份一：資料讀取、年代解析與地點修訂 (生成 history_events_excel.json)
+# ==============================================================================
+
+import json
+import os
+import re
+import pandas as pd
+
+FILES_MAP = {
+    '臺灣史': '台灣史.xlsx',
+    '中國史': '中國史.xlsx',
+    '世界史': '世界史.xlsx'
+}
+DATA_FILE = "history_events_excel.json"
+
+STAGE_ORDER = {'國小': 1, '國中': 2, '高中': 3, '通用': 4}
+
+def sort_stages(stage_str):
+    """將冊次/學階統一排序為『國小、國中、高中』"""
+    if not stage_str or pd.isna(stage_str):
+        return '通用'
+    parts = [p.strip() for p in str(stage_str).replace('、', ',').split(',') if p.strip()]
+    unique_parts = list(dict.fromkeys(parts))
+    sorted_parts = sorted(unique_parts, key=lambda x: STAGE_ORDER.get(x, 99))
+    return '、'.join(sorted_parts)
+
+def parse_year_range(year_str):
+    """精確解析年代字串，回傳 (start_year, end_year, num_year)"""
+    if pd.isna(year_str) or not str(year_str).strip():
+        return 2000, 2000, 2000
+    
+    s = str(year_str).strip()
+    
+    # 歷史時期專屬對應
+    if '清領前期' in s or '渡臺禁令' in s:
+        return 1684, 1860, 1684
+    if '清領後期' in s:
+        return 1860, 1895, 1860
+    if '日治前期' in s:
+        return 1895, 1919, 1895
+    if '日治後期' in s or '皇民化' in s:
+        return 1937, 1945, 1937
+
+    # 解析「X年前」或「X萬/千年前」 (相對現今 2026 年)
+    m_ago = re.search(r'約?(\d+\.?\d*)\s*(萬|千)?年前', s)
+    if m_ago:
+        val = float(m_ago.group(1))
+        unit = m_ago.group(2)
+        if unit == '萬': val *= 10000
+        elif unit == '千': val *= 1000
+        calc_yr = int(2026 - val)
+        return calc_yr, calc_yr, calc_yr
+
+    # 解析「世紀」
+    m_cent = re.search(r'(\d+)\s*世紀', s)
+    if m_cent:
+        cent = int(m_cent.group(1))
+        is_bc = '前' in s or 'BC' in s or 'BCE' in s
+        start_yr = (cent - 1) * 100 + 1
+        end_yr = cent * 100
+        if is_bc:
+            return -end_yr, -start_yr, -((start_yr + end_yr) // 2)
+        else:
+            return start_yr, end_yr, (start_yr + end_yr) // 2
+
+    # 解析數值年代
+    is_bc = '前' in s or 'BC' in s or 'BCE' in s
+    nums = re.findall(r'\d+', s)
+    if not nums:
+        return 2000, 2000, 2000
+    
+    val = int(nums[0])
+    if '萬' in s: val *= 10000
+    elif '千' in s and val < 100: val *= 1000
+    
+    final_val = -val if is_bc else val
+    return final_val, final_val, final_val
+
+# 精確地理座標對照表
+locations_dict = {
+    '羅妹號': (21.9000, 120.7500, '屏東縣恆春鎮/南岬'),
+    '牡丹社': (22.0833, 120.7167, '屏東縣牡丹鄉'),
+    '長濱': (23.3131, 121.4553, '臺東縣長濱鄉'),
+    '左鎮': (23.0583, 120.3583, '臺南市左鎮區'),
+    '大坌坑': (25.1389, 121.3972, '新北市八里區'),
+    '圓山': (25.0712, 121.5285, '臺北市中山區'),
+    '十三行': (25.1610, 121.3980, '新北市八里區'),
+    '卑南': (22.7889, 121.1194, '臺東縣卑南鄉'),
+    '熱蘭遮城': (23.0016, 120.1601, '臺南市安平區'),
+    '普羅民遮城': (22.9975, 120.2025, '臺南市中西區'),
+    '赤崁': (22.9975, 120.2025, '臺南市'),
+    '安平': (23.0016, 120.1601, '臺南市安平區'),
+    '臺南': (22.9997, 120.2270, '臺南市'),
+    '臺北': (25.0380, 121.5644, '臺北市'),
+    '大稻埕': (25.0512, 121.5135, '臺北市大同區大稻埕'),
+    '艋舺': (25.0372, 121.4998, '臺北市萬華區'),
+    '彰化': (24.0815, 120.5383, '彰化縣'),
+    '鹿港': (24.0569, 120.4347, '彰化縣鹿港鎮'),
+    '霧社': (24.0588, 121.1601, '南投縣仁愛鄉霧社'),
+    '噍吧哖': (23.0886, 120.4688, '臺南市玉井區'),
+    '治警事件': (25.0380, 121.5644, '臺北市'),
+    '皇民化': (23.6000, 120.9000, '臺灣全境'),
+    '美援': (25.0380, 121.5644, '臺北市'),
+    '中日斷交': (25.0380, 121.5644, '臺北市'),
+    '澎湖': (23.5658, 119.5664, '澎湖縣'),
+    '高雄': (22.6273, 120.3014, '高雄市'),
+    '打狗': (22.6273, 120.3014, '高雄市'),
+    '美麗島': (22.6314, 120.3019, '高雄市美麗島'),
+    '黃帝': (34.5833, 109.2000, '陝西黃陵/黃河流域'),
+    '夏朝': (34.6833, 112.8500, '河南偃師二里頭'),
+    '商': (36.1000, 114.3500, '河南安陽殷墟'),
+    '咸陽': (34.3841, 109.2785, '陝西咸陽'),
+    '長安': (34.2658, 108.9541, '陝西西安/長安'),
+    '西安': (34.2658, 108.9541, '陝西西安'),
+    '絲路': (40.0358, 94.8028, '甘肅敦煌/絲綢之路'),
+    '洛陽': (34.6197, 112.4542, '河南洛陽'),
+    '南京': (32.0603, 118.7969, '江蘇南京'),
+    '北京': (39.9042, 116.4074, '北京'),
+    '五四運動': (39.9042, 116.4074, '北京'),
+    '九一八事變': (41.8057, 123.4315, '遼寧瀋陽'),
+    '廣州': (23.1291, 113.2644, '廣東廣州'),
+    '虎門': (22.8239, 113.6731, '廣東東莞虎門'),
+    '上海': (31.2304, 121.4737, '上海'),
+    '武昌': (30.5928, 114.3055, '湖北武漢武昌'),
+    '四大古文明': (32.5363, 44.4208, '兩河流域/古埃及/印度/黃河'),
+    '兩河流域': (32.5363, 44.4208, '伊拉克巴比倫'),
+    '美索不達米亞': (32.5363, 44.4208, '伊拉克巴比倫'),
+    '埃及': (30.0444, 31.2357, '埃及開羅/尼羅河流域'),
+    '希臘': (37.9838, 23.7275, '希臘雅典'),
+    '雅典': (37.9838, 23.7275, '希臘雅典'),
+    '波希戰爭': (37.9838, 23.7275, '希臘雅典/馬拉松'),
+    '羅馬': (41.9028, 12.4964, '義大利羅馬'),
+    '君士坦丁堡': (41.0082, 28.9784, '土耳其伊斯坦堡'),
+    '麥加': (21.4225, 39.8262, '沙烏地阿拉伯麥加'),
+    '達伽馬': (11.2588, 75.7804, '印度卡利卡特'),
+    '哥倫布': (25.0343, -77.3963, '巴哈馬/加勒比海'),
+    '麥哲倫': (10.3157, 123.8854, '菲律賓宿霧'),
+    '英國': (51.5074, -0.1278, '英國倫敦'),
+    '倫敦': (51.5074, -0.1278, '英國倫敦'),
+    '法國': (48.8566, 2.3522, '法國巴黎'),
+    '巴黎': (48.8566, 2.3522, '法國巴黎'),
+    '美國': (38.9072, -77.0369, '美國華盛頓'),
+    '紐約': (40.7128, -74.0060, '美國紐約'),
+    '德國': (52.5200, 13.4050, '德國柏林'),
+    '柏林': (52.5200, 13.4050, '德國柏林'),
+    '俄國': (55.7558, 37.6173, '俄羅斯莫斯科'),
+    '蘇聯': (55.7558, 37.6173, '俄羅斯莫斯科'),
+    '日本': (35.6762, 139.6503, '日本東京'),
+    '廣島': (34.3853, 132.4553, '日本廣島'),
+}
+
+ENRICHMENT_PRESETS = {
+    "渡臺禁令": {
+        "cause": "清廷對臺灣採取「防台過於治台」的消極態度，發布渡臺禁令並實施劃界封山。",
+        "effect": "造成移民男女比例嚴重失衡（「有唐山公，無唐山媽」），誘發漳泉、閩粵分類械鬥與族群爭地。",
+        "comparison": {"topic": "渡臺禁令 vs 開山撫番", "A": "渡臺禁令（消極）：限制漢人渡台，劃定土牛溝禁止入山。", "B": "開山撫番（積極）：牡丹社事件後廢除禁令，招墾開山。"}
+    },
+    "開港通商": {
+        "cause": "清廷於英法聯軍戰敗簽訂《天津條約》，迫於國際外交壓力開放臺灣淡水、安平、雞籠、打狗通商。",
+        "effect": "茶、糖、樟腦大量出口帶動經濟發展，洋行與買辦興起，傳統郊商衰退，並促成經濟與政治重心北移。",
+        "comparison": {"topic": "清領前後期經濟貿易比較", "A": "開港前：以米甘蔗為主，對中國大陸配郊貿易，郊商主導。", "B": "開港後：以茶糖樟腦為主，對全球國際貿易，洋行與買辦主導。"}
+    },
+    "牡丹社事件": {
+        "cause": "琉球船難漁民遭排灣族原住民殺害，日本藉口「番地無主論」出兵入侵恆春半島。",
+        "effect": "清廷治臺政策由消極轉為積極，派沈葆楨來臺推動開山撫番、增設府縣（恆春縣/臺南府）並廢除渡臺禁令。",
+        "comparison": {"topic": "沈葆楨 vs 劉銘傳 施政重點比較", "A": "沈葆楨（牡丹社事件後）：廢渡台禁令、開山撫番、建億載金城。", "B": "劉銘傳（中法戰爭建省後）：興建基隆新竹鐵路、創郵政總局、清理賦稅。"}
+    },
+    "二二八事件": {
+        "cause": "戰後初期物資匱乏引發惡性通膨，加上行政長官公署專賣體制弊端、官紀敗壞與省籍文化衝突。",
+        "effect": "促使國民政府廢除行政長官公署改組臺灣省政府，但許多台籍菁英遇害，造成長期的政治噤聲與族群隔閡。",
+        "comparison": {"topic": "二二八事件 vs 美麗島事件", "A": "二二八事件（1947）：戰後物資專賣與文化衝突引發，促成行政體制改組。", "B": "美麗島事件（1979）：黨外人士爭取民主與言論自由，加速戒嚴體制解體與本土化。"}
+    },
+    "耕者有其田": {
+        "cause": "政府急需解決地主與佃農之間的土地租賃矛盾、穩定農村社會並響應美援政策。",
+        "effect": "自耕農比例大幅提升，佃農生活改善；地主獲發國營企業股票，資金轉入民營工業，促進臺灣工業化。",
+        "comparison": {"topic": "臺灣農地改革三個步驟比較", "A": "第一階段：三七五減租（降低地租）。", "B": "第二/三階段：公地放領 ➔ 耕者有其田（地主資本轉入工業）。"}
+    },
+    "皇民化運動": {
+        "cause": "中日戰爭爆發，日本將臺灣定位為「南進基地」，需要全方位動員臺灣人力與軍需物資。",
+        "effect": "推行改日本姓氏、國語家庭、神社參拜與廢止中文報紙，並將臺灣經濟導向軍需重化工業。",
+        "comparison": {"topic": "日治三階段統治方針比較", "A": "無方針/特別統治（1895-1919）：武力鎮壓，武官總督。", "B": "內地延長主義（1919-1937）：同化政策，文官總督；皇民化時期（1937-1945）：全面戰時動員。"}
+    }
+}
+
+def get_location_info(domain, title, desc):
+    text = f"{title} {desc}"
+    for k, (lat, lng, loc_name) in locations_dict.items():
+        if k in text:
+            return lat, lng, loc_name
+    if domain in ['臺灣史', '台灣史']: return 23.6000, 120.9000, '臺灣全境'
+    elif domain in ['中國史', '東亞史']: return 34.3000, 108.9000, '中國主要區域'
+    else: return 48.8566, 2.3522, '世界主要文明區域'
+
+raw_events = []
+for domain, filename in FILES_MAP.items():
+    if os.path.exists(filename):
+        xls = pd.ExcelFile(filename)
+        for sheet_name in xls.sheet_names:
+            df = pd.read_excel(filename, sheet_name=sheet_name)
+            for idx, row in df.iterrows():
+                y_str = str(row['年代']).strip() if pd.notna(row['年代']) else ''
+                t_str = str(row['事件 / 課綱分點']).strip() if pd.notna(row['事件 / 課綱分點']) else ''
+                d_str = str(row['重點說明']).strip() if pd.notna(row['重點說明']) else ''
+                st_str = str(row['冊次']).strip() if pd.notna(row['冊次']) else '通用'
+                ex_str = str(row['歷屆考題(段考、學測等)']).strip() if pd.notna(row['歷屆考題(段考、學測等)']) else ''
+                so_str = str(row['出處']).strip() if pd.notna(row['出處']) else ''
+                kw_str = str(row['關鍵字']).strip() if pd.notna(row['關鍵字']) else ''
+
+                raw_events.append({
+                    'domain': domain, 'sheet': sheet_name, 'year_str': y_str,
+                    'title': t_str, 'desc': d_str, 'stage': st_str,
+                    'exam': ex_str, 'source': so_str, 'keywords': kw_str
+                })
+
+# 去重與合併，並統一 stage 為「國小、國中、高中」排序
+unique_dict = {}
+for e in raw_events:
+    key = (e['domain'], e['title'], e['year_str'])
+    if key not in unique_dict:
+        unique_dict[key] = e
+    else:
+        existing = unique_dict[key]
+        merged_stage = sort_stages(f"{existing['stage']}、{e['stage']}")
+        existing['stage'] = merged_stage
+        if e['desc'] and e['desc'] not in existing['desc']:
+            existing['desc'] += '；' + e['desc']
+
+processed_events = []
+coord_counts = {}
+
+for key, e in unique_dict.items():
+    domain, title, y_str = key
+    start_yr, end_yr, num_yr = parse_year_range(y_str)
+    base_lat, base_lng, loc_name = get_location_info(domain, title, e['desc'])
+    
+    coord_key = (round(base_lat, 4), round(base_lng, 4))
+    count = coord_counts.get(coord_key, 0)
+    coord_counts[coord_key] = count + 1
+    
+    lat = base_lat + (count % 5 - 2) * 0.003
+    lng = base_lng + (count // 5 - 2) * 0.003
+
+    kw_list = [domain, e['sheet']]
+    for st in e['stage'].split('、'): kw_list.append(st)
+    if e['keywords'] and e['keywords'] != 'nan':
+        kw_list.extend([k.strip() for k in e['keywords'].split(',') if k.strip()])
+    kw_clean = list(dict.fromkeys([k for k in kw_list if k]))
+
+    exam_refs = []
+    if e['exam'] and e['exam'] != 'nan': exam_refs.append(f"考題標註：{e['exam']}")
+    if e['source'] and e['source'] != 'nan': exam_refs.append(f"出處引用：{e['source']}")
+    if not exam_refs: exam_refs = ["108課綱標準考點與常見題型焦點"]
+
+    preset = ENRICHMENT_PRESETS.get(title) or ENRICHMENT_PRESETS.get(title.split('（')[0])
+    if preset:
+        cause, effect, comparison = preset["cause"], preset["effect"], preset["comparison"]
+    else:
+        cause = f"【{domain} - {e['sheet']}】關鍵情境"
+        effect = f"【{domain}】發展影響：{e['desc']}"
+        comparison = None
+
+    processed_events.append({
+        "domain": domain, "sheet": e['sheet'], "stage": sort_stages(e['stage']),
+        "year": y_str, "start_year": start_yr, "end_year": end_yr, "num_year": num_yr,
+        "lat": round(lat, 5), "lng": round(lng, 5),
+        "loc": loc_name, "title": title, "desc": e['desc'],
+        "cause": cause, "effect": effect, "comparison": comparison,
+        "keywords": kw_clean, "exam_refs": exam_refs
+    })
+
+processed_events.sort(key=lambda x: x['num_year'])
+for idx, item in enumerate(processed_events, start=1):
+    item['id'] = idx
+
+with open(DATA_FILE, "w", encoding="utf-8") as f:
+    json.dump(processed_events, f, ensure_ascii=False, indent=2)
+
+print(f"🎉 成功處理並寫入 {len(processed_events)} 筆歷史考點至 {DATA_FILE}！")
+
+
+# ==============================================================================
+# 部份二：網頁介面與地圖/測驗系統生成 (輸出 world_history_map.html)
+# ==============================================================================
+
+if os.path.exists(DATA_FILE):
+    with open(DATA_FILE, "r", encoding="utf-8") as f:
+        events_data = json.load(f)
+else:
+    raise FileNotFoundError(f"找不到 {DATA_FILE}，請先執行「部份一」生成資料檔！")
+
+# 建立 83~115 學年度完整歷屆試題清單
+KNOWN_PDF_URLS = {
+    115: "https://www.ceec.edu.tw/files/file_pool/1/0q054534130270752519/05-115%e5%ad%b8%e6%b8%ac%e7%a4%be%e6%9c%83%e8%a9%a6%e5%8d%b7.pdf",
+    114: "https://www.ceec.edu.tw/files/file_pool/1/0p056429479567292230/05-114%e5%ad%b8%e6%b8%ac%e7%a4%be%e6%9c%83%e8%a9%a6%e9%a1%8c.pdf",
+    113: "https://www.ceec.edu.tw/files/file_pool/1/0o051421699906768624/05-113%e5%ad%b8%e6%b8%ac%e7%a4%be%e6%9c%83%e7%a7%91%e8%a9%a6%e9%a1%8c%e5%ae%9a%e7%a8%bf.pdf",
+    111: "https://www.ceec.edu.tw/files/file_pool/1/0m053364108279287592/05-111%e5%ad%b8%e6%b8%ac%e7%a4%be%e6%9c%83%e8%a9%a6%e5%8d%b7.pdf",
+    110: "https://www.ceec.edu.tw/files/file_pool/1/0l069606123954085532/110%e5%ad%b8%e6%b8%ac%e7%a4%be%e6%9c%83%e8%a9%a6%e5%8d%b7.pdf"
+}
+
+CEEC_PDF_LIST = []
+for yr in range(115, 82, -1):
+    url = KNOWN_PDF_URLS.get(yr, f"https://www.ceec.edu.tw/xmfile?xsmsid=0J052424823015665353")
+    CEEC_PDF_LIST.append({
+        "year": f"{yr} 學年度",
+        "title": f"{yr} 學年度大學學測/聯考社會考科試題",
+        "url": url,
+        "desc": f"收錄 {yr} 學年度大考中心社會科（歷史、地理、公民）正式試題檔案。"
+    })
+
+dynasties_data = [
+    {"cat": "taiwan", "name": "史前與原住民文化", "start": -10000, "end": 1624, "color": "#d97706"},
+    {"cat": "taiwan", "name": "荷西時期", "start": 1624, "end": 1662, "color": "#10b981"},
+    {"cat": "taiwan", "name": "明鄭時期", "start": 1662, "end": 1683, "color": "#3b82f6"},
+    {"cat": "taiwan", "name": "清領時期", "start": 1683, "end": 1895, "color": "#8b5cf6"},
+    {"cat": "taiwan", "name": "日治時期", "start": 1895, "end": 1945, "color": "#ef4444"},
+    {"cat": "taiwan", "name": "戰後中華民國", "start": 1945, "end": 2026, "color": "#06b6d4"},
+
+    {"cat": "china", "name": "史前傳說與夏商周", "start": -10000, "end": -256, "color": "#d97706"},
+    {"cat": "china", "name": "秦漢帝國", "start": -221, "end": 220, "color": "#ef4444"},
+    {"cat": "china", "name": "魏晉南北朝", "start": 220, "end": 589, "color": "#8b5cf6"},
+    {"cat": "china", "name": "隋唐五代", "start": 581, "end": 907, "color": "#3b82f6"},
+    {"cat": "china", "name": "兩宋與元朝", "start": 960, "end": 1368, "color": "#10b981"},
+    {"cat": "china", "name": "明清時期", "start": 1368, "end": 1912, "color": "#8b5cf6"},
+    {"cat": "china", "name": "民國與現代", "start": 1911, "end": 2026, "color": "#06b6d4"},
+
+    {"cat": "world", "name": "四大古文明與早期人類", "start": -10000, "end": -500, "color": "#d97706"},
+    {"cat": "world", "name": "希臘羅馬古典時代", "start": -500, "end": 476, "color": "#3b82f6"},
+    {"cat": "world", "name": "歐洲中古與拜占庭", "start": 476, "end": 1453, "color": "#8b5cf6"},
+    {"cat": "world", "name": "地理大發現與近世", "start": 1450, "end": 1789, "color": "#10b981"},
+    {"cat": "world", "name": "工業革命與帝國主義", "start": 1760, "end": 1914, "color": "#06b6d4"},
+    {"cat": "world", "name": "世界大戰與現代國際秩序", "start": 1914, "end": 2026, "color": "#f43f5e"}
+]
+
+STATIC_CONFIG = {
+    "leaflet_css": "https://unpkg.com/leaflet@1.9.4/dist/leaflet.css",
+    "leaflet_js": "https://unpkg.com/leaflet@1.9.4/dist/leaflet.js",
+    "cluster_css": "https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css",
+    "cluster_default_css": "https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css",
+    "cluster_js": "https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js",
+    "tile_url": "https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}"
+}
+
+html_content = f"""<!DOCTYPE html>
 <html lang="zh-TW">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>108課綱歷史數位地圖與測驗系統</title>
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
-<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css" />
-<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css" />
-
+<link rel="stylesheet" href="{STATIC_CONFIG['leaflet_css']}" />
+<link rel="stylesheet" href="{STATIC_CONFIG['cluster_css']}" />
+<link rel="stylesheet" href="{STATIC_CONFIG['cluster_default_css']}" />
 <style>
-*{box-sizing:border-box;margin:0;padding:0;}
-body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;background:#0f172a;color:#f8fafc;height:100vh;display:flex;flex-direction:column;overflow:hidden;}
+*{{box-sizing:border-box;margin:0;padding:0;}}
+body{{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;background:#0f172a;color:#f8fafc;height:100vh;display:flex;flex-direction:column;overflow:hidden;}}
 
 /* 頂部 Sticky 導覽列 */
-nav.top-nav{
+nav.top-nav{{
     background:#1e293be6;backdrop-filter:blur(12px);border-bottom:1px solid #334155;
     padding:10px 16px;display:flex;justify-content:space-between;align-items:center;gap:12px;z-index:900;
-}
-.nav-left{display:flex;align-items:center;gap:10px;}
-.btn-menu-trigger{background:#334155;color:#f59e0b;border:1px solid #475569;padding:6px 12px;border-radius:6px;font-size:0.9rem;font-weight:bold;cursor:pointer;}
-.nav-brand{font-size:1.1rem;font-weight:bold;color:#f59e0b;display:flex;align-items:center;gap:6px;cursor:pointer;}
-.nav-links{display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
-.nav-btn{background:transparent;color:#cbd5e1;border:none;padding:6px 12px;border-radius:20px;font-size:0.82rem;font-weight:bold;cursor:pointer;transition:all 0.2s;}
-.nav-btn:hover, .nav-btn.active{background:#f59e0b;color:#0f172a;}
+}}
+.nav-left{{display:flex;align-items:center;gap:10px;}}
+.btn-menu-trigger{{background:#334155;color:#f59e0b;border:1px solid #475569;padding:6px 12px;border-radius:6px;font-size:0.9rem;font-weight:bold;cursor:pointer;}}
+.nav-brand{{font-size:1.1rem;font-weight:bold;color:#f59e0b;display:flex;align-items:center;gap:6px;cursor:pointer;}}
+.nav-links{{display:flex;align-items:center;gap:6px;}}
+.nav-btn{{background:transparent;color:#cbd5e1;border:none;padding:6px 12px;border-radius:20px;font-size:0.82rem;font-weight:bold;cursor:pointer;transition:all 0.2s;}}
+.nav-btn:hover, .nav-btn.active{{background:#f59e0b;color:#0f172a;}}
 
-.btn-backup-auth{background:#334155;color:#38bdf8;border:1px solid #38bdf8;padding:5px 12px;border-radius:16px;font-size:0.78rem;font-weight:bold;cursor:pointer;transition:all 0.2s;}
-.btn-backup-auth:hover{background:#38bdf8;color:#0f172a;}
+.view-container{{flex:1;position:relative;width:100%;height:100%;overflow:hidden;}}
 
-.view-container{flex:1;position:relative;width:100%;height:100%;overflow:hidden;}
+/* ================= 視圖 1：首頁 Dashboard ================= */
+#view-home{{width:100%;height:100%;overflow-y:auto;padding:20px 16px 60px;max-width:1240px;margin:0 auto;display:block;}}
+.home-hero{{background:linear-gradient(135deg, #1e293b 0%, #0f172a 100%);border:1px solid #334155;border-radius:16px;padding:24px 20px;margin-bottom:24px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:12px;}}
+.hero-badge-group{{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;}}
+.hero-stat-pill{{background:#0f172a;border:1px solid #334155;padding:4px 10px;border-radius:16px;font-size:0.75rem;font-weight:bold;color:#cbd5e1;}}
+.hero-stat-pill span{{color:#f59e0b;font-weight:800;}}
+.home-title{{font-size:1.8rem;font-weight:800;color:#f8fafc;}}
+.home-title span{{color:#f59e0b;}}
+.home-subtitle{{font-size:0.88rem;color:#94a3b8;max-width:680px;line-height:1.5;}}
 
-/* 視圖 1：首頁 Dashboard */
-#view-home{width:100%;height:100%;overflow-y:auto;padding:20px 16px 60px;max-width:1240px;margin:0 auto;display:block;}
-.home-hero{background:linear-gradient(135deg, #1e293b 0%, #0f172a 100%);border:1px solid #334155;border-radius:16px;padding:24px 20px;margin-bottom:24px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:12px;}
-.hero-badge-group{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;}
-.hero-stat-pill{background:#0f172a;border:1px solid #334155;padding:4px 10px;border-radius:16px;font-size:0.75rem;font-weight:bold;color:#cbd5e1;}
-.hero-stat-pill span{color:#f59e0b;font-weight:800;}
-.home-title{font-size:1.8rem;font-weight:800;color:#f8fafc;}
-.home-title span{color:#f59e0b;}
-.home-subtitle{font-size:0.88rem;color:#94a3b8;max-width:680px;line-height:1.5;}
+.portal-grid{{display:grid;grid-template-columns:repeat(auto-fit, minmax(260px, 1fr));gap:16px;margin-bottom:28px;}}
+.portal-card{{background:#1e293b;border:2px solid #334155;border-radius:14px;padding:18px;display:flex;flex-direction:column;justify-content:space-between;transition:all 0.25s;cursor:pointer;position:relative;overflow:hidden;}}
+.portal-card::before{{content:"";position:absolute;top:0;left:0;width:100%;height:4px;}}
+.portal-card.tw::before{{background:#f59e0b;}} .portal-card.cn::before{{background:#ef4444;}} .portal-card.wd::before{{background:#3b82f6;}}
+.portal-card:hover{{transform:translateY(-4px);box-shadow:0 10px 20px rgba(0,0,0,0.4);}}
+.portal-top{{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;}}
+.portal-icon{{font-size:1.8rem;}}
+.portal-count-tag{{padding:3px 8px;border-radius:10px;font-size:0.72rem;font-weight:bold;color:#fff;}}
+.portal-title{{font-size:1.15rem;font-weight:bold;color:#fff;margin-bottom:4px;}}
+.portal-desc{{font-size:0.8rem;color:#cbd5e1;line-height:1.4;margin-bottom:12px;}}
 
-.portal-grid{display:grid;grid-template-columns:repeat(auto-fit, minmax(260px, 1fr));gap:16px;margin-bottom:28px;}
-.portal-card{background:#1e293b;border:2px solid #334155;border-radius:14px;padding:18px;display:flex;flex-direction:column;justify-content:space-between;transition:all 0.25s;cursor:pointer;position:relative;overflow:hidden;}
-.portal-card::before{content:"";position:absolute;top:0;left:0;width:100%;height:4px;}
-.portal-card.tw::before{background:#f59e0b;} .portal-card.cn::before{background:#ef4444;} .portal-card.wd::before{background:#3b82f6;}
-.portal-card:hover{transform:translateY(-4px);box-shadow:0 10px 20px rgba(0,0,0,0.4);}
-.portal-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;}
-.portal-icon{font-size:1.8rem;}
-.portal-count-tag{padding:3px 8px;border-radius:10px;font-size:0.72rem;font-weight:bold;color:#fff;}
-.portal-title{font-size:1.15rem;font-weight:bold;color:#fff;margin-bottom:4px;}
-.portal-desc{font-size:0.8rem;color:#cbd5e1;line-height:1.4;margin-bottom:12px;}
+.home-filter-section{{background:#1e293b;border:1px solid #334155;border-radius:12px;padding:12px 16px;margin-bottom:20px;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;}}
+.home-filter-tabs{{display:flex;gap:6px;flex-wrap:wrap;}}
+.tab-btn{{background:#0f172a;border:1px solid #334155;color:#cbd5e1;padding:6px 14px;border-radius:18px;font-size:0.82rem;font-weight:bold;cursor:pointer;}}
+.tab-btn.active, .tab-btn:hover{{background:#f59e0b;color:#0f172a;border-color:#f59e0b;}}
+.home-search-input{{background:#0f172a;border:1px solid #475569;color:#fff;padding:7px 12px;border-radius:8px;font-size:0.82rem;outline:none;width:220px;}}
 
-.home-filter-section{background:#1e293b;border:1px solid #334155;border-radius:12px;padding:12px 16px;margin-bottom:20px;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;}
-.home-filter-tabs{display:flex;gap:6px;flex-wrap:wrap;}
-.tab-btn{background:#0f172a;border:1px solid #334155;color:#cbd5e1;padding:6px 14px;border-radius:18px;font-size:0.82rem;font-weight:bold;cursor:pointer;}
-.tab-btn.active, .tab-btn:hover{background:#f59e0b;color:#0f172a;border-color:#f59e0b;}
-.home-search-input{background:#0f172a;border:1px solid #475569;color:#fff;padding:7px 12px;border-radius:8px;font-size:0.82rem;outline:none;width:220px;}
+.events-grid{{display:grid;grid-template-columns:repeat(auto-fill, minmax(280px, 1fr));gap:16px;}}
+.event-card{{background:#1e293b;border:1px solid #334155;border-radius:12px;padding:14px;display:flex;flex-direction:column;justify-content:space-between;transition:all 0.2s;cursor:pointer;}}
+.event-card:hover{{border-color:#f59e0b;transform:translateY(-3px);}}
+.ev-card-top{{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;}}
+.ev-badge{{padding:2px 7px;border-radius:4px;font-size:0.7rem;color:#fff;font-weight:bold;}}
+.ev-year{{font-size:0.75rem;color:#94a3b8;font-weight:bold;}}
+.ev-source{{font-size:0.72rem;color:#38bdf8;margin-bottom:4px;font-weight:bold;}}
+.ev-title{{font-size:1rem;font-weight:bold;color:#f8fafc;margin-bottom:4px;}}
+.ev-loc{{font-size:0.75rem;color:#94a3b8;margin-bottom:6px;}}
+.ev-desc{{font-size:0.78rem;color:#cbd5e1;line-height:1.4;margin-bottom:10px;flex:1;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}}
+.btn-card-detail{{background:#0f172a;color:#f59e0b;border:1px solid #f59e0b;padding:6px 10px;border-radius:6px;font-size:0.78rem;font-weight:bold;cursor:pointer;text-align:center;}}
 
-.events-grid{display:grid;grid-template-columns:repeat(auto-fill, minmax(280px, 1fr));gap:16px;}
-.event-card{background:#1e293b;border:1px solid #334155;border-radius:12px;padding:14px;display:flex;flex-direction:column;justify-content:space-between;transition:all 0.2s;cursor:pointer;}
-.event-card:hover{border-color:#f59e0b;transform:translateY(-3px);}
-.ev-card-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;}
-.ev-badge{padding:2px 7px;border-radius:4px;font-size:0.7rem;color:#fff;font-weight:bold;}
-.ev-year{font-size:0.75rem;color:#94a3b8;font-weight:bold;}
-.ev-source{font-size:0.72rem;color:#38bdf8;margin-bottom:4px;font-weight:bold;}
-.ev-title{font-size:1rem;font-weight:bold;color:#f8fafc;margin-bottom:4px;}
-.ev-loc{font-size:0.75rem;color:#94a3b8;margin-bottom:6px;}
-.ev-desc{font-size:0.78rem;color:#cbd5e1;line-height:1.4;margin-bottom:10px;flex:1;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
-.btn-card-detail{background:#0f172a;color:#f59e0b;border:1px solid #f59e0b;padding:6px 10px;border-radius:6px;font-size:0.78rem;font-weight:bold;cursor:pointer;text-align:center;}
+.load-more-box{{text-align:center;margin-top:24px;}}
+.btn-load-more{{background:#334155;color:#f59e0b;border:1px solid #475569;padding:8px 24px;border-radius:20px;font-size:0.85rem;font-weight:bold;cursor:pointer;}}
 
-.load-more-box{text-align:center;margin-top:24px;}
-.btn-load-more{background:#334155;color:#f59e0b;border:1px solid #475569;padding:8px 24px;border-radius:20px;font-size:0.85rem;font-weight:bold;cursor:pointer;}
+/* ================= 視圖 2：歷屆試題獨立分頁 ================= */
+#view-exams{{width:100%;height:100%;overflow-y:auto;padding:20px 16px 60px;max-width:1100px;margin:0 auto;display:none;}}
+.exams-header{{background:linear-gradient(135deg, #1e293b, #0f172a);border:1px solid #334155;border-radius:16px;padding:24px;margin-bottom:24px;text-align:center;}}
+.exams-header h2{{font-size:1.5rem;color:#38bdf8;margin-bottom:8px;}}
+.exams-header p{{font-size:0.88rem;color:#cbd5e1;line-height:1.5;}}
 
-/* 視圖 2：歷屆試題專頁 */
-#view-exams{width:100%;height:100%;overflow-y:auto;padding:20px 16px 60px;max-width:1150px;margin:0 auto;display:none;}
-.exams-header{background:linear-gradient(135deg, #1e293b, #0f172a);border:1px solid #334155;border-radius:16px;padding:22px 28px;margin-bottom:20px;display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;}
-.exams-header h2{font-size:1.5rem;color:#38bdf8;margin-bottom:4px;}
-.exams-header p{font-size:0.88rem;color:#cbd5e1;line-height:1.5;}
+.exam-cards-grid{{display:grid;grid-template-columns:repeat(auto-fill, minmax(280px, 1fr));gap:16px;}}
+.exam-pdf-card{{background:#1e293b;border:1px solid #334155;border-radius:14px;padding:18px;display:flex;flex-direction:column;justify-content:space-between;transition:all 0.2s;}}
+.exam-pdf-card:hover{{border-color:#38bdf8;transform:translateY(-3px);}}
+.exam-tag{{background:#0284c7;color:#fff;padding:3px 10px;border-radius:12px;font-size:0.75rem;font-weight:bold;align-self:flex-start;margin-bottom:10px;}}
+.exam-card-title{{font-size:1.05rem;font-weight:bold;color:#f8fafc;margin-bottom:6px;}}
+.exam-card-desc{{font-size:0.8rem;color:#cbd5e1;line-height:1.4;margin-bottom:14px;flex:1;}}
+.btn-download-pdf{{background:#0284c7;color:#fff;padding:8px 16px;border-radius:8px;text-decoration:none;font-size:0.85rem;font-weight:bold;text-align:center;transition:background 0.2s;}}
+.btn-download-pdf:hover{{background:#0369a1;}}
 
-.exam-cards-list{display:flex;flex-direction:column;gap:12px;}
-.exam-pdf-card-row{
-    background:#1e293b;border:1px solid #334155;border-radius:14px;padding:16px 20px;
-    display:flex;flex-direction:row;align-items:center;justify-content:space-between;gap:16px;
-    transition:all 0.2s;box-shadow:0 4px 10px rgba(0,0,0,0.2);
-}
-.exam-pdf-card-row:hover{border-color:#38bdf8;transform:translateX(4px);background:#243347;}
-.exam-left-info{display:flex;align-items:center;gap:16px;flex:1;}
-.exam-tag-pill{background:#0284c7;color:#fff;padding:6px 14px;border-radius:14px;font-size:0.82rem;font-weight:800;white-space:nowrap;}
-.exam-text-group{display:flex;flex-direction:column;gap:4px;}
-.exam-card-title-row{font-size:1.05rem;font-weight:bold;color:#f8fafc;}
-.exam-card-desc-row{font-size:0.82rem;color:#cbd5e1;line-height:1.4;}
-.exam-action-btns{display:flex;align-items:center;gap:10px;white-space:nowrap;}
+/* ================= 視圖 3：測驗與閃卡 ================= */
+#view-quiz{{width:100%;height:100%;overflow-y:auto;padding:20px 16px 60px;max-width:1100px;margin:0 auto;display:none;}}
 
-.btn-download-pdf{background:#0284c7;color:#fff;padding:8px 16px;border-radius:8px;text-decoration:none;font-size:0.85rem;font-weight:bold;transition:background 0.2s;display:inline-flex;align-items:center;gap:4px;}
-.btn-download-pdf:hover{background:#0369a1;}
-.btn-cite-quiz{background:#059669;color:#fff;border:none;padding:8px 16px;border-radius:8px;font-size:0.85rem;font-weight:bold;cursor:pointer;transition:background 0.2s;display:inline-flex;align-items:center;gap:4px;}
-.btn-cite-quiz:hover{background:#047857;}
+.quiz-header{{background:#1e293b;border:1px solid #334155;border-radius:16px;padding:20px;margin-bottom:20px;display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;}}
+.quiz-title-box h2{{font-size:1.4rem;color:#f59e0b;margin-bottom:4px;}}
+.quiz-title-box p{{font-size:0.82rem;color:#94a3b8;}}
 
-/* 視圖 3：測驗與閃卡 */
-#view-quiz{width:100%;height:100%;overflow-y:auto;padding:20px 16px 60px;max-width:1150px;margin:0 auto;display:none;}
+/* 右上角點選式統計膠囊列 */
+.quiz-stats-bar{{display:flex;gap:10px;background:#0f172a;padding:8px 14px;border-radius:12px;border:1px solid #334155;}}
+.q-stat-item{{text-align:center;font-size:0.75rem;color:#cbd5e1;cursor:pointer;padding:4px 10px;border-radius:8px;transition:background 0.2s;}}
+.q-stat-item:hover{{background:#1e293b;}}
+.q-stat-item b{{display:block;font-size:1.1rem;color:#f59e0b;}}
 
-.quiz-header{background:#1e293b;border:1px solid #334155;border-radius:16px;padding:20px 24px;margin-bottom:20px;display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;}
-.quiz-title-box h2{font-size:1.45rem;color:#f59e0b;margin-bottom:4px;}
-.quiz-title-box p{font-size:0.85rem;color:#94a3b8;}
+.quiz-tab-group{{display:flex;gap:8px;margin-bottom:20px;border-bottom:1px solid #334155;padding-bottom:10px;}}
+.q-tab-btn{{background:#0f172a;border:1px solid #334155;color:#cbd5e1;padding:8px 18px;border-radius:20px;font-size:0.85rem;font-weight:bold;cursor:pointer;}}
+.q-tab-btn.active{{background:#f59e0b;color:#0f172a;border-color:#f59e0b;}}
 
-.quiz-stats-bar{display:flex;gap:10px;background:#0f172a;padding:8px 16px;border-radius:14px;border:1px solid #334155;}
-.q-stat-item{text-align:center;font-size:0.8rem;color:#cbd5e1;cursor:pointer;padding:4px 12px;border-radius:8px;transition:all 0.2s;}
-.q-stat-item:hover{background:#1e293b;transform:scale(1.05);}
-.q-stat-item b{display:block;font-size:1.2rem;color:#f59e0b;}
+/* 測驗/閃卡設定選單卡片 */
+.quiz-config-card{{background:#1e293b;border:1px solid #334155;border-radius:14px;padding:16px 20px;margin-bottom:20px;display:flex;gap:16px;align-items:center;flex-wrap:wrap;justify-content:space-between;}}
+.quiz-config-group{{display:flex;gap:12px;align-items:center;flex-wrap:wrap;}}
+.quiz-select-label{{font-size:0.85rem;color:#cbd5e1;font-weight:bold;}}
+.quiz-select-input{{background:#0f172a;border:1px solid #475569;color:#fff;padding:6px 12px;border-radius:8px;font-size:0.85rem;outline:none;cursor:pointer;}}
+.btn-start-quiz{{background:#f59e0b;color:#0f172a;border:none;padding:8px 20px;border-radius:8px;font-weight:bold;font-size:0.88rem;cursor:pointer;transition:transform 0.2s;}}
+.btn-start-quiz:hover{{transform:scale(1.03);}}
 
-.quiz-tab-group{display:flex;gap:8px;margin-bottom:20px;border-bottom:1px solid #334155;padding-bottom:10px;}
-.q-tab-btn{background:#0f172a;border:1px solid #334155;color:#cbd5e1;padding:10px 22px;border-radius:20px;font-size:0.92rem;font-weight:bold;cursor:pointer;}
-.q-tab-btn.active{background:#f59e0b;color:#0f172a;border-color:#f59e0b;}
+/* 閃卡卡片 3D Flip 容器 */
+.flashcard-wrapper{{perspective:1000px;width:100%;max-width:650px;margin:0 auto 24px;height:360px;cursor:pointer;}}
+.flashcard-inner{{position:relative;width:100%;height:100%;text-align:center;transition:transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);transform-style:preserve-3d;}}
+.flashcard-wrapper.flipped .flashcard-inner{{transform:rotateY(180deg);}}
 
-.quiz-config-card{
-    background:#1e293b;border:1px solid #334155;border-radius:16px;padding:18px 24px;
-    margin-bottom:24px;display:flex;gap:16px;align-items:center;flex-wrap:wrap;justify-content:space-between;
-    box-shadow:0 4px 12px rgba(0,0,0,0.3);
-}
-.quiz-config-group{display:flex;gap:12px;align-items:center;flex-wrap:wrap;}
-.quiz-select-label{font-size:0.9rem;color:#f8fafc;font-weight:bold;}
-.quiz-select-input{background:#0f172a;border:1px solid #475569;color:#fff;padding:8px 12px;border-radius:10px;font-size:0.88rem;outline:none;cursor:pointer;}
-.custom-count-input{background:#0f172a;border:1px solid #475569;color:#f59e0b;padding:8px 12px;border-radius:10px;font-size:0.88rem;width:120px;outline:none;font-weight:bold;}
-.btn-start-quiz{background:#f59e0b;color:#0f172a;border:none;padding:10px 24px;border-radius:10px;font-weight:800;font-size:0.95rem;cursor:pointer;transition:all 0.2s;}
-.btn-start-quiz:hover{transform:scale(1.05);box-shadow:0 0 12px rgba(245,158,11,0.5);}
-.btn-danger-action{background:#ef4444;color:#fff;border:none;padding:10px 18px;border-radius:10px;font-weight:bold;font-size:0.88rem;cursor:pointer;transition:all 0.2s;}
-.btn-danger-action:hover{background:#dc2626;}
-
-.quiz-cited-info{width:100%;background:#0284c71a;border:1px solid #38bdf8;color:#38bdf8;padding:8px 14px;border-radius:8px;font-size:0.88rem;font-weight:bold;margin-bottom:10px;display:none;}
-
-/* 閃卡卡片 3D Flip 樣式 */
-.flashcard-wrapper{perspective:1000px;width:100%;max-width:750px;margin:0 auto 24px;height:380px;cursor:pointer;}
-.flashcard-inner{position:relative;width:100%;height:100%;text-align:center;transition:transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);transform-style:preserve-3d;}
-.flashcard-wrapper.flipped .flashcard-inner{transform:rotateY(180deg);}
-
-.flashcard-front, .flashcard-back{
+.flashcard-front, .flashcard-back{{
     position:absolute;width:100%;height:100%;backface-visibility:hidden;
-    border-radius:20px;border:2px solid #334155;padding:28px;
+    border-radius:16px;border:2px solid #334155;padding:24px;
     display:flex;flex-direction:column;justify-content:space-between;align-items:center;
-    box-shadow:0 16px 36px rgba(0,0,0,0.5);
-}
-.flashcard-front{background:linear-gradient(135deg, #1e293b, #0f172a);color:#fff;}
-.flashcard-back{background:linear-gradient(135deg, #0f172a, #1e293b);color:#f8fafc;transform:rotateY(180deg);border-color:#f59e0b;overflow-y:auto;}
+    box-shadow:0 12px 30px rgba(0,0,0,0.5);
+}}
+.flashcard-front{{background:linear-gradient(135deg, #1e293b, #0f172a);color:#fff;}}
+.flashcard-back{{background:linear-gradient(135deg, #0f172a, #1e293b);color:#f8fafc;transform:rotateY(180deg);border-color:#f59e0b;overflow-y:auto;}}
 
-.fc-badge{padding:4px 12px;border-radius:14px;font-size:0.82rem;font-weight:bold;color:#fff;}
-.fc-hint{font-size:0.8rem;color:#94a3b8;margin-top:8px;}
-.fc-title{font-size:1.8rem;font-weight:800;color:#f59e0b;margin:16px 0;line-height:1.4;}
-.fc-box{background:#0f172a;padding:12px 16px;border-radius:10px;border:1px solid #334155;text-align:left;width:100%;font-size:0.9rem;line-height:1.5;margin-bottom:8px;}
-.fc-box b{color:#f59e0b;}
+.fc-badge{{padding:3px 10px;border-radius:12px;font-size:0.75rem;font-weight:bold;color:#fff;}}
+.fc-hint{{font-size:0.75rem;color:#94a3b8;margin-top:12px;}}
+.fc-title{{font-size:1.6rem;font-weight:800;color:#f59e0b;margin:16px 0;}}
+.fc-box{{background:#0f172a;padding:12px;border-radius:8px;border:1px solid #334155;text-align:left;width:100%;font-size:0.85rem;line-height:1.5;margin-bottom:8px;}}
+.fc-box b{{color:#f59e0b;}}
 
-.flashcard-controls{display:flex;justify-content:center;gap:14px;max-width:750px;margin:0 auto;}
-.btn-fc-rating{flex:1;padding:12px;border-radius:10px;border:none;font-size:0.95rem;font-weight:bold;cursor:pointer;color:#fff;transition:all 0.2s;}
-.btn-fc-forgot{background:#ef4444;} .btn-fc-fuzzy{background:#f59e0b;} .btn-fc-remembered{background:#10b981;}
-.btn-fc-rating:hover{transform:scale(1.03);}
+.flashcard-controls{{display:flex;justify-content:center;gap:12px;max-width:650px;margin:0 auto;}}
+.btn-fc-rating{{flex:1;padding:10px;border-radius:8px;border:none;font-size:0.88rem;font-weight:bold;cursor:pointer;color:#fff;transition:all 0.2s;}}
+.btn-fc-forgot{{background:#ef4444;}} .btn-fc-fuzzy{{background:#f59e0b;}} .btn-fc-remembered{{background:#10b981;}}
+.btn-fc-rating:hover{{transform:scale(1.03);}}
 
-/* 選擇題測驗卡片與選項 */
-.quiz-card{background:#1e293b;border:2px solid #334155;border-radius:20px;padding:32px;max-width:850px;margin:0 auto;box-shadow:0 12px 30px rgba(0,0,0,0.4);position:relative;}
-.q-top-ctrl-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;}
-.q-progress{font-size:0.9rem;color:#94a3b8;font-weight:bold;}
-.btn-quit-quiz{background:#334155;color:#f8fafc;border:1px solid #ef4444;padding:4px 12px;border-radius:12px;font-size:0.78rem;font-weight:bold;cursor:pointer;transition:all 0.2s;}
-.btn-quit-quiz:hover{background:#ef4444;color:#fff;}
+/* 選擇題測驗容器 */
+.quiz-card{{background:#1e293b;border:1px solid #334155;border-radius:16px;padding:24px;max-width:750px;margin:0 auto;}}
+.q-progress{{font-size:0.8rem;color:#94a3b8;margin-bottom:12px;display:flex;justify-content:space-between;}}
+.q-question{{font-size:1.15rem;font-weight:bold;color:#fff;margin-bottom:20px;line-height:1.5;}}
+.q-options{{display:flex;flex-direction:column;gap:10px;margin-bottom:20px;}}
+.q-opt-btn{{background:#0f172a;border:1px solid #334155;color:#cbd5e1;padding:12px 16px;border-radius:10px;font-size:0.9rem;font-weight:bold;cursor:pointer;text-align:left;transition:all 0.2s;}}
+.q-opt-btn:hover{{border-color:#f59e0b;color:#fff;}}
+.q-opt-btn.correct{{background:#064e3b;border-color:#10b981;color:#fff;}}
+.q-opt-btn.wrong{{background:#7f1d1d;border-color:#ef4444;color:#fff;}}
 
-.q-question{font-size:1.3rem;font-weight:800;color:#f8fafc;margin-bottom:24px;line-height:1.6;letter-spacing:0.3px;}
-.q-options{display:flex;flex-direction:column;gap:12px;margin-bottom:24px;}
-.q-opt-btn{background:#0f172a;border:2px solid #334155;color:#e2e8f0;padding:14px 20px;border-radius:12px;font-size:1.02rem;font-weight:bold;cursor:pointer;text-align:left;transition:all 0.2s;line-height:1.4;}
-.q-opt-btn:hover{border-color:#f59e0b;color:#fff;background:#1e293b;transform:translateX(4px);}
-.q-opt-btn.correct{background:#064e3b;border-color:#10b981;color:#fff;}
-.q-opt-btn.wrong{background:#7f1d1d;border-color:#ef4444;color:#fff;}
+.q-explanation-box{{background:#0f172a;border:1px solid #f59e0b;border-radius:10px;padding:16px;margin-top:16px;display:none;animation:fadeIn 0.3s;}}
+.q-explanation-box h4{{color:#f59e0b;font-size:0.95rem;margin-bottom:8px;}}
+.q-exp-text{{font-size:0.85rem;color:#cbd5e1;line-height:1.5;margin-bottom:8px;}}
 
-.q-explanation-box{background:#0f172a;border:2px solid #f59e0b;border-radius:14px;padding:20px;margin-top:20px;display:none;animation:fadeIn 0.3s;}
-.q-explanation-box h4{color:#f59e0b;font-size:1.1rem;margin-bottom:10px;}
-.q-exp-text{font-size:0.95rem;color:#cbd5e1;line-height:1.6;margin-bottom:10px;}
+/* 錯題本表格 */
+.mistake-list{{display:flex;flex-direction:column;gap:12px;max-width:850px;margin:0 auto;}}
+.mistake-card{{background:#1e293b;border:1px solid #ef4444;border-radius:12px;padding:16px;display:flex;justify-content:space-between;align-items:center;gap:12px;}}
+.mistake-info h4{{font-size:1rem;color:#f8fafc;margin-bottom:4px;}}
+.mistake-info p{{font-size:0.8rem;color:#cbd5e1;}}
+.btn-remove-mistake{{background:#334155;color:#ef4444;border:1px solid #ef4444;padding:6px 12px;border-radius:6px;font-size:0.75rem;font-weight:bold;cursor:pointer;}}
 
-.quiz-result-card{background:#1e293b;border:2px solid #f59e0b;border-radius:20px;padding:32px;max-width:850px;margin:0 auto;text-align:center;box-shadow:0 12px 30px rgba(0,0,0,0.4);display:none;}
-.result-score{font-size:3rem;font-weight:900;color:#f59e0b;margin:12px 0;}
-.result-desc{font-size:1rem;color:#cbd5e1;margin-bottom:24px;line-height:1.6;}
+/* ================= 視圖 4：世界地圖 ================= */
+#view-map{{width:100%;height:100%;display:none;flex-direction:column;position:relative;}}
+.map-top-bar{{background:#1e293b;padding:10px 14px;display:flex;flex-direction:column;gap:8px;border-bottom:1px solid #334155;z-index:10;}}
+.map-toolbar-row1{{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;}}
+.timeline-box{{display:flex;align-items:center;gap:8px;flex:1;min-width:260px;background:#0f172a;padding:5px 12px;border-radius:18px;border:1px solid #334155;}}
+.hdr-era-badge{{background:#1e293b;color:#f59e0b;padding:2px 8px;border-radius:10px;font-size:0.72rem;font-weight:bold;white-space:nowrap;}}
+.btn-reset-slider{{background:#334155;color:#fff;border:none;padding:2px 8px;border-radius:10px;font-size:0.7rem;cursor:pointer;white-space:nowrap;}}
+input[type="range"]{{flex:1;-webkit-appearance:none;background:#334155;height:5px;border-radius:3px;outline:none;cursor:pointer;}}
+input[type="range"]::-webkit-slider-thumb{{-webkit-appearance:none;width:14px;height:14px;border-radius:50%;background:#f59e0b;cursor:pointer;border:2px solid #fff;}}
+.simple-search-input{{background:#334155;border:1px solid #475569;color:#fff;padding:5px 10px;border-radius:6px;font-size:0.8rem;outline:none;width:180px;}}
 
-.mistake-list{display:flex;flex-direction:column;gap:14px;max-width:1150px;margin:0 auto;}
-.mistake-card-row{background:#1e293b;border:1px solid #ef4444;border-radius:14px;padding:18px;display:flex;justify-content:space-between;align-items:center;gap:14px;box-shadow:0 4px 10px rgba(0,0,0,0.2);}
-.mistake-info h4{font-size:1.05rem;color:#f8fafc;margin-bottom:6px;}
-.mistake-info p{font-size:0.85rem;color:#cbd5e1;line-height:1.5;}
-.btn-remove-mistake{background:#334155;color:#ef4444;border:1px solid #ef4444;padding:8px 14px;border-radius:8px;font-size:0.8rem;font-weight:bold;cursor:pointer;white-space:nowrap;}
+.map-toolbar-row2{{display:flex;gap:10px;align-items:center;flex-wrap:wrap;font-size:0.75rem;color:#cbd5e1;}}
+.filter-chip-group{{display:flex;align-items:center;gap:4px;flex-wrap:wrap;}}
+.chip-btn-sm{{background:#0f172a;border:1px solid #334155;color:#cbd5e1;padding:2px 8px;border-radius:12px;font-size:0.72rem;cursor:pointer;}}
+.chip-btn-sm.active{{background:#f59e0b;color:#0f172a;border-color:#f59e0b;font-weight:bold;}}
 
-/* 視圖 4：世界地圖 */
-#view-map{width:100%;height:100%;display:none;flex-direction:column;position:relative;}
-.map-top-bar{background:#1e293b;padding:10px 14px;display:flex;flex-direction:column;gap:8px;border-bottom:1px solid #334155;z-index:10;}
-.map-toolbar-row1{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;}
-.timeline-box{display:flex;align-items:center;gap:8px;flex:1;min-width:260px;background:#0f172a;padding:5px 12px;border-radius:18px;border:1px solid #334155;}
-.hdr-era-badge{background:#1e293b;color:#f59e0b;padding:2px 8px;border-radius:10px;font-size:0.72rem;font-weight:bold;white-space:nowrap;}
-.btn-reset-slider{background:#334155;color:#fff;border:none;padding:2px 8px;border-radius:10px;font-size:0.7rem;cursor:pointer;white-space:nowrap;}
-input[type="range"]{flex:1;-webkit-appearance:none;background:#334155;height:5px;border-radius:3px;outline:none;cursor:pointer;}
-input[type="range"]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;height:14px;border-radius:50%;background:#f59e0b;cursor:pointer;border:2px solid #fff;}
-.simple-search-input{background:#334155;border:1px solid #475569;color:#fff;padding:5px 10px;border-radius:6px;font-size:0.8rem;outline:none;width:180px;}
+#map{{flex:1;width:100%;height:100%;background:#0f172a;}}
 
-#map{flex:1;width:100%;height:100%;background:#0f172a;}
+/* ================= 視圖 5：年代對照 ================= */
+#view-timeline{{width:100%;height:100%;overflow-y:auto;padding:20px 16px 60px;max-width:1240px;margin:0 auto;display:none;}}
+.timeline-header{{text-align:center;margin-bottom:20px;}}
+.timeline-title{{font-size:1.6rem;font-weight:bold;color:#f8fafc;margin-bottom:4px;}}
+.timeline-subtitle{{font-size:0.85rem;color:#94a3b8;}}
 
-/* 視圖 5：年代對照 */
-#view-timeline{width:100%;height:100%;overflow-y:auto;padding:20px 16px 60px;max-width:1240px;margin:0 auto;display:none;}
-.timeline-header{text-align:center;margin-bottom:20px;}
-.timeline-title{font-size:1.6rem;font-weight:bold;color:#f8fafc;margin-bottom:4px;}
-.timeline-subtitle{font-size:0.85rem;color:#94a3b8;}
+.chronology-container{{background:#1e293b;border:1px solid #334155;border-radius:14px;padding:16px;margin-bottom:20px;overflow-x:auto;}}
+.num-line-wrapper{{position:relative;height:35px;border-bottom:2px solid #f59e0b;margin-bottom:16px;min-width:720px;}}
+.num-line-ticks{{display:flex;justify-content:space-between;position:absolute;width:100%;bottom:4px;font-size:0.72rem;color:#94a3b8;font-weight:bold;}}
 
-.chronology-container{background:#1e293b;border:1px solid #334155;border-radius:14px;padding:16px;margin-bottom:20px;overflow-x:auto;-webkit-overflow-scrolling:touch;}
-.num-line-wrapper{position:relative;height:35px;border-bottom:2px solid #f59e0b;margin-bottom:16px;min-width:850px;}
-.num-line-ticks{display:flex;justify-content:space-between;position:absolute;width:100%;bottom:4px;font-size:0.72rem;color:#94a3b8;font-weight:bold;}
+.chrono-row-group{{margin-bottom:18px;min-width:720px;}}
+.chrono-group-title{{font-size:0.9rem;font-weight:bold;color:#f59e0b;margin-bottom:8px;}}
+.chrono-track-area{{position:relative;height:38px;background:#0f172a;border-radius:8px;border:1px solid #334155;display:flex;align-items:center;padding:0 4px;gap:4px;}}
 
-.chrono-row-group{margin-bottom:18px;min-width:850px;}
-.chrono-group-title{font-size:0.9rem;font-weight:bold;color:#f59e0b;margin-bottom:8px;}
-.chrono-track-area{position:relative;height:38px;background:#0f172a;border-radius:8px;border:1px solid #334155;display:flex;align-items:center;padding:0 4px;gap:6px;overflow-x:auto;}
+.dynasty-bar{{height:28px;border-radius:5px;display:flex;align-items:center;justify-content:center;padding:0 6px;font-size:0.72rem;font-weight:bold;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;box-shadow:0 2px 4px rgba(0,0,0,0.3);cursor:pointer;transition:all 0.2s;border:1px solid rgba(255,255,255,0.3);flex-shrink:0;}}
+.dynasty-bar:hover, .dynasty-bar.selected{{transform:scale(1.03);z-index:20;box-shadow:0 0 10px rgba(245,158,11,0.8);border-color:#fff;}}
 
-.dynasty-bar{height:28px;border-radius:5px;display:flex;align-items:center;justify-content:center;padding:0 8px;font-size:0.75rem;font-weight:bold;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;box-shadow:0 2px 4px rgba(0,0,0,0.3);cursor:pointer;transition:all 0.2s;border:1px solid rgba(255,255,255,0.3);flex-shrink:0;}
-.dynasty-bar:hover, .dynasty-bar.selected{transform:scale(1.03);z-index:20;box-shadow:0 0 10px rgba(245,158,11,0.8);border-color:#fff;}
+#timelineEventsArea{{background:#1e293b;border:1px solid #334155;border-radius:14px;padding:18px;display:none;animation:fadeIn 0.25s ease-out;}}
+@keyframes fadeIn {{ from {{ opacity:0; }} to {{ opacity:1; }} }}
+.tl-events-header{{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;border-bottom:1px solid #334155;padding-bottom:8px;}}
+.tl-events-title{{font-size:1rem;font-weight:bold;color:#f59e0b;}}
+.btn-close-tl-events{{background:#334155;color:#fff;border:none;padding:4px 8px;border-radius:4px;font-size:0.72rem;cursor:pointer;}}
 
-#timelineEventsArea{background:#1e293b;border:1px solid #334155;border-radius:14px;padding:18px;display:none;animation:fadeIn 0.25s ease-out;}
-@keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
-.tl-events-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;border-bottom:1px solid #334155;padding-bottom:8px;}
-.tl-events-title{font-size:1rem;font-weight:bold;color:#f59e0b;}
-.btn-close-tl-events{background:#334155;color:#fff;border:none;padding:4px 8px;border-radius:4px;font-size:0.72rem;cursor:pointer;}
+/* Popup 氣泡 */
+.popup-box{{padding:4px;color:#1e293b;max-width:280px;}}
+.popup-head{{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #e2e8f0;padding-bottom:4px;margin-bottom:6px;}}
+.badge{{padding:2px 6px;border-radius:4px;font-size:0.7rem;color:#fff;font-weight:bold;}}
+.year{{font-size:0.75rem;color:#64748b;font-weight:bold;}}
+.popup-source{{font-size:0.72rem;color:#0284c7;background:#e0f2fe;border:1px solid #bae6fd;padding:2px 5px;border-radius:4px;margin-bottom:6px;font-weight:bold;display:block;line-height:1.3;}}
+.popup-title{{font-size:0.95rem;font-weight:bold;margin-bottom:4px;color:#0f172a;}}
+.popup-kw-container{{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:6px;}}
+.pop-kw-chip{{background:#f1f5f9;color:#0284c7;border:1px solid #cbd5e1;padding:1px 6px;border-radius:10px;font-size:0.68rem;font-weight:bold;}}
+.popup-loc{{font-size:0.75rem;color:#64748b;margin-bottom:6px;}}
+.popup-desc{{font-size:0.75rem;color:#334155;line-height:1.4;margin-bottom:8px;}}
+.btn-popup-detail{{width:100%;background:#0284c7;color:#fff;border:none;padding:5px;border-radius:4px;font-size:0.75rem;font-weight:bold;cursor:pointer;text-align:center;}}
 
-/* 側邊欄 Sidebar Overlay */
-#sidebarOverlay{position:fixed;top:0;left:0;width:280px;height:100vh;background:#0f172af2;backdrop-filter:blur(16px);border-right:1px solid #334155;z-index:1000;display:flex;flex-direction:column;padding:18px;overflow-y:auto;transform:translateX(-100%);transition:transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);}
-#sidebarOverlay.active{ transform:translateX(0); }
-.sidebar-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;border-bottom:1px solid #334155;padding-bottom:12px;}
-.sidebar-title{font-size:1.1rem;font-weight:bold;color:#f59e0b;}
-.btn-close-sidebar{background:#334155;color:#fff;border:none;width:28px;height:28px;border-radius:50%;cursor:pointer;font-weight:bold;}
-.sidebar-menu{display:flex;flex-direction:column;gap:8px;margin-bottom:20px;}
-.menu-item{background:#1e293b;border:1px solid #334155;color:#f8fafc;padding:12px 16px;border-radius:8px;font-size:0.9rem;font-weight:bold;cursor:pointer;display:flex;align-items:center;gap:8px;transition:all 0.2s;}
-.menu-item:hover, .menu-item.active{background:#f59e0b;color:#0f172a;border-color:#f59e0b;}
+/* 側邊欄 */
+#sidebarOverlay{{position:fixed;top:0;left:0;width:280px;height:100vh;background:#0f172af2;backdrop-filter:blur(16px);border-right:1px solid #334155;z-index:1000;display:flex;flex-direction:column;padding:18px;overflow-y:auto;transform:translateX(-100%);transition:transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);}}
+#sidebarOverlay.active{{ transform:translateX(0); }}
+.sidebar-header{{display:flex;justify-content:flex-end;margin-bottom:16px;}}
+.btn-close-sidebar{{background:#334155;color:#fff;border:none;width:26px;height:26px;border-radius:50%;cursor:pointer;font-weight:bold;}}
+.sidebar-menu{{display:flex;flex-direction:column;gap:8px;margin-bottom:20px;}}
+.menu-item{{background:#1e293b;border:1px solid #334155;color:#f8fafc;padding:10px 14px;border-radius:8px;font-size:0.88rem;font-weight:bold;cursor:pointer;display:flex;align-items:center;gap:8px;}}
+.menu-item.active{{background:#f59e0b;color:#0f172a;border-color:#f59e0b;}}
 
-/* Modal 彈窗 */
-#eventDetailModal{position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(15,23,42,0.85);backdrop-filter:blur(12px);z-index:2000;display:none;justify-content:center;align-items:center;padding:16px;}
-#eventDetailModal.active{ display:flex; }
-.modal-content{background:#1e293b;border:1px solid #334155;border-radius:16px;width:100%;max-width:920px;max-height:88vh;overflow-y:auto;display:flex;flex-direction:column;position:relative;}
-.modal-header{background:#0f172a;padding:18px 24px;border-bottom:1px solid #334155;display:flex;justify-content:space-between;align-items:flex-start;position:sticky;top:0;z-index:10;}
-.modal-title-area{display:flex;flex-direction:column;gap:4px;}
-.modal-badges{display:flex;gap:6px;align-items:center;}
-.modal-title{font-size:1.45rem;font-weight:bold;color:#f8fafc;}
-.modal-source{font-size:0.8rem;color:#38bdf8;font-weight:bold;}
-.btn-close-modal{background:#334155;color:#fff;border:none;width:30px;height:30px;border-radius:50%;cursor:pointer;font-weight:bold;}
-.modal-body{padding:24px;display:grid;grid-template-columns:1fr 1fr;gap:24px;}
+/* 考點介紹 Modal */
+#eventDetailModal{{position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(15,23,42,0.85);backdrop-filter:blur(12px);z-index:2000;display:none;justify-content:center;align-items:center;padding:16px;}}
+#eventDetailModal.active{{ display:flex; }}
+.modal-content{{background:#1e293b;border:1px solid #334155;border-radius:14px;width:100%;max-width:880px;max-height:88vh;overflow-y:auto;display:flex;flex-direction:column;position:relative;}}
+.modal-header{{background:#0f172a;padding:16px 20px;border-bottom:1px solid #334155;display:flex;justify-content:space-between;align-items:flex-start;position:sticky;top:0;z-index:10;}}
+.modal-title-area{{display:flex;flex-direction:column;gap:4px;}}
+.modal-badges{{display:flex;gap:6px;align-items:center;}}
+.modal-title{{font-size:1.35rem;font-weight:bold;color:#f8fafc;}}
+.modal-source{{font-size:0.78rem;color:#38bdf8;font-weight:bold;}}
+.btn-close-modal{{background:#334155;color:#fff;border:none;width:28px;height:28px;border-radius:50%;cursor:pointer;font-weight:bold;}}
+.modal-body{{padding:20px;display:grid;grid-template-columns:1fr 1fr;gap:20px;}}
 
-.modal-section-title{font-size:0.92rem;color:#f59e0b;font-weight:bold;margin-bottom:8px;border-bottom:1px solid #334155;padding-bottom:4px;}
-.modal-text-box{font-size:0.9rem;color:#cbd5e1;line-height:1.6;margin-bottom:16px;background:#0f172a;padding:12px 16px;border-radius:10px;border:1px solid #334155;}
-.modal-keywords-box{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px;}
-.kw-chip{background:#0f172a;color:#38bdf8;border:1px solid #0284c7;padding:4px 12px;border-radius:14px;font-size:0.75rem;font-weight:bold;}
+.modal-section-title{{font-size:0.88rem;color:#f59e0b;font-weight:bold;margin-bottom:8px;border-bottom:1px solid #334155;padding-bottom:4px;}}
+.modal-text-box{{font-size:0.85rem;color:#cbd5e1;line-height:1.5;margin-bottom:14px;background:#0f172a;padding:10px 14px;border-radius:8px;border:1px solid #334155;}}
+.modal-text-box b{{color:#f59e0b;}}
+.modal-keywords-box{{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px;}}
+.kw-chip{{background:#0f172a;color:#38bdf8;border:1px solid #0284c7;padding:3px 10px;border-radius:12px;font-size:0.72rem;font-weight:bold;}}
 
-.modal-footer{background:#0f172a;padding:14px 24px;border-top:1px solid #334155;display:flex;justify-content:flex-end;gap:10px;}
-.btn-fly-map{background:#f59e0b;color:#0f172a;border:none;padding:10px 20px;border-radius:8px;font-size:0.9rem;font-weight:bold;cursor:pointer;}
+.modal-footer{{background:#0f172a;padding:12px 20px;border-top:1px solid #334155;display:flex;justify-content:flex-end;gap:10px;}}
+.btn-fly-map{{background:#f59e0b;color:#0f172a;border:none;padding:8px 16px;border-radius:6px;font-size:0.85rem;font-weight:bold;cursor:pointer;}}
 
-/* 手機與窄螢幕 RWD */
-@media (max-width: 768px) {
-    .nav-brand-text { display: none; }
-    .nav-links { gap: 4px; }
-    .nav-btn { padding: 4px 8px; font-size: 0.78rem; }
-    .modal-body { grid-template-columns:1fr; padding: 16px; }
-    .map-toolbar-row1, .map-toolbar-row2 { flex-direction:column; align-items:stretch; gap: 6px; }
-    .simple-search-input, .home-search-input { width:100%; }
-    .timeline-box { width: 100%; min-width: auto; }
-    .exam-pdf-card-row { flex-direction: column; align-items: flex-start; }
-    .exam-action-btns { width: 100%; justify-content: flex-end; margin-top: 10px; }
-    .quiz-card { padding: 20px; }
-    .q-question { font-size: 1.15rem; }
-    .q-opt-btn { font-size: 0.92rem; padding: 12px 14px; }
-}
+@media (max-width: 768px) {{
+    .nav-brand-text {{ display: none; }}
+    .modal-body {{ grid-template-columns:1fr; }}
+    .map-toolbar-row1, .map-toolbar-row2 {{ flex-direction:column; align-items:stretch; }}
+    .simple-search-input, .home-search-input {{ width:100%; }}
+}}
 </style>
 </head>
 <body>
@@ -276,9 +600,6 @@ input[type="range"]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;hei
         <button id="navBtnQuiz" class="nav-btn" onclick="switchView('quiz')">🧠 測驗與閃卡</button>
         <button id="navBtnMap" class="nav-btn" onclick="switchView('map')">🗺️ 世界地圖</button>
         <button id="navBtnTimeline" class="nav-btn" onclick="switchView('timeline')">⏳ 年代發展</button>
-        <button id="btnGoogleSync" class="btn-backup-auth" onclick="onGoogleBtnClick()">☁️ Google 登入同步</button>
-        <button class="btn-backup-auth" onclick="exportBackupData()">📥 匯出備份</button>
-        <button class="btn-backup-auth" onclick="importBackupData()">📤 匯入備份</button>
     </div>
 </nav>
 
@@ -293,7 +614,7 @@ input[type="range"]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;hei
                 <div class="hero-stat-pill">🌍 世界史：<span id="statWD">0</span></div>
             </div>
             <h1 class="home-title">108課綱歷史考點 <span>數位時空指南</span></h1>
-            <p class="home-subtitle">收錄共 <span id="statTotal">0</span> 筆歷史考點，支援地圖點狀聚合、因果對比分析、歷屆試題庫與自動化測驗模組。</p>
+            <p class="home-subtitle">收錄共 <span id="statTotal">0</span> 筆歷史考點，支援地圖聚合、因果對比分析與自動化測驗模組。</p>
         </div>
 
         <div class="portal-grid">
@@ -327,44 +648,50 @@ input[type="range"]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;hei
         </div>
     </div>
 
-    <!-- 視圖 2：歷屆試題專頁 -->
+    <!-- 視圖 2：歷屆試題獨立分頁 -->
     <div id="view-exams">
         <div class="exams-header">
-            <div>
-                <h2>📄 大考中心官方社會科歷屆試題庫 (83~115 學年度)</h2>
-                <p>收錄 83 至 115 學年度大學學測與聯考社會考科試題原檔。可下載 PDF 或點擊按鈕帶入測驗。</p>
-            </div>
+            <h2>📄 大考中心官方社會科歷屆試題庫 (83~115 學年度)</h2>
+            <p>收錄 83 至 115 學年度大學學測與聯考社會考科試題原檔，可點擊開啟或下載（若個別連結失效請至大考中心官方網站查詢）。</p>
         </div>
-        <div class="exam-cards-list" id="ceecExamCardsList"></div>
+        <div class="exam-cards-grid" id="ceecExamCardsGrid"></div>
     </div>
 
-    <!-- 視圖 3：測驗與閃卡 (完整重構版本) -->
+    <!-- 視圖 3：測驗與閃卡 -->
     <div id="view-quiz">
         <div class="quiz-header">
             <div class="quiz-title-box">
                 <h2>🧠 主動提取與間隔重複學習系統</h2>
-                <p>支援離線高畫質記憶儲存，透過 Flashcards 閃卡與多功能選擇題強化考點記憶。</p>
+                <p>請先設定好學習範疇與數量，點擊按鈕開啟記憶體驗。</p>
             </div>
-            <div class="quiz-stats-bar">
-                <div class="q-stat-item" onclick="switchQuizSubTab('fc_mastered')" title="查看已掌握項目"><b id="statMastered">0</b>已掌握</div>
-                <div class="q-stat-item" onclick="switchQuizSubTab('fc_reviewing')" title="查看待複習項目"><b id="statReviewing">0</b>待複習</div>
-                <div class="q-stat-item" onclick="switchQuizSubTab('mistakes')" title="查看錯題本" style="border-left:1px solid #334155; padding-left:12px;"><b id="statMistakes" style="color:#ef4444">0</b>錯題本</div>
+            <div style="display:flex; flex-direction:column; align-items:flex-end; gap:8px;">
+                <div class="quiz-stats-bar">
+                    <div class="q-stat-item" onclick="switchQuizSubTab('fc_mastered')" title="點擊檢視已掌握項目">
+                        <b id="statMastered">0</b>已掌握
+                    </div>
+                    <div class="q-stat-item" onclick="switchQuizSubTab('fc_reviewing')" title="點擊開始複習">
+                        <b id="statReviewing">0</b>待複習
+                    </div>
+                    <div class="q-stat-item" onclick="switchQuizSubTab('mistakes')" title="點擊進入錯題本" style="border-left:1px solid #334155; padding-left:10px;">
+                        <b id="statMistakes" style="color:#ef4444">0</b>錯題本
+                    </div>
+                </div>
             </div>
         </div>
 
         <div class="quiz-tab-group">
             <button class="q-tab-btn active" id="subTabFC" onclick="switchQuizSubTab('flashcards')">🗂️ 閃卡記憶卡</button>
             <button class="q-tab-btn" id="subTabTest" onclick="switchQuizSubTab('quiz')">📝 模擬測驗</button>
-            <button class="q-tab-btn" id="subTabMistakes" onclick="switchQuizSubTab('mistakes')">❌ 錯題本紀錄</button>
         </div>
 
         <!-- 閃卡區塊 -->
         <div id="secFlashcards">
+            <!-- 閃卡設定面板 -->
             <div class="quiz-config-card">
                 <div class="quiz-config-group">
                     <span class="quiz-select-label">🎯 閃卡範疇：</span>
                     <select id="cfgFcDomain" class="quiz-select-input">
-                        <option value="ALL">✨ 全部歷史領域</option>
+                        <option value="ALL">✨ 全部</option>
                         <option value="臺灣史">🇹🇼 臺灣史</option>
                         <option value="中國史">🇨🇳 中國史</option>
                         <option value="世界史">🌍 世界史</option>
@@ -372,17 +699,16 @@ input[type="range"]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;hei
 
                     <span class="quiz-select-label">🔢 卡片數量：</span>
                     <select id="cfgFcCount" class="quiz-select-input">
-                        <option value="5">5 張</option>
-                        <option value="10" selected>10 張</option>
-                        <option value="15">15 張</option>
-                        <option value="20">20 張</option>
-                        <option value="ALL">ALL (全套)</option>
+                        <option value="5">5 張 (快速刷卡)</option>
+                        <option value="10" selected>10 張 (標準卡組)</option>
+                        <option value="15">15 張 (深度複習)</option>
+                        <option value="20">20 張 (強化突破)</option>
                     </select>
-                    <input type="number" id="cfgFcCustomCount" class="custom-count-input" placeholder="自訂數量" min="1">
                 </div>
                 <button class="btn-start-quiz" onclick="startConfiguredFlashcards()">🚀 開始閃卡</button>
             </div>
 
+            <!-- 閃卡顯示區域 -->
             <div id="fcDisplayArea" style="display:none">
                 <div class="flashcard-wrapper" id="fcWrapper" onclick="toggleFCFlip()">
                     <div class="flashcard-inner">
@@ -390,15 +716,15 @@ input[type="range"]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;hei
                             <span class="fc-badge" id="fcDomainBadge" style="background:#f59e0b">臺灣史</span>
                             <div style="flex:1;display:flex;flex-direction:column;justify-content:center">
                                 <div class="fc-title" id="fcFrontTitle">考點載入中...</div>
-                                <div style="font-size:0.9rem;color:#cbd5e1" id="fcFrontSub">點擊卡片翻轉查看歷史細節與重點說明</div>
+                                <div style="font-size:0.85rem;color:#cbd5e1" id="fcFrontSub">點擊卡片翻轉查看【歷史細節與重點說明】</div>
                             </div>
-                            <div class="fc-hint">💡 點擊卡片任意處翻面</div>
+                            <div class="fc-hint">💡 點擊任意處翻面</div>
                         </div>
                         <div class="flashcard-back">
                             <div style="width:100%">
                                 <div class="fc-box"><b>📍 年代與地點：</b><span id="fcBackYearLoc">--</span></div>
                                 <div class="fc-box"><b>📖 核心說明：</b><div id="fcBackDesc">--</div></div>
-                                <div class="fc-box"><b>🔍 時代背景與影響：</b><div id="fcBackCause">--</div></div>
+                                <div class="fc-box"><b>🔍 時代背景 / 影響：</b><div id="fcBackCause">--</div></div>
                             </div>
                             <div class="fc-hint">請評估您的記憶熟悉度：</div>
                         </div>
@@ -412,18 +738,19 @@ input[type="range"]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;hei
                 </div>
             </div>
 
-            <div id="fcStartPrompt" style="text-align:center; padding:48px 20px; color:#cbd5e1; background:#1e293b; border:1px solid #334155; border-radius:16px; font-size:1.05rem;">
-                💡 請設定上方範疇與數量，點擊<b style="color:#f59e0b; margin:0 4px">「🚀 開始閃卡」</b>即可展開卡片記憶訓練。
+            <div id="fcStartPrompt" style="text-align:center; padding:40px 20px; color:#94a3b8; background:#1e293b; border:1px solid #334155; border-radius:14px;">
+                💡 請先設定上方「閃卡範疇」與「卡片數量」，點擊<b>「🚀 開始閃卡」</b>即可進行練習。
             </div>
         </div>
 
         <!-- 選擇題測驗區塊 -->
         <div id="secQuiz" style="display:none">
+            <!-- 測驗設定面板 -->
             <div class="quiz-config-card">
                 <div class="quiz-config-group">
                     <span class="quiz-select-label">🎯 測驗範疇：</span>
                     <select id="cfgDomain" class="quiz-select-input">
-                        <option value="ALL">✨ 全部歷史領域</option>
+                        <option value="ALL">✨ 全部</option>
                         <option value="臺灣史">🇹🇼 臺灣史</option>
                         <option value="中國史">🇨🇳 中國史</option>
                         <option value="世界史">🌍 世界史</option>
@@ -438,26 +765,19 @@ input[type="range"]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;hei
 
                     <span class="quiz-select-label">🔢 題目數量：</span>
                     <select id="cfgCount" class="quiz-select-input">
-                        <option value="5">5 題</option>
-                        <option value="10" selected>10 題</option>
-                        <option value="15">15 題</option>
-                        <option value="20">20 題</option>
-                        <option value="ALL">ALL (全套)</option>
+                        <option value="5">5 題 (快速刷題)</option>
+                        <option value="10" selected>10 題 (標準模考)</option>
+                        <option value="15">15 題 (深度測驗)</option>
+                        <option value="20">20 題 (挑戰模式)</option>
                     </select>
-                    <input type="number" id="cfgCustomCount" class="custom-count-input" placeholder="自訂題數" min="1">
                 </div>
                 <button class="btn-start-quiz" onclick="startConfiguredQuiz()">🚀 開始測驗</button>
             </div>
 
-            <div class="quiz-cited-info" id="quizCiteInfo"></div>
-
             <div class="quiz-card" id="quizCardBox" style="display:none">
-                <div class="q-top-ctrl-row">
-                    <div class="q-progress">
-                        <span id="qProgressText">題目 1 / 10</span>
-                        <span id="qCategoryTag" style="color:#f59e0b;font-weight:bold;margin-left:10px">測驗</span>
-                    </div>
-                    <button class="btn-quit-quiz" onclick="finishAndSettleQuiz(true)">⏹️ 結束測驗</button>
+                <div class="q-progress">
+                    <span id="qProgressText">題目 1 / 10</span>
+                    <span id="qCategoryTag" style="color:#f59e0b;font-weight:bold">測驗</span>
                 </div>
                 <div class="q-question" id="qQuestionText">題目載入中...</div>
                 <div class="q-options" id="qOptionsGroup"></div>
@@ -465,43 +785,21 @@ input[type="range"]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;hei
                 <div class="q-explanation-box" id="qExpBox">
                     <h4>💡 考點解析</h4>
                     <div class="q-exp-text" id="qExpText">--</div>
-                    <button class="btn-card-detail" style="width:100%;margin-top:12px;padding:12px;font-size:0.95rem" onclick="nextQuizQuestion()">下一題 ➔</button>
+                    <button class="btn-card-detail" style="width:100%;margin-top:10px" onclick="nextQuizQuestion()">下一題 ➔</button>
                 </div>
             </div>
 
-            <div class="quiz-result-card" id="quizResultBox">
-                <h3 style="color:#38bdf8;font-size:1.4rem">📊 模擬測驗報告</h3>
-                <div class="result-score" id="resultScoreText">100 分</div>
-                <div class="result-desc" id="resultDescText">您已順利完成本次歷史模考！</div>
-                <div style="display:flex;gap:12px;justify-content:center">
-                    <button class="btn-start-quiz" onclick="switchQuizSubTab('quiz')">🔄 再測一次</button>
-                    <button class="btn-start-quiz" style="background:#ef4444;color:#fff" onclick="switchQuizSubTab('mistakes')">❌ 查看錯題本</button>
-                </div>
-            </div>
-
-            <div id="quizStartPrompt" style="text-align:center; padding:48px 20px; color:#cbd5e1; background:#1e293b; border:1px solid #334155; border-radius:16px; font-size:1.05rem;">
-                💡 請設定上方「測驗範疇」、「出題模式」與「題目數量」，點擊<b style="color:#f59e0b; margin:0 4px">「🚀 開始測驗」</b>即可開始發動測驗。
+            <div id="quizStartPrompt" style="text-align:center; padding:40px 20px; color:#94a3b8; background:#1e293b; border:1px solid #334155; border-radius:14px;">
+                💡 請先設定上方「測驗範疇」、「出題模式」與「題目數量」，點擊<b>「🚀 開始測驗」</b>即可發動測驗。
             </div>
         </div>
 
         <!-- 錯題本區塊 -->
         <div id="secMistakes" style="display:none">
-            <div class="quiz-config-card">
-                <div class="quiz-config-group">
-                    <span class="quiz-select-label">🎯 錯題篩選範疇：</span>
-                    <select id="cfgMistakeFilter" class="quiz-select-input" onchange="renderMistakesList()">
-                        <option value="ALL">✨ 全部錯題庫</option>
-                        <option value="臺灣史">🇹🇼 臺灣史錯題</option>
-                        <option value="中國史">🇨🇳 中國史錯題</option>
-                        <option value="世界史">🌍 世界史錯題</option>
-                    </select>
-                </div>
-                <div style="display:flex;gap:10px">
-                    <button class="btn-start-quiz" onclick="startMistakeQuiz()">🎯 發動錯題重測</button>
-                    <button class="btn-danger-action" onclick="clearAllMistakes()">🗑️ 清空錯題本</button>
-                </div>
+            <div style="margin-bottom:16px;display:flex;justify-content:space-between;align-items:center">
+                <h3 style="color:#ef4444">❌ 錯題記錄與重點強化</h3>
+                <button class="btn-load-more" style="font-size:0.78rem;padding:6px 14px" onclick="startMistakeQuiz()">🎯 針對錯題發動重測</button>
             </div>
-
             <div class="mistake-list" id="mistakeListContainer"></div>
         </div>
     </div>
@@ -517,7 +815,25 @@ input[type="range"]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;hei
                 </div>
                 <input type="text" id="searchInput" class="simple-search-input" placeholder="搜尋地圖考點..." oninput="debouncedFilter()">
             </div>
+
+            <div class="map-toolbar-row2">
+                <div class="filter-chip-group">
+                    <span>學階：</span>
+                    <button class="chip-btn-sm active" data-filter="level" data-val="ALL" onclick="setFilterChip(this, 'level', 'ALL')">全部</button>
+                    <button class="chip-btn-sm" data-filter="level" data-val="國小" onclick="setFilterChip(this, 'level', '國小')">國小歷史</button>
+                    <button class="chip-btn-sm" data-filter="level" data-val="國中" onclick="setFilterChip(this, 'level', '國中')">國中歷史</button>
+                    <button class="chip-btn-sm" data-filter="level" data-val="高中" onclick="setFilterChip(this, 'level', '高中')">高中歷史</button>
+                </div>
+                <div class="filter-chip-group">
+                    <span>領域：</span>
+                    <button class="chip-btn-sm active" data-filter="vol" data-val="ALL" onclick="setFilterChip(this, 'vol', 'ALL')">全部</button>
+                    <button class="chip-btn-sm" data-filter="vol" data-val="臺灣史" onclick="setFilterChip(this, 'vol', '臺灣史')">臺灣史</button>
+                    <button class="chip-btn-sm" data-filter="vol" data-val="中國史" onclick="setFilterChip(this, 'vol', '中國史')">中國史</button>
+                    <button class="chip-btn-sm" data-filter="vol" data-val="世界史" onclick="setFilterChip(this, 'vol', '世界史')">世界史</button>
+                </div>
+            </div>
         </div>
+
         <div id="map"></div>
     </div>
 
@@ -525,18 +841,30 @@ input[type="range"]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;hei
     <div id="view-timeline">
         <div class="timeline-header">
             <h2 class="timeline-title">⏳ 全景歷史年代對照數線</h2>
-            <p class="timeline-subtitle">（歷史時間軸採分段次線性對數比例尺，包含西元前 50000 年舊石器時代文化）</p>
+            <p class="timeline-subtitle">（歷史時間軸採非等比例尺繪製，以提升各時期閱讀舒適度）</p>
         </div>
 
         <div class="chronology-container">
+            <div class="num-line-wrapper">
+                <div class="num-line-ticks">
+                    <div>史前 (~前3000)</div>
+                    <div>上古 (前3000~前500)</div>
+                    <div>古典/中古 (前500~1450)</div>
+                    <div>近世 (1450~1789)</div>
+                    <div>近代與現代 (1789~)</div>
+                </div>
+            </div>
+
             <div class="chrono-row-group">
                 <div class="chrono-group-title">🇹🇼 臺灣史</div>
                 <div class="chrono-track-area" id="trackTaiwan"></div>
             </div>
+
             <div class="chrono-row-group">
                 <div class="chrono-group-title">🇨🇳 中國史</div>
                 <div class="chrono-track-area" id="trackChina"></div>
             </div>
+
             <div class="chrono-row-group">
                 <div class="chrono-group-title">🌍 世界史</div>
                 <div class="chrono-track-area" id="trackWorld"></div>
@@ -554,28 +882,25 @@ input[type="range"]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;hei
 
 </div>
 
-<!-- 側邊欄 Sidebar Overlay -->
+<!-- 側邊欄 -->
 <div id="sidebarOverlay">
-    <div class="sidebar-header">
-        <div class="sidebar-title">📜 歷史學習地圖</div>
-        <button class="btn-close-sidebar" onclick="toggleSidebar()">✕</button>
-    </div>
+    <div class="sidebar-header"><button class="btn-close-sidebar" onclick="toggleSidebar()">✕</button></div>
     <div class="sidebar-menu">
         <div class="menu-item active" id="menuItemHome" onclick="switchView('home'); toggleSidebar();">🏠 首頁儀表板</div>
-        <div class="menu-item" id="menuItemExams" onclick="switchView('exams'); toggleSidebar();">📄 歷屆試題庫 (83~115)</div>
+        <div class="menu-item" id="menuItemExams" onclick="switchView('exams'); toggleSidebar();">📄 歷屆試題</div>
         <div class="menu-item" id="menuItemQuiz" onclick="switchView('quiz'); toggleSidebar();">🧠 測驗與閃卡</div>
-        <div class="menu-item" id="menuItemMap" onclick="switchView('map'); toggleSidebar();">🌍 世界地圖定位</div>
-        <div class="menu-item" id="menuItemTimeline" onclick="switchView('timeline'); toggleSidebar();">⏳ 年代發展對照</div>
+        <div class="menu-item" id="menuItemMap" onclick="switchView('map'); toggleSidebar();">🌍 世界地圖</div>
+        <div class="menu-item" id="menuItemTimeline" onclick="switchView('timeline'); toggleSidebar();">⏳ 年代發展</div>
     </div>
 </div>
 
-<!-- Modal 彈窗 -->
+<!-- 考點介紹 Modal -->
 <div id="eventDetailModal">
     <div class="modal-content">
         <div class="modal-header">
             <div class="modal-title-area">
                 <div class="modal-badges">
-                    <span id="mdlDomainBadge" class="ev-badge">歷史</span>
+                    <span id="mdlDomainBadge" class="badge">歷史</span>
                     <span id="mdlYearBadge" class="ev-year">年代</span>
                 </div>
                 <div id="mdlTitle" class="modal-title">考點名稱</div>
@@ -591,32 +916,716 @@ input[type="range"]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;hei
 
                 <div class="modal-section-title">📍 發生地點與重點說明</div>
                 <div id="mdlLocText" class="modal-text-box">--</div>
-
-                <div class="modal-section-title">📖 歷史故事與敘事</div>
-                <div id="mdlStoryText" class="modal-text-box">--</div>
             </div>
 
             <div>
-                <div class="modal-section-title">🔍 前因與時代背景</div>
+                <div class="modal-section-title">🔍 背景與發展說明</div>
                 <div id="mdlCauseText" class="modal-text-box">--</div>
 
-                <div class="modal-section-title">💡 長遠影響</div>
+                <div class="modal-section-title">💡 長遠影響或比較重點</div>
                 <div id="mdlEffectText" class="modal-text-box">--</div>
-
-                <div class="modal-section-title" id="mdlCompTitle">⚡ 易混淆對比</div>
-                <div id="mdlCompText" class="modal-text-box">--</div>
             </div>
         </div>
 
         <div class="modal-footer">
-            <button class="btn-fly-map" onclick="flyToCurrentModalEvent()">
+            <button class="btn-fly-map" id="btnFlyMap" onclick="flyToCurrentModalEvent()">
                 🗺️ 切換至世界地圖並定位現場
             </button>
         </div>
     </div>
 </div>
 
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
-<script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
+<script src="{STATIC_CONFIG['leaflet_js']}"></script>
+<script src="{STATIC_CONFIG['cluster_js']}"></script>
 <script>
-const rawData = [{"domain": "臺灣史", "sheet": "史前文明", "stage": "國小、國中", "year": "約5萬~5千年前", "start_year": -48000, "end_year": -3000, "num_year": -48000, "lat": 23.3011, "lng": 121.4433, "loc": "臺東縣長濱鄉", "title": "長濱文化", "desc": "臺灣已知最早的舊石器時代文化,遺址在臺東長濱", "cause": "末次冰期海平面較低,臺灣與大陸相連,人群得以遷入", "effect": "留下臺灣最早的人類活動證據,是後續史前文化的起點", "comparison": "長濱文化(舊石器、無陶)≠大坌坑文化(新石器、繩紋陶)", "story": "八仙洞的海蝕洞裡,先民用敲打的石片當刀,靠採集、狩獵與捕魚維生,還沒有陶器。他們留下的石器與骨角器,是認識臺灣最早居民的第一扇窗。", "keywords": ["臺灣史", "史前文明", "舊石器", "八仙洞", "先陶文化"], "id": 1}, {"domain": "臺灣史", "sheet": "史前文明", "stage": "國小", "year": "約1.5萬年前", "start_year": -13000, "end_year": -13000, "num_year": -13000, "lat": 23.0463, "lng": 120.3463, "loc": "臺南市左鎮區", "title": "左鎮人", "desc": "臺南左鎮發現的人類頭骨化石,是臺灣早期人類的重要證據", "cause": "菜寮溪河床出土頭骨化石,可推知舊石器晚期已有人群活動", "effect": "成為臺灣早期人類的重要實證,補充器物以外的人骨證據", "comparison": "左鎮人(人骨化石)≠長濱文化(石器文化遺存),性質不同", "story": "臺南菜寮溪的河床上陸續發現了一些人類頭骨化石碎片。研究者拼合並鑑定後,左鎮人讓臺灣的人類故事,第一次有了「人」的面孔。", "keywords": ["臺灣史", "史前文明", "人類化石", "臺南左鎮", "晚期智人"], "id": 2}, {"domain": "臺灣史", "sheet": "史前文明", "stage": "國小、國中", "year": "約6000年前", "start_year": -4000, "end_year": -4000, "num_year": -4000, "lat": 25.1269, "lng": 121.3852, "loc": "新北市八里區", "title": "大坌坑文化", "desc": "新石器時代早期,臺灣南島語族祖先文化之一", "cause": "冰期結束、氣候暖化,沿海資源豐富,人群定居聚落", "effect": "奠定臺灣新石器文化基礎,與南島語族起源討論有關", "comparison": "大坌坑(早期、繩紋陶)≠圓山(貝塚、有段石錛)≠十三行(鐵器)", "story": "約六千年前,新北八里的先民用繩子在陶器上壓出紋路,也吃貝類、捕魚。這些繩紋陶,被認為與後來的南島語族祖先有關。", "keywords": ["臺灣史", "史前文明", "新石器早期", "繩紋陶", "八里"], "id": 3}, {"domain": "世界史", "sheet": "古文明與希臘羅馬", "stage": "國小", "year": "約前3500年", "start_year": -3500, "end_year": -3500, "num_year": -3500, "lat": 32.5243, "lng": 44.4088, "loc": "兩河流域/古埃及/印度/黃河", "title": "四大古文明", "desc": "兩河流域、古埃及、印度河、黃河流域文明興起", "cause": "大河流域土壤肥沃,農業發達,促成城市與國家興起", "effect": "形成文字、曆法、宗教與政治制度,奠定人類文明基礎", "comparison": "四大古文明(大河流域、農業)≠希臘羅馬(地中海、城邦)", "story": "尼羅河、兩河流域、印度河與黃河,這些大河帶來肥沃土壤與水源,讓人類發展出農業、城市與文字。這四個地方,是人類文明最早的搖籃。", "keywords": ["世界史", "古文明與希臘羅馬", "兩河流域", "古埃及", "印度河", "黃河", "大河文明"], "id": 4}, {"domain": "世界史", "sheet": "古文明與希臘羅馬", "stage": "國中", "year": "約前3500年", "start_year": -3500, "end_year": -3500, "num_year": -3500, "lat": 32.5273, "lng": 44.4088, "loc": "伊拉克巴比倫", "title": "兩河流域文明", "desc": "蘇美人發明楔形文字", "cause": "兩河流域農業發達,城邦興起", "effect": "發明楔形文字,留下《漢摩拉比法典》", "comparison": "兩河(楔形文字、泥板)≠埃及(象形文字、紙草)", "story": "蘇美人在泥板上用蘆葦桿壓出楔形符號,記錄買賣、法律與故事。後來的漢摩拉比王把法律刻在石柱上,提出「以牙還牙」式的同態復仇原則。", "keywords": ["世界史", "古文明與希臘羅馬", "蘇美人", "楔形文字", "漢摩拉比法典"], "id": 5}, {"domain": "臺灣史", "sheet": "史前文明", "stage": "高中", "year": "約4000~5000年前", "start_year": -3000, "end_year": -2000, "num_year": -3000, "lat": 23.588, "lng": 120.888, "loc": "臺灣全島", "title": "南島語族起源討論", "desc": "臺灣為南島語族重要起源地之一", "cause": "臺灣原住民語言歧異度高,考古與語言學證據相互對照", "effect": "多數學者認為臺灣是南島語族重要的擴散起點之一(仍有學說爭議)", "comparison": "「臺灣為重要起源地」是主流論述之一,並非唯一定論", "story": "從臺灣的阿美、泰雅,到菲律賓、夏威夷、紐西蘭的毛利人,語言竟有親戚關係。學者因此推測:古代有一群人從臺灣出發,乘船向太平洋各島擴散。", "keywords": ["臺灣史", "史前文明", "南島語族", "語言學", "考古證據"], "id": 6}, {"domain": "中國史", "sheet": "先秦", "stage": "國小", "year": "約5000年前", "start_year": -3000, "end_year": -3000, "num_year": -3000, "lat": 34.5713, "lng": 109.188, "loc": "陝西黃陵/黃河流域", "title": "傳說中的黃帝、炎帝", "desc": "華夏民族早期的傳說領袖", "cause": "黃河流域部落聯盟逐漸形成共同祖先敘述", "effect": "成為「炎黃子孫」等民族認同的象徵", "comparison": "傳說(神話與史料混合)≠有文字記載的夏商周", "story": "傳說黃帝與炎帝先後統領黃河流域的部落,又在涿鹿聯手擊敗蚩尤。後人自稱「炎黃子孫」,正是把他們視為共同祖先的象徵。", "keywords": ["中國史", "先秦", "黃帝", "炎帝", "華夏", "涿鹿之戰"], "id": 7}, {"domain": "世界史", "sheet": "古文明與希臘羅馬", "stage": "國中", "year": "約前3000年", "start_year": -3000, "end_year": -3000, "num_year": -3000, "lat": 30.0324, "lng": 31.2237, "loc": "埃及開羅/尼羅河流域", "title": "古埃及統一", "desc": "金字塔、象形文字", "cause": "尼羅河定期氾濫,農業發達,需要集中管理", "effect": "形成神權統治與高度文明,留下金字塔與象形文字", "comparison": "埃及(尼羅河、法老、金字塔)≠兩河(楔形文字、城邦)", "story": "尼羅河每年氾濫帶來肥沃泥土,埃及人因此發展出發達農業,也發明了曆法。法老被視為神的化身,為死後世界建造金字塔,並製作木乃伊。", "keywords": ["世界史", "古文明與希臘羅馬", "法老", "金字塔", "象形文字", "尼羅河"], "id": 8}, {"domain": "中國史", "sheet": "先秦", "stage": "國小、國中", "year": "約前2070年", "start_year": -2070, "end_year": -2070, "num_year": -2070, "lat": 34.6713, "lng": 112.838, "loc": "河南偃師二里頭", "title": "夏朝", "desc": "傳統上認為中國第一個世襲王朝", "cause": "治水成功的禹由部落聯盟領袖逐漸演變為世襲統治", "effect": "傳統上被視為第一個世襲王朝,考古證據仍在討論", "comparison": "夏(傳統上第一個王朝、文字史料少)≠商(有甲骨文為證)", "story": "傳說大禹治水十三年,三過家門而不入。因治水有功,他的兒子啟接位,開啟「家天下」的世襲制,夏因此被視為第一個世襲王朝(考古證據仍在討論)。", "keywords": ["中國史", "先秦", "禹", "世襲制", "二里頭"], "id": 9}, {"domain": "中國史", "sheet": "先秦", "stage": "國中", "year": "約前1600年", "start_year": -1600, "end_year": -1600, "num_year": -1600, "lat": 36.091, "lng": 114.338, "loc": "河南安陽殷墟", "title": "商朝建立", "desc": "使用甲骨文與青銅器", "cause": "商族勢力壯大,滅夏建立政權", "effect": "留下甲骨文與青銅文明,為最早成熟文字之一", "comparison": "商(甲骨文、青銅、神權)≠周(封建、宗法、天命)", "story": "商朝人在龜甲或獸骨上刻字,占卜祭祀、戰爭與天氣,這就是甲骨文。他們也鑄出精美的青銅器,殷墟出土的后母戊(司母戊)鼎是代表之一。", "keywords": ["中國史", "先秦", "甲骨文", "青銅器", "殷墟", "占卜"], "id": 10}, {"domain": "中國史", "sheet": "先秦", "stage": "國中、高中", "year": "約前1046年", "start_year": -1046, "end_year": -1046, "num_year": -1046, "lat": 35.294, "lng": 113.894, "loc": "河南牧野(新鄉)", "title": "周武王滅商", "desc": "建立西周,實行封建制度", "cause": "商紂政治腐敗,諸侯離心", "effect": "建立西周,實行封建與宗法制度", "comparison": "封建(分封土地與爵位)≠郡縣(中央派官)", "story": "周武王聯合諸侯在牧野與商軍決戰,商紂兵敗。周建立後把土地與爵位分封給親族與功臣,形成封建制度,並以「天命」說明改朝換代的正當性。", "keywords": ["中國史", "先秦", "封建制度", "宗法", "天命", "牧野之戰"], "id": 11}, {"domain": "世界史", "sheet": "古文明與希臘羅馬", "stage": "高中", "year": "前8~前5世紀", "start_year": -800, "end_year": -401, "num_year": -800, "lat": 37.9718, "lng": 23.7155, "loc": "希臘雅典", "title": "希臘城邦", "desc": "雅典與斯巴達;民主政治萌芽", "cause": "希臘地形破碎,形成獨立城邦", "effect": "發展出民主、哲學、戲劇與競技文化", "comparison": "雅典(民主、商業、文化)≠斯巴達(軍事、寡頭)", "story": "希臘山多地少,人們散居成一個個小國。雅典重視公民參與與藝術哲學,斯巴達則把男孩從小訓練成戰士。這種多元發展,孕育出西方文化的重要根基。", "keywords": ["世界史", "古文明與希臘羅馬", "雅典", "斯巴達", "城邦", "公民"], "id": 12}, {"domain": "中國史", "sheet": "先秦", "stage": "國中、高中", "year": "前770年", "start_year": -770, "end_year": -770, "num_year": -770, "lat": 34.614, "lng": 112.444, "loc": "河南洛陽", "title": "東周(春秋時代)開始", "desc": "周室東遷,諸侯爭霸", "cause": "犬戎入侵,周室東遷洛陽,王室衰微", "effect": "諸侯爭霸,封建秩序逐漸瓦解", "comparison": "春秋(尊王攘夷、霸主)≠戰國(兼併、變法)", "story": "犬戎攻破鎬京後,周平王把都城遷到洛陽。天子威信大不如前,諸侯紛紛稱霸,「尊王攘夷」成為號召,春秋時代揭開序幕。", "keywords": ["中國史", "先秦", "平王東遷", "春秋五霸", "尊王攘夷"], "id": 13}, {"domain": "中國史", "sheet": "先秦", "stage": "國中、高中", "year": "前551年", "start_year": -551, "end_year": -551, "num_year": -551, "lat": 35.594, "lng": 116.984, "loc": "山東曲阜", "title": "孔子誕生", "desc": "儒家創始人,諸子百家興起", "cause": "春秋禮壞樂崩,士階層興起", "effect": "儒家成為影響中國文化的重要學派", "comparison": "孔子(儒家、仁禮)≠老子(道家)≠墨子(兼愛)≠韓非(法家)", "story": "魯國的孔子年輕時做過管倉庫、管牛羊的小官,後來周遊列國,想以「仁」與「禮」恢復社會秩序。他收學生不分貴賤,開創私人講學風氣。", "keywords": ["中國史", "先秦", "孔子", "儒家", "仁", "有教無類"], "id": 14}, {"domain": "世界史", "sheet": "古文明與希臘羅馬", "stage": "高中", "year": "前509年", "start_year": -509, "end_year": -509, "num_year": -509, "lat": 41.8908, "lng": 12.4844, "loc": "義大利羅馬", "title": "羅馬共和", "desc": "建立共和政體", "cause": "羅馬推翻王政,建立貴族為主的共和政體", "effect": "奠定羅馬法與制度基礎,後向外擴張", "comparison": "羅馬共和(元老院、執政官)≠羅馬帝國(皇帝統治)", "story": "羅馬人趕走國王後,由兩位執政官共同治理,元老院掌握實權。平民為爭取權利,後來也取得護民官等職位,逐漸形成混合的共和政體。", "keywords": ["世界史", "古文明與希臘羅馬", "元老院", "執政官", "共和政體"], "id": 15}, {"domain": "世界史", "sheet": "古文明與希臘羅馬", "stage": "國中", "year": "前508年", "start_year": -508, "end_year": -508, "num_year": -508, "lat": 37.9748, "lng": 23.7155, "loc": "希臘雅典", "title": "雅典民主改革", "desc": "克里斯提尼改革,古希臘民主政治", "cause": "雅典貴族與平民矛盾,需要政治改革", "effect": "奠定直接民主政治基礎(僅限男性公民)", "comparison": "雅典(直接民主)≠斯巴達(軍事寡頭)", "story": "克里斯提尼改革讓公民可在公民大會直接表決國家大事,還設有「陶片放逐法」防止獨裁。不過,婦女、奴隸與外邦人沒有政治權利。", "keywords": ["世界史", "古文明與希臘羅馬", "克里斯提尼", "公民大會", "陶片放逐法"], "id": 16}, {"domain": "世界史", "sheet": "古文明與希臘羅馬", "stage": "國中、高中", "year": "前5世紀", "start_year": -500, "end_year": -401, "num_year": -500, "lat": 37.9778, "lng": 23.7155, "loc": "希臘雅典", "title": "波希戰爭", "desc": "希臘城邦聯合抗波斯", "cause": "波斯擴張,希臘城邦援助小亞細亞反抗", "effect": "希臘城邦擊退波斯,雅典崛起並組成提洛同盟", "comparison": "波希戰爭(希臘vs波斯)≠伯羅奔尼撒戰爭(雅典vs斯巴達)", "story": "波斯大軍遠征希臘,雅典在馬拉松擊敗波斯,後來斯巴達與雅典又在海戰與陸戰中聯手勝利。戰後雅典聲望大增,成為希臘的領導者。", "keywords": ["世界史", "古文明與希臘羅馬", "馬拉松戰役", "薩拉米斯海戰", "雅典", "波斯"], "id": 17}, {"domain": "中國史", "sheet": "先秦", "stage": "國中、高中", "year": "前475年", "start_year": -475, "end_year": -475, "num_year": -475, "lat": 37.864, "lng": 112.544, "loc": "山西太原(晉國故地)", "title": "戰國時代開始", "desc": "七雄爭霸,百家爭鳴", "cause": "晉國被韓趙魏三家瓜分,周王室名存實亡", "effect": "各國變法圖強,走向統一趨勢", "comparison": "春秋(霸主尊王)≠戰國(七雄兼併)", "story": "晉國被韓、趙、魏三家瓜分後,周天子還承認他們為諸侯(前403年),等於默認舊秩序瓦解;因此也有以前403年為戰國開端的說法。此後七雄爭戰、人才流動,也出現百家爭鳴的熱鬧局面。", "keywords": ["中國史", "先秦", "七雄", "三家分晉", "百家爭鳴", "兼併戰爭"], "id": 18}, {"domain": "中國史", "sheet": "先秦", "stage": "高中", "year": "前356年", "start_year": -356, "end_year": -356, "num_year": -356, "lat": 34.324, "lng": 108.704, "loc": "陝西咸陽", "title": "商鞅變法", "desc": "秦國變法,奠定強國基礎", "cause": "秦國落後,需要富國強兵", "effect": "奠定秦國強盛基礎,推動郡縣制與軍功制", "comparison": "商鞅(法家、變法)≠王安石(宋代新法)", "story": "商鞅為了讓人民相信新法,先在城門立木,誰能搬到另一端就賞金,搬了就真的給賞。他以軍功授爵、推行郡縣,讓秦國由弱轉強。", "keywords": ["中國史", "先秦", "商鞅", "法家", "郡縣", "軍功爵"], "id": 19}, {"domain": "世界史", "sheet": "古文明與希臘羅馬", "stage": "國中、高中", "year": "前334年", "start_year": -334, "end_year": -334, "num_year": -334, "lat": 40.754, "lng": 22.514, "loc": "馬其頓佩拉", "title": "亞歷山大東征", "desc": "建立橫跨歐亞非的大帝國", "cause": "馬其頓統一希臘後,向東擴張征服波斯", "effect": "建立橫跨歐亞非帝國,促成希臘化文化", "comparison": "亞歷山大(希臘化文化)≠羅馬(拉丁文化、羅馬法)", "story": "亞歷山大二十歲繼位,率軍征服波斯、埃及,遠至印度河流域。他死後帝國分裂,但希臘語言與文化在各地傳播,形成「希臘化文化」。", "keywords": ["世界史", "古文明與希臘羅馬", "亞歷山大", "希臘化", "馬其頓", "東西交流"], "id": 20}, {"domain": "中國史", "sheet": "秦漢", "stage": "國小、國中、高中", "year": "前221年", "start_year": -221, "end_year": -221, "num_year": -221, "lat": 34.327, "lng": 108.704, "loc": "陝西咸陽", "title": "秦始皇統一中國", "desc": "建立中央集權,統一文字、貨幣、度量衡", "cause": "秦國長期變法富強,逐步消滅六國", "effect": "建立中央集權,統一文字、貨幣、度量衡", "comparison": "秦(郡縣制、法家)≠周(封建制、宗法)", "story": "秦王嬴政滅六國後,自稱「皇帝」,廢封建改行郡縣,派官員管理地方,又統一文字、貨幣與度量衡。這些制度讓中國形成中央集權的大一統國家。", "keywords": ["中國史", "秦漢", "郡縣制", "皇帝", "書同文", "車同軌"], "id": 21}, {"domain": "中國史", "sheet": "秦漢", "stage": "國小、國中、高中", "year": "前202年", "start_year": -202, "end_year": -202, "num_year": -202, "lat": 34.264, "lng": 108.944, "loc": "陝西西安(長安)", "title": "漢朝建立", "desc": "劉邦建立漢朝,漢武帝時國力強盛", "cause": "秦末民變,楚漢相爭後劉邦稱帝", "effect": "建立長達四百年的漢帝國", "comparison": "西漢(郡國並行)≠秦(完全郡縣)", "story": "劉邦出身亭長,在秦末亂世中與項羽爭天下,最後在垓下大勝稱帝。漢初曾採郡國並行,後來逐步削弱諸侯王,朝廷統一管理。", "keywords": ["中國史", "秦漢", "劉邦", "郡國並行", "休養生息"], "id": 22}, {"domain": "中國史", "sheet": "秦漢", "stage": "高中", "year": "前141~前87年", "start_year": -141, "end_year": -87, "num_year": -141, "lat": 34.267, "lng": 108.944, "loc": "陝西西安(長安)", "title": "漢武帝統治", "desc": "推恩令、獨尊儒術、擴張疆域、鹽鐵專賣", "cause": "前期休養生息使國力充實,需要中央集權與對外用兵", "effect": "加強皇權、擴張疆域,但財政負擔加重", "comparison": "文景之治(休養生息)≠武帝(積極擴張、集權)", "story": "漢武帝以推恩令分化諸侯王,接受董仲舒建議「獨尊儒術」,並派衛青、霍去病北伐匈奴。連年戰爭使國庫吃緊,於是推行鹽鐵專賣增加收入。", "keywords": ["中國史", "秦漢", "推恩令", "獨尊儒術", "鹽鐵專賣", "擴張"], "id": 23}, {"domain": "中國史", "sheet": "秦漢", "stage": "國小、國中、高中", "year": "前138年", "start_year": -138, "end_year": -138, "num_year": -138, "lat": 40.0238, "lng": 94.7908, "loc": "甘肅敦煌/絲綢之路", "title": "張騫通西域", "desc": "開啟絲路,促進東西交流", "cause": "漢朝欲聯合大月氏對抗匈奴", "effect": "開啟絲綢之路,促進東西方交流", "comparison": "張騫(通西域、漢)≠鄭和(下西洋、明)", "story": "張騫奉命出使大月氏,途中被匈奴扣留十多年仍不忘使命。他雖然沒有說服大月氏聯盟,卻帶回西域的見聞,為後來絲路貿易鋪路。", "keywords": ["中國史", "秦漢", "張騫", "絲路", "匈奴", "大月氏"], "id": 24}, {"domain": "世界史", "sheet": "古文明與希臘羅馬", "stage": "國中、高中", "year": "前27年", "start_year": -27, "end_year": -27, "num_year": -27, "lat": 41.8938, "lng": 12.4844, "loc": "義大利羅馬", "title": "羅馬帝國建立", "desc": "奧古斯都開啟帝國時代", "cause": "共和末期內戰不斷,需要強力統治", "effect": "開啟帝國時代,帶來兩百年羅馬和平", "comparison": "羅馬共和(元老院)≠羅馬帝國(皇帝)", "story": "屋大維結束內戰後,獲元老院授予「奧古斯都」尊號,實質上成為皇帝,卻自稱「第一公民」。此後兩百年的和平繁榮,被稱為「羅馬和平」。", "keywords": ["世界史", "古文明與希臘羅馬", "奧古斯都", "元首制", "羅馬和平"], "id": 25}, {"domain": "臺灣史", "sheet": "史前文明", "stage": "國小", "year": "約2000年前", "start_year": 0, "end_year": 0, "num_year": 0, "lat": 25.149, "lng": 121.386, "loc": "新北市八里區", "title": "鐵器時代(十三行文化等)", "desc": "開始使用鐵器,與外界交流增加", "cause": "與東南亞及中國沿海交流增加,金屬技術傳入", "effect": "出現冶鐵、玻璃與瑪瑙飾品交易,社會分工更複雜", "comparison": "新石器(石器)≠鐵器時代(冶鐵);十三行是北臺灣代表", "story": "當中國沿海商人把鐵器、玻璃珠帶上岸,臺灣原住民開始學會冶鐵,也用山產與外人交換珍奇物品。石器時代的生活,逐漸被金屬與貿易改寫。", "keywords": ["臺灣史", "史前文明", "鐵器", "冶鐵", "對外貿易"], "id": 26}, {"domain": "臺灣史", "sheet": "史前文明", "stage": "國中", "year": "約2000~500年前", "start_year": 0, "end_year": 1500, "num_year": 0, "lat": 25.152, "lng": 121.386, "loc": "新北市八里區", "title": "十三行文化", "desc": "鐵器時代,北臺灣,已有冶鐵與對外貿易", "cause": "與外界貿易頻繁,金屬技術傳入北臺灣", "effect": "遺址出土煉鐵爐與外來物品,顯示當時已有對外交流", "comparison": "十三行(北部、鐵器、貿易)≠圓山(北部、新石器)", "story": "淡水河口的八里,曾有一座繁忙的鐵器時代村落。考古人員在這裡挖出煉鐵爐、中國錢幣與外來珠飾,說明先民早就與海外往來。", "keywords": ["臺灣史", "史前文明", "八里", "冶鐵", "對外貿易"], "id": 27}, {"domain": "臺灣史", "sheet": "史前文明", "stage": "高中", "year": "約2000~400年前", "start_year": 0, "end_year": 1600, "num_year": 0, "lat": 23.591, "lng": 120.888, "loc": "臺灣全島", "title": "鐵器時代原住民文化", "desc": "凱達格蘭、西拉雅等原住民族社會", "cause": "鐵器傳入與族群分化,各地形成不同社會組織", "effect": "各族以部落自治為主,後與荷蘭、漢人陸續接觸", "comparison": "平埔族(凱達格蘭、西拉雅等)≠高山族,分布與漢化程度不同", "story": "荷蘭人到來前,臺灣島上已有凱達格蘭、西拉雅等許多族群,各有語言與習俗,以部落為單位生活。他們是臺灣歷史故事的第一批主人。", "keywords": ["臺灣史", "史前文明", "凱達格蘭", "西拉雅", "部落社會"], "id": 28}, {"domain": "中國史", "sheet": "秦漢", "stage": "國中、高中", "year": "25年", "start_year": 25, "end_year": 25, "num_year": 25, "lat": 34.617, "lng": 112.444, "loc": "河南洛陽", "title": "東漢建立", "desc": "劉秀重建漢朝", "cause": "王莽新政失敗,天下大亂", "effect": "重建漢朝,定都洛陽", "comparison": "西漢(長安)≠東漢(洛陽)", "story": "王莽改制失敗後天下大亂,劉秀憑軍事與政治才能逐一平定群雄,在洛陽重建漢朝,史稱東漢,他就是漢光武帝。", "keywords": ["中國史", "秦漢", "劉秀", "光武中興", "洛陽"], "id": 29}, {"domain": "中國史", "sheet": "秦漢", "stage": "國中", "year": "105年", "start_year": 105, "end_year": 105, "num_year": 105, "lat": 34.62, "lng": 112.444, "loc": "河南洛陽", "title": "蔡倫改良造紙術", "desc": "紙的普及促進文化傳播", "cause": "書寫材料不便,需要更便宜的載體", "effect": "紙張普及,促進文化與知識傳播", "comparison": "蔡倫(改良造紙)≠畢昇(活字印刷)", "story": "當時人們多在竹簡或絹帛上寫字,不是笨重就是昂貴。蔡倫改用樹皮、破布、麻頭製紙,成本低又好用,紙從此在中國逐漸普及。", "keywords": ["中國史", "秦漢", "蔡倫", "造紙術", "東漢"], "id": 30}, {"domain": "中國史", "sheet": "秦漢", "stage": "國中、高中", "year": "184年", "start_year": 184, "end_year": 184, "num_year": 184, "lat": 37.214, "lng": 115.024, "loc": "河北鉅鹿", "title": "黃巾之亂", "desc": "東漢衰亡,群雄並起", "cause": "外戚宦官專政,天災與農民困苦", "effect": "削弱東漢中央,軍閥割據興起", "comparison": "黃巾之亂(農民、宗教)≠太平天國(清末、洪秀全)", "story": "張角以太平道傳教,聚集大量信徒,頭綁黃巾,喊出「蒼天已死,黃天當立」,起兵反漢。東漢雖平定亂事,卻使地方軍閥崛起,朝廷權威大減。", "keywords": ["中國史", "秦漢", "黃巾", "張角", "太平道"], "id": 31}, {"domain": "中國史", "sheet": "魏晉南北朝", "stage": "國中", "year": "220年", "start_year": 220, "end_year": 220, "num_year": 220, "lat": 34.623, "lng": 112.444, "loc": "河南洛陽", "title": "三國時代", "desc": "魏、蜀、吳三國鼎立", "cause": "黃巾之亂後軍閥割據,逐漸形成三方勢力", "effect": "形成魏、蜀、吳三國鼎立", "comparison": "三國(魏蜀吳鼎立)≠兩晉(司馬氏統一再分裂)", "story": "赤壁之戰中,孫權與劉備聯軍擊敗曹操,使天下形成三方勢力。曹丕代漢建立魏,劉備在蜀稱帝,孫權在吳稱帝,三國鼎立。", "keywords": ["中國史", "魏晉南北朝", "魏蜀吳", "赤壁之戰", "曹操", "劉備", "孫權"], "id": 32}, {"domain": "中國史", "sheet": "魏晉南北朝", "stage": "高中", "year": "220年", "start_year": 220, "end_year": 220, "num_year": 220, "lat": 34.626, "lng": 112.444, "loc": "河南洛陽", "title": "魏晉南北朝開始", "desc": "九品官人法,門閥士族興起", "cause": "漢末動亂,中央權威衰弱,士族勢力興起", "effect": "形成門閥政治與長期南北分裂", "comparison": "九品官人法(門第取士)≠科舉(考試取士)", "story": "曹魏推行九品官人法,由地方官評定人物品級,結果高官多出自世家大族,形成門閥政治。長期分裂的時代,也讓佛教與玄學蓬勃發展。", "keywords": ["中國史", "魏晉南北朝", "九品官人法", "門閥士族", "佛教", "玄學"], "id": 33}, {"domain": "中國史", "sheet": "魏晉南北朝", "stage": "國中、高中", "year": "280年", "start_year": 280, "end_year": 280, "num_year": 280, "lat": 34.614, "lng": 112.447, "loc": "河南洛陽", "title": "西晉統一", "desc": "八王之亂與五胡亂華(304年)", "cause": "司馬氏取代曹魏後滅吳統一", "effect": "統一短暫,八王之亂後北方陷入五胡亂華", "comparison": "西晉(統一但短暫)≠隋(再次統一並長久)", "story": "司馬炎取代曹魏後滅吳,終結三國,但他大封宗室為王。不久爆發八王之亂,北方少數民族趁機南下,西晉隨之衰亡。", "keywords": ["中國史", "魏晉南北朝", "司馬炎", "八王之亂", "五胡亂華"], "id": 34}, {"domain": "世界史", "sheet": "古文明與希臘羅馬", "stage": "國中、高中", "year": "313年", "start_year": 313, "end_year": 313, "num_year": 313, "lat": 45.454, "lng": 9.184, "loc": "義大利米蘭", "title": "米蘭敕令", "desc": "羅馬帝國承認基督教", "cause": "基督教徒受迫害,帝國需要整合信仰", "effect": "羅馬承認基督教合法,後成為國教", "comparison": "米蘭敕令(313承認合法)≠狄奧多西(392定為國教)", "story": "君士坦丁與李錫尼在米蘭達成協議,承認基督徒信仰自由。從遭受迫害到合法存在,基督教後來在狄奧多西皇帝時成為羅馬國教。", "keywords": ["世界史", "古文明與希臘羅馬", "君士坦丁", "基督教", "宗教寬容"], "id": 35}, {"domain": "中國史", "sheet": "魏晉南北朝", "stage": "國中、高中", "year": "317年", "start_year": 317, "end_year": 317, "num_year": 317, "lat": 32.054, "lng": 118.794, "loc": "江蘇南京(建康)", "title": "東晉建立", "desc": "五胡入華,北方分裂", "cause": "北方淪陷,晉室南遷", "effect": "北方人口南遷,促進江南開發", "comparison": "東晉(南方、士族)≠十六國(北方)", "story": "晉室被迫南遷建康,大批中原士族與百姓隨之南渡,史稱「衣冠南渡」。人口與技術南移,促進江南開發。", "keywords": ["中國史", "魏晉南北朝", "五胡亂華", "衣冠南渡", "建康"], "id": 36}, {"domain": "世界史", "sheet": "中古時期", "stage": "國中、高中", "year": "476年", "start_year": 476, "end_year": 476, "num_year": 476, "lat": 44.414, "lng": 12.194, "loc": "義大利拉溫納", "title": "西羅馬帝國滅亡", "desc": "歐洲進入中世紀", "cause": "日耳曼人入侵與帝國財政軍事衰弱", "effect": "歐洲進入中世紀,東羅馬繼續存在", "comparison": "西羅馬(476滅亡)≠東羅馬(1453滅亡)", "story": "日耳曼將領奧多亞克廢黜年幼皇帝,西羅馬帝國滅亡。歷史上常以此作為中古時期的開端,但東羅馬帝國仍繼續延續近千年。", "keywords": ["世界史", "中古時期", "日耳曼人", "476", "中世紀", "奧多亞克"], "id": 37}, {"domain": "中國史", "sheet": "魏晉南北朝", "stage": "國中、高中", "year": "494年", "start_year": 494, "end_year": 494, "num_year": 494, "lat": 34.6077, "lng": 112.4422, "loc": "河南洛陽", "title": "北魏孝文帝遷都洛陽", "desc": "推行漢化政策", "cause": "鮮卑政權需要有效統治中原", "effect": "推行漢化政策,促進胡漢融合", "comparison": "孝文帝漢化(鮮卑)≠五胡亂華(胡漢衝突)", "story": "鮮卑出身的孝文帝想深入治理中原,遷都洛陽,並下令改穿漢服、說漢話、改漢姓。這場漢化改革促進胡漢融合,也引發部分鮮卑貴族不滿。", "keywords": ["中國史", "魏晉南北朝", "孝文帝", "漢化", "洛陽", "均田制"], "id": 38}, {"domain": "中國史", "sheet": "隋唐五代", "stage": "國中、高中", "year": "581年", "start_year": 581, "end_year": 581, "num_year": 581, "lat": 34.27, "lng": 108.944, "loc": "陝西西安(大興)", "title": "隋朝建立", "desc": "589年統一南北方;開鑿大運河,創科舉", "cause": "南北朝長期分裂,社會渴望統一", "effect": "589年統一南北,創科舉與大運河", "comparison": "隋(統一、科舉、運河)≠西晉(短暫統一)", "story": "楊堅結束南北分裂後,創立三省六部、改革選官制度,後來更設立科舉。隋煬帝開鑿大運河,連接南北交通,卻因頻繁徵役與征戰,使隋朝迅速滅亡。", "keywords": ["中國史", "隋唐五代", "楊堅", "大運河", "科舉", "三省六部"], "id": 39}, {"domain": "中國史", "sheet": "隋唐五代", "stage": "國小、國中、高中", "year": "618年", "start_year": 618, "end_year": 618, "num_year": 618, "lat": 34.2538, "lng": 108.9421, "loc": "陝西西安/長安", "title": "唐朝建立", "desc": "貞觀之治(627~649)、開元之治;長安為國際大都會", "cause": "隋末民變,隋煬帝暴政", "effect": "建立強盛國際帝國,長安為國際都會", "comparison": "隋(短命)≠唐(長久、盛世)", "story": "李淵父子在隋末亂世中起兵,建立唐朝,定都長安。唐朝開放包容,有許多外國商人、使節與僧侶,長安成為當時世界上最國際化的大城市之一。", "keywords": ["中國史", "隋唐五代", "李淵", "長安", "貞觀之治", "開元之治"], "id": 40}, {"domain": "世界史", "sheet": "中古時期", "stage": "國中", "year": "622年", "start_year": 622, "end_year": 622, "num_year": 622, "lat": 24.464, "lng": 39.604, "loc": "沙烏地阿拉伯麥地那", "title": "穆罕默德遷徙麥地那", "desc": "伊斯蘭教曆元年", "cause": "麥加貴族迫害早期信徒", "effect": "622年成為伊斯蘭曆元年,建立穆斯林社群", "comparison": "聖遷(622、麥加至麥地那)≠創教(麥加啟示)", "story": "穆罕默德在麥加傳播一神信仰,遭到貴族迫害,於622年帶領信徒遷往麥地那。這次「聖遷」後來被定為伊斯蘭曆元年。", "keywords": ["世界史", "中古時期", "聖遷", "麥地那", "伊斯蘭", "穆罕默德"], "id": 41}, {"domain": "世界史", "sheet": "中古時期", "stage": "高中", "year": "622年", "start_year": 622, "end_year": 622, "num_year": 622, "lat": 24.467, "lng": 39.604, "loc": "沙烏地阿拉伯麥地那", "title": "伊斯蘭教曆元年", "desc": "穆罕默德遷徙到麥地那", "cause": "穆罕默德遷往麥地那後建立宗教社群", "effect": "伊斯蘭教逐漸擴張為重要文明", "comparison": "伊斯蘭曆(622起)≠西曆", "story": "伊斯蘭曆以聖遷之年為起點,依月亮盈虧計算,一年約354天。穆斯林社群在麥地那建立後迅速發展,逐漸擴及整個阿拉伯半島與更廣的地區。", "keywords": ["世界史", "中古時期", "伊斯蘭曆", "聖遷", "麥地那"], "id": 42}, {"domain": "中國史", "sheet": "隋唐五代", "stage": "高中", "year": "627~649年", "start_year": 627, "end_year": 649, "num_year": 627, "lat": 34.3, "lng": 108.894, "loc": "中國主要區域", "title": "貞觀之治", "desc": "唐太宗時期,國力強盛", "cause": "隋亡教訓使唐太宗注重納諫與休養生息", "effect": "政治清明、國力強盛,奠定盛唐基礎", "comparison": "貞觀之治(太宗)≠開元之治(玄宗)", "story": "唐太宗常以隋亡為鑑,廣開言路,讓魏徵直言勸諫;重視人才,完善科舉與法律,國家安定富庶,被後人稱為「貞觀之治」。", "keywords": ["中國史", "隋唐五代", "唐太宗", "魏徵", "三省六部", "科舉"], "id": 43}, {"domain": "中國史", "sheet": "隋唐五代", "stage": "國中、高中", "year": "755~763年", "start_year": 755, "end_year": 763, "num_year": 755, "lat": 39.894, "lng": 116.394, "loc": "北京(範陽)", "title": "安史之亂", "desc": "藩鎮割據,唐朝衰落", "cause": "府兵制崩壞、節度使權力過大", "effect": "藩鎮割據,唐朝由盛轉衰", "comparison": "安史之亂(755至763)≠黃巢之亂(唐末)", "story": "安祿山與史思明起兵叛唐,攻陷洛陽、長安,唐玄宗倉皇逃往四川。亂事雖平,但朝廷更依賴地方節度使,藩鎮割據,唐由盛轉衰。", "keywords": ["中國史", "隋唐五代", "安祿山", "史思明", "藩鎮", "節度使"], "id": 44}, {"domain": "中國史", "sheet": "隋唐五代", "stage": "高中", "year": "780年", "start_year": 780, "end_year": 780, "num_year": 780, "lat": 34.273, "lng": 108.944, "loc": "陝西西安(長安)", "title": "兩稅法", "desc": "土地租稅制度改革", "cause": "均田制瓦解,租庸調制難以維持", "effect": "依資產課稅、改為夏秋兩季徵收", "comparison": "租庸調(依人丁)≠兩稅法(依資產)≠一條鞭法(明)", "story": "唐德宗時,宰相楊炎推行兩稅法,不再按人丁而是按財產多寡徵稅,分夏、秋兩季繳納。這項改革適應均田制崩壞後的社會,也影響後世賦稅制度。", "keywords": ["中國史", "隋唐五代", "兩稅法", "楊炎", "租庸調制崩壞"], "id": 45}, {"domain": "世界史", "sheet": "中古時期", "stage": "國中、高中", "year": "800年", "start_year": 800, "end_year": 800, "num_year": 800, "lat": 41.894, "lng": 12.494, "loc": "義大利羅馬", "title": "查理曼加冕為皇帝", "desc": "西歐封建社會發展", "cause": "法蘭克王國擴張,與教皇合作", "effect": "西歐出現帝國,封建制度發展", "comparison": "查理曼(西歐帝國)≠神聖羅馬帝國(962)", "story": "800年聖誕節,教皇在羅馬為法蘭克王國的查理曼加冕為「羅馬皇帝」。這象徵西歐出現新的帝國,也強化教皇與世俗君主之間的關係。", "keywords": ["世界史", "中古時期", "查理曼", "教皇", "法蘭克", "封建社會"], "id": 46}, {"domain": "中國史", "sheet": "隋唐五代", "stage": "國中、高中", "year": "907年", "start_year": 907, "end_year": 907, "num_year": 907, "lat": 34.794, "lng": 114.294, "loc": "河南開封", "title": "唐亡,五代十國", "desc": "分裂局面", "cause": "藩鎮割據與黃巢之亂後唐朝衰亡", "effect": "分裂局面持續,後由宋朝結束", "comparison": "五代(北方)≠十國(南方)", "story": "朱溫滅唐建後梁後,北方短短數十年換了五個朝代,南方與山西則有多個割據政權,合稱「五代十國」。長期混亂讓人民渴望統一。", "keywords": ["中國史", "隋唐五代", "朱溫", "藩鎮", "五代十國"], "id": 47}, {"domain": "中國史", "sheet": "宋元", "stage": "國小、國中、高中", "year": "960年", "start_year": 960, "end_year": 960, "num_year": 960, "lat": 34.797, "lng": 114.294, "loc": "河南開封", "title": "宋朝建立", "desc": "經濟與科技發達,有活字印刷、指南針、火藥", "cause": "五代十國長期分裂,需要結束武人專政", "effect": "重文輕武,商業與科技發達", "comparison": "宋(重文輕武、經濟)≠唐(開放、武力)", "story": "趙匡胤在陳橋兵變中黃袍加身,建立宋朝。相傳他以宴席請將領交出兵權(杯酒釋兵權),重文輕武,避免武將專權,也讓宋朝文化與經濟特別發達。", "keywords": ["中國史", "宋元", "趙匡胤", "陳橋兵變", "杯酒釋兵權", "重文輕武"], "id": 48}, {"domain": "中國史", "sheet": "宋元", "stage": "高中", "year": "1041年", "start_year": 1041, "end_year": 1041, "num_year": 1041, "lat": 30.264, "lng": 120.154, "loc": "浙江杭州", "title": "畢昇發明活字印刷", "desc": "宋代科技發達", "cause": "印刷需求增加,雕版印刷成本高", "effect": "促進書籍普及與知識傳播", "comparison": "畢昇(活字印刷)≠蔡倫(造紙)", "story": "雕版印刷每印一本書都要刻整塊版,畢昇改用膠泥刻成單字活字,可以重複排版使用。這項發明讓書籍印刷更有效率,知識傳播更廣。", "keywords": ["中國史", "宋元", "畢昇", "活字印刷", "宋代科技"], "id": 49}, {"domain": "世界史", "sheet": "中古時期", "stage": "高中", "year": "1054年", "start_year": 1054, "end_year": 1054, "num_year": 1054, "lat": 41.004, "lng": 28.974, "loc": "土耳其君士坦丁堡", "title": "東西教會大分裂", "desc": "羅馬公教與東正教分立", "cause": "東西教會在教義、教皇權威與政治上長期對立", "effect": "基督教分裂為羅馬公教與東正教", "comparison": "1054大分裂≠16世紀宗教改革", "story": "1054年,羅馬教皇與君士坦丁堡牧首互相開除教籍。此後,西方稱羅馬公教(天主教),東方稱東正教,基督教世界正式分裂。", "keywords": ["世界史", "中古時期", "羅馬公教", "東正教", "1054"], "id": 50}, {"domain": "中國史", "sheet": "宋元", "stage": "高中", "year": "1069年", "start_year": 1069, "end_year": 1069, "num_year": 1069, "lat": 34.8, "lng": 114.294, "loc": "河南開封", "title": "王安石變法", "desc": "青苗法、免役法等,引發新舊黨爭", "cause": "宋朝財政困難、冗官冗兵", "effect": "引發新舊黨爭,北宋政局動盪", "comparison": "王安石(宋)≠商鞅(秦)≠張居正(明)", "story": "宋神宗支持王安石改革財政與軍事,推出青苗法、募役法、保甲法等。支持與反對的官員分成新黨與舊黨,爭論不休,影響北宋政局。", "keywords": ["中國史", "宋元", "王安石", "青苗法", "免役法", "新舊黨爭"], "id": 51}, {"domain": "世界史", "sheet": "中古時期", "stage": "國中、高中", "year": "1096~1291年", "start_year": 1096, "end_year": 1291, "num_year": 1096, "lat": 31.764, "lng": 35.204, "loc": "耶路撒冷", "title": "十字軍東征開始", "desc": "到1291年共數次,增進東西交流", "cause": "教皇號召收復聖地,並因應拜占庭求援", "effect": "增進東西交流,削弱封建領主與教皇威信", "comparison": "十字軍(宗教動機)≠大航海(經濟動機)", "story": "1095年教皇烏爾班二世號召基督徒奪回聖地耶路撒冷,第一次十字軍東征出發。後來多次遠征雖多以失敗告終,卻促進東西貿易與文化交流。", "keywords": ["世界史", "中古時期", "教皇", "耶路撒冷", "東西交流"], "id": 52}, {"domain": "中國史", "sheet": "宋元", "stage": "國中、高中", "year": "1127年", "start_year": 1127, "end_year": 1127, "num_year": 1127, "lat": 34.803, "lng": 114.294, "loc": "河南開封", "title": "靖康之難、南宋建立", "desc": "金滅北宋,經濟重心南移", "cause": "金軍南下攻破開封,擄走徽欽二帝", "effect": "北宋滅亡,南宋偏安江南", "comparison": "北宋(開封)≠南宋(臨安)", "story": "金軍攻破開封,俘虜徽宗與欽宗,北宋滅亡。宋高宗在南方即位,後來定都臨安(杭州),史稱南宋,中國經濟重心也加速南移。", "keywords": ["中國史", "宋元", "金", "靖康", "宋高宗", "臨安"], "id": 53}, {"domain": "中國史", "sheet": "宋元", "stage": "國中", "year": "1206年", "start_year": 1206, "end_year": 1206, "num_year": 1206, "lat": 47.894, "lng": 106.894, "loc": "蒙古高原", "title": "成吉思汗建立蒙古帝國", "desc": "蒙古擴張", "cause": "蒙古各部統一,鐵木真稱汗", "effect": "開啟蒙古大規模擴張", "comparison": "蒙古帝國(1206)≠元朝(1271)", "story": "1206年,鐵木真被推為「成吉思汗」,統一蒙古各部。他以嚴密的軍事組織與快速騎兵向外擴張,成為世界史上橫跨歐亞的重要力量。", "keywords": ["中國史", "宋元", "成吉思汗", "鐵木真", "蒙古"], "id": 54}, {"domain": "中國史", "sheet": "宋元", "stage": "高中", "year": "1206年", "start_year": 1206, "end_year": 1206, "num_year": 1206, "lat": 47.897, "lng": 106.894, "loc": "蒙古高原", "title": "蒙古帝國成立", "desc": "成吉思汗統一蒙古", "cause": "蒙古各部統一與軍事擴張", "effect": "疆域橫跨歐亞,促進東西交流", "comparison": "蒙古帝國(跨歐亞)≠元朝(中國部分)", "story": "蒙古帝國征服領土後,後代分封成不同汗國,從東亞延伸到東歐。驛站與貿易路線讓東西方交流更加密切。", "keywords": ["中國史", "宋元", "成吉思汗", "四大汗國", "蒙古"], "id": 55}, {"domain": "世界史", "sheet": "中古時期", "stage": "國中、高中", "year": "1215年", "start_year": 1215, "end_year": 1215, "num_year": 1215, "lat": 51.4954, "lng": -0.1398, "loc": "英國倫敦", "title": "英國大憲章", "desc": "限制王權的重要文件", "cause": "約翰王失敗與重稅,貴族反抗", "effect": "限制王權,成為法治與議會政治的重要起點", "comparison": "大憲章(1215)≠權利法案(1689)", "story": "約翰王因戰敗與重稅引起貴族反抗,被迫簽署大憲章。條文規定國王不可任意徵稅或逮捕人民,成為限制王權與保障權利的重要象徵。", "keywords": ["世界史", "中古時期", "約翰王", "貴族", "限制王權"], "id": 56}, {"domain": "中國史", "sheet": "宋元", "stage": "國小、國中、高中", "year": "1271年", "start_year": 1271, "end_year": 1271, "num_year": 1271, "lat": 39.897, "lng": 116.394, "loc": "北京(大都)", "title": "元朝建立", "desc": "忽必烈建國,1279年滅南宋", "cause": "蒙古帝國擴張後,忽必烈建立中國式王朝", "effect": "1279年滅南宋,統一中國", "comparison": "元(蒙古人、色目人等四等人制)≠明(漢人)", "story": "忽必烈在大都建立元朝,後來滅南宋統一中國。元朝實行行省制度,影響後世地方制度;常見說法還把人民分成蒙古人、色目人、漢人、南人(學界對其是否為正式制度仍有討論)。", "keywords": ["中國史", "宋元", "忽必烈", "大都", "四等人制", "行省"], "id": 57}, {"domain": "世界史", "sheet": "中古時期", "stage": "國中、高中", "year": "14~16世紀", "start_year": 1301, "end_year": 1600, "num_year": 1301, "lat": 43.764, "lng": 11.254, "loc": "義大利佛羅倫斯", "title": "文藝復興", "desc": "強調人文主義,達文西、米開朗基羅", "cause": "商業繁榮與古典文化復興,人們重視現世價值", "effect": "促進藝術、科學與人文發展,為宗教改革鋪路", "comparison": "文藝復興(人文)≠宗教改革(宗教)", "story": "佛羅倫斯的富商贊助藝術家,畫家達文西、雕刻家米開朗基羅在此創作名作。人們重新閱讀古希臘羅馬經典,強調人的價值與現世生活。", "keywords": ["世界史", "中古時期", "人文主義", "達文西", "米開朗基羅", "佛羅倫斯"], "id": 58}, {"domain": "世界史", "sheet": "中古時期", "stage": "高中", "year": "1347年", "start_year": 1347, "end_year": 1347, "num_year": 1347, "lat": 38.184, "lng": 15.544, "loc": "義大利墨西拿", "title": "黑死病蔓延", "desc": "歐洲人口大減,衝擊封建社會", "cause": "鼠疫經貿易路線傳入歐洲", "effect": "人口大減,勞動力缺乏,農奴地位上升", "comparison": "黑死病(14世紀)≠工業革命(18世紀)", "story": "1347年,商船將鼠疫帶入歐洲,短短幾年奪走大量人命。勞動力缺乏使農民工資提高,領主權力下降,也動搖了舊有封建秩序。", "keywords": ["世界史", "中古時期", "黑死病", "人口銳減", "封建崩解"], "id": 59}, {"domain": "中國史", "sheet": "明清", "stage": "國小、國中、高中", "year": "1368年", "start_year": 1368, "end_year": 1368, "num_year": 1368, "lat": 32.057, "lng": 118.794, "loc": "江蘇南京", "title": "明朝建立", "desc": "朱元璋推翻元朝建立,鄭和下西洋(1405年)", "cause": "元末民變,朱元璋推翻元朝", "effect": "強化君權,實行里甲制與廢除丞相", "comparison": "元(蒙古)≠明(漢人王朝)", "story": "朱元璋出身貧苦農家,曾當過和尚與乞丐,後來加入紅巾軍,最終推翻元朝。他登基後整頓吏治、嚴懲貪官,也加強君權。", "keywords": ["中國史", "明清", "朱元璋", "廢宰相", "錦衣衛", "里甲"], "id": 60}, {"domain": "中國史", "sheet": "明清", "stage": "高中", "year": "1380年", "start_year": 1380, "end_year": 1380, "num_year": 1380, "lat": 32.06, "lng": 118.794, "loc": "江蘇南京", "title": "胡惟庸案、廢宰相", "desc": "君權極度集中,設內閣", "cause": "朱元璋為加強皇權,取消宰相", "effect": "君權高度集中,後設內閣協助皇帝", "comparison": "明初(廢宰相)≠清代(軍機處)", "story": "朱元璋以謀反罪處死宰相胡惟庸,索性廢除宰相,由皇帝直接統領六部。後來設內閣協助處理文書,卻讓皇帝的工作量暴增。", "keywords": ["中國史", "明清", "胡惟庸", "廢宰相", "內閣", "君權"], "id": 61}, {"domain": "中國史", "sheet": "明清", "stage": "國中、高中", "year": "1405~1433年", "start_year": 1405, "end_year": 1433, "num_year": 1405, "lat": 31.444, "lng": 121.094, "loc": "江蘇太倉(劉家港)", "title": "鄭和下西洋", "desc": "七次遠航,促進海上交流", "cause": "明成祖欲宣揚國威、鞏固朝貢體系", "effect": "促進海上交流,但非為殖民或貿易擴張", "comparison": "鄭和(1405,朝貢)≠哥倫布(1492,探索與殖民)", "story": "明成祖派鄭和率領龐大艦隊,載著絲綢、瓷器出航,拜訪東南亞、南亞與非洲沿岸。目的是宣揚國威、鞏固朝貢關係,而不是殖民征服。", "keywords": ["中國史", "明清", "鄭和", "朝貢體系", "永樂帝", "航海"], "id": 62}, {"domain": "中國史", "sheet": "明清", "stage": "國中、高中", "year": "1449年", "start_year": 1449, "end_year": 1449, "num_year": 1449, "lat": 40.394, "lng": 115.494, "loc": "河北懷來土木堡", "title": "土木堡之變", "desc": "明英宗被俘,明朝由盛轉衰", "cause": "宦官王振專權,英宗御駕親征失敗", "effect": "明英宗被俘,明朝由盛轉衰", "comparison": "土木堡之變(明英宗被俘)≠靖康之難(徽欽二帝被俘)", "story": "明英宗在宦官王振鼓動下御駕親征瓦剌,卻在土木堡兵敗被俘。朝廷改立景帝並堅守北京,但明朝國力也因此受到打擊。", "keywords": ["中國史", "明清", "土木堡", "明英宗", "也先", "北虜"], "id": 63}, {"domain": "世界史", "sheet": "近代早期", "stage": "國中、高中", "year": "1453年", "start_year": 1453, "end_year": 1453, "num_year": 1453, "lat": 41.007, "lng": 28.974, "loc": "土耳其伊斯坦堡", "title": "君士坦丁堡陷落", "desc": "鄂圖曼帝國滅東羅馬", "cause": "鄂圖曼帝國擴張,攻陷君士坦丁堡", "effect": "東羅馬滅亡,歐亞貿易路線改變,促使航海探索", "comparison": "1453君士坦丁堡陷落≠1492哥倫布航行", "story": "1453年,鄂圖曼蘇丹穆罕默德二世用大砲攻破君士坦丁堡城牆,東羅馬帝國滅亡。歐亞陸路貿易受鄂圖曼控制,促使歐洲尋找新的海上路線。", "keywords": ["世界史", "近代早期", "鄂圖曼", "1453", "東羅馬滅亡"], "id": 64}, {"domain": "世界史", "sheet": "近代早期", "stage": "國小、國中、高中", "year": "1492年", "start_year": 1492, "end_year": 1492, "num_year": 1492, "lat": 25.0223, "lng": -77.4083, "loc": "巴哈馬/加勒比海", "title": "哥倫布到達美洲", "desc": "大航海時代,歐洲與美洲接觸", "cause": "歐洲尋找通往亞洲的新航路", "effect": "歐洲與美洲接觸,開啟殖民擴張", "comparison": "哥倫布(向西)≠達伽馬(繞非洲)", "story": "哥倫布得到西班牙王室支持,向西橫渡大西洋,希望抵達亞洲,結果抵達加勒比海的島嶼。他的航行開啟歐洲殖民美洲的時代,也使物種、疾病與人口大規模交流。", "keywords": ["世界史", "近代早期", "哥倫布", "西班牙", "新大陸", "哥倫布大交換"], "id": 65}, {"domain": "世界史", "sheet": "近代早期", "stage": "國中", "year": "1498年", "start_year": 1498, "end_year": 1498, "num_year": 1498, "lat": 11.2468, "lng": 75.7684, "loc": "印度卡利卡特", "title": "達伽馬抵達印度", "desc": "開通歐亞海路", "cause": "葡萄牙尋找繞過中東的新航路", "effect": "開通歐亞海路,葡萄牙取得香料貿易優勢", "comparison": "達伽馬(1498好望角)≠哥倫布(1492向西)", "story": "達伽馬繞過非洲南端的好望角,穿越印度洋,抵達印度西岸的卡利卡特。這條航路讓葡萄牙直接進入香料貿易,繞過中東中間商。", "keywords": ["世界史", "近代早期", "達伽馬", "葡萄牙", "好望角", "香料"], "id": 66}, {"domain": "世界史", "sheet": "近代早期", "stage": "國中", "year": "16~17世紀", "start_year": 1501, "end_year": 1700, "num_year": 1501, "lat": 45.404, "lng": 11.874, "loc": "義大利帕多瓦(伽利略)/英國(牛頓)", "title": "科學革命", "desc": "哥白尼、伽利略、牛頓", "cause": "天文觀測與數學方法發展", "effect": "形成近代科學方法,影響啟蒙運動", "comparison": "科學革命(自然)≠啟蒙運動(社會政治)", "story": "伽利略用望遠鏡觀察木星衛星,牛頓以萬有引力解釋天體運行。強調觀察、實驗與數學推理的方法,改變了人們理解世界的方式。", "keywords": ["世界史", "近代早期", "哥白尼", "伽利略", "牛頓", "實驗方法"], "id": 67}, {"domain": "世界史", "sheet": "近代早期", "stage": "國中、高中", "year": "1517年", "start_year": 1517, "end_year": 1517, "num_year": 1517, "lat": 51.864, "lng": 12.644, "loc": "德國維騰堡", "title": "宗教改革", "desc": "馬丁路德發表《九十五條論綱》", "cause": "教會腐敗與贖罪券販售,批評聲浪高漲", "effect": "基督教分裂出新教,歐洲宗教戰爭頻繁", "comparison": "宗教改革(教會)≠啟蒙運動(理性)", "story": "1517年,馬丁路德針對教會販賣贖罪券提出《九十五條論綱》。他主張「因信稱義」,引起廣泛迴響,最終形成新教各教派,歐洲宗教信仰分裂。", "keywords": ["世界史", "近代早期", "馬丁路德", "九十五條論綱", "新教"], "id": 68}, {"domain": "世界史", "sheet": "近代早期", "stage": "國中", "year": "1522年", "start_year": 1522, "end_year": 1522, "num_year": 1522, "lat": 10.3037, "lng": 123.8734, "loc": "菲律賓宿霧", "title": "麥哲倫船隊完成環球航行", "desc": "證明地球為球體", "cause": "航海技術提升與香料貿易需求", "effect": "證明地球為球體,擴展世界地理認識", "comparison": "麥哲倫(環球)≠哥倫布(橫渡大西洋)", "story": "麥哲倫的船隊從西班牙出發,往西航行繞過南美洲,抵達菲律賓。麥哲倫雖在當地衝突中身亡,剩餘船員繼續航行,最終完成人類首次環球航行。", "keywords": ["世界史", "近代早期", "麥哲倫", "環球航行", "地圓說"], "id": 69}, {"domain": "臺灣史", "sheet": "大航海", "stage": "高中", "year": "16世紀中", "start_year": 1530, "end_year": 1570, "num_year": 1530, "lat": 23.597, "lng": 120.888, "loc": "臺灣全島", "title": "大航海時代下的臺灣", "desc": "葡萄牙稱「福爾摩沙」;倭寇、海盜與漁民活動", "cause": "明代海禁使走私海商與海盜活躍,臺灣成為活動據點", "effect": "吸引歐洲勢力與漢人海商前來,為荷西占據鋪路", "comparison": "倭寇、海盜以貿易與劫掠為主,尚無正式統治政權", "story": "十六世紀的臺灣是海上世界的中途站:日本與中國的商人、海盜、漁民在此停靠交易、避風補給。這座尚無統一政權的島嶼,吸引了歐洲人的注意。", "keywords": ["臺灣史", "大航海", "倭寇", "海盜", "漁民", "轉口貿易"], "id": 70}, {"domain": "世界史", "sheet": "近代早期", "stage": "高中", "year": "1543年", "start_year": 1543, "end_year": 1543, "num_year": 1543, "lat": 54.354, "lng": 19.674, "loc": "波蘭弗龍堡", "title": "哥白尼《天體運行論》", "desc": "科學革命開端;1687年牛頓發表《原理》", "cause": "天文觀測與對托勒密體系質疑", "effect": "奠定科學革命開端,挑戰教會宇宙觀", "comparison": "哥白尼(日心說)≠托勒密(地心說)", "story": "哥白尼提出太陽才是宇宙中心,地球與其他行星繞著太陽轉。這本書在他去世那年出版,挑戰了長期流行的地心說,也被視為科學革命的起點。", "keywords": ["世界史", "近代早期", "哥白尼", "日心說", "科學革命"], "id": 71}, {"domain": "臺灣史", "sheet": "大航海", "stage": "國小、國中", "year": "1544年", "start_year": 1544, "end_year": 1544, "num_year": 1544, "lat": 23.594, "lng": 120.888, "loc": "臺灣全島", "title": "「福爾摩沙」之名", "desc": "葡萄牙水手稱臺灣為Ilha Formosa", "cause": "大航海時代葡萄牙船員航經臺灣海峽,見島嶼蒼翠", "effect": "「福爾摩沙」成為西方稱呼臺灣的名稱,臺灣進入世界地圖", "comparison": "葡萄牙(命名、無長期統治)≠荷蘭(據南)≠西班牙(據北)", "story": "一艘葡萄牙船航過臺灣海峽,水手望見綠意盎然的島嶼,驚呼「Ilha Formosa(美麗之島)」。這個名字從此寫進歐洲地圖,成為臺灣最著名的外號。", "keywords": ["臺灣史", "大航海", "Ilha", "Formosa", "葡萄牙", "航海"], "id": 72}, {"domain": "中國史", "sheet": "明清", "stage": "高中", "year": "1581年", "start_year": 1581, "end_year": 1581, "num_year": 1581, "lat": 39.9, "lng": 116.394, "loc": "北京", "title": "一條鞭法", "desc": "張居正推動賦役改革", "cause": "明朝財政困難,賦役制度紊亂", "effect": "賦役合併、以銀繳稅,促進白銀貨幣化", "comparison": "一條鞭法(明、折銀)≠兩稅法(唐)", "story": "張居正任內丈量土地、整頓財政,推行一條鞭法,把各種賦稅與徭役合併,折成白銀繳納。這讓稅制簡化,卻也使白銀需求大增。", "keywords": ["中國史", "明清", "張居正", "一條鞭法", "賦役合併", "白銀"], "id": 73}, {"domain": "臺灣史", "sheet": "大航海", "stage": "國小、國中", "year": "1624年", "start_year": 1624, "end_year": 1624, "num_year": 1624, "lat": 22.9896, "lng": 120.1481, "loc": "臺南市安平區", "title": "荷蘭人占據大員(臺南)", "desc": "建熱蘭遮城(安平古堡)與普羅民遮城(赤崁樓)", "cause": "荷蘭競逐東亞貿易,被明軍逐出澎湖後轉往大員", "effect": "建立轉口貿易據點與殖民統治,臺灣進入國際貿易網絡", "comparison": "荷蘭(南、貿易、熱蘭遮城)≠西班牙(北、傳教、聖薩爾瓦多城)", "story": "荷蘭人在澎湖被明朝勸退後轉進大員(今安平),築起熱蘭遮城,把這裡變成連接日本、中國與東南亞的貿易轉運站。", "keywords": ["臺灣史", "大航海", "荷蘭東印度公司", "熱蘭遮城", "普羅民遮城"], "id": 74}, {"domain": "臺灣史", "sheet": "大航海", "stage": "高中", "year": "1624~1662年", "start_year": 1624, "end_year": 1662, "num_year": 1624, "lat": 22.9926, "lng": 120.1481, "loc": "臺南市安平區", "title": "荷蘭統治", "desc": "以大員為轉口貿易據點,引進漢人農業勞力,收取贌社與人頭稅", "cause": "荷蘭東印度公司需要糧食與貨源,招募漢人農民來臺", "effect": "促進漢人墾殖與糖米生產,但稅賦繁重引發反抗", "comparison": "荷蘭(商業殖民、課稅)≠明鄭(漢人政權、軍屯)", "story": "為了讓土地生產糖與米,荷蘭人從福建招來大批漢人農民,又向原住民與漢人徵稅。臺灣第一次成為世界貿易網的一環,也第一次出現大規模漢人墾殖。", "keywords": ["臺灣史", "大航海", "贌社", "人頭稅", "轉口貿易", "引進漢人"], "id": 75}, {"domain": "臺灣史", "sheet": "大航海", "stage": "國小、國中、高中", "year": "1626年", "start_year": 1626, "end_year": 1626, "num_year": 1626, "lat": 25.1569, "lng": 121.4302, "loc": "新北市淡水區", "title": "西班牙人占領北臺灣", "desc": "在基隆、淡水建城,1642年被荷蘭人趕走", "cause": "西班牙欲在北臺灣建立對中國、日本貿易與傳教據點", "effect": "1642年被荷蘭驅逐,北臺灣納入荷蘭勢力", "comparison": "西班牙(北、傳教)≠荷蘭(南、貿易),統治期短", "story": "西班牙人從馬尼拉出發,在基隆建聖薩爾瓦多城,後來又到淡水。他們想傳教與貿易,卻只維持十餘年,就被荷蘭人從北部趕走。", "keywords": ["臺灣史", "大航海", "聖薩爾瓦多城", "基隆", "淡水", "傳教"], "id": 76}, {"domain": "中國史", "sheet": "明清", "stage": "國小、國中、高中", "year": "1644年", "start_year": 1644, "end_year": 1644, "num_year": 1644, "lat": 39.994, "lng": 119.754, "loc": "河北山海關", "title": "清軍入關", "desc": "清朝取代明朝,統治中國近三百年", "cause": "李自成攻入北京,吳三桂引清兵入關", "effect": "清朝取代明朝,統治中國近三百年", "comparison": "滿洲(八旗、入關)≠明(漢人王朝)", "story": "李自成攻入北京,崇禎帝自縊。明將吳三桂與清軍聯手,在山海關擊敗李自成,清軍趁機入關,定都北京,逐步統一中國。", "keywords": ["中國史", "明清", "清軍入關", "順治", "李自成", "山海關"], "id": 77}, {"domain": "世界史", "sheet": "近代早期", "stage": "高中", "year": "1648年", "start_year": 1648, "end_year": 1648, "num_year": 1648, "lat": 51.954, "lng": 7.624, "loc": "德國明斯特", "title": "西發里亞和約", "desc": "確立近代主權國家體系", "cause": "三十年戰爭造成巨大破壞", "effect": "確立近代主權國家體
+const rawData = {json.dumps(events_data, ensure_ascii=False)};
+const rawDynasties = {json.dumps(dynasties_data, ensure_ascii=False)};
+const ceecExamsList = {json.dumps(CEEC_PDF_LIST, ensure_ascii=False)};
+
+function findEventById(id) {{
+    return rawData.find(e => e.id === id);
+}}
+
+const domainColors = {{
+    '臺灣史': '#f59e0b', '台灣史': '#f59e0b',
+    '中國史': '#ef4444', '東亞史': '#ef4444',
+    '世界史': '#3b82f6'
+}};
+
+let currentHomeCategory = 'ALL';
+let homeDisplayLimit = 12;
+let activeModalEvent = null;
+
+// 安全讀取與寫入 localStorage
+function loadUserData() {{
+    try {{
+        const stored = localStorage.getItem('history_hub_quiz_data');
+        return stored ? JSON.parse(stored) : {{ masteredIds: [], reviewingIds: [], mistakes: [] }};
+    }} catch (e) {{
+        console.warn('localStorage 讀取失敗:', e);
+        return {{ masteredIds: [], reviewingIds: [], mistakes: [] }};
+    }}
+}}
+
+let userLearningData = loadUserData();
+
+function saveUserData() {{
+    try {{
+        localStorage.setItem('history_hub_quiz_data', JSON.stringify(userLearningData));
+    }} catch (e) {{
+        console.warn('localStorage 寫入失敗:', e);
+    }}
+    updateQuizHeaderStats();
+}}
+
+function updateQuizHeaderStats() {{
+    userLearningData.masteredIds = [...new Set(userLearningData.masteredIds)];
+    userLearningData.mistakes = [...new Set(userLearningData.mistakes)];
+
+    document.getElementById('statMastered').innerText = userLearningData.masteredIds.length;
+    document.getElementById('statReviewing').innerText = userLearningData.reviewingIds.length;
+    document.getElementById('statMistakes').innerText = userLearningData.mistakes.length;
+}}
+
+// 渲染歷屆試題獨立分頁
+function renderCEECExamsPage() {{
+    const grid = document.getElementById('ceecExamCardsGrid');
+    grid.innerHTML = '';
+    ceecExamsList.forEach(item => {{
+        const card = document.createElement('div');
+        card.className = 'exam-pdf-card';
+        card.innerHTML = '<div><span class="exam-tag">' + item.year + '</span><div class="exam-card-title">' + item.title + '</div><div class="exam-card-desc">' + item.desc + '</div></div><a href="' + item.url + '" target="_blank" class="btn-download-pdf">📥 下載 / 開啟 PDF 試題</a>';
+        grid.appendChild(card);
+    }});
+}}
+
+// 初始化首頁動態統計數字
+function initDynamicStats() {{
+    const tw = rawData.filter(e => e.domain.includes('臺') || e.domain.includes('台')).length;
+    const cn = rawData.filter(e => e.domain.includes('中') || e.domain.includes('東亞')).length;
+    const wd = rawData.filter(e => e.domain.includes('世界')).length;
+    const total = rawData.length;
+
+    document.getElementById('statTW').innerText = tw;
+    document.getElementById('statCN').innerText = cn;
+    document.getElementById('statWD').innerText = wd;
+    document.getElementById('statTotal').innerText = total;
+
+    document.getElementById('portalTWTag').innerText = tw;
+    document.getElementById('portalCNTag').innerText = cn;
+    document.getElementById('portalWDTag').innerText = wd;
+}}
+
+let flashcardsList = [];
+let fcIndex = 0;
+let fcRetryCounts = {{}};
+
+function startConfiguredFlashcards() {{
+    const domainVal = document.getElementById('cfgFcDomain').value;
+    const countVal = parseInt(document.getElementById('cfgFcCount').value);
+
+    let filtered = rawData;
+    if (domainVal !== 'ALL') {{
+        filtered = rawData.filter(e => e.domain.includes(domainVal));
+    }}
+
+    flashcardsList = [...filtered].sort(() => 0.5 - Math.random()).slice(0, countVal);
+    fcIndex = 0;
+    fcRetryCounts = {{}};
+
+    if (flashcardsList.length === 0) {{
+        alert('該範疇下暫無考點資料。');
+        return;
+    }}
+
+    document.getElementById('fcStartPrompt').style.display = 'none';
+    document.getElementById('fcDisplayArea').style.display = 'block';
+    renderCurrentFlashcard();
+}}
+
+function renderCurrentFlashcard() {{
+    if (fcIndex >= flashcardsList.length) {{
+        alert('🎉 恭喜完成本組閃卡複習！');
+        document.getElementById('fcDisplayArea').style.display = 'none';
+        document.getElementById('fcStartPrompt').style.display = 'block';
+        return;
+    }}
+    const item = flashcardsList[fcIndex];
+    const c = domainColors[item.domain] || '#f59e0b';
+    const wrapper = document.getElementById('fcWrapper');
+    wrapper.classList.remove('flipped');
+
+    document.getElementById('fcDomainBadge').innerText = item.domain;
+    document.getElementById('fcDomainBadge').style.background = c;
+    document.getElementById('fcFrontTitle').innerText = item.title;
+    document.getElementById('fcFrontSub').innerText = '[' + item.stage + '] ' + item.sheet + ' - 點擊查看歷史細節與說明';
+
+    document.getElementById('fcBackYearLoc').innerText = item.year + ' | 📍 ' + item.loc;
+    document.getElementById('fcBackDesc').innerText = item.desc;
+    document.getElementById('fcBackCause').innerText = item.cause;
+}}
+
+function toggleFCFlip() {{
+    document.getElementById('fcWrapper').classList.toggle('flipped');
+}}
+
+function rateFlashcard(rating) {{
+    const item = flashcardsList[fcIndex];
+    if (rating === 'remembered') {{
+        if (!userLearningData.masteredIds.includes(item.id)) userLearningData.masteredIds.push(item.id);
+        userLearningData.reviewingIds = userLearningData.reviewingIds.filter(id => id !== item.id);
+    }} else if (rating === 'fuzzy') {{
+        if (!userLearningData.reviewingIds.includes(item.id)) userLearningData.reviewingIds.push(item.id);
+    }} else {{ // forgot
+        const retryCount = (fcRetryCounts[item.id] || 0) + 1;
+        fcRetryCounts[item.id] = retryCount;
+        if (retryCount <= 2) {{
+            flashcardsList.push(item);
+        }}
+        if (!userLearningData.mistakes.includes(item.id)) userLearningData.mistakes.push(item.id);
+    }}
+    saveUserData();
+    fcIndex++;
+    renderCurrentFlashcard();
+}}
+
+// 測驗引擎
+let quizQuestions = [];
+let currentQIndex = 0;
+
+function startConfiguredQuiz() {{
+    const domainVal = document.getElementById('cfgDomain').value;
+    const typeVal = document.getElementById('cfgType').value;
+    const countVal = parseInt(document.getElementById('cfgCount').value);
+
+    let filteredPool = rawData;
+    if (domainVal !== 'ALL') {{
+        filteredPool = rawData.filter(e => e.domain.includes(domainVal));
+    }}
+
+    generateQuizBatch(filteredPool, typeVal, countVal);
+}}
+
+function generateQuizBatch(customList = null, quizType = 'MIX', qCount = 10) {{
+    const source = customList && customList.length > 0 ? customList : rawData;
+    const pool = [...source].sort(() => 0.5 - Math.random()).slice(0, qCount);
+    
+    quizQuestions = pool.map(item => {{
+        let selectedType = quizType;
+        if (quizType === 'MIX') {{
+            selectedType = Math.random() > 0.5 ? 'YEAR' : 'DESC';
+        }}
+
+        let questionText = '', correctAnswer = '', distractors = [];
+
+        if (selectedType === 'YEAR') {{
+            questionText = '歷史事件【' + item.title + '】主要發生於下列哪一個西元年代或時期？';
+            correctAnswer = item.year;
+            distractors = rawData
+                .filter(x => x.id !== item.id && x.domain === item.domain)
+                .sort((a, b) => Math.abs(a.num_year - item.num_year) - Math.abs(b.num_year - item.num_year))
+                .map(x => x.year);
+        }} else {{
+            questionText = '下列何者描述了「' + item.desc + '」之歷史事實？';
+            correctAnswer = item.title;
+            distractors = rawData
+                .filter(x => x.id !== item.id && x.domain === item.domain)
+                .map(x => x.title);
+        }}
+
+        const shuffledDistractors = [...new Set(distractors)].slice(0, 3);
+        const options = [correctAnswer, ...shuffledDistractors].sort(() => 0.5 - Math.random());
+        const correctOptIdx = options.indexOf(correctAnswer);
+
+        return {{ item, questionText, correctAnswer, options, correctOptIdx }};
+    }});
+
+    currentQIndex = 0;
+    document.getElementById('quizStartPrompt').style.display = 'none';
+    document.getElementById('quizCardBox').style.display = 'block';
+    renderCurrentQuestion();
+}}
+
+function renderCurrentQuestion() {{
+    if (currentQIndex >= quizQuestions.length) {{
+        document.getElementById('qQuestionText').innerText = '🎉 恭喜完成本輪測驗！';
+        document.getElementById('qOptionsGroup').innerHTML = '';
+        document.getElementById('qExpBox').style.display = 'none';
+        return;
+    }}
+
+    const q = quizQuestions[currentQIndex];
+    document.getElementById('qProgressText').innerText = '題目 ' + (currentQIndex + 1) + ' / ' + quizQuestions.length;
+    document.getElementById('qCategoryTag').innerText = q.item.domain;
+    document.getElementById('qQuestionText').innerText = q.questionText;
+    document.getElementById('qExpBox').style.display = 'none';
+
+    const optsGroup = document.getElementById('qOptionsGroup');
+    optsGroup.innerHTML = '';
+
+    q.options.forEach((opt, idx) => {{
+        const btn = document.createElement('button');
+        btn.className = 'q-opt-btn';
+        btn.innerText = String.fromCharCode(65 + idx) + '. ' + opt;
+        btn.setAttribute('data-opt-idx', idx);
+        btn.onclick = () => answerQuizQuestion(btn, idx, q);
+        optsGroup.appendChild(btn);
+    }});
+}}
+
+function answerQuizQuestion(btn, selectedIdx, q) {{
+    const allBtns = document.querySelectorAll('.q-opt-btn');
+    allBtns.forEach(b => b.disabled = true);
+
+    if (selectedIdx === q.correctOptIdx) {{
+        btn.classList.add('correct');
+        if (!userLearningData.masteredIds.includes(q.item.id)) userLearningData.masteredIds.push(q.item.id);
+        userLearningData.mistakes = userLearningData.mistakes.filter(mId => mId !== q.item.id);
+    }} else {{
+        btn.classList.add('wrong');
+        allBtns.forEach(b => {{
+            if (parseInt(b.getAttribute('data-opt-idx')) === q.correctOptIdx) {{
+                b.classList.add('correct');
+            }}
+        }});
+        if (!userLearningData.mistakes.includes(q.item.id)) userLearningData.mistakes.push(q.item.id);
+    }}
+
+    saveUserData();
+
+    const expBox = document.getElementById('qExpBox');
+    document.getElementById('qExpText').innerHTML = '<b>【年代地點】</b>' + q.item.year + ' (' + q.item.loc + ')<br><br><b>【詳細說明】</b>' + q.item.desc;
+    expBox.style.display = 'block';
+}}
+
+function nextQuizQuestion() {{
+    currentQIndex++;
+    renderCurrentQuestion();
+}}
+
+function switchQuizSubTab(tab) {{
+    const btnFC = document.getElementById('subTabFC');
+    const btnTest = document.getElementById('subTabTest');
+
+    if (btnFC) btnFC.classList.remove('active');
+    if (btnTest) btnTest.classList.remove('active');
+
+    document.getElementById('secFlashcards').style.display = 'none';
+    document.getElementById('secQuiz').style.display = 'none';
+    document.getElementById('secMistakes').style.display = 'none';
+
+    if (tab === 'flashcards') {{
+        if (btnFC) btnFC.classList.add('active');
+        document.getElementById('secFlashcards').style.display = 'block';
+    }} else if (tab === 'quiz') {{
+        if (btnTest) btnTest.classList.add('active');
+        document.getElementById('secQuiz').style.display = 'block';
+    }} else if (tab === 'mistakes') {{
+        document.getElementById('secMistakes').style.display = 'block';
+        renderMistakesList();
+    }} else if (tab === 'fc_mastered') {{
+        if (btnFC) btnFC.classList.add('active');
+        document.getElementById('secFlashcards').style.display = 'block';
+        const masteredItems = userLearningData.masteredIds.map(id => findEventById(id)).filter(Boolean);
+        if (masteredItems.length === 0) {{ alert('尚無已掌握項目，繼續加油！'); return; }}
+        flashcardsList = [...masteredItems];
+        fcIndex = 0;
+        document.getElementById('fcStartPrompt').style.display = 'none';
+        document.getElementById('fcDisplayArea').style.display = 'block';
+        renderCurrentFlashcard();
+    }} else if (tab === 'fc_reviewing') {{
+        if (btnFC) btnFC.classList.add('active');
+        document.getElementById('secFlashcards').style.display = 'block';
+        const revItems = userLearningData.reviewingIds.map(id => findEventById(id)).filter(Boolean);
+        if (revItems.length === 0) {{ alert('目前無待複習項目！'); return; }}
+        flashcardsList = [...revItems];
+        fcIndex = 0;
+        document.getElementById('fcStartPrompt').style.display = 'none';
+        document.getElementById('fcDisplayArea').style.display = 'block';
+        renderCurrentFlashcard();
+    }}
+}}
+
+function renderMistakesList() {{
+    const container = document.getElementById('mistakeListContainer');
+    container.innerHTML = '';
+
+    if (userLearningData.mistakes.length === 0) {{
+        container.innerHTML = '<div style="text-align:center;color:#94a3b8;padding:30px">尚無錯題記錄，表現優異！</div>';
+        return;
+    }}
+
+    userLearningData.mistakes.forEach(id => {{
+        const item = findEventById(id);
+        if (!item) return;
+
+        const card = document.createElement('div');
+        card.className = 'mistake-card';
+        card.innerHTML = '<div class="mistake-info"><h4>[' + item.domain + '] ' + item.title + ' (' + item.year + ')</h4><p>📍 ' + item.loc + ' - ' + item.desc + '</p></div><button class="btn-remove-mistake" onclick="removeMistake(' + item.id + ')">移出錯題本</button>';
+        container.appendChild(card);
+    }});
+}}
+
+function removeMistake(id) {{
+    userLearningData.mistakes = userLearningData.mistakes.filter(mId => mId !== id);
+    saveUserData();
+    renderMistakesList();
+}}
+
+function startMistakeQuiz() {{
+    if (userLearningData.mistakes.length === 0) {{ alert('目前錯題本空空如也！'); return; }}
+    const mistakeItems = userLearningData.mistakes.map(id => findEventById(id)).filter(Boolean);
+    switchQuizSubTab('quiz');
+    generateQuizBatch(mistakeItems, 'MIX', mistakeItems.length);
+}}
+
+// 通用畫面切換
+function switchView(viewName) {{
+    ['home', 'exams', 'quiz', 'map', 'timeline'].forEach(v => {{
+        const el = document.getElementById('view-' + v);
+        const btn = document.getElementById('navBtn' + v.charAt(0).toUpperCase() + v.slice(1));
+        if (el) el.style.display = 'none';
+        if (btn) btn.classList.remove('active');
+    }});
+
+    if (viewName === 'home') {{
+        document.getElementById('view-home').style.display = 'block';
+        document.getElementById('navBtnHome').classList.add('active');
+    }} else if (viewName === 'exams') {{
+        document.getElementById('view-exams').style.display = 'block';
+        document.getElementById('navBtnExams').classList.add('active');
+        renderCEECExamsPage();
+    }} else if (viewName === 'quiz') {{
+        document.getElementById('view-quiz').style.display = 'block';
+        document.getElementById('navBtnQuiz').classList.add('active');
+        updateQuizHeaderStats();
+    }} else if (viewName === 'map') {{
+        document.getElementById('view-map').style.display = 'flex';
+        document.getElementById('navBtnMap').classList.add('active');
+        setTimeout(() => {{ map.invalidateSize(); map.setView([23.8, 121.0], 7); }}, 200);
+    }} else if (viewName === 'timeline') {{
+        document.getElementById('view-timeline').style.display = 'block';
+        document.getElementById('navBtnTimeline').classList.add('active');
+        renderTimelineChronology();
+    }}
+}}
+
+function toggleSidebar() {{
+    document.getElementById('sidebarOverlay').classList.toggle('active');
+}}
+
+// 年代發展條塊繪製
+function renderTimelineChronology() {{
+    const trackTW = document.getElementById('trackTaiwan');
+    const trackCN = document.getElementById('trackChina');
+    const trackWD = document.getElementById('trackWorld');
+    trackTW.innerHTML = ''; trackCN.innerHTML = ''; trackWD.innerHTML = '';
+
+    rawDynasties.forEach(item => {{
+        const bar = document.createElement('div');
+        bar.className = 'dynasty-bar';
+        bar.style.backgroundColor = item.color;
+
+        let rawWidth = ((item.end - item.start) / 12026) * 100;
+        let flexWidth = Math.max(4.5, rawWidth);
+        bar.style.flex = flexWidth + ' 0 auto';
+
+        let startStr = item.start < 0 ? '前' + Math.abs(item.start) : item.start;
+        let endStr = item.end < 0 ? '前' + Math.abs(item.end) : item.end;
+        bar.title = item.name + ' (' + startStr + ' ~ ' + endStr + '年)';
+        bar.innerText = item.name;
+
+        bar.onclick = (e) => {{
+            e.stopPropagation();
+            document.querySelectorAll('.dynasty-bar').forEach(b => b.classList.remove('selected'));
+            bar.classList.add('selected');
+            onDynastyClick(item);
+        }};
+
+        if (item.cat === 'taiwan') trackTW.appendChild(bar);
+        if (item.cat === 'china') trackCN.appendChild(bar);
+        if (item.cat === 'world') trackWD.appendChild(bar);
+    }});
+}}
+
+function onDynastyClick(dynasty) {{
+    const area = document.getElementById('timelineEventsArea');
+    const titleEl = document.getElementById('tlEventsTitle');
+    const grid = document.getElementById('tlEventsGrid');
+
+    const domainKey = dynasty.cat === 'taiwan' ? '臺灣史' : (dynasty.cat === 'china' ? '中國史' : '世界史');
+    const matched = rawData.filter(e => {{
+        const isDomMatch = e.domain === domainKey || (domainKey === '臺灣史' && e.domain === '台灣史');
+        return isDomMatch && e.num_year >= dynasty.start && e.num_year <= dynasty.end;
+    }});
+
+    let startStr = dynasty.start < 0 ? '前' + Math.abs(dynasty.start) : dynasty.start;
+    let endStr = dynasty.end < 0 ? '前' + Math.abs(dynasty.end) : dynasty.end;
+
+    titleEl.innerHTML = "📌 點選時期：<b style='color:#fff;margin:0 4px'>" + dynasty.name + "</b> (" + startStr + " ~ " + endStr + "年) - 共 " + matched.length + " 筆考點";
+
+    grid.innerHTML = '';
+    if (matched.length === 0) {{
+        grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;color:#94a3b8;padding:20px">尚無於此時段登錄之專屬考點。</div>';
+    }} else {{
+        matched.forEach(i => grid.appendChild(createEventCardElement(i)));
+    }}
+
+    area.style.display = 'block';
+    area.scrollIntoView({{ behavior: 'smooth', block: 'nearest' }});
+}}
+
+function closeTimelineEventsArea() {{
+    document.getElementById('timelineEventsArea').style.display = 'none';
+    document.querySelectorAll('.dynasty-bar').forEach(b => b.classList.remove('selected'));
+}}
+
+// 地圖初始化
+const map = L.map('map', {{
+    preferCanvas: true, scrollWheelZoom: true, zoomControl: false,
+    minZoom: 2, maxZoom: 18, worldCopyJump: false
+}}).setView([23.8, 121.0], 7);
+
+const tileLayer = L.tileLayer('{STATIC_CONFIG["tile_url"]}', {{ maxZoom: 18, minZoom: 2, attribution: 'Tiles &copy; Esri' }}).addTo(map);
+
+tileLayer.on('tileerror', function() {{
+    console.warn('底圖載入失敗，請檢查網路連線。');
+}});
+
+L.control.zoom({{ position: 'bottomright' }}).addTo(map);
+
+let markerClusterGroup = L.markerClusterGroup({{
+    spiderfyOnMaxZoom: true, showCoverageOnHover: false, zoomToBoundsOnClick: true, disableClusteringAtZoom: 12
+}}).addTo(map);
+
+let markerMap = new Map();
+let isAll = true;
+let selectedSlot = 2000;
+let debounceTimer = null;
+let filterLevel = "ALL";
+let filterVol = "ALL";
+
+function renderMapMarkers(items) {{
+    markerClusterGroup.clearLayers();
+    markerMap.clear();
+
+    items.forEach(i => {{
+        const c = domainColors[i.domain] || '#f59e0b';
+        const kwChips = (i.keywords || []).map(k => '<span class="pop-kw-chip">#' + k + '</span>').join(' ');
+
+        const popupHTML = '<div class="popup-box"><div class="popup-head"><span class="badge" style="background:' + c + '">' + i.domain + '</span><span class="year">' + i.year + '</span></div><div class="popup-source">📚 [' + i.stage + '] ' + i.sheet + '</div><div class="popup-title">' + i.title + '</div><div class="popup-kw-container">' + kwChips + '</div><div class="popup-loc">📍 ' + i.loc + '</div><div class="popup-desc">' + i.desc + '</div><button class="btn-popup-detail" data-event-id="' + i.id + '">📖 查看詳情與背景說明</button></div>';
+
+        const marker = L.circleMarker([i.lat, i.lng], {{
+            radius: 6, fillColor: c, color: '#ffffff', weight: 1.5, opacity: 1, fillOpacity: 0.9
+        }}).bindPopup(popupHTML);
+
+        markerClusterGroup.addLayer(marker);
+        markerMap.set(i.id, marker);
+    }});
+}}
+
+// 地圖 Popup 事件委派
+document.addEventListener('click', function(e) {{
+    if (e.target && e.target.classList.contains('btn-popup-detail')) {{
+        const eventId = parseInt(e.target.getAttribute('data-event-id'));
+        const item = findEventById(eventId);
+        if (item) openEventDetailModal(item);
+    }}
+}});
+
+function createEventCardElement(i) {{
+    const c = domainColors[i.domain] || '#f59e0b';
+    const card = document.createElement('div');
+    card.className = 'event-card';
+
+    card.onclick = () => openEventDetailModal(i);
+
+    card.innerHTML = '<div><div class="ev-card-top"><span class="ev-badge" style="background:' + c + '">' + i.domain + '</span><span class="ev-year">' + i.year + '</span></div><div class="ev-source">[' + i.stage + '] ' + i.sheet + '</div><div class="ev-title">' + i.title + '</div><div class="ev-loc">📍 ' + i.loc + '</div><div class="ev-desc">' + i.desc + '</div></div><div style="display:flex;gap:6px;margin-top:10px"><button class="btn-card-detail" style="flex:1" onclick="event.stopPropagation(); openEventDetailModal(findEventById(' + i.id + '));">📖 查看詳情與背景說明</button></div>';
+    return card;
+}}
+
+function resetHomePagination() {{ homeDisplayLimit = 12; }}
+function loadMoreHomeCards() {{ homeDisplayLimit += 12; renderHomeCards(); }}
+
+function renderHomeCards() {{
+    const grid = document.getElementById('eventsGrid');
+    const q = (document.getElementById('homeSearchInput').value || "").toLowerCase().trim();
+    const loadMoreBox = document.getElementById('loadMoreBox');
+
+    const filtered = rawData.filter(i => {{
+        if (currentHomeCategory !== 'ALL' && !i.domain.includes(currentHomeCategory)) return false;
+        if (q) {{
+            const kwMatch = (i.keywords || []).some(k => k.toLowerCase().includes(q));
+            return i.title.toLowerCase().includes(q) ||
+                   i.loc.toLowerCase().includes(q) ||
+                   i.desc.toLowerCase().includes(q) ||
+                   i.sheet.toLowerCase().includes(q) || kwMatch;
+        }}
+        return true;
+    }});
+
+    grid.innerHTML = '';
+    if (filtered.length === 0) {{
+        grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;color:#94a3b8;padding:30px">找不到符合條件的考點。</div>';
+        loadMoreBox.style.display = 'none';
+        return;
+    }}
+
+    const visibleItems = filtered.slice(0, homeDisplayLimit);
+    visibleItems.forEach(i => grid.appendChild(createEventCardElement(i)));
+
+    loadMoreBox.style.display = homeDisplayLimit >= filtered.length ? 'none' : 'block';
+}}
+
+function filterHomeCategory(cat) {{
+    currentHomeCategory = cat;
+    ['tabAll', 'tabTW', 'tabCN', 'tabWD'].forEach(id => {{
+        const el = document.getElementById(id);
+        if (el) el.classList.remove('active');
+    }});
+
+    if (cat === 'ALL') document.getElementById('tabAll').classList.add('active');
+    if (cat === '臺灣史') document.getElementById('tabTW').classList.add('active');
+    if (cat === '中國史') document.getElementById('tabCN').classList.add('active');
+    if (cat === '世界史') document.getElementById('tabWD').classList.add('active');
+
+    resetHomePagination();
+    renderHomeCards();
+}}
+
+function openEventDetailModal(item) {{
+    activeModalEvent = item;
+    const c = domainColors[item.domain] || '#f59e0b';
+
+    document.getElementById('mdlDomainBadge').innerText = item.domain;
+    document.getElementById('mdlDomainBadge').style.background = c;
+    document.getElementById('mdlYearBadge').innerText = item.year;
+    document.getElementById('mdlTitle').innerText = item.title;
+    document.getElementById('mdlSource').innerText = "📚 [" + item.stage + "] " + item.sheet;
+
+    const kwArea = document.getElementById('mdlKeywordsArea');
+    kwArea.innerHTML = '';
+    (item.keywords || []).forEach(kw => {{
+        const chip = document.createElement('span');
+        chip.className = 'kw-chip';
+        chip.innerText = "# " + kw;
+        kwArea.appendChild(chip);
+    }});
+
+    document.getElementById('mdlLocText').innerHTML = "<b>地點：</b>" + item.loc + "<br><br>" + item.desc;
+    document.getElementById('mdlCauseText').innerText = item.cause || '暫無資訊';
+    document.getElementById('mdlEffectText').innerText = item.effect || '暫無資訊';
+
+    document.getElementById('eventDetailModal').classList.add('active');
+}}
+
+function closeEventDetailModal() {{
+    document.getElementById('eventDetailModal').classList.remove('active');
+}}
+
+function flyToCurrentModalEvent() {{
+    if (!activeModalEvent) return;
+    closeEventDetailModal();
+
+    filterLevel = "ALL";
+    filterVol = "ALL";
+    isAll = true;
+    document.getElementById('searchInput').value = "";
+    document.querySelectorAll('[data-filter]').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('[data-val="ALL"]').forEach(b => b.classList.add('active'));
+
+    filterData();
+    switchView('map');
+
+    setTimeout(() => {{
+        map.flyTo([activeModalEvent.lat, activeModalEvent.lng], 9, {{ duration: 1.2 }});
+        setTimeout(() => {{
+            const marker = markerMap.get(activeModalEvent.id);
+            if (marker) {{
+                markerClusterGroup.zoomToShowLayer(marker, () => {{ marker.openPopup(); }});
+            }}
+        }}, 1300);
+    }}, 300);
+}}
+
+function setFilterChip(btn, group, val) {{
+    const parent = btn.parentElement;
+    parent.querySelectorAll('[data-filter="' + group + '"]').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    if (group === 'level') filterLevel = val;
+    if (group === 'vol') filterVol = val;
+    filterData();
+}}
+
+function onSliderDrag(val) {{
+    isAll = false;
+    selectedSlot = parseInt(val);
+    updateSliderLabel();
+    clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(() => filterData(), 60);
+}}
+
+function resetTimeSlider() {{
+    isAll = true;
+    document.getElementById('timeSlider').value = 2000;
+    updateSliderLabel();
+    filterData();
+}}
+
+function updateSliderLabel() {{
+    const targetEl = document.getElementById('hdrYearText');
+    if (isAll) {{ targetEl.innerText = "全部時代"; return; }}
+    if (selectedSlot <= -3000) targetEl.innerText = "史前 (~前3000)";
+    else if (selectedSlot < 0) targetEl.innerText = "前 " + Math.abs(selectedSlot) + " 年 ~ 前 " + Math.abs(selectedSlot + 99) + " 年";
+    else if (selectedSlot === 0) targetEl.innerText = "西元 1 ~ 99 年";
+    else targetEl.innerText = "西元 " + selectedSlot + " ~ " + (selectedSlot + 99) + " 年";
+}}
+
+function debouncedFilter() {{
+    clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(() => filterData(), 120);
+}}
+
+function filterData() {{
+    const q = (document.getElementById('searchInput').value || "").toLowerCase().trim();
+
+    const filtered = rawData.filter(i => {{
+        if (filterLevel !== "ALL" && !i.stage.includes(filterLevel)) return false;
+        if (filterVol !== "ALL" && !i.domain.includes(filterVol)) return false;
+
+        if (q) {{
+            const kwMatch = (i.keywords || []).some(k => k.toLowerCase().includes(q));
+            const matchQuery = i.title.toLowerCase().includes(q) ||
+                               i.loc.toLowerCase().includes(q) ||
+                               i.desc.toLowerCase().includes(q) ||
+                               i.sheet.toLowerCase().includes(q) || kwMatch;
+            if (!matchQuery) return false;
+        }}
+
+        if (isAll) return true;
+        if (selectedSlot <= -3000) return i.num_year <= -2901;
+        else if (selectedSlot >= 2000) return i.num_year >= 2000;
+        else return i.num_year >= selectedSlot && i.num_year < (selectedSlot + 100);
+    }});
+
+    renderMapMarkers(filtered);
+}}
+
+document.addEventListener('keydown', (e) => {{ if (e.key === 'Escape') closeEventDetailModal(); }});
+document.getElementById('eventDetailModal').onclick = (e) => {{ if (e.target.id === 'eventDetailModal') closeEventDetailModal(); }};
+
+// 頁面初始化
+initDynamicStats();
+renderHomeCards();
+renderMapMarkers(rawData);
+updateQuizHeaderStats();
+</script>
+</body>
+</html>
+"""
+
+html_filename = "world_history_map.html"
+with open(html_filename, "w", encoding="utf-8") as f:
+    f.write(html_content)
+
+print(f"✅ 網頁檔 {html_filename} 已完全更新！")
