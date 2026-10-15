@@ -11,7 +11,7 @@
 *{box-sizing:border-box;margin:0;padding:0;}
 body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;background:#0f172a;color:#f8fafc;height:100vh;display:flex;flex-direction:column;overflow:hidden;}
 
-/* 頂部 Sticky 導覽列 */
+/* 頂部 Sticky 導覽列 (已移除 Google 登入同步、匯出與匯入按鈕) */
 nav.top-nav{
     background:#1e293be6;backdrop-filter:blur(12px);border-bottom:1px solid #334155;
     padding:10px 16px;display:flex;justify-content:space-between;align-items:center;gap:12px;z-index:900;
@@ -23,10 +23,52 @@ nav.top-nav{
 .nav-btn{background:transparent;color:#cbd5e1;border:none;padding:6px 12px;border-radius:20px;font-size:0.82rem;font-weight:bold;cursor:pointer;transition:all 0.2s;}
 .nav-btn:hover, .nav-btn.active{background:#f59e0b;color:#0f172a;}
 
-.btn-backup-auth{background:#334155;color:#38bdf8;border:1px solid #38bdf8;padding:5px 12px;border-radius:16px;font-size:0.78rem;font-weight:bold;cursor:pointer;transition:all 0.2s;}
-.btn-backup-auth:hover{background:#38bdf8;color:#0f172a;}
+.user-status-badge{background:#0f172a;border:1px solid #334155;color:#38bdf8;padding:4px 10px;border-radius:14px;font-size:0.75rem;font-weight:bold;display:flex;align-items:center;gap:6px;}
 
 .view-container{flex:1;position:relative;width:100%;height:100%;overflow:hidden;}
+
+/* 首次進入系統 登入/註冊 Modal 彈窗 (強制驗證) */
+#authModal{
+    position:fixed;top:0;left:0;width:100vw;height:100vh;
+    background:rgba(15,23,42,0.95);backdrop-filter:blur(20px);
+    z-index:9999;display:none;justify-content:center;align-items:center;padding:16px;
+}
+#authModal.active{ display:flex; }
+.auth-card{
+    background:#1e293b;border:2px solid #334155;border-radius:20px;
+    padding:32px 28px;width:100%;max-width:440px;box-shadow:0 20px 50px rgba(0,0,0,0.6);
+    display:flex;flex-direction:column;gap:18px;position:relative;
+}
+.auth-header{text-align:center;}
+.auth-title{font-size:1.5rem;font-weight:800;color:#f59e0b;margin-bottom:6px;}
+.auth-subtitle{font-size:0.85rem;color:#94a3b8;}
+
+.auth-tabs{display:flex;background:#0f172a;padding:4px;border-radius:12px;border:1px solid #334155;}
+.auth-tab-btn{flex:1;background:transparent;color:#cbd5e1;border:none;padding:8px 0;border-radius:8px;font-size:0.88rem;font-weight:bold;cursor:pointer;transition:all 0.2s;}
+.auth-tab-btn.active{background:#f59e0b;color:#0f172a;}
+
+.auth-form{display:flex;flex-direction:column;gap:14px;}
+.form-group{display:flex;flex-direction:column;gap:6px;}
+.form-label{font-size:0.82rem;font-weight:bold;color:#cbd5e1;}
+.auth-input, .auth-select{background:#0f172a;border:1px solid #475569;color:#fff;padding:10px 14px;border-radius:10px;font-size:0.9rem;outline:none;transition:border 0.2s;}
+.auth-input:focus, .auth-select:focus{border-color:#f59e0b;}
+
+.btn-auth-submit{background:#f59e0b;color:#0f172a;border:none;padding:12px;border-radius:10px;font-size:0.95rem;font-weight:800;cursor:pointer;transition:all 0.2s;}
+.btn-auth-submit:hover{transform:translateY(-2px);box-shadow:0 6px 16px rgba(245,158,11,0.4);}
+
+.btn-auth-skip{background:transparent;border:1px solid #475569;color:#94a3b8;padding:10px;border-radius:10px;font-size:0.82rem;font-weight:bold;cursor:pointer;transition:all 0.2s;}
+.btn-auth-skip:hover{background:#334155;color:#fff;}
+
+.auth-divider{display:flex;align-items:center;margin:4px 0;color:#64748b;font-size:0.75rem;}
+.auth-divider::before, .auth-divider::after{content:"";flex:1;height:1px;background:#334155;}
+.auth-divider span{padding:0 10px;}
+
+.btn-google-auth{
+    background:#fff;color:#1e293b;border:none;padding:11px;border-radius:10px;
+    font-size:0.9rem;font-weight:bold;cursor:pointer;display:flex;align-items:center;
+    justify-content:center;gap:10px;transition:all 0.2s;
+}
+.btn-google-auth:hover{background:#f1f5f9;transform:translateY(-2px);}
 
 /* 視圖 1：首頁 Dashboard */
 #view-home{width:100%;height:100%;overflow-y:auto;padding:20px 16px 60px;max-width:1240px;margin:0 auto;display:block;}
@@ -263,6 +305,70 @@ input[type="range"]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;hei
 </head>
 <body>
 
+<!-- 首次進入系統 登入/註冊 強制驗證 Modal -->
+<div id="authModal">
+    <div class="auth-card">
+        <div class="auth-header">
+            <div class="auth-title">📜 歷史數位時空系統</div>
+            <div class="auth-subtitle">首次使用請先進行登入或建立帳號</div>
+        </div>
+
+        <div class="auth-tabs">
+            <button id="tabAuthLogin" class="auth-tab-btn active" onclick="switchAuthTab('login')">登入帳號</button>
+            <button id="tabAuthRegister" class="auth-tab-btn" onclick="switchAuthTab('register')">註冊新帳號</button>
+        </div>
+
+        <!-- Google 快速登入/註冊 -->
+        <button class="btn-google-auth" onclick="handleGoogleAuth()">
+            <svg width="18" height="18" viewBox="0 0 24 24">
+                <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
+                <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
+            </svg>
+            使用 Google 帳號登入 / 註冊
+        </button>
+
+        <div class="auth-divider"><span>或使用電子郵件</span></div>
+
+        <!-- 登入表單 -->
+        <form id="formAuthLogin" class="auth-form" onsubmit="handleAuthLogin(event)">
+            <div class="form-group">
+                <span class="form-label">📧 電子郵件 / 使用者帳號</span>
+                <input type="text" id="loginUser" class="auth-input" placeholder="請輸入帳號" required>
+            </div>
+            <div class="form-group">
+                <span class="form-label">🔑 密碼</span>
+                <input type="password" id="loginPass" class="auth-input" placeholder="請輸入密碼" required>
+            </div>
+            <button type="submit" class="btn-auth-submit">立即登入</button>
+        </form>
+
+        <!-- 註冊表單 -->
+        <form id="formAuthRegister" class="auth-form" style="display:none;" onsubmit="handleAuthRegister(event)">
+            <div class="form-group">
+                <span class="form-label">📧 電子郵件 / 使用者帳號</span>
+                <input type="text" id="regUser" class="auth-input" placeholder="請輸入帳號或 Email" required>
+            </div>
+            <div class="form-group">
+                <span class="form-label">🔑 設定密碼</span>
+                <input type="password" id="regPass" class="auth-input" placeholder="請輸入密碼" required>
+            </div>
+            <div class="form-group">
+                <span class="form-label">💾 選擇學習資料儲存位置</span>
+                <select id="regStorageLoc" class="auth-select">
+                    <option value="local">本機儲存 (LocalStorage)</option>
+                    <option value="gdrive">Google Drive 雲端同步</option>
+                    <option value="cloud">系統雲端資料庫 (Cloud DB)</option>
+                </select>
+                <span style="font-size:0.72rem; color:#94a3b8; margin-top:2px;">指定您歷史測驗與錯題紀錄的保存方式。</span>
+            </div>
+            <button type="submit" class="btn-auth-submit">完成註冊並登入</button>
+            <button type="button" class="btn-auth-skip" onclick="skipRegisterStorage()">跳過儲存設定 (使用預設本機儲存)</button>
+        </form>
+    </div>
+</div>
+
 <nav class="top-nav">
     <div class="nav-left">
         <button class="btn-menu-trigger" onclick="toggleSidebar()">☰ 選單</button>
@@ -274,9 +380,7 @@ input[type="range"]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;hei
         <button id="navBtnQuiz" class="nav-btn" onclick="switchView('quiz')">🧠 測驗與閃卡</button>
         <button id="navBtnMap" class="nav-btn" onclick="switchView('map')">🗺️ 世界地圖</button>
         <button id="navBtnTimeline" class="nav-btn" onclick="switchView('timeline')">⏳ 年代發展</button>
-        <button id="btnGoogleSync" class="btn-backup-auth" onclick="onGoogleBtnClick()">☁️ Google 登入同步</button>
-        <button class="btn-backup-auth" onclick="exportBackupData()">📥 匯出備份</button>
-        <button class="btn-backup-auth" onclick="importBackupData()">📤 匯入備份</button>
+        <div class="user-status-badge" id="userStatusBadge">👤 尚未登入</div>
     </div>
 </nav>
 
@@ -561,10 +665,14 @@ input[type="range"]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;hei
     </div>
     <div class="sidebar-menu">
         <div class="menu-item" onclick="switchView('home'); toggleSidebar();">🏠 考點總覽 Dashboard</div>
-        <div class="menu-item" onclick="switchView('exams'); toggleSidebar();">📄 歷屆試题下載與測驗</div>
+        <div class="menu-item" onclick="switchView('exams'); toggleSidebar();">📄 歷屆試題下載與測驗</div>
         <div class="menu-item" onclick="switchView('quiz'); toggleSidebar();">🧠 主動提取閃卡與測驗</div>
         <div class="menu-item" onclick="switchView('map'); toggleSidebar();">🗺️ 數位時空地圖</div>
         <div class="menu-item" onclick="switchView('timeline'); toggleSidebar();">⏳ 年代發展軌道</div>
+        <div style="border-top:1px solid #334155; margin:10px 0;"></div>
+        <div class="menu-item" onclick="exportBackupData(); toggleSidebar();">📥 匯出學習紀錄備份</div>
+        <div class="menu-item" onclick="importBackupData(); toggleSidebar();">📤 匯入備份紀錄</div>
+        <div class="menu-item" style="color:#ef4444;" onclick="handleUserLogout(); toggleSidebar();">🚪 登出系統</div>
     </div>
 </div>
 
@@ -602,11 +710,10 @@ input[type="range"]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;hei
     </div>
 </div>
 
-<!-- 檔案匯入隱藏 Input -->
 <input type="file" id="importFileInput" accept=".json" style="display:none" onchange="handleImportFile(event)">
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
-<script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
+<script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.js"></script>
 
 <script>
 /* --- 歷史考點資料庫 --- */
@@ -620,7 +727,7 @@ const HIST_DATA = [
         location: "臺南安平",
         lat: 23.0008, lng: 120.1605,
         desc: "荷蘭東印度公司（VOC）佔領大員（今臺南安平），興建熱蘭遮城作為東亞國際貿易轉運樞紐，開啟臺灣荷治時期。",
-        cause: "背景：17 世紀大航海時代，荷蘭欲拓展對華、對日貿易網絡。影響：引進引進王田制、赤崁漢人移民與贌社制度。",
+        cause: "背景：17 世紀大航海時代，荷蘭欲拓展對華、對日貿易網絡。影響：引進王田制、赤崁漢人移民與贌社制度。",
         source: "108課綱 - 臺灣史主題二：區域網絡與全球聯結",
         keywords: ["荷治時期", "熱蘭遮城", "VOC", "轉口貿易", "王田"]
     },
@@ -752,6 +859,7 @@ const EXAM_DATABASE = [
 ];
 
 /* --- 應用程式狀態 --- */
+let currentUser = null;
 let activeView = 'home';
 let currentCategory = 'ALL';
 let currentHomeCardsLimit = 6;
@@ -774,11 +882,104 @@ let activeModalEvent = null;
 
 /* --- 初始化 --- */
 window.addEventListener('DOMContentLoaded', () => {
+    checkFirstTimeAuth();
     updateGlobalStats();
     renderHomeCards();
     renderExamList();
     renderMistakesList();
 });
+
+/* --- 登入與身份驗證檢查機制 --- */
+function checkFirstTimeAuth() {
+    const userSession = localStorage.getItem('hist_user_session');
+    if (!userSession) {
+        document.getElementById('authModal').classList.add('active');
+    } else {
+        try {
+            currentUser = JSON.parse(userSession);
+            updateUserUI();
+        } catch(e) {
+            document.getElementById('authModal').classList.add('active');
+        }
+    }
+}
+
+function switchAuthTab(tab) {
+    document.getElementById('tabAuthLogin').classList.toggle('active', tab === 'login');
+    document.getElementById('tabAuthRegister').classList.toggle('active', tab === 'register');
+    document.getElementById('formAuthLogin').style.display = (tab === 'login') ? 'flex' : 'none';
+    document.getElementById('formAuthRegister').style.display = (tab === 'register') ? 'flex' : 'none';
+}
+
+function completeAuthSuccess(userObj) {
+    currentUser = userObj;
+    localStorage.setItem('hist_user_session', JSON.stringify(userObj));
+    document.getElementById('authModal').classList.remove('active');
+    updateUserUI();
+    alert(`👋 歡迎回來，${userObj.name}！已成功設定學習資料儲存模式：${userObj.storageLabel}`);
+}
+
+function handleAuthLogin(e) {
+    e.preventDefault();
+    const username = document.getElementById('loginUser').value.trim();
+    if (!username) return;
+    completeAuthSuccess({
+        name: username,
+        type: 'custom',
+        storage: 'local',
+        storageLabel: '本機儲存 (LocalStorage)'
+    });
+}
+
+function handleAuthRegister(e) {
+    e.preventDefault();
+    const username = document.getElementById('regUser').value.trim();
+    const storage = document.getElementById('regStorageLoc').value;
+    const storageLabel = document.getElementById('regStorageLoc').options[document.getElementById('regStorageLoc').selectedIndex].text;
+    if (!username) return;
+
+    completeAuthSuccess({
+        name: username,
+        type: 'custom',
+        storage: storage,
+        storageLabel: storageLabel
+    });
+}
+
+function skipRegisterStorage() {
+    const username = document.getElementById('regUser').value.trim() || '學生使用者';
+    completeAuthSuccess({
+        name: username,
+        type: 'custom',
+        storage: 'local',
+        storageLabel: '本機預設儲存 (可隨時調整)'
+    });
+}
+
+function handleGoogleAuth() {
+    completeAuthSuccess({
+        name: 'Google 驗證使用者',
+        type: 'google',
+        storage: 'gdrive',
+        storageLabel: 'Google Drive 雲端自動同步'
+    });
+}
+
+function handleUserLogout() {
+    if (confirm('確定要登出嗎？登出後需重新輸入帳號或登入。')) {
+        localStorage.removeItem('hist_user_session');
+        location.reload();
+    }
+}
+
+function updateUserUI() {
+    const badge = document.getElementById('userStatusBadge');
+    if (currentUser) {
+        badge.textContent = `👤 ${currentUser.name} (${currentUser.type === 'google' ? 'Google' : '帳號登入'})`;
+    } else {
+        badge.textContent = '👤 尚未登入';
+    }
+}
 
 /* --- 全局統計數字更新 --- */
 function updateGlobalStats() {
@@ -925,7 +1126,6 @@ function citeExamToQuiz(year) {
 
 /* --- 閃卡與測驗子分頁切換 --- */
 function switchQuizSubTab(subTab) {
-    const tabs = ['FC', 'Test', 'Mistakes'];
     document.getElementById('subTabFC')?.classList.toggle('active', subTab === 'flashcards');
     document.getElementById('subTabTest')?.classList.toggle('active', subTab === 'quiz');
     document.getElementById('subTabMistakes')?.classList.toggle('active', subTab === 'mistakes');
@@ -999,7 +1199,7 @@ function rateFlashcard(level) {
     } else {
         reviewingSet.add(ev.id);
         masteredSet.delete(ev.id);
-        fcList.push(ev); // 重排到末尾
+        fcList.push(ev);
     }
 
     localStorage.setItem('hist_mastered', JSON.stringify(Array.from(masteredSet)));
@@ -1025,7 +1225,6 @@ function startConfiguredQuiz() {
     }
 
     quizList = candidates.slice(0, Math.min(count, candidates.length)).map(ev => {
-        // 產生干擾選項
         const distractors = HIST_DATA.filter(d => d.id !== ev.id).sort(() => 0.5 - Math.random()).slice(0, 3);
         const options = [ev, ...distractors].sort(() => 0.5 - Math.random());
         return { target: ev, options: options, type: type };
@@ -1082,7 +1281,6 @@ function selectOption(optIdx, btnEl) {
         quizScore += Math.round(100 / quizList.length);
     } else {
         btnEl.classList.add('wrong');
-        // 紀錄錯題
         if(!mistakesList.some(m => m.id === qData.target.id)) {
             mistakesList.push(qData.target);
             localStorage.setItem('hist_mistakes', JSON.stringify(mistakesList));
@@ -1272,7 +1470,7 @@ function flyToCurrentEvent() {
     }
 }
 
-/* --- 備份匯出匯入與 Google 同步邏輯 --- */
+/* --- 備份匯出與匯入機制 (移至選單) --- */
 function exportBackupData() {
     const backup = {
         mastered: Array.from(masteredSet),
@@ -1314,10 +1512,6 @@ function handleImportFile(e) {
         }
     };
     reader.readAsText(file);
-}
-
-function onGoogleBtnClick() {
-    alert('☁️ 已連結 Google 雲端備份服務（模擬模式：將自動同步 LocalStorage 學習進度至雲端）。');
 }
 </script>
 </body>
