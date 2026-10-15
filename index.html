@@ -12,7 +12,7 @@
 *{box-sizing:border-box;margin:0;padding:0;}
 body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;background:#0f172a;color:#f8fafc;height:100vh;display:flex;flex-direction:column;overflow:hidden;}
 
-/* 全螢幕強制登入/註冊門檻 */
+/* 全螢幕登入/註冊門檻 */
 #authScreen{
     position:fixed;top:0;left:0;width:100vw;height:100vh;
     background:#0f172a;z-index:10000;display:flex;
@@ -20,8 +20,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-s
 }
 .auth-card{
     background:#1e293b;border:1px solid #334155;border-radius:12px;
-    padding:32px 28px;width:100%;max-width:400px;
-    display:flex;flex-direction:column;gap:16px;
+    padding:28px 24px;width:100%;max-width:420px;
+    display:flex;flex-direction:column;gap:14px;
     box-shadow:0 10px 30px rgba(0,0,0,0.5);
 }
 .auth-header{text-align:center;}
@@ -32,10 +32,10 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-s
 .auth-tab-btn{flex:1;background:transparent;color:#cbd5e1;border:none;padding:8px 0;border-radius:6px;font-size:0.85rem;font-weight:bold;cursor:pointer;}
 .auth-tab-btn.active{background:#f59e0b;color:#0f172a;}
 
-.auth-form{display:flex;flex-direction:column;gap:12px;}
+.auth-form{display:flex;flex-direction:column;gap:10px;}
 .form-group{display:flex;flex-direction:column;gap:4px;}
 .form-label{font-size:0.8rem;color:#cbd5e1;}
-.auth-input, .auth-select{background:#0f172a;border:1px solid #475569;color:#fff;padding:9px 12px;border-radius:6px;font-size:0.85rem;outline:none;}
+.auth-input, .auth-select{background:#0f172a;border:1px solid #475569;color:#fff;padding:8px 12px;border-radius:6px;font-size:0.85rem;outline:none;}
 .auth-input:focus, .auth-select:focus{border-color:#f59e0b;}
 
 .btn-auth-submit{background:#f59e0b;color:#0f172a;border:none;padding:10px;border-radius:6px;font-size:0.9rem;font-weight:bold;cursor:pointer;}
@@ -46,15 +46,14 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-s
 .auth-divider span{padding:0 8px;}
 
 .btn-google-auth{
-    background:#fff;color:#1e293b;border:none;padding:10px;border-radius:6px;
+    background:#fff;color:#1e293b;border:none;padding:9px;border-radius:6px;
     font-size:0.85rem;font-weight:bold;cursor:pointer;display:flex;align-items:center;
     justify-content:center;gap:8px;
 }
 
-/* 主系統介面 */
+/* 主應用程式 */
 #appMain{display:none;flex-direction:column;width:100%;height:100vh;overflow:hidden;}
 
-/* 頂部導覽列 */
 nav.top-nav{
     background:#1e293b;border-bottom:1px solid #334155;
     padding:10px 16px;display:flex;justify-content:space-between;align-items:center;z-index:900;
@@ -62,19 +61,19 @@ nav.top-nav{
 .nav-left{display:flex;align-items:center;gap:12px;}
 .btn-menu-trigger{background:#334155;color:#f59e0b;border:1px solid #475569;padding:6px 12px;border-radius:6px;font-size:0.85rem;font-weight:bold;cursor:pointer;}
 .nav-brand{font-size:1rem;font-weight:bold;color:#f59e0b;}
-.nav-links{display:flex;align-items:center;gap:8px;}
-.nav-btn{background:transparent;color:#cbd5e1;border:1px solid #334155;padding:6px 14px;border-radius:6px;font-size:0.85rem;font-weight:bold;cursor:pointer;}
+.nav-links{display:flex;align-items:center;gap:6px;}
+.nav-btn{background:transparent;color:#cbd5e1;border:1px solid #334155;padding:6px 12px;border-radius:6px;font-size:0.82rem;font-weight:bold;cursor:pointer;}
 .nav-btn.active, .nav-btn:hover{background:#f59e0b;color:#0f172a;border-color:#f59e0b;}
 
 .view-container{flex:1;position:relative;width:100%;height:100%;overflow:hidden;}
 
-/* 視圖 1：首頁 */
+/* 視圖：首頁 */
 #view-home{width:100%;height:100%;overflow-y:auto;padding:20px 16px 60px;max-width:1100px;margin:0 auto;display:block;}
-.home-hero{background:#1e293b;border:1px solid #334155;border-radius:12px;padding:20px;margin-bottom:20px;text-align:center;}
+.home-hero{background:#1e293b;border:1px solid #334155;border-radius:12px;padding:20px;margin-bottom:16px;text-align:center;}
 .hero-badge-group{display:flex;gap:10px;justify-content:center;margin-bottom:10px;}
 .hero-stat-pill{background:#0f172a;border:1px solid #334155;padding:4px 12px;border-radius:14px;font-size:0.8rem;color:#cbd5e1;}
 .hero-stat-pill span{color:#f59e0b;font-weight:bold;}
-.home-title{font-size:1.5rem;font-weight:bold;color:#f8fafc;margin-bottom:6px;}
+.home-title{font-size:1.4rem;font-weight:bold;color:#f8fafc;margin-bottom:4px;}
 .home-title span{color:#f59e0b;}
 .home-subtitle{font-size:0.85rem;color:#94a3b8;}
 
@@ -95,7 +94,7 @@ nav.top-nav{
 .ev-desc{font-size:0.8rem;color:#cbd5e1;line-height:1.4;margin-bottom:10px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
 .btn-card-detail{background:#0f172a;color:#f59e0b;border:1px solid #f59e0b;padding:5px 8px;border-radius:4px;font-size:0.75rem;font-weight:bold;cursor:pointer;text-align:center;}
 
-/* 視圖 2：歷屆試題 */
+/* 視圖：歷屆試題 */
 #view-exams{width:100%;height:100%;overflow-y:auto;padding:20px 16px 60px;max-width:1000px;margin:0 auto;display:none;}
 .exams-header{background:#1e293b;border:1px solid #334155;border-radius:8px;padding:16px 20px;margin-bottom:16px;}
 .exams-header h2{font-size:1.2rem;color:#38bdf8;margin-bottom:4px;}
@@ -115,7 +114,7 @@ nav.top-nav{
 .btn-download-pdf{background:#0284c7;color:#fff;padding:6px 12px;border-radius:6px;text-decoration:none;font-size:0.8rem;font-weight:bold;}
 .btn-cite-quiz{background:#059669;color:#fff;border:none;padding:6px 12px;border-radius:6px;font-size:0.8rem;font-weight:bold;cursor:pointer;}
 
-/* 視圖 3：測驗與閃卡 */
+/* 視圖：測驗與閃卡 */
 #view-quiz{width:100%;height:100%;overflow-y:auto;padding:20px 16px 60px;max-width:1000px;margin:0 auto;display:none;}
 
 .quiz-header{background:#1e293b;border:1px solid #334155;border-radius:8px;padding:16px 20px;margin-bottom:16px;display:flex;justify-content:space-between;align-items:center;gap:16px;}
@@ -185,7 +184,29 @@ nav.top-nav{
 .mistake-info p{font-size:0.8rem;color:#cbd5e1;}
 .btn-remove-mistake{background:#334155;color:#ef4444;border:1px solid #ef4444;padding:6px 12px;border-radius:6px;font-size:0.75rem;cursor:pointer;}
 
-/* 視圖 4：世界地圖 */
+/* 視圖：討論區（公眾與私人聊天板） */
+#view-chat{width:100%;height:100%;overflow-y:auto;padding:20px 16px 60px;max-width:1000px;margin:0 auto;display:none;}
+.chat-container{background:#1e293b;border:1px solid #334155;border-radius:12px;display:flex;flex-direction:column;height:75vh;overflow:hidden;}
+.chat-tab-header{display:flex;background:#0f172a;border-bottom:1px solid #334155;padding:8px 12px;gap:8px;}
+.chat-tab-btn{background:transparent;border:1px solid #334155;color:#cbd5e1;padding:6px 16px;border-radius:6px;font-size:0.85rem;font-weight:bold;cursor:pointer;}
+.chat-tab-btn.active{background:#f59e0b;color:#0f172a;border-color:#f59e0b;}
+
+.chat-body{flex:1;display:flex;flex-direction:column;padding:14px;overflow-y:auto;gap:10px;background:#0f172a;}
+.chat-msg-row{display:flex;flex-direction:column;max-width:80%;margin-bottom:4px;}
+.chat-msg-row.self{align-self:flex-end;align-items:flex-end;}
+.chat-msg-row.other{align-self:flex-start;align-items:flex-start;}
+.chat-sender-info{font-size:0.72rem;color:#94a3b8;margin-bottom:2px;}
+.chat-msg-bubble{padding:8px 12px;border-radius:8px;font-size:0.88rem;line-height:1.4;word-break:break-word;}
+.chat-msg-row.self .chat-msg-bubble{background:#f59e0b;color:#0f172a;font-weight:bold;}
+.chat-msg-row.other .chat-msg-bubble{background:#1e293b;color:#f8fafc;border:1px solid #334155;}
+
+.chat-input-area{background:#1e293b;padding:12px;border-top:1px solid #334155;display:flex;gap:8px;align-items:center;}
+.chat-input{flex:1;background:#0f172a;border:1px solid #475569;color:#fff;padding:8px 12px;border-radius:6px;font-size:0.85rem;outline:none;}
+.btn-send-chat{background:#f59e0b;color:#0f172a;border:none;padding:8px 16px;border-radius:6px;font-weight:bold;font-size:0.85rem;cursor:pointer;}
+
+.pm-target-select{display:flex;gap:8px;align-items:center;padding:8px 12px;background:#1e293b;border-bottom:1px solid #334155;}
+
+/* 視圖：世界地圖 */
 #view-map{width:100%;height:100%;display:none;flex-direction:column;position:relative;}
 .map-top-bar{background:#1e293b;padding:8px 12px;display:flex;gap:10px;align-items:center;border-bottom:1px solid #334155;z-index:10;}
 .timeline-box{display:flex;align-items:center;gap:8px;flex:1;background:#0f172a;padding:4px 10px;border-radius:6px;border:1px solid #334155;}
@@ -195,7 +216,7 @@ input[type="range"]{flex:1;height:4px;}
 
 #map{flex:1;width:100%;height:100%;background:#0f172a;}
 
-/* 視圖 5：年代對照 */
+/* 視圖：年代對照 */
 #view-timeline{width:100%;height:100%;overflow-y:auto;padding:20px 16px 60px;max-width:1000px;margin:0 auto;display:none;}
 .chronology-container{background:#1e293b;border:1px solid #334155;border-radius:8px;padding:16px;margin-bottom:16px;overflow-x:auto;}
 .chrono-row-group{margin-bottom:14px;min-width:700px;}
@@ -206,7 +227,7 @@ input[type="range"]{flex:1;height:4px;}
 #timelineEventsArea{background:#1e293b;border:1px solid #334155;border-radius:8px;padding:14px;display:none;}
 .tl-events-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;border-bottom:1px solid #334155;padding-bottom:6px;}
 
-/* 側邊欄（僅保留「世界地圖」與「年代發展」及備份） */
+/* 側邊欄 */
 #sidebarOverlay{position:fixed;top:0;left:0;width:240px;height:100vh;background:#0f172a;border-right:1px solid #334155;z-index:1000;display:flex;flex-direction:column;padding:16px;transform:translateX(-100%);transition:transform 0.25s;}
 #sidebarOverlay.active{ transform:translateX(0); }
 .sidebar-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;border-bottom:1px solid #334155;padding-bottom:8px;}
@@ -224,16 +245,16 @@ input[type="range"]{flex:1;height:4px;}
 .btn-close-modal{background:transparent;color:#fff;border:none;font-size:1rem;cursor:pointer;}
 .modal-section{margin-bottom:10px;background:#0f172a;padding:10px;border-radius:6px;font-size:0.85rem;line-height:1.4;color:#cbd5e1;}
 
-<style>
 @media (max-width: 768px) {
     .exam-pdf-card-row { flex-direction: column; align-items: flex-start; }
     .exam-action-btns { width: 100%; justify-content: flex-end; }
+    .nav-btn { padding: 4px 8px; font-size: 0.75rem; }
 }
 </style>
 </head>
 <body>
 
-<!-- 全螢幕強制登入/註冊門檻 -->
+<!-- 全螢幕登入/註冊門檻 -->
 <div id="authScreen">
     <div class="auth-card">
         <div class="auth-header">
@@ -261,11 +282,11 @@ input[type="range"]{flex:1;height:4px;}
         <form id="formAuthLogin" class="auth-form" onsubmit="handleAuthLogin(event)">
             <div class="form-group">
                 <span class="form-label">帳號 / Email</span>
-                <input type="text" id="loginUser" class="auth-input" required>
+                <input type="text" id="loginUser" class="auth-input" required placeholder="請輸入帳號">
             </div>
             <div class="form-group">
                 <span class="form-label">密碼</span>
-                <input type="password" id="loginPass" class="auth-input" required>
+                <input type="password" id="loginPass" class="auth-input" required placeholder="請輸入密碼">
             </div>
             <button type="submit" class="btn-auth-submit">登入</button>
         </form>
@@ -273,11 +294,15 @@ input[type="range"]{flex:1;height:4px;}
         <form id="formAuthRegister" class="auth-form" style="display:none;" onsubmit="handleAuthRegister(event)">
             <div class="form-group">
                 <span class="form-label">帳號 / Email</span>
-                <input type="text" id="regUser" class="auth-input" required>
+                <input type="text" id="regUser" class="auth-input" required placeholder="設定帳號">
+            </div>
+            <div class="form-group">
+                <span class="form-label">顯示暱稱（新增）</span>
+                <input type="text" id="regNickname" class="auth-input" required placeholder="請輸入討論區顯示暱稱">
             </div>
             <div class="form-group">
                 <span class="form-label">密碼</span>
-                <input type="password" id="regPass" class="auth-input" required>
+                <input type="password" id="regPass" class="auth-input" required placeholder="設定密碼">
             </div>
             <div class="form-group">
                 <span class="form-label">學習資料儲存位置</span>
@@ -300,17 +325,17 @@ input[type="range"]{flex:1;height:4px;}
             <button class="btn-menu-trigger" onclick="toggleSidebar()">☰ 選單</button>
             <div class="nav-brand" onclick="switchView('home')" style="cursor:pointer;">📜 108課綱歷史學習系統</div>
         </div>
-        <!-- 頂部導覽列：保留「首頁」、「歷屆試題」與「測驗與閃卡」 -->
         <div class="nav-links">
             <button id="navBtnHome" class="nav-btn active" onclick="switchView('home')">🏠 首頁</button>
             <button id="navBtnExams" class="nav-btn" onclick="switchView('exams')">📄 歷屆試題</button>
             <button id="navBtnQuiz" class="nav-btn" onclick="switchView('quiz')">🧠 測驗與閃卡</button>
+            <button id="navBtnChat" class="nav-btn" onclick="switchView('chat')">💬 討論交流區</button>
         </div>
     </nav>
 
     <div class="view-container">
 
-        <!-- 視圖 1：首頁總覽 -->
+        <!-- 視圖：首頁 -->
         <div id="view-home">
             <div class="home-hero">
                 <div class="hero-badge-group">
@@ -319,7 +344,7 @@ input[type="range"]{flex:1;height:4px;}
                     <div class="hero-stat-pill">世界史：<span id="statWD">0</span></div>
                 </div>
                 <h1 class="home-title">108課綱歷史考點 <span>學習地圖</span></h1>
-                <p class="home-subtitle">收錄共 <span id="statTotal">0</span> 筆歷史考點，提供歷屆試題、檢索、地圖定位與閃卡測驗。</p>
+                <p class="home-subtitle">已收錄 <span id="statTotal">0</span> 筆核心考點，提供歷屆試題、檢索、地圖定位、閃卡測驗與討論區。</p>
             </div>
 
             <div class="home-filter-section">
@@ -335,7 +360,7 @@ input[type="range"]{flex:1;height:4px;}
             <div class="events-grid" id="eventsGrid"></div>
         </div>
 
-        <!-- 視圖 2：歷屆試題 -->
+        <!-- 視圖：歷屆試題 -->
         <div id="view-exams">
             <div class="exams-header">
                 <h2>大考中心歷史歷屆試題</h2>
@@ -344,7 +369,7 @@ input[type="range"]{flex:1;height:4px;}
             <div class="exam-cards-list" id="ceecExamCardsList"></div>
         </div>
 
-        <!-- 視圖 3：測驗與閃卡 -->
+        <!-- 視圖：測驗與閃卡 -->
         <div id="view-quiz">
             <div class="quiz-header">
                 <div class="quiz-title-box">
@@ -364,7 +389,6 @@ input[type="range"]{flex:1;height:4px;}
                 <button class="q-tab-btn" id="subTabMistakes" onclick="switchQuizSubTab('mistakes')">❌ 錯題本</button>
             </div>
 
-            <!-- 閃卡區塊 -->
             <div id="secFlashcards">
                 <div class="quiz-config-card">
                     <div class="quiz-config-group">
@@ -420,7 +444,6 @@ input[type="range"]{flex:1;height:4px;}
                 </div>
             </div>
 
-            <!-- 選擇題測驗區塊 -->
             <div id="secQuiz" style="display:none">
                 <div class="quiz-config-card">
                     <div class="quiz-config-group">
@@ -472,13 +495,36 @@ input[type="range"]{flex:1;height:4px;}
                 </div>
             </div>
 
-            <!-- 錯題本 -->
             <div id="secMistakes" style="display:none">
                 <div class="mistake-list" id="mistakesContainer"></div>
             </div>
         </div>
 
-        <!-- 視圖 4：世界地圖 -->
+        <!-- 視圖：討論區（新增公眾聊天板與私人聊天板） -->
+        <div id="view-chat">
+            <div class="chat-container">
+                <div class="chat-tab-header">
+                    <button class="chat-tab-btn active" id="chatTabPublic" onclick="switchChatMode('public')">🌐 公眾聊天板</button>
+                    <button class="chat-tab-btn" id="chatTabPrivate" onclick="switchChatMode('private')">🔒 私人聊天板</button>
+                </div>
+
+                <!-- 私人聊天對象選單 -->
+                <div class="pm-target-select" id="pmTargetRow" style="display:none;">
+                    <span style="font-size:0.82rem; color:#cbd5e1;">私訊對象：</span>
+                    <input type="text" id="pmTargetUser" class="chat-input" placeholder="輸入對方的帳號或暱稱..." style="max-width:200px;" onchange="loadPrivateChatMessages()">
+                    <button class="btn-send-chat" style="padding:4px 10px;" onclick="loadPrivateChatMessages()">載入訊息</button>
+                </div>
+
+                <div class="chat-body" id="chatMessagesArea"></div>
+
+                <div class="chat-input-area">
+                    <input type="text" id="chatInputText" class="chat-input" placeholder="輸入聊天訊息..." onkeydown="if(event.key==='Enter') sendChatMessage()">
+                    <button class="btn-send-chat" onclick="sendChatMessage()">發送</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 視圖：世界地圖 -->
         <div id="view-map">
             <div class="map-top-bar">
                 <div class="timeline-box">
@@ -490,7 +536,7 @@ input[type="range"]{flex:1;height:4px;}
             <div id="map"></div>
         </div>
 
-        <!-- 視圖 5：年代對照 -->
+        <!-- 視圖：年代對照 -->
         <div id="view-timeline">
             <div class="chronology-container">
                 <div class="chrono-row-group">
@@ -539,7 +585,7 @@ input[type="range"]{flex:1;height:4px;}
     </div>
 </div>
 
-<!-- 側邊欄：保留「世界地圖」、「年代發展」與資料備份功能 -->
+<!-- 側邊欄 -->
 <div id="sidebarOverlay">
     <div class="sidebar-header">
         <span class="sidebar-title">功能選單</span>
@@ -578,138 +624,294 @@ input[type="range"]{flex:1;height:4px;}
 <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
 
 <script>
-/* 豐富完整之歷史考點資料庫 (涵蓋臺灣、中國與世界史重點考點) */
+/* 擴充版完整歷史考點資料庫 (包含近 50 個臺灣、中國與世界史關鍵考點) */
 const HIST_DATA = [
-    // 臺灣史
+    // --- 臺灣史 (16 個考點) ---
     {
         id: "TW01", category: "臺灣史", title: "長濱文化（舊石器時代）", year: "西元前 15000 年", yearNum: -15000,
         location: "臺東長濱八仙洞", lat: 23.3961, lng: 121.4792,
-        desc: "臺灣已知最早的史前文化，屬於舊石器時代晚期的打製石器文化。",
-        cause: "背景：採集與狩獵生活。影響：證實臺灣早於萬年前即有人類活動紀錄。"
+        desc: "臺灣已知最早史前文化，屬舊石器時代晚期打製石器文化。",
+        cause: "採集與狩獵生活，證實萬年前臺灣即有人類活動。"
     },
     {
-        id: "TW02", category: "臺灣史", title: "熱蘭遮城興建", year: "西元 1624 年", yearNum: 1624,
+        id: "TW02", category: "臺灣史", title: "十三行文化（金屬器時代）", year: "西元前 500 年", yearNum: -500,
+        location: "新北八里", lat: 25.1611, lng: 121.4025,
+        desc: "擁有煉鐵技術，出土煉鐵爐與玻璃珠、中國錢幣等外來貿易品。",
+        cause: "代表臺灣進入金屬器時代並具遠洋貿易能力。"
+    },
+    {
+        id: "TW03", category: "臺灣史", title: "熱蘭遮城興建", year: "西元 1624 年", yearNum: 1624,
         location: "臺南安平", lat: 23.0008, lng: 120.1605,
-        desc: "荷蘭東印度公司（VOC）佔領大員並興建熱蘭遮城，作為東亞貿易轉運樞紐。",
-        cause: "背景：大航海時代拓展東亞貿易。影響：引進王田制與漢人移民。"
+        desc: "荷蘭東印度公司（VOC）佔領大員並興建熱蘭遮城，作為東亞貿易轉運站。",
+        cause: "大航海時代拓展東亞貿易，引進王田制與漢人移民。"
     },
     {
-        id: "TW03", category: "臺灣史", title: "郭懷一事件", year: "西元 1652 年", yearNum: 1652,
+        id: "TW04", category: "臺灣史", title: "聖薩爾瓦多城興建", year: "西元 1626 年", yearNum: 1626,
+        location: "基隆和平島", lat: 25.1583, lng: 121.7653,
+        desc: "西班牙人佔領北臺灣並建城，展開對日與對華貿易與天主教宣教。",
+        cause: "與荷蘭競爭東亞商業利益，1642年被荷蘭擊敗驅逐。"
+    },
+    {
+        id: "TW05", category: "臺灣史", title: "郭懷一事件", year: "西元 1652 年", yearNum: 1652,
         location: "臺南赤崁", lat: 22.9975, lng: 120.2025,
-        desc: "臺灣荷治時期規模最大的漢人移民反荷武裝抗暴事件。",
-        cause: "背景：荷蘭課徵重稅與壓迫。影響：荷軍隨後興建普羅民遮城（赤崁樓）加強控制。"
+        desc: "荷治時期規模最大的漢人移民反荷武裝抗暴事件。",
+        cause: "荷蘭課徵重稅與壓迫，隨後興建普羅民遮城（赤崁樓）加強控制。"
     },
     {
-        id: "TW04", category: "臺灣史", title: "臺南孔廟建置", year: "西元 1665 年", yearNum: 1665,
+        id: "TW06", category: "臺灣史", title: "臺南孔廟建置", year: "西元 1665 年", yearNum: 1665,
         location: "臺南孔子廟", lat: 22.9903, lng: 120.2038,
-        desc: "陳永華建議鄭經興建全臺首學（臺南孔廟），引進儒學教育與科舉制度。",
-        cause: "背景：明鄭時期深耕漢人文化體制與教育發展。"
+        desc: "陳永華建議鄭經興建全臺首學（臺南孔廟），引進儒學與科舉。",
+        cause: "明鄭時期深耕漢人文化體制與教育發展。"
     },
     {
-        id: "TW05", category: "臺灣史", title: "朱一貴事件", year: "西元 1721 年", yearNum: 1721,
+        id: "TW07", category: "臺灣史", title: "朱一貴事件", year: "西元 1721 年", yearNum: 1721,
         location: "高雄內門 / 臺南", lat: 22.9022, lng: 120.4619,
-        desc: "清領時期臺灣發生的第一次大型民變（鴨母王朱一貴）。",
-        cause: "背景：官吏貪腐與民怨積壓。影響：促使清廷加強對臺防務與巡撫派駐。"
+        desc: "清領時期臺灣第一次大型民變（鴨母王朱一貴）。",
+        cause: "官吏貪腐與民怨積壓，促使清廷加強防務。"
     },
     {
-        id: "TW06", category: "臺灣史", title: "臺灣開港通商", year: "西元 1860 年", yearNum: 1860,
+        id: "TW08", category: "臺灣史", title: "林爽文事件", year: "西元 1786 年", yearNum: 1786,
+        location: "彰化大里杙", lat: 24.1006, lng: 120.6789,
+        desc: "天地會會首林爽文起事，為清領臺灣規模最大的民變。",
+        cause: "清廷派福康安平定，乾隆帝頒賜諸羅縣改名嘉義。"
+    },
+    {
+        id: "TW09", category: "臺灣史", title: "臺灣開港通商", year: "西元 1860 年", yearNum: 1860,
         location: "淡水/安平/打狗/雞籠", lat: 25.1725, lng: 121.4308,
         desc: "天津條約簽訂後，淡水、安平、打狗、雞籠開港，茶、糖、樟腦大量出口。",
-        cause: "背景：第二次鴉片戰爭迫使開港。影響：經濟重心北移與洋行設立。"
+        cause: "第二次鴉片戰爭迫使開港，經濟重心北移與洋行設立。"
     },
     {
-        id: "TW07", category: "臺灣史", title: "牡丹社事件", year: "西元 1874 年", yearNum: 1874,
-        location: "屏東車城 / 牡丹", lat: 22.1281, lng: 120.7103,
+        id: "TW10", category: "臺灣史", title: "牡丹社事件", year: "西元 1874 年", yearNum: 1874,
+        location: "屏東牡丹", lat: 22.1281, lng: 120.7103,
         desc: "日本藉口琉球漂民事件發兵攻打屏東原住民牡丹社。",
-        cause: "影響：促使清廷轉變治臺政策，派沈葆楨來臺推動開山撫番與建設。"
+        cause: "促使清廷轉變治臺政策，派沈葆楨來臺推動開山撫番。"
     },
     {
-        id: "TW08", category: "臺灣史", title: "日治基礎建設與縱貫鐵路", year: "西元 1908 年", yearNum: 1908,
+        id: "TW11", category: "臺灣史", title: "建省與劉銘傳新政", year: "西元 1885 年", yearNum: 1885,
         location: "臺北市", lat: 25.0400, lng: 121.5120,
-        desc: "臺灣南北縱貫鐵路全線通車，推進臺灣島內市場與物資運輸一體化。",
-        cause: "背景：日治總督府推動現代化基礎建設。"
+        desc: "中法戰爭後清廷設臺灣省，劉銘傳任首任巡撫，推動鐵路、郵政與新政。",
+        cause: "強化邊防與現代化發展。"
     },
     {
-        id: "TW09", category: "臺灣史", title: "臺灣文化協會成立", year: "西元 1921 年", yearNum: 1921,
-        location: "臺北市大稻埕", lat: 25.0560, lng: 121.5100,
-        desc: "林獻堂、蔣渭水等人成立臺灣文化協會，推動啟蒙運動與政治社會運動。",
-        cause: "背景：第一次世界大戰後民族自決思潮影響。"
+        id: "TW12", category: "臺灣史", title: "日治縱貫鐵路全線通車", year: "西元 1908 年", yearNum: 1908,
+        location: "臺中", lat: 24.1368, lng: 120.6850,
+        desc: "南北縱貫鐵路全線通車，推進臺灣島內市場與物資運輸一體化。",
+        cause: "日治總督府推動現代化基礎建設。"
+    },
+    {
+        id: "TW13", category: "臺灣史", title: "臺灣文化協會成立", year: "西元 1921 年", yearNum: 1921,
+        location: "臺北黑美人大酒家舊址", lat: 25.0560, lng: 121.5100,
+        desc: "林獻堂、蔣渭水等人成立臺灣文化協會，推動啟蒙運動與文化抗爭。",
+        cause: "一次大戰後民族自決思潮影響。"
+    },
+    {
+        id: "TW14", category: "臺灣史", title: "霧社事件", year: "西元 1930 年", yearNum: 1930,
+        location: "南投仁愛霧社", lat: 24.0169, lng: 121.1611,
+        desc: "莫那·魯道率賽德克族起事反抗日本壓迫，為日治後期重大原住民事件。",
+        cause: "促使日本檢討理蕃政策。"
+    },
+    {
+        id: "TW15", category: "臺灣史", title: "二二八事件", year: "西元 1947 年", yearNum: 1947,
+        location: "臺北天馬茶房舊址", lat: 25.0536, lng: 121.5125,
+        desc: "緝私菸血案引發全臺衝突，對臺灣戰後政治社會發展影響深遠。",
+        cause: "戰後經濟混亂、軍警壓迫與文化隔閡。"
+    },
+    {
+        id: "TW16", category: "臺灣史", title: "美麗島事件", year: "西元 1979 年", yearNum: 1979,
+        location: "高雄美麗島站舊址", lat: 22.6314, lng: 120.3019,
+        desc: "黨外人士舉辦世界人權日紀念遊行爆發衝突，促進臺灣民主轉型。",
+        cause: "加速解嚴與開放黨禁。"
     },
 
-    // 中國史
+    // --- 中國史 (15 個考點) ---
     {
-        id: "CN01", category: "中國史", title: "秦始皇廢封建實行郡縣制", year: "西元前 221 年", yearNum: -221,
+        id: "CN01", category: "中國史", title: "秦始皇郡縣制", year: "西元前 221 年", yearNum: -221,
         location: "陝西咸陽", lat: 34.3333, lng: 108.7000,
-        desc: "秦滅六國後實行郡縣制，統一文字、車軌、貨幣與度量衡。",
-        cause: "影響：確立中央集權官僚體制雛形。"
+        desc: "秦滅六國後實行郡縣制，統一文字、車軌與度量衡。",
+        cause: "確立中央集權官僚體制雛形。"
     },
     {
         id: "CN02", category: "中國史", title: "漢武帝罷黜百家獨尊儒術", year: "西元前 134 年", yearNum: -134,
         location: "陝西長安", lat: 34.2658, lng: 108.9541,
         desc: "採納董仲舒建議，獨尊儒術，設太學與五經博士。",
-        cause: "影響：儒家思想成為中國歷代傳統政治與文化正統。"
+        cause: "儒家思想成為歷代傳統政治與文化正統。"
     },
     {
-        id: "CN03", category: "中國史", title: "唐代長安與絲綢之路", year: "西元 618 年", yearNum: 618,
+        id: "CN03", category: "中國史", title: "魏晉南北朝九品官人法", year: "西元 220 年", yearNum: 220,
+        location: "河南洛陽", lat: 34.6197, lng: 112.4540,
+        desc: "曹魏陳群提議實行九品官人法選拔官吏。",
+        cause: "導致上品無寒門，門閥世族壟斷政治權力。"
+    },
+    {
+        id: "CN04", category: "中國史", title: "唐代長安與絲綢之路", year: "西元 618 年", yearNum: 618,
         location: "陝西長安", lat: 34.2658, lng: 108.9541,
-        desc: "唐朝首都長安經由陸上絲綢之路聚集東西方商人，國際化程度高。",
-        cause: "影響：東亞文化圈成型與文化交流高峰。"
+        desc: "長安經由絲綢之路聚集東西方商人，國際化程度極高。",
+        cause: "促進東亞文化圈成型與文化交流高峰。"
     },
     {
-        id: "CN04", category: "中國史", title: "宋代交子與商業革命", year: "西元 960 年", yearNum: 960,
+        id: "CN05", category: "中國史", title: "安史之亂", year: "西元 755 年", yearNum: 755,
+        location: "河北范陽 / 洛陽", lat: 39.0842, lng: 115.9740,
+        desc: "安祿山、史思明發動叛亂，唐朝由盛轉衰。",
+        cause: "藩鎮割據與經濟重心南移速度加快。"
+    },
+    {
+        id: "CN06", category: "中國史", title: "宋代交子與商業革命", year: "西元 960 年", yearNum: 960,
         location: "四川成都", lat: 30.6586, lng: 104.0648,
-        desc: "宋代打破坊市界限，夜市興盛，四川出現世界上最早紙幣「交子」。",
-        cause: "影響：平民社會成型與商業經濟高度發達。"
+        desc: "打破坊市界限，夜市興盛，四川出現世界上最早紙幣交子。",
+        cause: "平民社會成型與商業經濟高度發達。"
     },
     {
-        id: "CN05", category: "中國史", title: "明代鄭和下西洋", year: "西元 1405 年", yearNum: 1405,
-        location: "江蘇太倉 / 南京", lat: 32.0603, lng: 118.7969,
-        desc: "明成祖命鄭和率領龐大艦隊七次出使西洋，遠達東非與紅海。",
-        cause: "影響：促進中國與東南亞、印度洋沿岸之朝貢貿易與移民。"
+        id: "CN07", category: "中國史", title: "元朝行省制與站赤", year: "西元 1271 年", yearNum: 1271,
+        location: "北京大都", lat: 39.9042, lng: 116.4074,
+        desc: "忽必烈建元朝，設行中書省與站赤（驛站系統）。",
+        cause: "奠定中國後世省制基礎。"
     },
     {
-        id: "CN06", category: "中國史", title: "鴉片戰爭與南京條約", year: "西元 1842 年", yearNum: 1842,
+        id: "CN08", category: "中國史", title: "明代鄭和下西洋", year: "西元 1405 年", yearNum: 1405,
+        location: "江蘇太倉", lat: 31.4480, lng: 121.1290,
+        desc: "鄭和率領龐大艦隊七次出使西洋，遠達東非。",
+        cause: "促進中國與東南亞朝貢貿易與華僑移民。"
+    },
+    {
+        id: "CN09", category: "中國史", title: "明代一條鞭法", year: "西元 1581 年", yearNum: 1581,
+        location: "北京", lat: 39.9042, lng: 116.4074,
+        desc: "張居正推行一條鞭法，將田賦與力役合併折銀征收。",
+        cause: "反映美洲與日本白銀大量流入中國。"
+    },
+    {
+        id: "CN10", category: "中國史", title: "鴉片戰爭與南京條約", year: "西元 1842 年", yearNum: 1842,
         location: "江蘇南京", lat: 32.0603, lng: 118.7969,
-        desc: "清朝鴉片戰爭戰敗簽訂南京條約，開五口通商並割讓香港島。",
-        cause: "影響：中國近代不平等條約體系之開端。"
+        desc: "鴉片戰爭戰敗簽訂南京條約，開五口通商並割讓香港島。",
+        cause: "中國近代不平等條約體系之開端。"
+    },
+    {
+        id: "CN11", category: "中國史", title: "太平天國運動", year: "西元 1851 年", yearNum: 1851,
+        location: "廣西金田 / 南京", lat: 23.3667, lng: 109.9167,
+        desc: "洪秀全建立太平天國，定都天京（南京）。",
+        cause: "漢人湘軍、淮軍崛起，清廷權力下移。"
+    },
+    {
+        id: "CN12", category: "中國史", title: "洋務運動", year: "西元 1861 年", yearNum: 1861,
+        location: "湖北武昌 / 上海", lat: 31.2304, lng: 121.4737,
+        desc: "奕訢、曾國藩、李鴻章推動「師夷之長技以制夷」自強新政。",
+        cause: "建立近代軍工廠與鐵路、郵政。"
+    },
+    {
+        id: "CN13", category: "中國史", title: "辛亥革命與中華民國成立", year: "西元 1911 年", yearNum: 1911,
+        location: "湖北武昌", lat: 30.5928, lng: 114.3055,
+        desc: "武昌起義爆發，推翻清朝帝制，建立亞洲第一個民主共和國。",
+        cause: "結束兩千多年的君主專制。"
+    },
+    {
+        id: "CN14", category: "中國史", title: "五四運動", year: "西元 1919 年", yearNum: 1919,
+        location: "北京天安門", lat: 39.9054, lng: 116.3976,
+        desc: "巴黎和會外交失敗引發學生愛國運動，推動新文化運動發展。",
+        cause: "倡導德先生（民主）與賽先生（科學）。"
+    },
+    {
+        id: "CN15", category: "中國史", title: "八年抗日戰爭爆發", year: "西元 1937 年", yearNum: 1937,
+        location: "北京盧溝橋", lat: 39.8494, lng: 116.2169,
+        desc: "七七事變爆發，開啟全民族全面抗日戰爭。",
+        cause: "第二次世界大戰東亞戰場之起點。"
     },
 
-    // 世界史
+    // --- 世界史 (16 個考點) ---
     {
-        id: "WD01", category: "世界史", title: "美索不達米亞漢摩拉比法典", year: "西元前 1750 年", yearNum: -1750,
+        id: "WD01", category: "世界史", title: "漢摩拉比法典", year: "西元前 1750 年", yearNum: -1750,
         location: "伊拉克巴比倫", lat: 32.5422, lng: 44.4211,
-        desc: "古巴比倫王國頒布漢摩拉比法典，實行同態復仇原則。",
-        cause: "影響：人類成文法典發展史上的重要里程碑。"
+        desc: "古巴比倫頒布成文法典，實行同態復仇原則（以眼還眼）。",
+        cause: "人類法制史重要里程碑。"
     },
     {
-        id: "WD02", category: "世界史", title: "雅典古典民主政治巔峰", year: "西元前 508 年", yearNum: -508,
+        id: "WD02", category: "世界史", title: "雅典古典民主政治", year: "西元前 508 年", yearNum: -508,
         location: "希臘雅典", lat: 37.9838, lng: 23.7275,
-        desc: "克里斯提尼與伯里克利改革，確立公民大會、五百人會議與陶片放逐制。",
-        cause: "影響：西方民主政治與公民權利觀念源頭。"
+        desc: "克里斯提尼與伯里克利改革，確立公民大會與陶片放逐制。",
+        cause: "西方民主政治與公民權利觀念源頭。"
     },
     {
-        id: "WD03", category: "世界史", title: "哥倫布到達美洲", year: "西元 1492 年", yearNum: 1492,
+        id: "WD03", category: "世界史", title: "亞歷山大帝國與希臘化文化", year: "西元前 334 年", yearNum: -334,
+        location: "埃及亞歷山卓", lat: 31.2001, lng: 29.9187,
+        desc: "亞歷山大大帝東征建跨歐亞非大帝國，促進希臘與東方文化融合。",
+        cause: "開啟希臘化時代。"
+    },
+    {
+        id: "WD04", category: "世界史", title: "羅馬帝國建立與和平", year: "西元前 27 年", yearNum: -27,
+        location: "義大利羅馬", lat: 41.9028, lng: 12.4964,
+        desc: "屋大維獲尊號奧古斯都，開啟羅馬帝國時代與羅馬和平。",
+        cause: "地中海成為羅馬內海。"
+    },
+    {
+        id: "WD05", category: "世界史", title: "西羅馬帝國滅亡", year: "西元 476 年", yearNum: 476,
+        location: "義大利拉溫納", lat: 44.4184, lng: 12.2035,
+        desc: "日耳曼將領廢黜西羅馬皇帝，西羅馬帝國滅亡。",
+        cause: "標誌歐洲古典時代結束，進入中古世紀。"
+    },
+    {
+        id: "WD06", category: "世界史", title: "伊斯蘭教創立與擴張", year: "西元 622 年", yearNum: 622,
+        location: "沙烏地阿拉伯麥加", lat: 21.4225, lng: 39.8262,
+        desc: "穆罕默德建立伊斯蘭教並統一阿拉伯半島。",
+        cause: "開創阿拉伯帝國與伊斯蘭文明圈。"
+    },
+    {
+        id: "WD07", category: "世界史", title: "十字軍東征", year: "西元 1095 年", yearNum: 1095,
+        location: "以色列耶路撒冷", lat: 31.7683, lng: 35.2137,
+        desc: "教宗烏爾巴諾二世號召發動東征，試圖收復聖地耶路撒冷。",
+        cause: "東西方貿易復興與封建制度鬆動。"
+    },
+    {
+        id: "WD08", category: "世界史", title: "黑死病大流行", year: "西元 1347 年", yearNum: 1347,
+        location: "義大利西西里島 / 歐洲", lat: 37.5999, lng: 14.0154,
+        desc: "鼠疫橫掃歐洲造成三分之一人口死亡。",
+        cause: "瓦解農奴制度，衝擊教會權威。"
+    },
+    {
+        id: "WD09", category: "世界史", title: "哥倫布到達美洲", year: "西元 1492 年", yearNum: 1492,
         location: "巴哈馬", lat: 25.0343, lng: -77.3963,
-        desc: "哥倫布橫渡大西洋抵達美洲，啟動「哥倫布大交換」與地理大發現。",
-        cause: "影響：全球物種、疾病、銀幣流動與歐洲殖民帝國擴張。"
+        desc: "哥倫布橫渡大西洋抵達美洲，開啟哥倫布大交換與大航海時代。",
+        cause: "全球物種流動與歐洲殖民擴張。"
     },
     {
-        id: "WD04", category: "世界史", title: "馬丁路德宗教改革", year: "西元 1517 年", yearNum: 1517,
+        id: "WD10", category: "世界史", title: "馬丁路德宗教改革", year: "西元 1517 年", yearNum: 1517,
         location: "德國威登堡", lat: 51.8664, lng: 12.6433,
-        desc: "馬丁路德發表九十五條論綱，反對贖罪券，開啟歐洲宗教改革。",
-        cause: "影響：路德宗與新教各派成立，打破天主教會大一統。"
+        desc: "馬丁路德發表九十五條論綱反對贖罪券，開啟宗教改革。",
+        cause: "新教誕生，打破天主教大一統。"
     },
     {
-        id: "WD05", category: "世界史", title: "英國工業革命與蒸汽機", year: "西元 1760 年", yearNum: 1760,
-        location: "英國曼徹斯特", lat: 53.4808, lng: -2.2426,
-        desc: "瓦特改良蒸汽機，紡織業工廠化生產，人類邁入機器動力時代。",
-        cause: "影響：資本主义發展、都市化與階級問題爆發。"
+        id: "WD11", category: "世界史", title: "科學革命與牛頓萬有引力", year: "西元 1687 年", yearNum: 1687,
+        location: "英國劍橋", lat: 52.2053, lng: 0.1218,
+        desc: "牛頓發表《自然哲學的數學原理》，建立古典力學體系。",
+        cause: "奠定近代理性與科學研究方法。"
     },
     {
-        id: "WD06", category: "世界史", title: "法國大革命爆發", year: "西元 1789 年", yearNum: 1789,
+        id: "WD12", category: "世界史", title: "美國獨立宣言", year: "西元 1776 年", yearNum: 1776,
+        location: "美國費城", lat: 39.9526, lng: -75.1652,
+        desc: "北美十三州發表《獨立宣言》，建立美利堅合眾國。",
+        cause: "啟蒙運動天賦人權思想實踐。"
+    },
+    {
+        id: "WD13", category: "世界史", title: "法國大革命爆發", year: "西元 1789 年", yearNum: 1789,
         location: "法國巴黎", lat: 48.8566, lng: 2.3522,
-        desc: "巴黎民眾攻占巴士底監獄，頒布《人權宣言》，主張自由、平等、博愛。",
-        cause: "影響：推翻君主專制，自由主義與民族主義思潮席捲歐洲。"
+        desc: "攻占巴士底監獄，頒布《人權宣言》，主張自由、平等、博愛。",
+        cause: "推翻君主專制，席捲歐洲自由主義思潮。"
+    },
+    {
+        id: "WD14", category: "世界史", title: "英國工業革命", year: "西元 1760 年", yearNum: 1760,
+        location: "英國曼徹斯特", lat: 53.4808, lng: -2.2426,
+        desc: "瓦特改良蒸汽機，工廠制度崛起，進入機器動力時代。",
+        cause: "資本主義發展與都市化。"
+    },
+    {
+        id: "WD15", category: "世界史", title: "第一次世界大戰爆發", year: "西元 1914 年", yearNum: 1914,
+        location: "波士尼亞塞拉耶佛", lat: 43.8563, lng: 18.4131,
+        desc: "塞拉耶佛事件爆發，同盟國與協約國展開四大年大戰。",
+        cause: "帝國主義爭霸與軍備競賽。"
+    },
+    {
+        id: "WD16", category: "世界史", title: "第二次世界大戰爆發", year: "西元 1939 年", yearNum: 1939,
+        location: "波蘭華沙", lat: 52.2297, lng: 21.0122,
+        desc: "納粹德國入侵波蘭，英法對德宣戰，爆發全球大戰。",
+        cause: "軸心國侵略與凡爾賽條約積怨。"
     }
 ];
 
@@ -730,11 +932,15 @@ let fcCurrentIdx = 0;
 let quizList = [];
 let quizCurrentIdx = 0;
 let quizScore = 0;
-let quizAnswered = false;
 
 let masteredSet = new Set(JSON.parse(localStorage.getItem('hist_mastered') || '[]'));
 let reviewingSet = new Set(JSON.parse(localStorage.getItem('hist_reviewing') || '[]'));
 let mistakesList = JSON.parse(localStorage.getItem('hist_mistakes') || '[]');
+
+/* 聊天系統資料結構 */
+let chatMode = 'public';
+let publicChats = JSON.parse(localStorage.getItem('hist_public_chats') || '[]');
+let privateChats = JSON.parse(localStorage.getItem('hist_private_chats') || '{}');
 
 let leafletMap = null;
 let markerCluster = null;
@@ -746,7 +952,20 @@ window.addEventListener('DOMContentLoaded', () => {
     renderHomeCards();
     renderExamList();
     renderMistakesList();
+    initDefaultChatData();
 });
+
+/* 初始化預設聊天訊息 */
+function initDefaultChatData() {
+    if (publicChats.length === 0) {
+        publicChats = [
+            { sender: "系統公告", nickname: "小幫手", content: "歡迎來到 108 課綱歷史公眾討論區！", time: "10:00" },
+            { sender: "student01", nickname: "歷史學霸", content: "有人知道開港通商後臺灣三大出口品是什麼嗎？", time: "10:05" },
+            { sender: "student02", nickname: "考神附體", content: "是茶、糖、樟腦喔！當時經濟重心還因此北移。", time: "10:07" }
+        ];
+        localStorage.setItem('hist_public_chats', JSON.stringify(publicChats));
+    }
+}
 
 /* 身份驗證門檻 */
 function checkFirstTimeAuth() {
@@ -788,23 +1007,25 @@ function handleAuthLogin(e) {
     e.preventDefault();
     const username = document.getElementById('loginUser').value.trim();
     if (!username) return;
-    completeAuthSuccess({ name: username, type: 'custom' });
+    completeAuthSuccess({ name: username, nickname: username, type: 'custom' });
 }
 
 function handleAuthRegister(e) {
     e.preventDefault();
     const username = document.getElementById('regUser').value.trim();
+    const nickname = document.getElementById('regNickname').value.trim() || username;
     if (!username) return;
-    completeAuthSuccess({ name: username, type: 'custom' });
+    completeAuthSuccess({ name: username, nickname: nickname, type: 'custom' });
 }
 
 function skipRegisterStorage() {
     const username = document.getElementById('regUser').value.trim() || '使用者';
-    completeAuthSuccess({ name: username, type: 'custom' });
+    const nickname = document.getElementById('regNickname').value.trim() || username;
+    completeAuthSuccess({ name: username, nickname: nickname, type: 'custom' });
 }
 
 function handleGoogleAuth() {
-    completeAuthSuccess({ name: 'Google 使用者', type: 'google' });
+    completeAuthSuccess({ name: 'Google 使用者', nickname: 'Google 學友', type: 'google' });
 }
 
 function handleUserLogout() {
@@ -833,7 +1054,7 @@ function updateGlobalStats() {
 /* 視圖切換 */
 function switchView(viewId) {
     activeView = viewId;
-    const views = ['home', 'exams', 'quiz', 'map', 'timeline'];
+    const views = ['home', 'exams', 'quiz', 'chat', 'map', 'timeline'];
     views.forEach(v => {
         const el = document.getElementById('view-' + v);
         const btn = document.getElementById('navBtn' + v.charAt(0).toUpperCase() + v.slice(1));
@@ -845,6 +1066,8 @@ function switchView(viewId) {
         setTimeout(() => {
             initOrRefreshMap();
         }, 100);
+    } else if(viewId === 'chat') {
+        renderChatMessages();
     }
 }
 
@@ -1038,7 +1261,6 @@ function startConfiguredQuiz() {
 
     quizCurrentIdx = 0;
     quizScore = 0;
-    quizAnswered = false;
 
     document.getElementById('quizResultCard').style.display = 'none';
     document.getElementById('quizCard').style.display = 'block';
@@ -1153,7 +1375,102 @@ function removeMistake(id) {
     renderMistakesList();
 }
 
-/* 地圖初始化與渲染修復 */
+/* 聊天系統邏輯 (公眾與私人) */
+function switchChatMode(mode) {
+    chatMode = mode;
+    document.getElementById('chatTabPublic').classList.toggle('active', mode === 'public');
+    document.getElementById('chatTabPrivate').classList.toggle('active', mode === 'private');
+    document.getElementById('pmTargetRow').style.display = (mode === 'private') ? 'flex' : 'none';
+
+    renderChatMessages();
+}
+
+function renderChatMessages() {
+    const area = document.getElementById('chatMessagesArea');
+    if(!area) return;
+    area.innerHTML = '';
+
+    const myName = currentUser ? currentUser.name : '匿名';
+    const myNickname = currentUser ? (currentUser.nickname || currentUser.name) : '訪客';
+
+    let list = [];
+    if (chatMode === 'public') {
+        list = publicChats;
+    } else {
+        const target = document.getElementById('pmTargetUser').value.trim();
+        if (!target) {
+            area.innerHTML = `<div style="color:#cbd5e1; text-align:center; padding:20px;">請在上方輸入要發送私人訊息的對象帳號或暱稱。</div>`;
+            return;
+        }
+        const threadKey = [myName, target].sort().join('_PM_');
+        list = privateChats[threadKey] || [];
+    }
+
+    if (list.length === 0) {
+        area.innerHTML = `<div style="color:#cbd5e1; text-align:center; padding:20px;">目前尚無聊天訊息，請發送第一條訊息！</div>`;
+        return;
+    }
+
+    list.forEach(m => {
+        const isSelf = (m.sender === myName);
+        const row = document.createElement('div');
+        row.className = `chat-msg-row ${isSelf ? 'self' : 'other'}`;
+        row.innerHTML = `
+            <div class="chat-sender-info">${m.nickname || m.sender} • ${m.time}</div>
+            <div class="chat-msg-bubble">${m.content}</div>
+        `;
+        area.appendChild(row);
+    });
+
+    area.scrollTop = area.scrollHeight;
+}
+
+function sendChatMessage() {
+    const input = document.getElementById('chatInputText');
+    const text = input.value.trim();
+    if (!text) return;
+
+    const myName = currentUser ? currentUser.name : '使用者';
+    const myNickname = currentUser ? (currentUser.nickname || currentUser.name) : '使用者';
+    const now = new Date();
+    const timeStr = `${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}`;
+
+    if (chatMode === 'public') {
+        publicChats.push({
+            sender: myName,
+            nickname: myNickname,
+            content: text,
+            time: timeStr
+        });
+        localStorage.setItem('hist_public_chats', JSON.stringify(publicChats));
+    } else {
+        const target = document.getElementById('pmTargetUser').value.trim();
+        if (!target) {
+            alert('請先輸入私訊對象！');
+            return;
+        }
+        const threadKey = [myName, target].sort().join('_PM_');
+        if (!privateChats[threadKey]) privateChats[threadKey] = [];
+
+        privateChats[threadKey].push({
+            sender: myName,
+            nickname: myNickname,
+            recipient: target,
+            content: text,
+            time: timeStr
+        });
+        localStorage.setItem('hist_private_chats', JSON.stringify(privateChats));
+    }
+
+    input.value = '';
+    renderChatMessages();
+}
+
+function loadPrivateChatMessages() {
+    renderChatMessages();
+}
+
+/* 地圖初始化與點位渲染 */
 function initOrRefreshMap() {
     const mapContainer = document.getElementById('map');
     if (!mapContainer) return;
@@ -1267,6 +1584,8 @@ function exportBackupData() {
         mastered: Array.from(masteredSet),
         reviewing: Array.from(reviewingSet),
         mistakes: mistakesList,
+        publicChats: publicChats,
+        privateChats: privateChats,
         exportAt: new Date().toISOString()
     };
     const blob = new Blob([JSON.stringify(backup, null, 2)], { type: 'application/json' });
@@ -1297,7 +1616,7 @@ function handleImportFile(e) {
             mistakesList = data.mistakes || [];
 
             updateGlobalStats();
-            alert('學習紀錄已成功匯入');
+            alert('學習紀錄與資料已成功匯入');
         } catch(err) {
             alert('格式不符，匯入失敗');
         }
