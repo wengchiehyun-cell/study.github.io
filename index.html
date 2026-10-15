@@ -938,9 +938,9 @@ input[type="range"]::-webkit-slider-thumb{{-webkit-appearance:none;width:14px;he
 <script src="{STATIC_CONFIG['leaflet_js']}"></script>
 <script src="{STATIC_CONFIG['cluster_js']}"></script>
 <script>
-const rawData = {json.dumps(events_data, ensure_ascii=False)};
-const rawDynasties = {json.dumps(dynasties_data, ensure_ascii=False)};
-const ceecExamsList = {json.dumps(CEEC_PDF_LIST, ensure_ascii=False)};
+const rawData = json.dumps(events_data, ensure_ascii=False);
+const rawDynasties = json.dumps(dynasties_data, ensure_ascii=False);
+const ceecExamsList = json.dumps(CEEC_PDF_LIST, ensure_ascii=False);
 
 function findEventById(id) {{
     return rawData.find(e => e.id === id);
