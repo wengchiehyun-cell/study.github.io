@@ -3,6 +3,604 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>歷史與地理數位學習系統 v2.0</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <style>
+    :root {
+      --primary: #2563eb;
+      --primary-hover: #1d4ed8;
+      --success: #10b981;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+      --bg: #f8fafc;
+      --card-bg: #ffffff;
+      --text: #1e293b;
+      --border: #e2e8f0;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    body { background-color: var(--bg); color: var(--text); line-height: 1.5; padding-bottom: 2rem; }
+    header { background: #1e293b; color: white; padding: 1rem 1.5rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
+    .logo { font-size: 1.25rem; font-weight: bold; }
+    .sync-status { display: flex; align-items: center; gap: 0.75rem; font-size: 0.875rem; }
+    .btn { background: var(--primary); color: white; border: none; padding: 0.5rem 1rem; border-radius: 0.375rem; cursor: pointer; font-weight: 500; transition: background 0.2s; }
+    .btn:hover { background: var(--primary-hover); }
+    .btn-secondary { background: #64748b; }
+    .btn-secondary:hover { background: #475569; }
+    .btn-danger { background: var(--danger); }
+    .btn-success { background: var(--success); }
+    .btn-warning { background: var(--warning); }
+    nav { background: white; border-bottom: 1px solid var(--border); display: flex; overflow-x: auto; }
+    nav button { background: none; border: none; padding: 0.75rem 1.25rem; font-size: 0.95rem; font-weight: 500; color: #64748b; cursor: pointer; border-bottom: 2px solid transparent; white-space: nowrap; }
+    nav button.active { color: var(--primary); border-bottom-color: var(--primary); }
+    .stats-bar { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 1rem; padding: 1rem 1.5rem; max-width: 1000px; margin: 0 auto; }
+    .stat-card { background: white; padding: 0.75rem 1rem; border-radius: 0.5rem; border: 1px solid var(--border); text-align: center; }
+    .stat-value { font-size: 1.5rem; font-weight: bold; }
+    .main-content { max-width: 1000px; margin: 1rem auto; padding: 0 1.5rem; }
+    .view-panel { display: none; }
+    .view-panel.active { display: block; }
+    #map { height: 450px; width: 100%; border-radius: 0.5rem; border: 1px solid var(--border); }
+    .card { background: white; border-radius: 0.5rem; border: 1px solid var(--border); padding: 1.5rem; margin-bottom: 1rem; }
+    .quiz-options { display: flex; flex-direction: column; gap: 0.75rem; margin-top: 1rem; }
+    .quiz-option { padding: 0.75rem 1rem; border: 1px solid var(--border); border-radius: 0.375rem; cursor: pointer; text-align: left; background: white; transition: all 0.2s; font-size: 0.95rem; }
+    .quiz-option:hover { background: #f1f5f9; }
+    .quiz-option.correct { background: #d1fae5; border-color: var(--success); color: #065f46; font-weight: bold; }
+    .quiz-option.wrong { background: #fee2e2; border-color: var(--danger); color: #991b1b; font-weight: bold; }
+    .flashcard { min-height: 200px; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; cursor: pointer; border: 2px dashed var(--border); border-radius: 0.5rem; padding: 1.5rem; background: #fff; margin-bottom: 1rem; }
+    .flashcard-actions { display: flex; gap: 0.5rem; justify-content: center; flex-wrap: wrap; }
+    .badge { display: inline-block; padding: 0.25rem 0.5rem; border-radius: 0.25rem; font-size: 0.75rem; font-weight: bold; }
+    .badge-mastered { background: #d1fae5; color: #065f46; }
+    .badge-reviewing { background: #fef3c7; color: #92400e; }
+    .badge-mistake { background: #fee2e2; color: #991b1b; }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo">歷史與地理數位學習系統 v2.0</div>
+  <div class="sync-status">
+    <span id="sync-text">資料夾狀態：未連結</span>
+    <button id="btnFolderSync" class="btn" onclick="onFolderBtnClick()">📁 連結本地資料夾 (自動儲存)</button>
+  </div>
+</header>
+
+<nav>
+  <button class="nav-btn active" onclick="switchTab('map', this)">地圖探勘</button>
+  <button class="nav-btn" onclick="switchTab('flashcard', this)">閃卡複習</button>
+  <button class="nav-btn" onclick="switchTab('quiz', this)">測驗模式</button>
+  <button class="nav-btn" onclick="switchTab('settings', this)">資料管理</button>
+</nav>
+
+<div class="stats-bar">
+  <div class="stat-card">
+    <div style="font-size: 0.8rem; color: #64748b;">總考點數</div>
+    <div class="stat-value" id="statTotal">0</div>
+  </div>
+  <div class="stat-card">
+    <div style="font-size: 0.8rem; color: var(--success);">已掌握</div>
+    <div class="stat-value" id="statMastered" style="color: var(--success);">0</div>
+  </div>
+  <div class="stat-card">
+    <div style="font-size: 0.8rem; color: var(--warning);">模糊複習中</div>
+    <div class="stat-value" id="statReviewing" style="color: var(--warning);">0</div>
+  </div>
+  <div class="stat-card">
+    <div style="font-size: 0.8rem; color: var(--danger);">錯題本</div>
+    <div class="stat-value" id="statMistakes" style="color: var(--danger);">0</div>
+  </div>
+</div>
+
+<div class="main-content">
+  <!-- 地圖面板 -->
+  <div id="panel-map" class="view-panel active">
+    <div class="card">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 0.75rem;">
+        <h3>考點地理分佈</h3>
+        <button class="btn btn-secondary" onclick="resetMapView()">重置地圖視角</button>
+      </div>
+      <div id="map"></div>
+    </div>
+  </div>
+
+  <!-- 閃卡面板 -->
+  <div id="panel-flashcard" class="view-panel">
+    <div class="card">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
+        <h3>閃卡複習卡片</h3>
+        <select id="flashcard-filter" onchange="renderFlashcard()" style="padding: 0.25rem 0.5rem; border-radius: 0.25rem;">
+          <option value="all">全部考點</option>
+          <option value="reviewing">僅模糊複習中</option>
+          <option value="mistake">僅錯題本</option>
+        </select>
+      </div>
+      <div id="flashcard-container"></div>
+    </div>
+  </div>
+
+  <!-- 測驗面板 -->
+  <div id="panel-quiz" class="view-panel">
+    <div class="card">
+      <h3>刷題測驗</h3>
+      <div style="margin: 1rem 0; display:flex; gap:1rem; align-items:center; flex-wrap:wrap;">
+        <label>
+          篩選範疇：
+          <select id="quiz-filter-stage" style="padding:0.25rem 0.5rem;">
+            <option value="ALL">全部範圍</option>
+            <option value="史前與早期">史前與早期</option>
+            <option value="清領時期">清領時期</option>
+            <option value="日治時期">日治時期</option>
+          </select>
+        </label>
+        <button class="btn" onclick="startNewQuiz()">開始測驗 (10題)</button>
+        <button class="btn btn-secondary" onclick="citeExamToQuiz('115學年度')">帶入 115 學年度範疇</button>
+      </div>
+      <div id="quiz-container"></div>
+    </div>
+  </div>
+
+  <!-- 設定面板 -->
+  <div id="panel-settings" class="view-panel">
+    <div class="card">
+      <h3>資料備份與匯入</h3>
+      <p style="font-size:0.875rem; color:#64748b; margin-top:0.5rem;">
+        匯入與連結會自動進行「雙向時間戳合併」，不會覆蓋或遺失數據。
+      </p>
+      <div style="margin-top:1rem; display:flex; gap:1rem; flex-wrap:wrap;">
+        <button class="btn btn-secondary" onclick="exportBackupData()">📥 匯出 JSON 備份</button>
+        <button class="btn btn-success" onclick="importBackupData()">📤 安全匯入備份</button>
+        <button class="btn btn-danger" onclick="resetAllData()">⚠️ 重置本地學習紀錄</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+  // 1. 基礎考點資料庫
+  const rawData = [
+    { id: 1, title: "長濱文化", year: "-48000", stage: "史前與早期", coords: [22.25, 121.43], desc: "長濱文化是台灣發現最早的新石器以前舊石器時代文化遺跡。" },
+    { id: 2, title: "熱蘭遮城興建", year: "1624", stage: "史前與早期", coords: [23.00, 120.16], desc: "荷蘭東印度公司於安平興建熱蘭遮城，建立在台商業據點。" },
+    { id: 3, title: "鄭成功攻台", year: "1661", stage: "史前與早期", coords: [23.01, 120.18], desc: "鄭成功率軍登陸鹿耳門，結束荷蘭在台灣的殖民統治。" },
+    { id: 4, title: "施琅攻台與立碑", year: "1683", stage: "清領時期", coords: [23.56, 119.57], desc: "施琅於澎湖海戰擊敗鄭軍，清朝隨後將台灣納入版圖。" },
+    { id: 5, title: "朱一貴事件", year: "1721", stage: "清領時期", coords: [22.88, 120.44], desc: "清領時期台灣三大民變之一，發生於高雄內門地區。" },
+    { id: 6, title: "開港通商", year: "1860", stage: "清領時期", coords: [25.17, 121.44], desc: "天津條約後淡水、安平、打狗與雞籠先後開港，加入國際貿易體系。" },
+    { id: 7, title: "牡丹社事件", year: "1874", stage: "清領時期", coords: [22.13, 120.76], desc: "日本藉口琉球漂民事件出兵恆春半島，影響清廷重視台灣海防。" },
+    { id: 8, title: "台灣建省", year: "1885", stage: "清領時期", coords: [25.04, 121.51], desc: "清廷正式將台灣劃為獨立省份，劉銘傳出任首任台灣巡撫。" },
+    { id: 9, title: "乙未抗日", year: "1895", stage: "日治時期", coords: [24.80, 120.97], desc: "馬關條約簽訂後台灣民主國成立並進行乙未戰爭抵抗日軍接管。" },
+    { id: 10, title: "噍吧哖事件", year: "1915", stage: "日治時期", coords: [23.05, 120.48], desc: "余清芳等於玉井發動大規模武裝抗日事件，為日治時期最後一次武裝抗日。" },
+    { id: 11, title: "台灣文化協會成立", year: "1921", stage: "日治時期", coords: [25.05, 121.51], desc: "林獻堂、蔣渭水等於台北大稻埕成立台灣文化協會，開啟政治與文化啟蒙運動。" },
+    { id: 12, title: "霧社事件", year: "1930", stage: "日治時期", coords: [24.02, 121.13], desc: "莫那·魯道率領賽德克族於霧社發起反日起義。" }
+  ];
+
+  // 2. 學習狀態管理 (v2 單一狀態與時間戳)
+  const STORAGE_KEY = 'history_hub_quiz_data';
+
+  function migrateUserData(raw) {
+    if (raw && raw.v === 2 && raw.items) return raw;
+    const items = {};
+    const now = Date.now();
+    if (raw) {
+      (raw.mastered || []).forEach(id => { items[String(id)] = { s: 'mastered', t: now }; });
+      (raw.reviewing || []).forEach(id => { items[String(id)] = { s: 'reviewing', t: now }; });
+      (raw.mistakes || []).forEach(id => { items[String(id)] = { s: 'mistake', t: now }; });
+    }
+    return { v: 2, items };
+  }
+
+  function loadUserData() {
+    try {
+      const stored = localStorage.getItem(STORAGE_KEY);
+      return migrateUserData(stored ? JSON.parse(stored) : null);
+    } catch (e) {
+      return { v: 2, items: {} };
+    }
+  }
+
+  let userLearningData = loadUserData();
+
+  function setStatus(id, s) {
+    userLearningData.items[String(id)] = { s, t: Date.now() };
+    saveUserData();
+    updateStats();
+  }
+
+  function getItemStatus(id) {
+    return userLearningData.items[String(id)]?.s || 'none';
+  }
+
+  function mergeUserData(a, b) {
+    const local = migrateUserData(a);
+    const remote = migrateUserData(b);
+    const merged = { v: 2, items: { ...local.items } };
+    for (const [id, r] of Object.entries(remote.items || {})) {
+      if (!merged.items[id] || r.t > merged.items[id].t) {
+        merged.items[id] = r;
+      }
+    }
+    return merged;
+  }
+
+  function saveUserData() {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(userLearningData));
+    } catch (e) {}
+    scheduleFsSync();
+  }
+
+  function updateStats() {
+    let mastered = 0, reviewing = 0, mistake = 0;
+    rawData.forEach(e => {
+      const st = getItemStatus(e.id);
+      if (st === 'mastered') mastered++;
+      else if (st === 'reviewing') reviewing++;
+      else if (st === 'mistake') mistake++;
+    });
+
+    document.getElementById('statTotal').innerText = rawData.length;
+    document.getElementById('statMastered').innerText = mastered;
+    document.getElementById('statReviewing').innerText = reviewing;
+    document.getElementById('statMistakes').innerText = mistake;
+  }
+
+  // 3. 本地資料夾自動同步機制
+  const FILE_NAME = 'history_quiz_progress.json';
+  let gDirHandle = null, gFileHandle = null;
+  let gFsSyncTimer = null, gFsDirty = false, gWriting = false;
+
+  function setSyncStatus(text) {
+    const el = document.getElementById('sync-text');
+    if (el) el.innerText = text;
+  }
+
+  function getFSDB() {
+    return new Promise((resolve, reject) => {
+      if (!window.indexedDB) return reject('No IndexedDB');
+      const req = indexedDB.open('HistoryHubFSDB', 1);
+      req.onupgradeneeded = () => req.result.createObjectStore('handles');
+      req.onsuccess = () => resolve(req.result);
+      req.onerror = () => reject(req.error);
+    });
+  }
+
+  async function getStoredDirHandle() {
+    try {
+      const db = await getFSDB();
+      return new Promise((resolve) => {
+        const tx = db.transaction('handles', 'readonly');
+        const req = tx.objectStore('handles').get('folderHandle');
+        req.onsuccess = () => resolve(req.result || null);
+        req.onerror = () => resolve(null);
+      });
+    } catch (e) { return null; }
+  }
+
+  async function storeDirHandle(handle) {
+    try {
+      const db = await getFSDB();
+      const tx = db.transaction('handles', 'readwrite');
+      tx.objectStore('handles').put(handle, 'folderHandle');
+    } catch (e) { }
+  }
+
+  async function connectDirHandle(dirHandle) {
+    gDirHandle = dirHandle;
+    gFileHandle = await gDirHandle.getFileHandle(FILE_NAME, { create: true });
+    await storeDirHandle(gDirHandle);
+    await syncFromLocalFolder();
+  }
+
+  async function syncFromLocalFolder() {
+    if (!gFileHandle) return;
+    try {
+      const file = await gFileHandle.getFile();
+      const text = await file.text();
+      if (text && text.trim()) {
+        const remoteData = migrateUserData(JSON.parse(text));
+        userLearningData = mergeUserData(userLearningData, remoteData);
+        saveUserData();
+        updateStats();
+      }
+      await writeToLocalFolderNow();
+      setSyncStatus('📁 已連結資料夾 (自動儲存中)');
+    } catch (err) {
+      setSyncStatus('📁 資料夾連線失敗');
+    }
+  }
+
+  async function selectLocalFolder() {
+    if (!('showDirectoryPicker' in window)) {
+      alert('您的瀏覽器不支援本地資料夾存取，請使用桌面版 Chrome 或 Edge 瀏覽器！');
+      return;
+    }
+    try {
+      const handle = await window.showDirectoryPicker({ id: 'history_hub_folder', mode: 'readwrite', startIn: 'documents' });
+      await connectDirHandle(handle);
+      alert('🎉 成功連結資料夾！後續進度將自動寫入該資料夾內。');
+    } catch (err) {
+      if (err.name !== 'AbortError') alert('連結失敗：' + err.message);
+    }
+  }
+
+  function onFolderBtnClick() {
+    selectLocalFolder();
+  }
+
+  function scheduleFsSync() {
+    gFsDirty = true;
+    if (!gFileHandle) return;
+    clearTimeout(gFsSyncTimer);
+    gFsSyncTimer = setTimeout(() => writeToLocalFolderNow(), 2000);
+  }
+
+  async function writeToLocalFolderNow() {
+    if (!gFileHandle || !gFsDirty || gWriting) return;
+    gWriting = true;
+    try {
+      gFsDirty = false;
+      const writable = await gFileHandle.createWritable();
+      await writable.write(JSON.stringify(userLearningData, null, 2));
+      await writable.close();
+      const d = new Date();
+      const hh = String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0');
+      setSyncStatus('📁 自動儲存於 ' + hh);
+    } catch (err) {
+      gFsDirty = true;
+    } finally { gWriting = false; }
+  }
+
+  // 4. 頁籤與地圖切換
+  let mapInstance = null;
+
+  function switchTab(tabName, btnEl) {
+    document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.view-panel').forEach(p => p.classList.remove('active'));
+
+    if (btnEl) {
+      btnEl.classList.add('active');
+    } else {
+      const defaultBtn = document.querySelector(`nav button[onclick*="'${tabName}'"]`);
+      if (defaultBtn) defaultBtn.classList.add('active');
+    }
+
+    const targetPanel = document.getElementById(`panel-${tabName}`);
+    if (targetPanel) targetPanel.classList.add('active');
+
+    if (tabName === 'map') {
+      setTimeout(() => switchViewToMap(), 50);
+    } else if (tabName === 'flashcard') {
+      renderFlashcard();
+    }
+  }
+
+  function switchViewToMap() {
+    if (!mapInstance) {
+      mapInstance = L.map('map').setView([23.6, 120.9], 7);
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '&copy; OpenStreetMap' }).addTo(mapInstance);
+      rawData.forEach(ev => {
+        L.marker(ev.coords).addTo(mapInstance).bindPopup(`<b>${ev.title} (${ev.year}年)</b><br>${ev.desc}`);
+      });
+    }
+    mapInstance.invalidateSize();
+  }
+
+  function resetMapView() {
+    if (mapInstance) mapInstance.flyTo([23.6, 120.9], 7);
+  }
+
+  // 5. 閃卡卡片邏輯
+  let fcIndex = 0;
+  function renderFlashcard() {
+    const filter = document.getElementById('flashcard-filter').value;
+    const list = rawData.filter(e => {
+      const st = getItemStatus(e.id);
+      if (filter === 'reviewing') return st === 'reviewing';
+      if (filter === 'mistake') return st === 'mistake';
+      return true;
+    });
+
+    const container = document.getElementById('flashcard-container');
+    if (list.length === 0) {
+      container.innerHTML = '<p style="text-align:center; padding:2rem; color:#64748b;">無符合條件的卡片。</p>';
+      return;
+    }
+
+    if (fcIndex >= list.length) fcIndex = 0;
+    const item = list[fcIndex];
+    const status = getItemStatus(item.id);
+
+    container.innerHTML = `
+      <div class="flashcard" onclick="toggleDesc(this)">
+        <div style="font-size: 1.25rem; font-weight: bold;">${item.title} (${item.year}年)</div>
+        <div class="badge badge-${status}" style="margin:0.5rem 0;">狀態: ${status}</div>
+        <div class="desc-box" style="display:none; color:#475569;">${item.desc}</div>
+        <div style="font-size:0.75rem; color:#94a3b8; margin-top:0.5rem;">(點擊卡片顯示/隱藏說明)</div>
+      </div>
+      <div class="flashcard-actions">
+        <button class="btn btn-success" onclick="setStatus(${item.id}, 'mastered'); fcIndex++; renderFlashcard();">記得 (已掌握)</button>
+        <button class="btn btn-warning" onclick="setStatus(${item.id}, 'reviewing'); fcIndex++; renderFlashcard();">模糊 (複習中)</button>
+        <button class="btn btn-danger" onclick="setStatus(${item.id}, 'mistake'); fcIndex++; renderFlashcard();">忘記 (錯題本)</button>
+      </div>
+    `;
+  }
+
+  function toggleDesc(cardEl) {
+    const desc = cardEl.querySelector('.desc-box');
+    if (desc) {
+      desc.style.display = (desc.style.display === 'block') ? 'none' : 'block';
+    }
+  }
+
+  // 6. 測驗刷題邏輯
+  let quizState = { questions: [], currentIndex: 0, correctCount: 0, answeredCount: 0 };
+
+  function citeExamToQuiz(examName) {
+    const quizNavBtn = document.querySelector('nav button[onclick*="quiz"]');
+    switchTab('quiz', quizNavBtn);
+    const filterSelect = document.getElementById('quiz-filter-stage');
+    if (filterSelect) filterSelect.value = '日治時期';
+    alert(`已套用「${examName}」測驗範疇！已切換至測驗畫面。`);
+  }
+
+  function startNewQuiz() {
+    const stage = document.getElementById('quiz-filter-stage').value;
+    let pool = stage === 'ALL' ? rawData : rawData.filter(e => e.stage === stage);
+    if (pool.length === 0) return alert('該範圍內無可用考點！');
+
+    const shuffled = [...pool].sort(() => 0.5 - Math.random()).slice(0, 10);
+    quizState = {
+      questions: shuffled.map(e => {
+        const isYear = Math.random() > 0.5;
+        const correctAnswer = isYear ? String(e.year) : e.title;
+        const distractors = rawData
+          .filter(x => x.id !== e.id)
+          .map(x => isYear ? String(x.year) : x.title)
+          .filter(val => val !== correctAnswer);
+        
+        const uniqueDistractors = Array.from(new Set(distractors)).sort(() => 0.5 - Math.random()).slice(0, 3);
+        const options = [correctAnswer, ...uniqueDistractors].sort(() => 0.5 - Math.random());
+
+        // 安全遮蔽題幹關鍵字 (不使用危險的正則表達式)
+        const maskedDesc = e.desc.split(e.title).join('「＿＿＿」');
+
+        return {
+          id: e.id,
+          prompt: isYear ? `請問考點「${e.title}」發生的西元年份是？` : `請問「${maskedDesc}」是指哪一個歷史事件？`,
+          options, correctAnswer
+        };
+      }),
+      currentIndex: 0, correctCount: 0, answeredCount: 0
+    };
+    renderQuizQuestion();
+  }
+
+  function renderQuizQuestion() {
+    const container = document.getElementById('quiz-container');
+    if (quizState.questions.length === 0) {
+      container.innerHTML = '<p style="color:#64748b; margin-top:1rem;">請點擊上方按鈕開始測驗。</p>';
+      return;
+    }
+
+    if (quizState.currentIndex >= quizState.questions.length) {
+      const score = quizState.answeredCount > 0 ? Math.round((quizState.correctCount / quizState.answeredCount) * 100) : 0;
+      container.innerHTML = `
+        <div style="text-align:center; padding: 2rem 0;">
+          <h2>測驗完成！</h2>
+          <div style="font-size: 3rem; font-weight: bold; color: var(--primary); margin: 1rem 0;">${score} 分</div>
+          <p>總共回答 ${quizState.answeredCount} 題，答對 ${quizState.correctCount} 題。</p>
+          <button class="btn" style="margin-top:1.5rem;" onclick="startNewQuiz()">再次挑戰</button>
+        </div>
+      `;
+      return;
+    }
+
+    const q = quizState.questions[quizState.currentIndex];
+    const score = quizState.answeredCount > 0 ? Math.round((quizState.correctCount / quizState.answeredCount) * 100) : 0;
+
+    container.innerHTML = `
+      <div style="display:flex; justify-content:space-between; margin-bottom:1rem; font-size:0.875rem; color:#64748b;">
+        <span>第 ${quizState.currentIndex + 1} / ${quizState.questions.length} 題</span>
+        <span>當前得分：${score} 分</span>
+      </div>
+      <h4 style="font-size:1.1rem; margin-bottom: 1rem; line-height:1.6;">${q.prompt}</h4>
+      <div class="quiz-options">
+        ${q.options.map((opt, idx) => `
+          <button class="quiz-option" onclick="submitAnswer(${idx}, this)">
+            ${String.fromCharCode(65 + idx)}.${opt}
+          </button>
+        `).join('')}
+      </div>
+    `;
+  }
+
+  function submitAnswer(optIdx, btnEl) {
+    const q = quizState.questions[quizState.currentIndex];
+    if (!q) return;
+
+    const selectedOpt = q.options[optIdx];
+    document.querySelectorAll('.quiz-option').forEach(o => o.disabled = true);
+    quizState.answeredCount++;
+
+    if (selectedOpt === q.correctAnswer) {
+      btnEl.classList.add('correct');
+      quizState.correctCount++;
+      setStatus(q.id, 'mastered');
+    } else {
+      btnEl.classList.add('wrong');
+      document.querySelectorAll('.quiz-option').forEach((o, idx) => {
+        if (q.options[idx] === q.correctAnswer) o.classList.add('correct');
+      });
+      setStatus(q.id, 'mistake');
+    }
+
+    setTimeout(() => {
+      quizState.currentIndex++;
+      renderQuizQuestion();
+    }, 1200);
+  }
+
+  // 7. 資料匯入匯出與重置
+  function exportBackupData() {
+    const blob = new Blob([JSON.stringify(userLearningData, null, 2)], { type: 'application/json' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = `learning_backup_${new Date().toISOString().slice(0,10)}.json`;
+    a.click();
+  }
+
+  function importBackupData() {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = '.json';
+    input.onchange = e => {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = evt => {
+        try {
+          const imported = JSON.parse(evt.target.result);
+          userLearningData = mergeUserData(userLearningData, imported);
+          saveUserData();
+          updateStats();
+          alert('備份資料成功雙向合併！');
+        } catch (err) { alert('匯入失敗：檔案格式不正確'); }
+      };
+      reader.readAsText(file);
+    };
+    input.click();
+  }
+
+  function resetAllData() {
+    if (confirm('確定要重置所有學習紀錄嗎？')) {
+      userLearningData = { v: 2, items: {} };
+      saveUserData();
+      updateStats();
+      if (document.getElementById('panel-flashcard').classList.contains('active')) {
+        renderFlashcard();
+      }
+      alert('已重置學習紀錄！');
+    }
+  }
+
+  // 8. 頁面初始化
+  window.addEventListener('DOMContentLoaded', async () => {
+    updateStats();
+    switchViewToMap();
+
+    // 嘗試自動讀取並連線歷史資料夾 Handle
+    const storedHandle = await getStoredDirHandle();
+    if (storedHandle) {
+      try {
+        const perm = await storedHandle.queryPermission({ mode: 'readwrite' });
+        if (perm === 'granted') await connectDirHandle(storedHandle);
+      } catch (e) {}
+    }
+  });
+</script>
+</body>
+</html><!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>歷史與地理數位學習地圖 v2.0</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
   <style>
