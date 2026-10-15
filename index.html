@@ -11,40 +11,23 @@
 *{box-sizing:border-box;margin:0;padding:0;}
 body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;background:#0f172a;color:#f8fafc;height:100vh;display:flex;flex-direction:column;overflow:hidden;}
 
-/* 頂部 Sticky 導覽列 (已移除 Google 登入同步、匯出與匯入按鈕) */
-nav.top-nav{
-    background:#1e293be6;backdrop-filter:blur(12px);border-bottom:1px solid #334155;
-    padding:10px 16px;display:flex;justify-content:space-between;align-items:center;gap:12px;z-index:900;
-}
-.nav-left{display:flex;align-items:center;gap:10px;}
-.btn-menu-trigger{background:#334155;color:#f59e0b;border:1px solid #475569;padding:6px 12px;border-radius:6px;font-size:0.9rem;font-weight:bold;cursor:pointer;}
-.nav-brand{font-size:1.1rem;font-weight:bold;color:#f59e0b;display:flex;align-items:center;gap:6px;cursor:pointer;}
-.nav-links{display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
-.nav-btn{background:transparent;color:#cbd5e1;border:none;padding:6px 12px;border-radius:20px;font-size:0.82rem;font-weight:bold;cursor:pointer;transition:all 0.2s;}
-.nav-btn:hover, .nav-btn.active{background:#f59e0b;color:#0f172a;}
-
-.user-status-badge{background:#0f172a;border:1px solid #334155;color:#38bdf8;padding:4px 10px;border-radius:14px;font-size:0.75rem;font-weight:bold;display:flex;align-items:center;gap:6px;}
-
-.view-container{flex:1;position:relative;width:100%;height:100%;overflow:hidden;}
-
-/* 首次進入系統 登入/註冊 Modal 彈窗 (強制驗證) */
-#authModal{
+/* 全螢幕強制驗證登入/註冊牆 (類似 AI 工具的入口) */
+#authScreen{
     position:fixed;top:0;left:0;width:100vw;height:100vh;
-    background:rgba(15,23,42,0.95);backdrop-filter:blur(20px);
-    z-index:9999;display:none;justify-content:center;align-items:center;padding:16px;
+    background:#0f172a;z-index:10000;display:flex;
+    justify-content:center;align-items:center;padding:20px;
 }
-#authModal.active{ display:flex; }
 .auth-card{
     background:#1e293b;border:2px solid #334155;border-radius:20px;
-    padding:32px 28px;width:100%;max-width:440px;box-shadow:0 20px 50px rgba(0,0,0,0.6);
-    display:flex;flex-direction:column;gap:18px;position:relative;
+    padding:36px 32px;width:100%;max-width:440px;box-shadow:0 20px 50px rgba(0,0,0,0.6);
+    display:flex;flex-direction:column;gap:20px;
 }
 .auth-header{text-align:center;}
-.auth-title{font-size:1.5rem;font-weight:800;color:#f59e0b;margin-bottom:6px;}
-.auth-subtitle{font-size:0.85rem;color:#94a3b8;}
+.auth-title{font-size:1.6rem;font-weight:800;color:#f59e0b;margin-bottom:6px;}
+.auth-subtitle{font-size:0.88rem;color:#94a3b8;line-height:1.4;}
 
 .auth-tabs{display:flex;background:#0f172a;padding:4px;border-radius:12px;border:1px solid #334155;}
-.auth-tab-btn{flex:1;background:transparent;color:#cbd5e1;border:none;padding:8px 0;border-radius:8px;font-size:0.88rem;font-weight:bold;cursor:pointer;transition:all 0.2s;}
+.auth-tab-btn{flex:1;background:transparent;color:#cbd5e1;border:none;padding:10px 0;border-radius:8px;font-size:0.9rem;font-weight:bold;cursor:pointer;transition:all 0.2s;}
 .auth-tab-btn.active{background:#f59e0b;color:#0f172a;}
 
 .auth-form{display:flex;flex-direction:column;gap:14px;}
@@ -70,49 +53,24 @@ nav.top-nav{
 }
 .btn-google-auth:hover{background:#f1f5f9;transform:translateY(-2px);}
 
-/* 視圖 1：首頁 Dashboard */
-#view-home{width:100%;height:100%;overflow-y:auto;padding:20px 16px 60px;max-width:1240px;margin:0 auto;display:block;}
-.home-hero{background:linear-gradient(135deg, #1e293b 0%, #0f172a 100%);border:1px solid #334155;border-radius:16px;padding:24px 20px;margin-bottom:24px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:12px;}
-.hero-badge-group{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;}
-.hero-stat-pill{background:#0f172a;border:1px solid #334155;padding:4px 10px;border-radius:16px;font-size:0.75rem;font-weight:bold;color:#cbd5e1;}
-.hero-stat-pill span{color:#f59e0b;font-weight:800;}
-.home-title{font-size:1.8rem;font-weight:800;color:#f8fafc;}
-.home-title span{color:#f59e0b;}
-.home-subtitle{font-size:0.88rem;color:#94a3b8;max-width:680px;line-height:1.5;}
+/* 主系統 App 區塊 */
+#appMain{display:none;flex-direction:column;width:100%;height:100vh;overflow:hidden;}
 
-.portal-grid{display:grid;grid-template-columns:repeat(auto-fit, minmax(260px, 1fr));gap:16px;margin-bottom:28px;}
-.portal-card{background:#1e293b;border:2px solid #334155;border-radius:14px;padding:18px;display:flex;flex-direction:column;justify-content:space-between;transition:all 0.25s;cursor:pointer;position:relative;overflow:hidden;}
-.portal-card::before{content:"";position:absolute;top:0;left:0;width:100%;height:4px;}
-.portal-card.tw::before{background:#f59e0b;} .portal-card.cn::before{background:#ef4444;} .portal-card.wd::before{background:#3b82f6;}
-.portal-card:hover{transform:translateY(-4px);box-shadow:0 10px 20px rgba(0,0,0,0.4);}
-.portal-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;}
-.portal-icon{font-size:1.8rem;}
-.portal-count-tag{padding:3px 8px;border-radius:10px;font-size:0.72rem;font-weight:bold;color:#fff;}
-.portal-title{font-size:1.15rem;font-weight:bold;color:#fff;margin-bottom:4px;}
-.portal-desc{font-size:0.8rem;color:#cbd5e1;line-height:1.4;margin-bottom:12px;}
+/* 頂部 Sticky 導覽列 (僅保留「歷屆試題」與「測驗與閃卡」) */
+nav.top-nav{
+    background:#1e293be6;backdrop-filter:blur(12px);border-bottom:1px solid #334155;
+    padding:10px 16px;display:flex;justify-content:space-between;align-items:center;gap:12px;z-index:900;
+}
+.nav-left{display:flex;align-items:center;gap:10px;}
+.btn-menu-trigger{background:#334155;color:#f59e0b;border:1px solid #475569;padding:6px 12px;border-radius:6px;font-size:0.9rem;font-weight:bold;cursor:pointer;}
+.nav-brand{font-size:1.1rem;font-weight:bold;color:#f59e0b;display:flex;align-items:center;gap:6px;}
+.nav-links{display:flex;align-items:center;gap:8px;}
+.nav-btn{background:transparent;color:#cbd5e1;border:1px solid #334155;padding:7px 16px;border-radius:20px;font-size:0.85rem;font-weight:bold;cursor:pointer;transition:all 0.2s;}
+.nav-btn:hover, .nav-btn.active{background:#f59e0b;color:#0f172a;border-color:#f59e0b;}
 
-.home-filter-section{background:#1e293b;border:1px solid #334155;border-radius:12px;padding:12px 16px;margin-bottom:20px;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;}
-.home-filter-tabs{display:flex;gap:6px;flex-wrap:wrap;}
-.tab-btn{background:#0f172a;border:1px solid #334155;color:#cbd5e1;padding:6px 14px;border-radius:18px;font-size:0.82rem;font-weight:bold;cursor:pointer;}
-.tab-btn.active, .tab-btn:hover{background:#f59e0b;color:#0f172a;border-color:#f59e0b;}
-.home-search-input{background:#0f172a;border:1px solid #475569;color:#fff;padding:7px 12px;border-radius:8px;font-size:0.82rem;outline:none;width:220px;}
+.view-container{flex:1;position:relative;width:100%;height:100%;overflow:hidden;}
 
-.events-grid{display:grid;grid-template-columns:repeat(auto-fill, minmax(280px, 1fr));gap:16px;}
-.event-card{background:#1e293b;border:1px solid #334155;border-radius:12px;padding:14px;display:flex;flex-direction:column;justify-content:space-between;transition:all 0.2s;cursor:pointer;}
-.event-card:hover{border-color:#f59e0b;transform:translateY(-3px);}
-.ev-card-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;}
-.ev-badge{padding:2px 7px;border-radius:4px;font-size:0.7rem;color:#fff;font-weight:bold;}
-.ev-year{font-size:0.75rem;color:#94a3b8;font-weight:bold;}
-.ev-source{font-size:0.72rem;color:#38bdf8;margin-bottom:4px;font-weight:bold;}
-.ev-title{font-size:1rem;font-weight:bold;color:#f8fafc;margin-bottom:4px;}
-.ev-loc{font-size:0.75rem;color:#94a3b8;margin-bottom:6px;}
-.ev-desc{font-size:0.78rem;color:#cbd5e1;line-height:1.4;margin-bottom:10px;flex:1;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
-.btn-card-detail{background:#0f172a;color:#f59e0b;border:1px solid #f59e0b;padding:6px 10px;border-radius:6px;font-size:0.78rem;font-weight:bold;cursor:pointer;text-align:center;}
-
-.load-more-box{text-align:center;margin-top:24px;}
-.btn-load-more{background:#334155;color:#f59e0b;border:1px solid #475569;padding:8px 24px;border-radius:20px;font-size:0.85rem;font-weight:bold;cursor:pointer;}
-
-/* 視圖 2：歷屆試題專頁 */
+/* 視圖：歷屆試題專頁 */
 #view-exams{width:100%;height:100%;overflow-y:auto;padding:20px 16px 60px;max-width:1150px;margin:0 auto;display:none;}
 .exams-header{background:linear-gradient(135deg, #1e293b, #0f172a);border:1px solid #334155;border-radius:16px;padding:22px 28px;margin-bottom:20px;display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;}
 .exams-header h2{font-size:1.5rem;color:#38bdf8;margin-bottom:4px;}
@@ -137,7 +95,7 @@ nav.top-nav{
 .btn-cite-quiz{background:#059669;color:#fff;border:none;padding:8px 16px;border-radius:8px;font-size:0.85rem;font-weight:bold;cursor:pointer;transition:background 0.2s;display:inline-flex;align-items:center;gap:4px;}
 .btn-cite-quiz:hover{background:#047857;}
 
-/* 視圖 3：測驗與閃卡 */
+/* 視圖：測驗與閃卡 */
 #view-quiz{width:100%;height:100%;overflow-y:auto;padding:20px 16px 60px;max-width:1150px;margin:0 auto;display:none;}
 
 .quiz-header{background:#1e293b;border:1px solid #334155;border-radius:16px;padding:20px 24px;margin-bottom:20px;display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;}
@@ -220,7 +178,7 @@ nav.top-nav{
 .mistake-info p{font-size:0.85rem;color:#cbd5e1;line-height:1.5;}
 .btn-remove-mistake{background:#334155;color:#ef4444;border:1px solid #ef4444;padding:8px 14px;border-radius:8px;font-size:0.8rem;font-weight:bold;cursor:pointer;white-space:nowrap;}
 
-/* 視圖 4：世界地圖 */
+/* 視圖：世界地圖 */
 #view-map{width:100%;height:100%;display:none;flex-direction:column;position:relative;}
 .map-top-bar{background:#1e293b;padding:10px 14px;display:flex;flex-direction:column;gap:8px;border-bottom:1px solid #334155;z-index:10;}
 .map-toolbar-row1{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;}
@@ -233,7 +191,7 @@ input[type="range"]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;hei
 
 #map{flex:1;width:100%;height:100%;background:#0f172a;}
 
-/* 視圖 5：年代對照 */
+/* 視圖：年代對照 */
 #view-timeline{width:100%;height:100%;overflow-y:auto;padding:20px 16px 60px;max-width:1240px;margin:0 auto;display:none;}
 .timeline-header{text-align:center;margin-bottom:20px;}
 .timeline-title{font-size:1.6rem;font-weight:bold;color:#f8fafc;margin-bottom:4px;}
@@ -256,7 +214,7 @@ input[type="range"]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;hei
 .tl-events-title{font-size:1rem;font-weight:bold;color:#f59e0b;}
 .btn-close-tl-events{background:#334155;color:#fff;border:none;padding:4px 8px;border-radius:4px;font-size:0.72rem;cursor:pointer;}
 
-/* 側邊欄 Sidebar Overlay */
+/* 側邊欄 Sidebar Overlay (僅保留「世界地圖」與「年代發展」) */
 #sidebarOverlay{position:fixed;top:0;left:0;width:280px;height:100vh;background:#0f172af2;backdrop-filter:blur(16px);border-right:1px solid #334155;z-index:1000;display:flex;flex-direction:column;padding:18px;overflow-y:auto;transform:translateX(-100%);transition:transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);}
 #sidebarOverlay.active{ transform:translateX(0); }
 .sidebar-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;border-bottom:1px solid #334155;padding-bottom:12px;}
@@ -266,7 +224,7 @@ input[type="range"]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;hei
 .menu-item{background:#1e293b;border:1px solid #334155;color:#f8fafc;padding:12px 16px;border-radius:8px;font-size:0.9rem;font-weight:bold;cursor:pointer;display:flex;align-items:center;gap:8px;transition:all 0.2s;}
 .menu-item:hover, .menu-item.active{background:#f59e0b;color:#0f172a;border-color:#f59e0b;}
 
-/* Modal 彈窗 */
+/* Event Detail Modal 彈窗 */
 #eventDetailModal{position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(15,23,42,0.85);backdrop-filter:blur(12px);z-index:2000;display:none;justify-content:center;align-items:center;padding:16px;}
 #eventDetailModal.active{ display:flex; }
 .modal-content{background:#1e293b;border:1px solid #334155;border-radius:16px;width:100%;max-width:920px;max-height:88vh;overflow-y:auto;display:flex;flex-direction:column;position:relative;}
@@ -286,31 +244,23 @@ input[type="range"]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;hei
 .modal-footer{background:#0f172a;padding:14px 24px;border-top:1px solid #334155;display:flex;justify-content:flex-end;gap:10px;}
 .btn-fly-map{background:#f59e0b;color:#0f172a;border:none;padding:10px 20px;border-radius:8px;font-size:0.9rem;font-weight:bold;cursor:pointer;}
 
-/* 手機與窄螢幕 RWD */
+/* 響應式微調 */
 @media (max-width: 768px) {
     .nav-brand-text { display: none; }
     .nav-links { gap: 4px; }
-    .nav-btn { padding: 4px 8px; font-size: 0.78rem; }
+    .nav-btn { padding: 5px 10px; font-size: 0.78rem; }
     .modal-body { grid-template-columns:1fr; padding: 16px; }
-    .map-toolbar-row1, .map-toolbar-row2 { flex-direction:column; align-items:stretch; gap: 6px; }
-    .simple-search-input, .home-search-input { width:100%; }
-    .timeline-box { width: 100%; min-width: auto; }
-    .exam-pdf-card-row { flex-direction: column; align-items: flex-start; }
-    .exam-action-btns { width: 100%; justify-content: flex-end; margin-top: 10px; }
-    .quiz-card { padding: 20px; }
-    .q-question { font-size: 1.15rem; }
-    .q-opt-btn { font-size: 0.92rem; padding: 12px 14px; }
 }
 </style>
 </head>
 <body>
 
-<!-- 首次進入系統 登入/註冊 強制驗證 Modal -->
-<div id="authModal">
+<!-- 全螢幕強制驗證登入/註冊門檻 (未驗證前完全阻擋系統內容) -->
+<div id="authScreen">
     <div class="auth-card">
         <div class="auth-header">
-            <div class="auth-title">📜 歷史數位時空系統</div>
-            <div class="auth-subtitle">首次使用請先進行登入或建立帳號</div>
+            <div class="auth-title">📜 歷史數位學習系統</div>
+            <div class="auth-subtitle">開啟系統前請先登入或註冊您的帳號</div>
         </div>
 
         <div class="auth-tabs">
@@ -318,7 +268,7 @@ input[type="range"]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;hei
             <button id="tabAuthRegister" class="auth-tab-btn" onclick="switchAuthTab('register')">註冊新帳號</button>
         </div>
 
-        <!-- Google 快速登入/註冊 -->
+        <!-- Google 帳號登入/註冊 -->
         <button class="btn-google-auth" onclick="handleGoogleAuth()">
             <svg width="18" height="18" viewBox="0 0 24 24">
                 <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
@@ -326,10 +276,10 @@ input[type="range"]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;hei
                 <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
                 <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
             </svg>
-            使用 Google 帳號登入 / 註冊
+            使用 Google 帳號繼續
         </button>
 
-        <div class="auth-divider"><span>或使用電子郵件</span></div>
+        <div class="auth-divider"><span>或使用帳號密碼</span></div>
 
         <!-- 登入表單 -->
         <form id="formAuthLogin" class="auth-form" onsubmit="handleAuthLogin(event)">
@@ -341,14 +291,14 @@ input[type="range"]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;hei
                 <span class="form-label">🔑 密碼</span>
                 <input type="password" id="loginPass" class="auth-input" placeholder="請輸入密碼" required>
             </div>
-            <button type="submit" class="btn-auth-submit">立即登入</button>
+            <button type="submit" class="btn-auth-submit">立即登入系統</button>
         </form>
 
         <!-- 註冊表單 -->
         <form id="formAuthRegister" class="auth-form" style="display:none;" onsubmit="handleAuthRegister(event)">
             <div class="form-group">
-                <span class="form-label">📧 電子郵件 / 使用者帳號</span>
-                <input type="text" id="regUser" class="auth-input" placeholder="請輸入帳號或 Email" required>
+                <span class="form-label">📧 設定帳號或 Email</span>
+                <input type="text" id="regUser" class="auth-input" placeholder="請輸入帳號" required>
             </div>
             <div class="form-group">
                 <span class="form-label">🔑 設定密碼</span>
@@ -361,322 +311,271 @@ input[type="range"]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;hei
                     <option value="gdrive">Google Drive 雲端同步</option>
                     <option value="cloud">系統雲端資料庫 (Cloud DB)</option>
                 </select>
-                <span style="font-size:0.72rem; color:#94a3b8; margin-top:2px;">指定您歷史測驗與錯題紀錄的保存方式。</span>
             </div>
-            <button type="submit" class="btn-auth-submit">完成註冊並登入</button>
-            <button type="button" class="btn-auth-skip" onclick="skipRegisterStorage()">跳過儲存設定 (使用預設本機儲存)</button>
+            <button type="submit" class="btn-auth-submit">完成註冊並進入</button>
+            <button type="button" class="btn-auth-skip" onclick="skipRegisterStorage()">跳過設定 (使用預設本機儲存)</button>
         </form>
     </div>
 </div>
 
-<nav class="top-nav">
-    <div class="nav-left">
-        <button class="btn-menu-trigger" onclick="toggleSidebar()">☰ 選單</button>
-        <div class="nav-brand" onclick="switchView('home')">📜 <span class="nav-brand-text">108課綱歷史總覽</span></div>
-    </div>
-    <div class="nav-links">
-        <button id="navBtnHome" class="nav-btn active" onclick="switchView('home')">🏠 首頁</button>
-        <button id="navBtnExams" class="nav-btn" onclick="switchView('exams')">📄 歷屆試題</button>
-        <button id="navBtnQuiz" class="nav-btn" onclick="switchView('quiz')">🧠 測驗與閃卡</button>
-        <button id="navBtnMap" class="nav-btn" onclick="switchView('map')">🗺️ 世界地圖</button>
-        <button id="navBtnTimeline" class="nav-btn" onclick="switchView('timeline')">⏳ 年代發展</button>
-        <div class="user-status-badge" id="userStatusBadge">👤 尚未登入</div>
-    </div>
-</nav>
-
-<div class="view-container">
-
-    <!-- 視圖 1：首頁 Dashboard -->
-    <div id="view-home">
-        <div class="home-hero">
-            <div class="hero-badge-group">
-                <div class="hero-stat-pill">🇹🇼 臺灣史：<span id="statTW">0</span></div>
-                <div class="hero-stat-pill">🇨🇳 中國史：<span id="statCN">0</span></div>
-                <div class="hero-stat-pill">🌍 世界史：<span id="statWD">0</span></div>
-            </div>
-            <h1 class="home-title">108課綱歷史考點 <span>數位時空指南</span></h1>
-            <p class="home-subtitle">收錄共 <span id="statTotal">0</span> 筆歷史考點，支援地圖點狀聚合、因果對比分析、歷屆試題庫與自動化測驗模組。</p>
+<!-- 主應用程式介面 -->
+<div id="appMain">
+    <nav class="top-nav">
+        <div class="nav-left">
+            <button class="btn-menu-trigger" onclick="toggleSidebar()">☰ 選單</button>
+            <div class="nav-brand">📜 <span class="nav-brand-text">108課綱歷史總覽</span></div>
         </div>
-
-        <div class="portal-grid">
-            <div class="portal-card tw" onclick="filterHomeCategory('臺灣史')">
-                <div class="portal-top"><span class="portal-icon">🇹🇼</span><span class="portal-count-tag" id="portalTWTag" style="background:#f59e0b">0</span></div>
-                <div><div class="portal-title">臺灣史</div><div class="portal-desc">包含史前文化、大航海時代、清領轉折、日治變遷與戰後民主。</div></div>
-            </div>
-            <div class="portal-card cn" onclick="filterHomeCategory('中國史')">
-                <div class="portal-top"><span class="portal-icon">🇨🇳</span><span class="portal-count-tag" id="portalCNTag" style="background:#ef4444">0</span></div>
-                <div><div class="portal-title">中國史</div><div class="portal-desc">涵蓋華夏早期文明、歷代朝代制度、東亞交流與近代變革。</div></div>
-            </div>
-            <div class="portal-card wd" onclick="filterHomeCategory('世界史')">
-                <div class="portal-top"><span class="portal-icon">🌍</span><span class="portal-count-tag" id="portalWDTag" style="background:#3b82f6">0</span></div>
-                <div><div class="portal-title">世界史</div><div class="portal-desc">收錄四大古文明、古典希臘羅馬、大航海探索與現代秩序。</div></div>
-            </div>
+        <!-- 頂部標題列：僅保留「歷屆試題」與「測驗與閃卡」 -->
+        <div class="nav-links">
+            <button id="navBtnExams" class="nav-btn" onclick="switchView('exams')">📄 歷屆試題</button>
+            <button id="navBtnQuiz" class="nav-btn active" onclick="switchView('quiz')">🧠 測驗與閃卡</button>
         </div>
+    </nav>
 
-        <div class="home-filter-section">
-            <div class="home-filter-tabs">
-                <button class="tab-btn active" id="tabAll" onclick="filterHomeCategory('ALL')">✨ 全部</button>
-                <button class="tab-btn" id="tabTW" onclick="filterHomeCategory('臺灣史')">🇹🇼 臺灣史</button>
-                <button class="tab-btn" id="tabCN" onclick="filterHomeCategory('中國史')">🇨🇳 中國史</button>
-                <button class="tab-btn" id="tabWD" onclick="filterHomeCategory('世界史')">🌍 世界史</button>
-            </div>
-            <input type="text" id="homeSearchInput" class="home-search-input" placeholder="🔍 搜尋考點、地點或關鍵字..." oninput="resetHomePagination(); renderHomeCards();">
-        </div>
+    <div class="view-container">
 
-        <div class="events-grid" id="eventsGrid"></div>
-        <div class="load-more-box" id="loadMoreBox">
-            <button class="btn-load-more" onclick="loadMoreHomeCards()">載入更多考點...</button>
-        </div>
-    </div>
-
-    <!-- 視圖 2：歷屆試題專頁 -->
-    <div id="view-exams">
-        <div class="exams-header">
-            <div>
-                <h2>📄 大考中心官方社會科歷屆試題庫 (83~115 學年度)</h2>
-                <p>收錄 83 至 115 學年度大學學測與聯考社會考科試題原檔。可下載 PDF 或點擊按鈕帶入測驗。</p>
-            </div>
-        </div>
-        <div class="exam-cards-list" id="ceecExamCardsList"></div>
-    </div>
-
-    <!-- 視圖 3：測驗與閃卡 -->
-    <div id="view-quiz">
-        <div class="quiz-header">
-            <div class="quiz-title-box">
-                <h2>🧠 主動提取與間隔重複學習系統</h2>
-                <p>支援離線高畫質記憶儲存，透過 Flashcards 閃卡與多功能選擇題強化考點記憶。</p>
-            </div>
-            <div class="quiz-stats-bar">
-                <div class="q-stat-item" onclick="switchQuizSubTab('fc_mastered')" title="查看已掌握項目"><b id="statMastered">0</b>已掌握</div>
-                <div class="q-stat-item" onclick="switchQuizSubTab('fc_reviewing')" title="查看待複習項目"><b id="statReviewing">0</b>待複習</div>
-                <div class="q-stat-item" onclick="switchQuizSubTab('mistakes')" title="查看錯題本" style="border-left:1px solid #334155; padding-left:12px;"><b id="statMistakes" style="color:#ef4444">0</b>錯題本</div>
-            </div>
-        </div>
-
-        <div class="quiz-tab-group">
-            <button class="q-tab-btn active" id="subTabFC" onclick="switchQuizSubTab('flashcards')">🗂️ 閃卡記憶卡</button>
-            <button class="q-tab-btn" id="subTabTest" onclick="switchQuizSubTab('quiz')">📝 模擬測驗</button>
-            <button class="q-tab-btn" id="subTabMistakes" onclick="switchQuizSubTab('mistakes')">❌ 錯題本紀錄</button>
-        </div>
-
-        <!-- 閃卡區塊 -->
-        <div id="secFlashcards">
-            <div class="quiz-config-card">
-                <div class="quiz-config-group">
-                    <span class="quiz-select-label">🎯 閃卡範疇：</span>
-                    <select id="cfgFcDomain" class="quiz-select-input">
-                        <option value="ALL">✨ 全部歷史領域</option>
-                        <option value="臺灣史">🇹🇼 臺灣史</option>
-                        <option value="中國史">🇨🇳 中國史</option>
-                        <option value="世界史">🌍 世界史</option>
-                    </select>
-
-                    <span class="quiz-select-label">🔢 卡片數量：</span>
-                    <select id="cfgFcCount" class="quiz-select-input">
-                        <option value="5">5 張</option>
-                        <option value="10" selected>10 張</option>
-                        <option value="15">15 張</option>
-                        <option value="20">20 張</option>
-                        <option value="ALL">ALL (全套)</option>
-                    </select>
-                    <input type="number" id="cfgFcCustomCount" class="custom-count-input" placeholder="自訂數量" min="1">
+        <!-- 視圖：歷屆試題專頁 -->
+        <div id="view-exams">
+            <div class="exams-header">
+                <div>
+                    <h2>📄 大考中心官方社會科歷屆試題庫 (83~115 學年度)</h2>
+                    <p>收錄 83 至 115 學年度大學學測與聯考社會考科試題原檔。可下載 PDF 或點擊按鈕帶入測驗。</p>
                 </div>
-                <button class="btn-start-quiz" onclick="startConfiguredFlashcards()">🚀 開始閃卡</button>
+            </div>
+            <div class="exam-cards-list" id="ceecExamCardsList"></div>
+        </div>
+
+        <!-- 視圖：測驗與閃卡 -->
+        <div id="view-quiz">
+            <div class="quiz-header">
+                <div class="quiz-title-box">
+                    <h2>🧠 主動提取與間隔重複學習系統</h2>
+                    <p>支援離線高畫質記憶儲存，透過 Flashcards 閃卡與多功能選擇題強化考點記憶。</p>
+                </div>
+                <div class="quiz-stats-bar">
+                    <div class="q-stat-item" onclick="switchQuizSubTab('fc_mastered')" title="查看已掌握項目"><b id="statMastered">0</b>已掌握</div>
+                    <div class="q-stat-item" onclick="switchQuizSubTab('fc_reviewing')" title="查看待複習項目"><b id="statReviewing">0</b>待複習</div>
+                    <div class="q-stat-item" onclick="switchQuizSubTab('mistakes')" title="查看錯題本" style="border-left:1px solid #334155; padding-left:12px;"><b id="statMistakes" style="color:#ef4444">0</b>錯題本</div>
+                </div>
             </div>
 
-            <div id="fcDisplayArea" style="display:none">
-                <div class="flashcard-wrapper" id="fcWrapper" onclick="toggleFCFlip()">
-                    <div class="flashcard-inner">
-                        <div class="flashcard-front">
-                            <span class="fc-badge" id="fcDomainBadge" style="background:#f59e0b">臺灣史</span>
-                            <div style="flex:1;display:flex;flex-direction:column;justify-content:center">
-                                <div class="fc-title" id="fcFrontTitle">考點載入中...</div>
-                                <div style="font-size:0.9rem;color:#cbd5e1" id="fcFrontSub">點擊卡片翻轉查看歷史細節與重點說明</div>
+            <div class="quiz-tab-group">
+                <button class="q-tab-btn active" id="subTabFC" onclick="switchQuizSubTab('flashcards')">🗂️ 閃卡記憶卡</button>
+                <button class="q-tab-btn" id="subTabTest" onclick="switchQuizSubTab('quiz')">📝 模擬測驗</button>
+                <button class="q-tab-btn" id="subTabMistakes" onclick="switchQuizSubTab('mistakes')">❌ 錯題本紀錄</button>
+            </div>
+
+            <!-- 閃卡區塊 -->
+            <div id="secFlashcards">
+                <div class="quiz-config-card">
+                    <div class="quiz-config-group">
+                        <span class="quiz-select-label">🎯 閃卡範疇：</span>
+                        <select id="cfgFcDomain" class="quiz-select-input">
+                            <option value="ALL">✨ 全部歷史領域</option>
+                            <option value="臺灣史">🇹🇼 臺灣史</option>
+                            <option value="中國史">🇨🇳 中國史</option>
+                            <option value="世界史">🌍 世界史</option>
+                        </select>
+
+                        <span class="quiz-select-label">🔢 卡片數量：</span>
+                        <select id="cfgFcCount" class="quiz-select-input">
+                            <option value="5">5 張</option>
+                            <option value="10" selected>10 張</option>
+                            <option value="15">15 張</option>
+                            <option value="20">20 張</option>
+                            <option value="ALL">ALL (全套)</option>
+                        </select>
+                        <input type="number" id="cfgFcCustomCount" class="custom-count-input" placeholder="自訂數量" min="1">
+                    </div>
+                    <button class="btn-start-quiz" onclick="startConfiguredFlashcards()">🚀 開始閃卡</button>
+                </div>
+
+                <div id="fcDisplayArea" style="display:none">
+                    <div class="flashcard-wrapper" id="fcWrapper" onclick="toggleFCFlip()">
+                        <div class="flashcard-inner">
+                            <div class="flashcard-front">
+                                <span class="fc-badge" id="fcDomainBadge" style="background:#f59e0b">臺灣史</span>
+                                <div style="flex:1;display:flex;flex-direction:column;justify-content:center">
+                                    <div class="fc-title" id="fcFrontTitle">考點載入中...</div>
+                                    <div style="font-size:0.9rem;color:#cbd5e1" id="fcFrontSub">點擊卡片翻轉查看歷史細節與重點說明</div>
+                                </div>
+                                <div class="fc-hint">💡 點擊卡片任意處翻面</div>
                             </div>
-                            <div class="fc-hint">💡 點擊卡片任意處翻面</div>
-                        </div>
-                        <div class="flashcard-back">
-                            <div style="width:100%">
-                                <div class="fc-box"><b>📍 年代與地點：</b><span id="fcBackYearLoc">--</span></div>
-                                <div class="fc-box"><b>📖 核心說明：</b><div id="fcBackDesc">--</div></div>
-                                <div class="fc-box"><b>🔍 時代背景與影響：</b><div id="fcBackCause">--</div></div>
+                            <div class="flashcard-back">
+                                <div style="width:100%">
+                                    <div class="fc-box"><b>📍 年代與地點：</b><span id="fcBackYearLoc">--</span></div>
+                                    <div class="fc-box"><b>📖 核心說明：</b><div id="fcBackDesc">--</div></div>
+                                    <div class="fc-box"><b>🔍 時代背景與影響：</b><div id="fcBackCause">--</div></div>
+                                </div>
+                                <div class="fc-hint">請評估您的記憶熟悉度：</div>
                             </div>
-                            <div class="fc-hint">請評估您的記憶熟悉度：</div>
                         </div>
+                    </div>
+
+                    <div class="flashcard-controls">
+                        <button class="btn-fc-rating btn-fc-forgot" onclick="rateFlashcard('forgot')">🔴 忘了 (重排)</button>
+                        <button class="btn-fc-rating btn-fc-fuzzy" onclick="rateFlashcard('fuzzy')">🟡 模糊 (近期)</button>
+                        <button class="btn-fc-rating btn-fc-remembered" onclick="rateFlashcard('remembered')">🟢 記得 (已掌握)</button>
                     </div>
                 </div>
 
-                <div class="flashcard-controls">
-                    <button class="btn-fc-rating btn-fc-forgot" onclick="rateFlashcard('forgot')">🔴 忘了 (重排)</button>
-                    <button class="btn-fc-rating btn-fc-fuzzy" onclick="rateFlashcard('fuzzy')">🟡 模糊 (近期)</button>
-                    <button class="btn-fc-rating btn-fc-remembered" onclick="rateFlashcard('remembered')">🟢 記得 (已掌握)</button>
+                <div id="fcStartPrompt" style="text-align:center; padding:48px 20px; color:#cbd5e1; background:#1e293b; border:1px solid #334155; border-radius:16px; font-size:1.05rem;">
+                    💡 請設定上方範疇與數量，點擊<b style="color:#f59e0b; margin:0 4px">「🚀 開始閃卡」</b>即可展開卡片記憶訓練。
                 </div>
             </div>
 
-            <div id="fcStartPrompt" style="text-align:center; padding:48px 20px; color:#cbd5e1; background:#1e293b; border:1px solid #334155; border-radius:16px; font-size:1.05rem;">
-                💡 請設定上方範疇與數量，點擊<b style="color:#f59e0b; margin:0 4px">「🚀 開始閃卡」</b>即可展開卡片記憶訓練。
+            <!-- 選擇題測驗區塊 -->
+            <div id="secQuiz" style="display:none">
+                <div class="quiz-config-card">
+                    <div class="quiz-config-group">
+                        <span class="quiz-select-label">🎯 測驗範疇：</span>
+                        <select id="cfgDomain" class="quiz-select-input">
+                            <option value="ALL">✨ 全部歷史領域</option>
+                            <option value="臺灣史">🇹🇼 臺灣史</option>
+                            <option value="中國史">🇨🇳 中國史</option>
+                            <option value="世界史">🌍 世界史</option>
+                        </select>
+
+                        <span class="quiz-select-label">⚙️ 出題模式：</span>
+                        <select id="cfgType" class="quiz-select-input">
+                            <option value="MIX">🎲 混合題型</option>
+                            <option value="YEAR">📅 西元年代配對</option>
+                            <option value="DESC">📖 歷史事實描述</option>
+                        </select>
+
+                        <span class="quiz-select-label">🔢 題目數量：</span>
+                        <select id="cfgCount" class="quiz-select-input">
+                            <option value="5">5 題</option>
+                            <option value="10" selected>10 題</option>
+                            <option value="15">15 題</option>
+                            <option value="20">20 題</option>
+                        </select>
+                    </div>
+                    <button class="btn-start-quiz" onclick="startConfiguredQuiz()">🏃 開始測驗</button>
+                </div>
+
+                <div class="quiz-cited-info" id="quizCitedInfo">📌 已載入大考歷屆試題範疇專項測驗！</div>
+
+                <!-- 測驗進行卡片 -->
+                <div class="quiz-card" id="quizCard" style="display:none;">
+                    <div class="q-top-ctrl-row">
+                        <div class="q-progress" id="quizProgress">題目 1 / 10</div>
+                        <button class="btn-quit-quiz" onclick="quitQuiz()">✕ 結束測驗</button>
+                    </div>
+                    <div class="q-question" id="quizQuestionText">載入題目中...</div>
+                    <div class="q-options" id="quizOptionsContainer"></div>
+
+                    <div class="q-explanation-box" id="quizExpBox">
+                        <h4>💡 考點解析與脈絡說明</h4>
+                        <div class="q-exp-text" id="quizExpText"></div>
+                        <button class="btn-start-quiz" style="padding:6px 16px; font-size:0.85rem;" onclick="nextQuizQuestion()">下一題 ➔</button>
+                    </div>
+                </div>
+
+                <!-- 測驗結果卡片 -->
+                <div class="quiz-result-card" id="quizResultCard">
+                    <h3>🎉 測驗完成！</h3>
+                    <div class="result-score" id="resultScoreVal">80 分</div>
+                    <p class="result-desc" id="resultDescText">您答對了 8 / 10 題！標註答錯的題目已自動登錄至錯題本。</p>
+                    <button class="btn-start-quiz" onclick="switchQuizSubTab('quiz')">再次測驗</button>
+                    <button class="btn-start-quiz" style="background:#38bdf8; color:#0f172a; margin-left:10px;" onclick="switchQuizSubTab('mistakes')">查看錯題本</button>
+                </div>
+            </div>
+
+            <!-- 錯題本區塊 -->
+            <div id="secMistakes" style="display:none">
+                <div class="mistake-list" id="mistakesContainer"></div>
             </div>
         </div>
 
-        <!-- 選擇題測驗區塊 -->
-        <div id="secQuiz" style="display:none">
-            <div class="quiz-config-card">
-                <div class="quiz-config-group">
-                    <span class="quiz-select-label">🎯 測驗範疇：</span>
-                    <select id="cfgDomain" class="quiz-select-input">
-                        <option value="ALL">✨ 全部歷史領域</option>
-                        <option value="臺灣史">🇹🇼 臺灣史</option>
-                        <option value="中國史">🇨🇳 中國史</option>
-                        <option value="世界史">🌍 世界史</option>
-                    </select>
-
-                    <span class="quiz-select-label">⚙️ 出題模式：</span>
-                    <select id="cfgType" class="quiz-select-input">
-                        <option value="MIX">🎲 混合題型</option>
-                        <option value="YEAR">📅 西元年代配對</option>
-                        <option value="DESC">📖 歷史事實描述</option>
-                    </select>
-
-                    <span class="quiz-select-label">🔢 題目數量：</span>
-                    <select id="cfgCount" class="quiz-select-input">
-                        <option value="5">5 題</option>
-                        <option value="10" selected>10 題</option>
-                        <option value="15">15 題</option>
-                        <option value="20">20 題</option>
-                    </select>
-                </div>
-                <button class="btn-start-quiz" onclick="startConfiguredQuiz()">🏃 開始測驗</button>
-            </div>
-
-            <div class="quiz-cited-info" id="quizCitedInfo">📌 已載入大考歷屆試題範疇專項測驗！</div>
-
-            <!-- 測驗進行卡片 -->
-            <div class="quiz-card" id="quizCard" style="display:none;">
-                <div class="q-top-ctrl-row">
-                    <div class="q-progress" id="quizProgress">題目 1 / 10</div>
-                    <button class="btn-quit-quiz" onclick="quitQuiz()">✕ 結束測驗</button>
-                </div>
-                <div class="q-question" id="quizQuestionText">載入題目中...</div>
-                <div class="q-options" id="quizOptionsContainer"></div>
-
-                <div class="q-explanation-box" id="quizExpBox">
-                    <h4>💡 考點解析與脈絡說明</h4>
-                    <div class="q-exp-text" id="quizExpText"></div>
-                    <button class="btn-start-quiz" style="padding:6px 16px; font-size:0.85rem;" onclick="nextQuizQuestion()">下一題 ➔</button>
+        <!-- 視圖：世界地圖 -->
+        <div id="view-map">
+            <div class="map-top-bar">
+                <div class="map-toolbar-row1">
+                    <div class="timeline-box">
+                        <span class="hdr-era-badge" id="mapYearBadge">全部年份</span>
+                        <input type="range" id="mapYearSlider" min="-2000" max="2026" value="2026" oninput="updateMapTimeline(this.value)">
+                        <button class="btn-reset-slider" onclick="resetMapSlider()">重設</button>
+                    </div>
+                    <input type="text" id="mapSearchInput" class="simple-search-input" placeholder="🔍 搜尋地圖考點..." oninput="filterMapByKeyword(this.value)">
                 </div>
             </div>
+            <div id="map"></div>
+        </div>
 
-            <!-- 測驗結果卡片 -->
-            <div class="quiz-result-card" id="quizResultCard">
-                <h3>🎉 測驗完成！</h3>
-                <div class="result-score" id="resultScoreVal">80 分</div>
-                <p class="result-desc" id="resultDescText">您答對了 8 / 10 題！標註答錯的題目已自動登錄至錯題本。</p>
-                <button class="btn-start-quiz" onclick="switchQuizSubTab('quiz')">再次測驗</button>
-                <button class="btn-start-quiz" style="background:#38bdf8; color:#0f172a; margin-left:10px;" onclick="switchQuizSubTab('mistakes')">查看錯題本</button>
+        <!-- 視圖：年代對照 -->
+        <div id="view-timeline">
+            <div class="timeline-header">
+                <h2 class="timeline-title">⏳ 跨區域年代發展對照軌道</h2>
+                <p class="timeline-subtitle">點擊下方朝代或歷史時期條狀圖，快速篩選同時間軸發生的跨國歷史事件。</p>
+            </div>
+
+            <div class="chronology-container">
+                <div class="num-line-wrapper">
+                    <div class="num-line-ticks">
+                        <span>-2000年</span><span>-1000年</span><span>西元元年</span><span>1000年</span><span>1500年</span><span>1800年</span><span>1900年</span><span>2000年</span><span>2026年</span>
+                    </div>
+                </div>
+
+                <div class="chrono-row-group">
+                    <div class="chrono-group-title">🇹🇼 臺灣史時期</div>
+                    <div class="chrono-track-area">
+                        <div class="dynasty-bar" style="background:#0284c7;" onclick="selectDynasty('史前與原住民', -5000, 1624)">史前文化 (-5000~1624)</div>
+                        <div class="dynasty-bar" style="background:#f59e0b;" onclick="selectDynasty('荷西與鄭氏', 1624, 1683)">荷西/鄭氏 (1624~1683)</div>
+                        <div class="dynasty-bar" style="background:#10b981;" onclick="selectDynasty('清領時期', 1683, 1895)">清領時期 (1683~1895)</div>
+                        <div class="dynasty-bar" style="background:#ef4444;" onclick="selectDynasty('日治時期', 1895, 1945)">日治時期 (1895~1945)</div>
+                        <div class="dynasty-bar" style="background:#8b5cf6;" onclick="selectDynasty('戰後民主', 1945, 2026)">戰後至今 (1945~2026)</div>
+                    </div>
+                </div>
+
+                <div class="chrono-row-group">
+                    <div class="chrono-group-title">🇨🇳 中國史朝代</div>
+                    <div class="chrono-track-area">
+                        <div class="dynasty-bar" style="background:#d97706;" onclick="selectDynasty('先秦三代', -2000, -221)">先秦三代 (-2000~-221)</div>
+                        <div class="dynasty-bar" style="background:#b91c1c;" onclick="selectDynasty('秦漢魏晉', -221, 581)">秦漢魏晉 (-221~581)</div>
+                        <div class="dynasty-bar" style="background:#047857;" onclick="selectDynasty('隋唐宋元', 581, 1368)">隋唐宋元 (581~1368)</div>
+                        <div class="dynasty-bar" style="background:#4338ca;" onclick="selectDynasty('明清帝國', 1368, 1911)">明清兩朝 (1368~1911)</div>
+                        <div class="dynasty-bar" style="background:#be123c;" onclick="selectDynasty('近代中國', 1911, 2026)">民國與近現代 (1911~2026)</div>
+                    </div>
+                </div>
+
+                <div class="chrono-row-group">
+                    <div class="chrono-group-title">🌍 世界史時代</div>
+                    <div class="chrono-track-area">
+                        <div class="dynasty-bar" style="background:#0284c7;" onclick="selectDynasty('古典文明', -2000, 476)">古典文明 (-2000~476)</div>
+                        <div class="dynasty-bar" style="background:#6d28d9;" onclick="selectDynasty('中古世紀', 476, 1453)">中古世紀 (476~1453)</div>
+                        <div class="dynasty-bar" style="background:#f59e0b;" onclick="selectDynasty('近世大航海', 1453, 1789)">近世/大航海 (1453~1789)</div>
+                        <div class="dynasty-bar" style="background:#15803d;" onclick="selectDynasty('近代工業革命', 1789, 1914)">近代與工業化 (1789~1914)</div>
+                        <div class="dynasty-bar" style="background:#9333ea;" onclick="selectDynasty('現代與冷戰', 1914, 2026)">現代世界 (1914~2026)</div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="timelineEventsArea">
+                <div class="tl-events-header">
+                    <span class="tl-events-title" id="tlEventsTitle">歷史事件名冊</span>
+                    <button class="btn-close-tl-events" onclick="closeTimelineEvents()">✕ 關閉</button>
+                </div>
+                <div class="events-grid" id="tlEventsGrid"></div>
             </div>
         </div>
 
-        <!-- 錯題本區塊 -->
-        <div id="secMistakes" style="display:none">
-            <div class="mistake-list" id="mistakesContainer"></div>
-        </div>
     </div>
-
-    <!-- 視圖 4：世界地圖 -->
-    <div id="view-map">
-        <div class="map-top-bar">
-            <div class="map-toolbar-row1">
-                <div class="timeline-box">
-                    <span class="hdr-era-badge" id="mapYearBadge">全部年份</span>
-                    <input type="range" id="mapYearSlider" min="-2000" max="2026" value="2026" oninput="updateMapTimeline(this.value)">
-                    <button class="btn-reset-slider" onclick="resetMapSlider()">重設</button>
-                </div>
-                <input type="text" id="mapSearchInput" class="simple-search-input" placeholder="🔍 搜尋地圖考點..." oninput="filterMapByKeyword(this.value)">
-            </div>
-        </div>
-        <div id="map"></div>
-    </div>
-
-    <!-- 視圖 5：年代對照 -->
-    <div id="view-timeline">
-        <div class="timeline-header">
-            <h2 class="timeline-title">⏳ 跨區域年代發展對照軌道</h2>
-            <p class="timeline-subtitle">點擊下方朝代或歷史時期條狀圖，快速篩選同時間軸發生的跨國歷史事件。</p>
-        </div>
-
-        <div class="chronology-container">
-            <div class="num-line-wrapper">
-                <div class="num-line-ticks">
-                    <span>-2000年</span><span>-1000年</span><span>西元元年</span><span>1000年</span><span>1500年</span><span>1800年</span><span>1900年</span><span>2000年</span><span>2026年</span>
-                </div>
-            </div>
-
-            <div class="chrono-row-group">
-                <div class="chrono-group-title">🇹🇼 臺灣史時期</div>
-                <div class="chrono-track-area">
-                    <div class="dynasty-bar" style="background:#0284c7;" onclick="selectDynasty('史前與原住民', -5000, 1624)">史前文化 (-5000~1624)</div>
-                    <div class="dynasty-bar" style="background:#f59e0b;" onclick="selectDynasty('荷西與鄭氏', 1624, 1683)">荷西/鄭氏 (1624~1683)</div>
-                    <div class="dynasty-bar" style="background:#10b981;" onclick="selectDynasty('清領時期', 1683, 1895)">清領時期 (1683~1895)</div>
-                    <div class="dynasty-bar" style="background:#ef4444;" onclick="selectDynasty('日治時期', 1895, 1945)">日治時期 (1895~1945)</div>
-                    <div class="dynasty-bar" style="background:#8b5cf6;" onclick="selectDynasty('戰後民主', 1945, 2026)">戰後至今 (1945~2026)</div>
-                </div>
-            </div>
-
-            <div class="chrono-row-group">
-                <div class="chrono-group-title">🇨🇳 中國史朝代</div>
-                <div class="chrono-track-area">
-                    <div class="dynasty-bar" style="background:#d97706;" onclick="selectDynasty('先秦三代', -2000, -221)">先秦三代 (-2000~-221)</div>
-                    <div class="dynasty-bar" style="background:#b91c1c;" onclick="selectDynasty('秦漢魏晉', -221, 581)">秦漢魏晉 (-221~581)</div>
-                    <div class="dynasty-bar" style="background:#047857;" onclick="selectDynasty('隋唐宋元', 581, 1368)">隋唐宋元 (581~1368)</div>
-                    <div class="dynasty-bar" style="background:#4338ca;" onclick="selectDynasty('明清帝國', 1368, 1911)">明清兩朝 (1368~1911)</div>
-                    <div class="dynasty-bar" style="background:#be123c;" onclick="selectDynasty('近代中國', 1911, 2026)">民國與近現代 (1911~2026)</div>
-                </div>
-            </div>
-
-            <div class="chrono-row-group">
-                <div class="chrono-group-title">🌍 世界史時代</div>
-                <div class="chrono-track-area">
-                    <div class="dynasty-bar" style="background:#0284c7;" onclick="selectDynasty('古典文明', -2000, 476)">古典文明 (-2000~476)</div>
-                    <div class="dynasty-bar" style="background:#6d28d9;" onclick="selectDynasty('中古世紀', 476, 1453)">中古世紀 (476~1453)</div>
-                    <div class="dynasty-bar" style="background:#f59e0b;" onclick="selectDynasty('近世大航海', 1453, 1789)">近世/大航海 (1453~1789)</div>
-                    <div class="dynasty-bar" style="background:#15803d;" onclick="selectDynasty('近代工業革命', 1789, 1914)">近代與工業化 (1789~1914)</div>
-                    <div class="dynasty-bar" style="background:#9333ea;" onclick="selectDynasty('現代與冷戰', 1914, 2026)">現代世界 (1914~2026)</div>
-                </div>
-            </div>
-        </div>
-
-        <div id="timelineEventsArea">
-            <div class="tl-events-header">
-                <span class="tl-events-title" id="tlEventsTitle">歷史事件名冊</span>
-                <button class="btn-close-tl-events" onclick="closeTimelineEvents()">✕ 關閉</button>
-            </div>
-            <div class="events-grid" id="tlEventsGrid"></div>
-        </div>
-    </div>
-
 </div>
 
-<!-- 側邊欄 Sidebar Overlay -->
+<!-- 側邊欄 Sidebar Overlay：僅保留「世界地圖」與「年代發展」 -->
 <div id="sidebarOverlay">
     <div class="sidebar-header">
-        <span class="sidebar-title">📜 功能選單</span>
+        <span class="sidebar-title">📜 探索與時代軌道</span>
         <button class="btn-close-sidebar" onclick="toggleSidebar()">✕</button>
     </div>
     <div class="sidebar-menu">
-        <div class="menu-item" onclick="switchView('home'); toggleSidebar();">🏠 考點總覽 Dashboard</div>
-        <div class="menu-item" onclick="switchView('exams'); toggleSidebar();">📄 歷屆試題下載與測驗</div>
-        <div class="menu-item" onclick="switchView('quiz'); toggleSidebar();">🧠 主動提取閃卡與測驗</div>
-        <div class="menu-item" onclick="switchView('map'); toggleSidebar();">🗺️ 數位時空地圖</div>
-        <div class="menu-item" onclick="switchView('timeline'); toggleSidebar();">⏳ 年代發展軌道</div>
-        <div style="border-top:1px solid #334155; margin:10px 0;"></div>
-        <div class="menu-item" onclick="exportBackupData(); toggleSidebar();">📥 匯出學習紀錄備份</div>
-        <div class="menu-item" onclick="importBackupData(); toggleSidebar();">📤 匯入備份紀錄</div>
-        <div class="menu-item" style="color:#ef4444;" onclick="handleUserLogout(); toggleSidebar();">🚪 登出系統</div>
+        <div class="menu-item" onclick="switchView('map'); toggleSidebar();">🗺️ 世界地圖</div>
+        <div class="menu-item" onclick="switchView('timeline'); toggleSidebar();">⏳ 年代發展</div>
     </div>
 </div>
 
-<!-- Modal 彈窗 -->
+<!-- Event Detail Modal -->
 <div id="eventDetailModal">
     <div class="modal-content">
         <div class="modal-header">
@@ -710,143 +609,81 @@ input[type="range"]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;hei
     </div>
 </div>
 
-<input type="file" id="importFileInput" accept=".json" style="display:none" onchange="handleImportFile(event)">
-
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
-<script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.js"></script>
+<script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
 
 <script>
 /* --- 歷史考點資料庫 --- */
 const HIST_DATA = [
     {
-        id: "TW01",
-        category: "臺灣史",
-        title: "熱蘭遮城興建與大航海時代",
-        year: "西元 1624 年",
-        yearNum: 1624,
-        location: "臺南安平",
-        lat: 23.0008, lng: 120.1605,
+        id: "TW01", category: "臺灣史", title: "熱蘭遮城興建與大航海時代", year: "西元 1624 年", yearNum: 1624,
+        location: "臺南安平", lat: 23.0008, lng: 120.1605,
         desc: "荷蘭東印度公司（VOC）佔領大員（今臺南安平），興建熱蘭遮城作為東亞國際貿易轉運樞紐，開啟臺灣荷治時期。",
         cause: "背景：17 世紀大航海時代，荷蘭欲拓展對華、對日貿易網絡。影響：引進王田制、赤崁漢人移民與贌社制度。",
-        source: "108課綱 - 臺灣史主題二：區域網絡與全球聯結",
-        keywords: ["荷治時期", "熱蘭遮城", "VOC", "轉口貿易", "王田"]
+        source: "108課綱 - 臺灣史主題二：區域網絡與全球聯結", keywords: ["荷治時期", "熱蘭遮城", "VOC", "轉口貿易", "王田"]
     },
     {
-        id: "TW02",
-        category: "臺灣史",
-        title: "鄭氏政權建聖廟與孔廟建置",
-        year: "西元 1665 年",
-        yearNum: 1665,
-        location: "臺南孔子廟",
-        lat: 22.9903, lng: 120.2038,
+        id: "TW02", category: "臺灣史", title: "鄭氏政權建聖廟與孔廟建置", year: "西元 1665 年", yearNum: 1665,
+        location: "臺南孔子廟", lat: 22.9903, lng: 120.2038,
         desc: "陳永華建議鄭經興建全臺首學（臺南孔廟），建立科舉與儒學教育體系，深耕漢人文化體制。",
         cause: "背景：明鄭為反清復明進行長期整備。影響：奠定臺灣漢人文化儒學教育基礎，開創屯田與官學體制。",
-        source: "108課綱 - 臺灣史主題二：政權變遷與社會回應",
-        keywords: ["鄭氏政權", "陳永華", "全臺首學", "屯田制", "儒學"]
+        source: "108課綱 - 臺灣史主題二：政權變遷與社會回應", keywords: ["鄭氏政權", "陳永華", "全臺首學", "屯田制", "儒學"]
     },
     {
-        id: "TW03",
-        category: "臺灣史",
-        title: "天津條約與臺灣開港通商",
-        year: "西元 1860 年",
-        yearNum: 1860,
-        location: "淡水/安平/打狗/雞籠",
-        lat: 25.1725, lng: 121.4308,
+        id: "TW03", category: "臺灣史", title: "天津條約與臺灣開港通商", year: "西元 1860 年", yearNum: 1860,
+        location: "淡水/安平/打狗/雞籠", lat: 25.1725, lng: 121.4308,
         desc: "清朝英法聯軍戰敗簽訂天津條約，淡水、安平、打狗、雞籠開港，茶、糖、樟腦大量出口，臺灣邁入全球貿易市場。",
         cause: "背景：第二次鴉片戰爭與外力迫使開港。影響：經濟重心北移，外商洋行林立，西方傳教士（馬偕、巴克禮）來臺。",
-        source: "108課綱 - 臺灣史主題三：經濟與文化變遷",
-        keywords: ["開港通商", "三寶（茶糖樟腦）", "洋行", "經濟重心北移", "馬偕"]
+        source: "108課綱 - 臺灣史主題三：經濟與文化變遷", keywords: ["開港通商", "三寶（茶糖樟腦）", "洋行", "經濟重心北移", "馬偕"]
     },
     {
-        id: "TW04",
-        category: "臺灣史",
-        title: "日治時期總督府專賣與基建",
-        year: "西元 1895 年",
-        yearNum: 1895,
-        location: "臺北市總督府",
-        lat: 25.0400, lng: 121.5120,
+        id: "TW04", category: "臺灣史", title: "日治時期總督府專賣與基建", year: "西元 1895 年", yearNum: 1895,
+        location: "臺北市總督府", lat: 25.0400, lng: 121.5120,
         desc: "馬關條約簽訂後日本統治臺灣，實施特別法權（六三法），推動土地調查、度量衡統一、縱貫鐵路與日月潭水電基礎建設。",
         cause: "背景：日本殖民統治與資本主義轉化。影響：現代化基礎設施確立，但也形成「工業日本，農業臺灣」經濟依附結構。",
-        source: "108課綱 - 臺灣史主題三：日治時期統治與回應",
-        keywords: ["日治時期", "六三法", "縱貫鐵路", "專賣制度", "專利統治"]
+        source: "108課綱 - 臺灣史主題三：日治時期統治與回應", keywords: ["日治時期", "六三法", "縱貫鐵路", "專賣制度", "專利統治"]
     },
     {
-        id: "CN01",
-        category: "中國史",
-        title: "秦始皇廢封建立郡縣",
-        year: "西元前 221 年",
-        yearNum: -221,
-        location: "陝西咸陽",
-        lat: 34.3333, lng: 108.7000,
+        id: "CN01", category: "中國史", title: "秦始皇廢封建立郡縣", year: "西元前 221 年", yearNum: -221,
+        location: "陝西咸陽", lat: 34.3333, lng: 108.7000,
         desc: "秦滅六國後，采采法家學說，廢除分封制，全面實行郡縣制，統一文字、車軌、度量衡與貨幣。",
         cause: "背景：戰國時期連年混戰與法家強國思想。影響：確立中央集權官僚體制雛形，影響中國後世兩千年的政治架構。",
-        source: "108課綱 - 中國史主題一：國家與社會的成立",
-        keywords: ["秦始皇", "郡縣制", "法家", "中央集權", "車同軌"]
+        source: "108課綱 - 中國史主題一：國家與社會的成立", keywords: ["秦始皇", "郡縣制", "法家", "中央集權", "車同軌"]
     },
     {
-        id: "CN02",
-        category: "中國史",
-        title: "唐代張騫與絲綢之路貿易",
-        year: "西元 618 年",
-        yearNum: 618,
-        location: "陝西長安",
-        lat: 34.2658, lng: 108.9541,
+        id: "CN02", category: "中國史", title: "唐代張騫與絲綢之路貿易", year: "西元 618 年", yearNum: 618,
+        location: "陝西長安", lat: 34.2658, lng: 108.9541,
         desc: "唐朝首都長安成為國際大都市，東西方商人透過陸上絲綢之路聚集，三省六部制與科舉制度發揮高度效能。",
         cause: "背景：隋唐大一統與開放包容政策。影響：胡漢文化融合，東亞文化圈（漢字、儒家、律令、佛教）完整建立。",
-        source: "108課綱 - 中國史主題二：陸海交流與東亞秩序",
-        keywords: ["長安", "絲綢之路", "三省六部", "東亞文化圈", "科舉制"]
+        source: "108課綱 - 中國史主題二：陸海交流與東亞秩序", keywords: ["長安", "絲綢之路", "三省六部", "東亞文化圈", "科舉制"]
     },
     {
-        id: "CN03",
-        category: "中國史",
-        title: "宋代商業革命與交子發行",
-        year: "西元 960 年",
-        yearNum: 960,
-        location: "四川成都 / 河南開封",
-        lat: 30.6586, lng: 104.0648,
+        id: "CN03", category: "中國史", title: "宋代商業革命與交子發行", year: "西元 960 年", yearNum: 960,
+        location: "四川成都 / 河南開封", lat: 30.6586, lng: 104.0648,
         desc: "宋代坊市界限打破，夜市興盛，四川出現世界上最早的紙幣「交子」，海外貿易（市舶司）高度發達。",
         cause: "背景：農業產量提升與貨幣經濟需求爆炸。影響：市井文化崛起、士大夫文化興盛，平民社會成型。",
-        source: "108課綱 - 中國史主題二：社會經濟變遷",
-        keywords: ["宋代商業革命", "交子", "市舶司", "夜市", "士大夫"]
+        source: "108課綱 - 中國史主題二：社會經濟變遷", keywords: ["宋代商業革命", "交子", "市舶司", "夜市", "士大夫"]
     },
     {
-        id: "WD01",
-        category: "世界史",
-        title: "雅典古典民主政治巔峰",
-        year: "西元前 508 年",
-        yearNum: -508,
-        location: "希臘雅典",
-        lat: 37.9838, lng: 23.7275,
+        id: "WD01", category: "世界史", title: "雅典古典民主政治巔峰", year: "西元前 508 年", yearNum: -508,
+        location: "希臘雅典", lat: 37.9838, lng: 23.7275,
         desc: "克里斯提尼與伯里克利改革，確立公民大會、五百人會議與陶片放逐制，開啟西洋民主政治先河。",
         cause: "背景：平民階級崛起與城邦爭霸。影響：西方政治哲學與公民權利觀念之發源地，惟公民資格排斥女性與奴隸。",
-        source: "108課綱 - 世界史主題一：古典文明與多元文化",
-        keywords: ["雅典民主", "公民大會", "陶片放逐", "伯里克利", "古典希臘"]
+        source: "108課綱 - 世界史主題一：古典文明與多元文化", keywords: ["雅典民主", "公民大會", "陶片放逐", "伯里克利", "古典希臘"]
     },
     {
-        id: "WD02",
-        category: "世界史",
-        title: "哥倫布到達美洲與地理大發現",
-        year: "西元 1492 年",
-        yearNum: 1492,
-        location: "加勒比海巴哈馬",
-        lat: 25.0343, lng: -77.3963,
+        id: "WD02", category: "世界史", title: "哥倫布到達美洲與地理大發現", year: "西元 1492 年", yearNum: 1492,
+        location: "加勒比海巴哈馬", lat: 25.0343, lng: -77.3963,
         desc: "西班牙資助哥倫布橫渡大西洋抵達美洲，啟動「哥倫布大交換」，物種、疾病與銀幣在全球範圍快速流動。",
         cause: "背景：鄂圖曼土耳其阻斷陸路貿易，歐洲尋求新航路。影響：開啟歐洲重商主義、殖民帝國與全球化歷程。",
-        source: "108課綱 - 世界史主題二：近代世界的形成",
-        keywords: ["地理大發現", "哥倫布", "哥倫布大交換", "大航海時代", "重商主義"]
+        source: "108課綱 - 世界史主題二：近代世界的形成", keywords: ["地理大發現", "哥倫布", "哥倫布大交換", "大航海時代", "重商主義"]
     },
     {
-        id: "WD03",
-        category: "世界史",
-        title: "英國工業革命與蒸汽機應用",
-        year: "西元 1760 年",
-        yearNum: 1760,
-        location: "英國曼徹斯特",
-        lat: 53.4808, lng: -2.2426,
+        id: "WD03", category: "世界史", title: "英國工業革命與蒸汽機應用", year: "西元 1760 年", yearNum: 1760,
+        location: "英國曼徹斯特", lat: 53.4808, lng: -2.2426,
         desc: "瓦特改進蒸汽機，紡織業工廠化生產，鐵路與蒸汽船徹底改變交通運輸，人類進入機器動力時代。",
         cause: "背景：英國資金充沛、海外市場廣闊、專利制度與圈地運動。影響：都市化速成、資本主義崛起與階級問題爆發。",
-        source: "108課綱 - 世界史主題三：現代世界的轉變",
-        keywords: ["工業革命", "蒸汽機", "資本主義", "都市化", "工廠制度"]
+        source: "108課綱 - 世界史主題三：現代世界的轉變", keywords: ["工業革命", "蒸汽機", "資本主義", "都市化", "工廠制度"]
     }
 ];
 
@@ -860,9 +697,7 @@ const EXAM_DATABASE = [
 
 /* --- 應用程式狀態 --- */
 let currentUser = null;
-let activeView = 'home';
-let currentCategory = 'ALL';
-let currentHomeCardsLimit = 6;
+let activeView = 'quiz';
 
 let fcList = [];
 let fcCurrentIdx = 0;
@@ -884,22 +719,23 @@ let activeModalEvent = null;
 window.addEventListener('DOMContentLoaded', () => {
     checkFirstTimeAuth();
     updateGlobalStats();
-    renderHomeCards();
     renderExamList();
     renderMistakesList();
 });
 
-/* --- 登入與身份驗證檢查機制 --- */
+/* --- 強制登入/註冊門檻邏輯 --- */
 function checkFirstTimeAuth() {
     const userSession = localStorage.getItem('hist_user_session');
     if (!userSession) {
-        document.getElementById('authModal').classList.add('active');
+        document.getElementById('authScreen').style.display = 'flex';
+        document.getElementById('appMain').style.display = 'none';
     } else {
         try {
             currentUser = JSON.parse(userSession);
-            updateUserUI();
+            unlockMainSystem();
         } catch(e) {
-            document.getElementById('authModal').classList.add('active');
+            document.getElementById('authScreen').style.display = 'flex';
+            document.getElementById('appMain').style.display = 'none';
         }
     }
 }
@@ -911,92 +747,44 @@ function switchAuthTab(tab) {
     document.getElementById('formAuthRegister').style.display = (tab === 'register') ? 'flex' : 'none';
 }
 
+function unlockMainSystem() {
+    document.getElementById('authScreen').style.display = 'none';
+    document.getElementById('appMain').style.display = 'flex';
+    switchView('quiz');
+}
+
 function completeAuthSuccess(userObj) {
     currentUser = userObj;
     localStorage.setItem('hist_user_session', JSON.stringify(userObj));
-    document.getElementById('authModal').classList.remove('active');
-    updateUserUI();
-    alert(`👋 歡迎回來，${userObj.name}！已成功設定學習資料儲存模式：${userObj.storageLabel}`);
+    unlockMainSystem();
 }
 
 function handleAuthLogin(e) {
     e.preventDefault();
     const username = document.getElementById('loginUser').value.trim();
     if (!username) return;
-    completeAuthSuccess({
-        name: username,
-        type: 'custom',
-        storage: 'local',
-        storageLabel: '本機儲存 (LocalStorage)'
-    });
+    completeAuthSuccess({ name: username, type: 'custom', storage: 'local' });
 }
 
 function handleAuthRegister(e) {
     e.preventDefault();
     const username = document.getElementById('regUser').value.trim();
     const storage = document.getElementById('regStorageLoc').value;
-    const storageLabel = document.getElementById('regStorageLoc').options[document.getElementById('regStorageLoc').selectedIndex].text;
     if (!username) return;
-
-    completeAuthSuccess({
-        name: username,
-        type: 'custom',
-        storage: storage,
-        storageLabel: storageLabel
-    });
+    completeAuthSuccess({ name: username, type: 'custom', storage: storage });
 }
 
 function skipRegisterStorage() {
     const username = document.getElementById('regUser').value.trim() || '學生使用者';
-    completeAuthSuccess({
-        name: username,
-        type: 'custom',
-        storage: 'local',
-        storageLabel: '本機預設儲存 (可隨時調整)'
-    });
+    completeAuthSuccess({ name: username, type: 'custom', storage: 'local' });
 }
 
 function handleGoogleAuth() {
-    completeAuthSuccess({
-        name: 'Google 驗證使用者',
-        type: 'google',
-        storage: 'gdrive',
-        storageLabel: 'Google Drive 雲端自動同步'
-    });
-}
-
-function handleUserLogout() {
-    if (confirm('確定要登出嗎？登出後需重新輸入帳號或登入。')) {
-        localStorage.removeItem('hist_user_session');
-        location.reload();
-    }
-}
-
-function updateUserUI() {
-    const badge = document.getElementById('userStatusBadge');
-    if (currentUser) {
-        badge.textContent = `👤 ${currentUser.name} (${currentUser.type === 'google' ? 'Google' : '帳號登入'})`;
-    } else {
-        badge.textContent = '👤 尚未登入';
-    }
+    completeAuthSuccess({ name: 'Google 驗證使用者', type: 'google', storage: 'gdrive' });
 }
 
 /* --- 全局統計數字更新 --- */
 function updateGlobalStats() {
-    const twCount = HIST_DATA.filter(d => d.category === '臺灣史').length;
-    const cnCount = HIST_DATA.filter(d => d.category === '中國史').length;
-    const wdCount = HIST_DATA.filter(d => d.category === '世界史').length;
-    const totalCount = HIST_DATA.length;
-
-    document.getElementById('statTW').textContent = twCount;
-    document.getElementById('statCN').textContent = cnCount;
-    document.getElementById('statWD').textContent = wdCount;
-    document.getElementById('statTotal').textContent = totalCount;
-
-    document.getElementById('portalTWTag').textContent = twCount;
-    document.getElementById('portalCNTag').textContent = cnCount;
-    document.getElementById('portalWDTag').textContent = wdCount;
-
     document.getElementById('statMastered').textContent = masteredSet.size;
     document.getElementById('statReviewing').textContent = reviewingSet.size;
     document.getElementById('statMistakes').textContent = mistakesList.length;
@@ -1005,7 +793,7 @@ function updateGlobalStats() {
 /* --- 視圖切換邏輯 --- */
 function switchView(viewId) {
     activeView = viewId;
-    const views = ['home', 'exams', 'quiz', 'map', 'timeline'];
+    const views = ['exams', 'quiz', 'map', 'timeline'];
     views.forEach(v => {
         const el = document.getElementById('view-' + v);
         const btn = document.getElementById('navBtn' + v.charAt(0).toUpperCase() + v.slice(1));
@@ -1020,71 +808,6 @@ function switchView(viewId) {
 
 function toggleSidebar() {
     document.getElementById('sidebarOverlay').classList.toggle('active');
-}
-
-/* --- 首頁模組邏輯 --- */
-function filterHomeCategory(cat) {
-    currentCategory = cat;
-    ['All', 'TW', 'CN', 'WD'].forEach(t => {
-        const b = document.getElementById('tab' + t);
-        if(b) b.classList.remove('active');
-    });
-    if(cat === 'ALL') document.getElementById('tabAll')?.classList.add('active');
-    if(cat === '臺灣史') document.getElementById('tabTW')?.classList.add('active');
-    if(cat === '中國史') document.getElementById('tabCN')?.classList.add('active');
-    if(cat === '世界史') document.getElementById('tabWD')?.classList.add('active');
-
-    resetHomePagination();
-    renderHomeCards();
-}
-
-function resetHomePagination() {
-    currentHomeCardsLimit = 6;
-}
-
-function renderHomeCards() {
-    const searchKw = document.getElementById('homeSearchInput').value.trim().toLowerCase();
-    const filtered = HIST_DATA.filter(item => {
-        const matchCat = (currentCategory === 'ALL' || item.category === currentCategory);
-        const matchKw = !searchKw || item.title.toLowerCase().includes(searchKw) ||
-                        item.desc.toLowerCase().includes(searchKw) ||
-                        item.location.toLowerCase().includes(searchKw) ||
-                        item.keywords.some(k => k.toLowerCase().includes(searchKw));
-        return matchCat && matchKw;
-    });
-
-    const grid = document.getElementById('eventsGrid');
-    grid.innerHTML = '';
-
-    const visibleItems = filtered.slice(0, currentHomeCardsLimit);
-    visibleItems.forEach(ev => {
-        const badgeBg = ev.category === '臺灣史' ? '#f59e0b' : ev.category === '中國史' ? '#ef4444' : '#3b82f6';
-        const card = document.createElement('div');
-        card.className = 'event-card';
-        card.onclick = () => openModal(ev.id);
-        card.innerHTML = `
-            <div>
-                <div class="ev-card-top">
-                    <span class="ev-badge" style="background:${badgeBg}">${ev.category}</span>
-                    <span class="ev-year">${ev.year}</span>
-                </div>
-                <div class="ev-source">${ev.source}</div>
-                <div class="ev-title">${ev.title}</div>
-                <div class="ev-loc">📍 ${ev.location}</div>
-                <div class="ev-desc">${ev.desc}</div>
-            </div>
-            <button class="btn-card-detail">🔍 查看考點脈絡</button>
-        `;
-        grid.appendChild(card);
-    });
-
-    const loadMoreBtn = document.getElementById('loadMoreBox');
-    if(loadMoreBtn) loadMoreBtn.style.display = (filtered.length > currentHomeCardsLimit) ? 'block' : 'none';
-}
-
-function loadMoreHomeCards() {
-    currentHomeCardsLimit += 6;
-    renderHomeCards();
 }
 
 /* --- 歷屆試題專頁 --- */
@@ -1468,50 +1191,6 @@ function flyToCurrentEvent() {
     if(leafletMap) {
         leafletMap.flyTo([activeModalEvent.lat, activeModalEvent.lng], 10, { duration: 1.5 });
     }
-}
-
-/* --- 備份匯出與匯入機制 (移至選單) --- */
-function exportBackupData() {
-    const backup = {
-        mastered: Array.from(masteredSet),
-        reviewing: Array.from(reviewingSet),
-        mistakes: mistakesList,
-        exportAt: new Date().toISOString()
-    };
-    const blob = new Blob([JSON.stringify(backup, null, 2)], { type: 'application/json' });
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
-    a.download = `108History_Backup_${new Date().toISOString().slice(0,10)}.json`;
-    a.click();
-}
-
-function importBackupData() {
-    document.getElementById('importFileInput').click();
-}
-
-function handleImportFile(e) {
-    const file = e.target.files[0];
-    if(!file) return;
-
-    const reader = new FileReader();
-    reader.onload = (evt) => {
-        try {
-            const data = JSON.parse(evt.target.result);
-            if(data.mastered) localStorage.setItem('hist_mastered', JSON.stringify(data.mastered));
-            if(data.reviewing) localStorage.setItem('hist_reviewing', JSON.stringify(data.reviewing));
-            if(data.mistakes) localStorage.setItem('hist_mistakes', JSON.stringify(data.mistakes));
-
-            masteredSet = new Set(data.mastered || []);
-            reviewingSet = new Set(data.reviewing || []);
-            mistakesList = data.mistakes || [];
-
-            updateGlobalStats();
-            alert('🎉 備份資料成功匯入！');
-        } catch(err) {
-            alert('⚠️ 匯入失敗：檔案格式不符合規範。');
-        }
-    };
-    reader.readAsText(file);
 }
 </script>
 </body>
