@@ -38,7 +38,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-s
 .auth-input, .auth-select{background:#0f172a;border:1px solid #475569;color:#fff;padding:8px 12px;border-radius:6px;font-size:0.85rem;outline:none;}
 .auth-input:focus, .auth-select:focus{border-color:#f59e0b;}
 
-/* 頭像選擇網格 */
 .avatar-grid{display:grid;grid-template-columns:repeat(6, 1fr);gap:8px;margin-top:4px;}
 .avatar-opt{
     font-size:1.4rem;padding:6px;border-radius:8px;border:1px solid #334155;
@@ -47,6 +46,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-s
 .avatar-opt:hover, .avatar-opt.selected{border-color:#f59e0b;background:#334155;transform:scale(1.1);}
 
 .btn-auth-submit{background:#f59e0b;color:#0f172a;border:none;padding:10px;border-radius:6px;font-size:0.9rem;font-weight:bold;cursor:pointer;}
+.btn-auth-guest{background:transparent;border:1px solid #38bdf8;color:#38bdf8;padding:9px;border-radius:6px;font-size:0.85rem;font-weight:bold;cursor:pointer;width:100%;transition:all 0.2s;}
+.btn-auth-guest:hover{background:#38bdf8;color:#0f172a;}
 
 /* 主介面框架 */
 #appMain{display:none;flex-direction:column;width:100%;height:100vh;overflow:hidden;}
@@ -58,7 +59,8 @@ nav.top-nav{
 .nav-left{display:flex;align-items:center;gap:12px;}
 .btn-menu-trigger{background:#334155;color:#f59e0b;border:1px solid #475569;padding:6px 12px;border-radius:6px;font-size:0.85rem;font-weight:bold;cursor:pointer;}
 .nav-brand{font-size:1rem;font-weight:bold;color:#f59e0b;cursor:pointer;}
-.user-badge-info{font-size:0.82rem;background:#0f172a;padding:4px 12px;border-radius:16px;border:1px solid #334155;color:#f59e0b;display:flex;align-items:center;gap:6px;}
+.user-badge-info{font-size:0.82rem;background:#0f172a;padding:4px 12px;border-radius:16px;border:1px solid #334155;color:#f59e0b;display:flex;align-items:center;gap:8px;}
+.btn-switch-account{background:#334155;color:#38bdf8;border:none;padding:2px 8px;border-radius:4px;font-size:0.75rem;cursor:pointer;}
 
 .view-container{flex:1;position:relative;width:100%;height:100%;overflow:hidden;}
 
@@ -72,7 +74,6 @@ nav.top-nav{
 .welcome-stat-pill{background:#0f172a;border:1px solid #334155;padding:6px 14px;border-radius:20px;font-size:0.82rem;color:#cbd5e1;}
 .welcome-stat-pill b{color:#f59e0b;margin-left:4px;}
 
-/* 每日歷史笑話卡片 */
 .daily-joke-card{
     background:#1e293b;border:1px solid #f59e0b;border-radius:12px;
     padding:16px 20px;margin-bottom:20px;display:flex;flex-direction:column;gap:8px;
@@ -82,7 +83,7 @@ nav.top-nav{
 .joke-title{font-size:0.95rem;font-weight:bold;color:#f59e0b;display:flex;align-items:center;gap:6px;}
 .joke-date{font-size:0.75rem;color:#94a3b8;}
 .joke-q{font-size:0.9rem;font-weight:bold;color:#f8fafc;line-height:1.4;}
-.joke-a{font-size:0.85rem;color:#38bdf8;background:#0f172a;padding:8px 12px;border-radius:6px;border-left:3px solid #38bdf8;}
+.joke-a{font-size:0.85rem;color:#38bdf8;background:#0f172a;padding:8px 12px;border-radius:6px;border-left:3px solid #38bdf8;cursor:pointer;}
 
 .portal-grid{display:grid;grid-template-columns:repeat(auto-fit, minmax(260px, 1fr));gap:16px;}
 .portal-card{
@@ -112,7 +113,7 @@ nav.top-nav{
 .exam-card-body{font-size:0.85rem;color:#cbd5e1;line-height:1.5;margin-bottom:10px;}
 .btn-ceec-link{display:inline-block;background:#0284c7;color:#fff;padding:6px 12px;border-radius:6px;text-decoration:none;font-size:0.8rem;font-weight:bold;}
 
-/* 視圖 3：測驗與閃卡 (完整重構修復版) */
+/* 視圖 3：測驗與閃卡 */
 #view-quiz{width:100%;height:100%;overflow-y:auto;padding:20px 16px 60px;max-width:1000px;margin:0 auto;display:none;}
 .quiz-header{background:#1e293b;border:1px solid #334155;border-radius:8px;padding:16px 20px;margin-bottom:16px;display:flex;justify-content:space-between;align-items:center;gap:16px;}
 .quiz-title-box h2{font-size:1.2rem;color:#f59e0b;margin-bottom:4px;}
@@ -133,7 +134,6 @@ nav.top-nav{
 .quiz-select-input{background:#0f172a;border:1px solid #475569;color:#fff;padding:6px 10px;border-radius:6px;font-size:0.82rem;outline:none;}
 .btn-start-quiz{background:#f59e0b;color:#0f172a;border:none;padding:8px 18px;border-radius:6px;font-weight:bold;font-size:0.85rem;cursor:pointer;}
 
-/* 3D 閃卡卡片 */
 .flashcard-wrapper{perspective:1000px;width:100%;max-width:650px;margin:0 auto 16px;height:320px;cursor:pointer;}
 .flashcard-inner{position:relative;width:100%;height:100%;text-align:center;transition:transform 0.5s;transform-style:preserve-3d;}
 .flashcard-wrapper.flipped .flashcard-inner{transform:rotateY(180deg);}
@@ -169,12 +169,14 @@ nav.top-nav{
 .q-explanation-box h4{color:#f59e0b;font-size:0.95rem;margin-bottom:6px;}
 .q-exp-text{font-size:0.85rem;color:#cbd5e1;line-height:1.5;margin-bottom:8px;}
 
-/* 視圖 4：討論區 (新增群組功能) */
+/* 視圖 4：討論區 (含客服與訪客限制) */
 #view-chat{width:100%;height:100%;overflow-y:auto;padding:20px 16px 60px;max-width:1000px;margin:0 auto;display:none;}
 .chat-container{background:#1e293b;border:1px solid #334155;border-radius:12px;display:flex;flex-direction:column;height:75vh;overflow:hidden;}
 .chat-tab-header{display:flex;background:#0f172a;border-bottom:1px solid #334155;padding:8px 12px;gap:8px;align-items:center;flex-wrap:wrap;}
 .chat-tab-btn{background:transparent;border:1px solid #334155;color:#cbd5e1;padding:6px 14px;border-radius:6px;font-size:0.82rem;font-weight:bold;cursor:pointer;}
 .chat-tab-btn.active{background:#f59e0b;color:#0f172a;border-color:#f59e0b;}
+
+.guest-notice-banner{background:#7f1d1d;color:#fff;padding:8px 12px;font-size:0.8rem;font-weight:bold;text-align:center;display:none;}
 
 .group-bar-row{display:flex;gap:8px;align-items:center;padding:8px 12px;background:#1e293b;border-bottom:1px solid #334155;}
 .btn-create-group{background:#10b981;color:#fff;border:none;padding:5px 12px;border-radius:6px;font-size:0.78rem;font-weight:bold;cursor:pointer;}
@@ -187,7 +189,6 @@ nav.top-nav{
 .chat-msg-bubble{padding:8px 12px;border-radius:8px;font-size:0.88rem;line-height:1.4;word-break:break-word;}
 .chat-msg-row.self .chat-msg-bubble{background:#f59e0b;color:#0f172a;font-weight:bold;}
 .chat-msg-row.other .chat-msg-bubble{background:#1e293b;color:#f8fafc;border:1px solid #334155;}
-.btn-chat-action{background:none;border:none;color:#ef4444;font-size:0.7rem;cursor:pointer;padding:0 2px;}
 
 .chat-input-area{background:#1e293b;padding:12px;border-top:1px solid #334155;display:flex;gap:8px;align-items:center;}
 .chat-input{flex:1;background:#0f172a;border:1px solid #475569;color:#fff;padding:8px 12px;border-radius:6px;font-size:0.85rem;outline:none;}
@@ -217,6 +218,14 @@ input[type="range"]{flex:1;height:4px;}
 .chrono-track-area{position:relative;height:36px;background:#0f172a;border-radius:6px;border:1px solid #334155;display:flex;align-items:center;padding:0 4px;gap:6px;overflow-x:auto;}
 .dynasty-bar{height:26px;border-radius:4px;display:flex;align-items:center;justify-content:center;padding:0 8px;font-size:0.75rem;font-weight:bold;color:#fff;white-space:nowrap;cursor:pointer;flex-shrink:0;}
 
+/* 中國史朝代疆域說明卡 */
+.territory-info-box{
+    background:#0f172a;border:1px solid #38bdf8;border-radius:8px;
+    padding:14px;margin-bottom:12px;line-height:1.5;box-shadow:0 4px 10px rgba(56,189,248,0.1);
+}
+.territory-title{font-size:0.95rem;font-weight:bold;color:#38bdf8;margin-bottom:6px;display:flex;align-items:center;gap:6px;}
+.territory-desc{font-size:0.85rem;color:#cbd5e1;}
+
 /* 側邊欄與 Modal */
 #sidebarOverlay{position:fixed;top:0;left:0;width:260px;height:100vh;background:#0f172a;border-right:1px solid #334155;z-index:1000;display:flex;flex-direction:column;padding:16px;transform:translateX(-100%);transition:transform 0.25s;}
 #sidebarOverlay.active{ transform:translateX(0); }
@@ -227,7 +236,6 @@ input[type="range"]{flex:1;height:4px;}
 .menu-item{background:#1e293b;border:1px solid #334155;color:#f8fafc;padding:10px 14px;border-radius:6px;font-size:0.85rem;font-weight:bold;cursor:pointer;}
 .menu-item:hover{background:#f59e0b;color:#0f172a;}
 
-/* 設定 Modal (雙頁籤) */
 #settingsModal, #eventDetailModal, #createGroupModal{position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(15,23,42,0.8);z-index:2000;display:none;justify-content:center;align-items:center;padding:16px;}
 #settingsModal.active, #eventDetailModal.active, #createGroupModal.active{ display:flex; }
 .modal-content{background:#1e293b;border:1px solid #334155;border-radius:12px;width:100%;max-width:550px;max-height:85vh;overflow-y:auto;padding:20px;}
@@ -242,12 +250,12 @@ input[type="range"]{flex:1;height:4px;}
 </head>
 <body>
 
-<!-- 全螢幕登入/註冊門檻 (含頭像選擇) -->
+<!-- 全螢幕登入/註冊門檻 (含免註冊訪客按鈕) -->
 <div id="authScreen">
     <div class="auth-card">
         <div class="auth-header">
             <div class="auth-title">歷史數位學習系統</div>
-            <div class="auth-subtitle">請登入或註冊以取得專屬頭像與 ID</div>
+            <div class="auth-subtitle">請選擇登入、註冊或使用免註冊訪客模式</div>
         </div>
 
         <div class="auth-tabs">
@@ -273,7 +281,7 @@ input[type="range"]{flex:1;height:4px;}
                 <input type="text" id="regUser" class="auth-input" required placeholder="例如：student2026">
             </div>
             <div class="form-group">
-                <span class="form-label">顯示暱稱 (不顯示真實姓名)</span>
+                <span class="form-label">顯示暱稱</span>
                 <input type="text" id="regNickname" class="auth-input" required placeholder="例如：歷史小達人">
             </div>
             <div class="form-group">
@@ -286,6 +294,9 @@ input[type="range"]{flex:1;height:4px;}
             </div>
             <button type="submit" class="btn-auth-submit">完成註冊</button>
         </form>
+
+        <div style="border-top:1px solid #334155; margin:4px 0;"></div>
+        <button type="button" class="btn-auth-guest" onclick="handleGuestLogin()">👀 訪客模式 (免註冊體驗)</button>
     </div>
 </div>
 
@@ -296,12 +307,15 @@ input[type="range"]{flex:1;height:4px;}
             <button class="btn-menu-trigger" onclick="toggleSidebar()">☰ 選單</button>
             <div class="nav-brand" onclick="switchView('home')">📜 108課綱歷史總覽</div>
         </div>
-        <div class="user-badge-info" id="topUserBadge">--</div>
+        <div class="user-badge-info" id="topUserBadge">
+            <span id="badgeUserText">--</span>
+            <button class="btn-switch-account" onclick="handleUserLogout()">切換帳號</button>
+        </div>
     </nav>
 
     <div class="view-container">
 
-        <!-- 視圖 1：主控制台 (含每日歷史笑話) -->
+        <!-- 視圖 1：主控制台 Dashboard -->
         <div id="view-home">
             <div class="home-welcome-card">
                 <h1 class="welcome-title">歡迎來到 <span>108課綱歷史學習門戶</span></h1>
@@ -321,7 +335,7 @@ input[type="range"]{flex:1;height:4px;}
                     <span class="joke-date" id="jokeDateStr">2026-10-16</span>
                 </div>
                 <div class="joke-q" id="jokeQText">載入笑話中...</div>
-                <div class="joke-a" id="jokeAText">點擊顯示解答...</div>
+                <div class="joke-a" id="jokeAText">💡 點擊顯示解答</div>
             </div>
 
             <div class="portal-grid">
@@ -341,9 +355,9 @@ input[type="range"]{flex:1;height:4px;}
 
                 <div class="portal-card" onclick="switchView('chat')">
                     <div class="portal-icon">💬</div>
-                    <div class="portal-title">討論與建群區</div>
-                    <div class="portal-desc">支援創立討論群組、檢舉防護與發言冷卻之安全公眾與私人討論板。</div>
-                    <div class="portal-btn">參與群組討論 ➔</div>
+                    <div class="portal-title">討論、客服與社群</div>
+                    <div class="portal-desc">內建 LINE 風格官方客服助手、自訂社群群組與安全討論區。</div>
+                    <div class="portal-btn">進入討論交流區 ➔</div>
                 </div>
 
                 <div class="portal-card" onclick="switchView('map')">
@@ -355,9 +369,9 @@ input[type="range"]{flex:1;height:4px;}
 
                 <div class="portal-card" onclick="switchView('timeline')">
                     <div class="portal-icon">⏳</div>
-                    <div class="portal-title">跨區域年代對照</div>
-                    <div class="portal-desc">橫跨臺灣史、中國史與世界史之三大縱深時間軸，點擊快速檢索同時代重大事件。</div>
-                    . <div class="portal-btn">對照年代時間軸 ➔</div>
+                    <div class="portal-title">跨區域年代與疆域對照</div>
+                    <div class="portal-desc">橫跨三大縱深時間軸，點擊中國史朝代立即瀏覽該時代地理疆域範圍。</div>
+                    <div class="portal-btn">對照年代時間軸 ➔</div>
                 </div>
             </div>
         </div>
@@ -378,7 +392,7 @@ input[type="range"]{flex:1;height:4px;}
             <div class="exam-cards-list" id="examContentArea"></div>
         </div>
 
-        <!-- 視圖 3：測驗與閃卡 (功能完全修復) -->
+        <!-- 視圖 3：測驗與閃卡 -->
         <div id="view-quiz">
             <div class="quiz-header">
                 <div class="quiz-title-box">
@@ -497,13 +511,17 @@ input[type="range"]{flex:1;height:4px;}
             </div>
         </div>
 
-        <!-- 視圖 4：討論區 (新增群組功能) -->
+        <!-- 視圖 4：討論區 (含客服與訪客模式限制) -->
         <div id="view-chat">
             <div class="chat-container">
                 <div class="chat-tab-header">
                     <button class="chat-tab-btn active" id="chatTabPublic" onclick="switchChatMode('public')">🌐 公眾大廳</button>
                     <button class="chat-tab-btn" id="chatTabGroup" onclick="switchChatMode('group')">👥 歷史群組</button>
-                    <button class="chat-tab-btn" id="chatTabPrivate" onclick="switchChatMode('private')">🔒 私訊對話</button>
+                    <button class="chat-tab-btn" id="chatTabPrivate" onclick="switchChatMode('private')">🔒 私訊對話 (含線上客服)</button>
+                </div>
+
+                <div class="guest-notice-banner" id="chatGuestBanner">
+                    ⚠️ 您目前使用訪客模式，公眾大廳僅供瀏覽。欲發言、使用社群群組或聯絡客服，請點擊右上角註冊/登入！
                 </div>
 
                 <!-- 群組選擇列 -->
@@ -513,16 +531,18 @@ input[type="range"]{flex:1;height:4px;}
                     <button class="btn-create-group" onclick="openCreateGroupModal()">➕ 建立新群組</button>
                 </div>
 
+                <!-- 私訊與客服對象選擇列 -->
                 <div class="pm-target-select" id="pmTargetRow" style="display:none;">
-                    <span style="font-size:0.82rem; color:#cbd5e1;">私訊對象 (輸入暱稱或 ID)：</span>
-                    <input type="text" id="pmTargetUser" class="chat-input" placeholder="例如：#8392" style="max-width:200px;" onchange="renderChatMessages()">
+                    <button class="btn-create-group" style="background:#38bdf8; color:#0f172a;" onclick="selectCustomerService()">🤖 聯絡官方線上客服</button>
+                    <span style="font-size:0.82rem; color:#cbd5e1; margin-left:8px;">私訊對象：</span>
+                    <input type="text" id="pmTargetUser" class="chat-input" placeholder="例如：#8392 或 官方客服" style="max-width:180px;" onchange="renderChatMessages()">
                 </div>
 
                 <div class="chat-body" id="chatMessagesArea"></div>
 
                 <div class="chat-input-area">
                     <input type="text" id="chatInputText" class="chat-input" placeholder="輸入訊息..." onkeydown="if(event.key==='Enter') sendChatMessage()">
-                    <button class="btn-send-chat" onclick="sendChatMessage()">發送</button>
+                    <button class="btn-send-chat" id="btnSendChat" onclick="sendChatMessage()">發送</button>
                 </div>
             </div>
         </div>
@@ -541,10 +561,10 @@ input[type="range"]{flex:1;height:4px;}
             </div>
         </div>
 
-        <!-- 視圖 6：年代對照 -->
+        <!-- 視圖 6：年代對照 (點擊中國史顯示朝代領地疆域) -->
         <div id="view-timeline">
             <div class="timeline-warning-note">
-                ⚠️ 註：此年代軸各時期條塊為視覺化展示，非真實等比例幅寬。
+                ⚠️ 註：此年代軸各時期條塊為視覺化展示，非真實等比例幅寬。點選朝代可檢視該時代疆域範圍。
             </div>
             <div class="chronology-container">
                 <div class="chrono-row-group">
@@ -559,7 +579,7 @@ input[type="range"]{flex:1;height:4px;}
                 </div>
 
                 <div class="chrono-row-group">
-                    <div class="chrono-group-title">中國史朝代</div>
+                    <div class="chrono-group-title">中國史朝代 (點擊查看疆域)</div>
                     <div class="chrono-track-area">
                         <div class="dynasty-bar" style="background:#d97706;" onclick="selectDynasty('先秦三代', -3000, -221)">先秦三代 (-3000~-221)</div>
                         <div class="dynasty-bar" style="background:#b91c1c;" onclick="selectDynasty('秦漢魏晉', -221, 581)">秦漢魏晉 (-221~581)</div>
@@ -571,6 +591,9 @@ input[type="range"]{flex:1;height:4px;}
             </div>
 
             <div id="timelineEventsArea" style="display:none; background:#1e293b; padding:14px; border-radius:8px;">
+                <!-- 中國史朝代領地疆域說明卡容器 -->
+                <div id="territoryInfoContainer"></div>
+
                 <div style="font-weight:bold; color:#f59e0b; margin-bottom:10px;" id="tlEventsTitle">事件列表</div>
                 <div id="tlEventsGrid" style="display:flex; flex-direction:column; gap:8px;"></div>
             </div>
@@ -589,13 +612,13 @@ input[type="range"]{flex:1;height:4px;}
         <div class="menu-item" onclick="switchView('home'); toggleSidebar();">🏠 學習主控制台</div>
         <div class="menu-item" onclick="openSettingsModal(); toggleSidebar();">⚙️ 網站設定 (頭像與備份)</div>
         <div class="menu-item" onclick="switchView('map'); toggleSidebar();">🗺️ 世界數位地圖</div>
-        <div class="menu-item" onclick="switchView('timeline'); toggleSidebar();">⏳ 年代發展對照</div>
+        <div class="menu-item" onclick="switchView('timeline'); toggleSidebar();">⏳ 年代發展與疆域對照</div>
         <div style="border-top:1px solid #334155; margin:8px 0;"></div>
-        <div class="menu-item" style="color:#ef4444;" onclick="handleUserLogout(); toggleSidebar();">🚪 登出系統</div>
+        <div class="menu-item" style="color:#ef4444;" onclick="handleUserLogout(); toggleSidebar();">🚪 登出 / 切換帳號</div>
     </div>
 </div>
 
-<!-- 網站設定 Modal (雙頁籤：個人資料 / 學習紀錄備份) -->
+<!-- 網站設定 Modal (雙頁籤) -->
 <div id="settingsModal">
     <div class="modal-content">
         <div class="modal-header">
@@ -608,7 +631,6 @@ input[type="range"]{flex:1;height:4px;}
             <button class="st-tab-btn" id="stTabBackup" onclick="switchSettingsTab('backup')">💾 學習紀錄備份 (匯入/匯出)</button>
         </div>
 
-        <!-- 分頁 1：個人資料與頭像 -->
         <div id="secStProfile">
             <div class="modal-section">
                 <div style="font-size:0.8rem; color:#94a3b8;">專屬 ID 資訊：</div>
@@ -626,7 +648,6 @@ input[type="range"]{flex:1;height:4px;}
             </div>
         </div>
 
-        <!-- 分頁 2：學習紀錄備份 (匯入與匯出移動至此) -->
         <div id="secStBackup" style="display:none;">
             <div class="modal-section">
                 <h4 style="color:#f59e0b; margin-bottom:6px;">📥 匯出學習紀錄</h4>
@@ -635,7 +656,7 @@ input[type="range"]{flex:1;height:4px;}
             </div>
             <div class="modal-section">
                 <h4 style="color:#38bdf8; margin-bottom:6px;">📤 匯入學習紀錄</h4>
-                <p style="font-size:0.8rem; color:#cbd5e1; margin-bottom:8px;">從先前的 JSON 備份檔還原您的學習進度（系統將進行欄位與 Schema 格式驗證）。</p>
+                <p style="font-size:0.8rem; color:#cbd5e1; margin-bottom:8px;">從先前的 JSON 備份檔還原您的學習進度（系統將進行欄位格式驗證）。</p>
                 <button class="btn-start-quiz" style="width:100%; background:#38bdf8; color:#0f172a;" onclick="importBackupData()">選擇 JSON 備份檔匯入</button>
             </div>
         </div>
@@ -691,10 +712,32 @@ const DAILY_JOKES = [
     { q: "為什麼鄭成功買東西都不用付錢？", a: "因為他是「成功」的男人！" },
     { q: "亞歷山大大帝過馬路時會看什麼？", a: "看「紅綠燈」，因為他最懂指揮交通與戰術！" },
     { q: "秦始皇最喜歡喝什麼飲料？", a: "「萬里長」城（橙）汁！" },
-    { q: "哪位歷史人物最不喜歡去洗澡？", a: "劉備，因為「備（被）洗」！" },
-    { q: "為什麼哥倫布航行到達美洲時不覺得熱？", a: "因為他是乘著「新風（航線）」來的！" },
-    { q: "歷史上誰的記憶力最好？", a: "項羽，因為他「一以當十」，過目不忘！" }
+    { q: "哪位歷史人物最不喜歡去洗澡？", a: "劉備，因為「備（被）洗」！" }
 ];
+
+/* 中國史朝代疆域資料庫 */
+const DYNASTY_TERRITORIES = {
+    '先秦三代': {
+        title: '先秦三代（夏商周）領地疆域',
+        desc: '核心領地分布於黃河流域與中原地區（今河南、山西、陝西、山東）。西周時期透過封建制度分封諸侯，將華夏文化圈影響力擴展至長江中下游一帶。'
+    },
+    '秦漢魏晉': {
+        title: '秦漢魏晉領地疆域',
+        desc: '秦始皇統一六國後修築長城防禦匈奴，南設南海等郡，東至大海、南包嶺南。西漢武帝時張騫通西域、設河西四郡（武威、張掖、酒泉、敦煌），版圖大幅拓展至新疆與中亞邊陲。'
+    },
+    '隋唐宋元': {
+        title: '隋唐宋元領地疆域',
+        desc: '唐朝盛世領地東起日本海與朝鮮半島、西達中亞咸海、南抵越南中部、北包貝加爾湖，設安西與北庭都護府。元朝創立後統轄蒙古高原、西藏（宣政院）、雲南與中原，版圖橫跨歐亞，為中國歷史領地之最。'
+    },
+    '明清兩朝': {
+        title: '明清兩朝領地疆域',
+        desc: '明朝領地以兩京十五省為核心，東北設奴兒干都司；清朝康乾盛世奠定現代中國版圖雛形，實質控制新疆（伊犁將軍）、西藏、蒙古、臺灣（設府/省）與東北，總面積達 1300 萬平方公里。'
+    },
+    '近現代': {
+        title: '近現代領地疆域',
+        desc: '中華民國與現代版圖繼承自清末國際條約與現代外交架構，包含內陸各省、自治區與東南沿海島嶼，呈現海陸兼備之現代國土架構。'
+    }
+};
 
 /* 222 全量考點 */
 const HIST_DATA = [
@@ -721,7 +764,7 @@ let activeView = 'home';
 let currentExamSubTab = 'real';
 let chatMode = 'public';
 
-/* 測驗與閃卡變數 (修復) */
+/* 測驗與閃卡變數 */
 let fcList = [];
 let fcCurrentIdx = 0;
 let quizList = [];
@@ -748,7 +791,7 @@ window.addEventListener('DOMContentLoaded', () => {
     updateGlobalStats();
 });
 
-/* 初始化頭像選擇器 */
+/* 頭像選擇器 */
 function initAvatarGrids() {
     ['regAvatarGrid', 'setAvatarGrid'].forEach(gridId => {
         const grid = document.getElementById(gridId);
@@ -771,9 +814,7 @@ function initAvatarGrids() {
 /* 每日歷史笑話 */
 function renderDailyJoke() {
     const today = new Date();
-    const dateStr = today.toISOString().slice(0,10);
-    document.getElementById('jokeDateStr').textContent = dateStr;
-
+    document.getElementById('jokeDateStr').textContent = today.toISOString().slice(0,10);
     const dayOfYear = Math.floor((today - new Date(today.getFullYear(), 0, 0)) / (1000 * 60 * 60 * 24));
     const joke = DAILY_JOKES[dayOfYear % DAILY_JOKES.length];
 
@@ -783,7 +824,7 @@ function renderDailyJoke() {
     aEl.onclick = () => { aEl.textContent = `💡 解答：${joke.a}`; };
 }
 
-/* 身分驗證與頭像 */
+/* 身分驗證 (含訪客模式) */
 function checkFirstTimeAuth() {
     const userSession = localStorage.getItem('hist_user_session');
     if (!userSession) {
@@ -810,11 +851,25 @@ function switchAuthTab(tab) {
 function unlockMainSystem() {
     document.getElementById('authScreen').style.display = 'none';
     document.getElementById('appMain').style.display = 'flex';
-    const badge = document.getElementById('topUserBadge');
-    if (badge && currentUser) {
-        badge.textContent = `${currentUser.avatar || '👑'} ${currentUser.nickname} (${currentUser.publicId})`;
+
+    const userText = document.getElementById('badgeUserText');
+    if (userText && currentUser) {
+        userText.textContent = `${currentUser.avatar || '👀'} ${currentUser.nickname} (${currentUser.publicId})`;
     }
     switchView('home');
+}
+
+function handleGuestLogin() {
+    currentUser = {
+        name: 'GUEST_USER',
+        nickname: '訪客體驗',
+        avatar: '👀',
+        accId: 'GUEST-0000',
+        publicId: '#GUEST',
+        isGuest: true
+    };
+    localStorage.setItem('hist_user_session', JSON.stringify(currentUser));
+    unlockMainSystem();
 }
 
 function handleAuthLogin(e) {
@@ -822,7 +877,7 @@ function handleAuthLogin(e) {
     const username = document.getElementById('loginUser').value.trim();
     if (!username) return;
     const num = Math.floor(1000 + Math.random() * 9000);
-    currentUser = { name: username, nickname: username, avatar: selectedAvatar, accId: `ACC-${num}`, publicId: `#${num}` };
+    currentUser = { name: username, nickname: username, avatar: selectedAvatar, accId: `ACC-${num}`, publicId: `#${num}`, isGuest: false };
     localStorage.setItem('hist_user_session', JSON.stringify(currentUser));
     unlockMainSystem();
 }
@@ -833,19 +888,19 @@ function handleAuthRegister(e) {
     const nickname = document.getElementById('regNickname').value.trim() || username;
     if (!username) return;
     const num = Math.floor(1000 + Math.random() * 9000);
-    currentUser = { name: username, nickname: nickname, avatar: selectedAvatar, accId: `ACC-${num}`, publicId: `#${num}` };
+    currentUser = { name: username, nickname: nickname, avatar: selectedAvatar, accId: `ACC-${num}`, publicId: `#${num}`, isGuest: false };
     localStorage.setItem('hist_user_session', JSON.stringify(currentUser));
     unlockMainSystem();
 }
 
 function handleUserLogout() {
-    if (confirm('確定要登出系統？')) {
+    if (confirm('確定要登出或切換帳號？')) {
         localStorage.removeItem('hist_user_session');
         location.reload();
     }
 }
 
-/* 網站設定 Modal (雙頁籤切換) */
+/* 網站設定 Modal */
 function openSettingsModal() {
     if(!currentUser) return;
     document.getElementById('setAccId').textContent = currentUser.accId;
@@ -867,18 +922,19 @@ function switchSettingsTab(tab) {
 }
 
 function saveNewProfile() {
+    if(currentUser.isGuest) return alert('訪客模式無法修改個人資料，請先註冊帳號！');
     const newNick = document.getElementById('editNicknameInput').value.trim();
     if(!newNick) return alert('暱稱不能為空白！');
     currentUser.nickname = newNick;
     currentUser.avatar = selectedAvatar;
     localStorage.setItem('hist_user_session', JSON.stringify(currentUser));
-    document.getElementById('topUserBadge').textContent = `${currentUser.avatar} ${currentUser.nickname} (${currentUser.publicId})`;
+    document.getElementById('badgeUserText').textContent = `${currentUser.avatar} ${currentUser.nickname} (${currentUser.publicId})`;
     alert('個人資料已成功更新！');
     closeSettingsModal();
     if(activeView === 'chat') renderChatMessages();
 }
 
-/* 學習紀錄備份 (搬移至設定第二頁籤) */
+/* 學習紀錄備份 (設定第二頁籤) */
 function exportBackupData() {
     const backup = {
         mastered: Array.from(masteredSet),
@@ -944,7 +1000,7 @@ function updateGlobalStats() {
     document.getElementById('statMistakes').textContent = mistakesList.length;
 }
 
-/* 測驗與閃卡功能完全修復 */
+/* 測驗與閃卡功能 */
 function switchQuizSubTab(subTab) {
     document.getElementById('subTabFC')?.classList.toggle('active', subTab === 'flashcards');
     document.getElementById('subTabTest')?.classList.toggle('active', subTab === 'quiz');
@@ -1102,17 +1158,31 @@ function renderMistakesList() {
     });
 }
 
-/* 討論區群組邏輯 */
+/* 討論區（含訪客控制與 LINE 官方客服） */
 function switchChatMode(mode) {
+    if (currentUser.isGuest && (mode === 'group' || mode === 'private')) {
+        alert('⚠️ 訪客模式無法使用私人對話與社群群組，請先登入或註冊！');
+        return;
+    }
+
     chatMode = mode;
     document.getElementById('chatTabPublic').classList.toggle('active', mode === 'public');
     document.getElementById('chatTabGroup').classList.toggle('active', mode === 'group');
     document.getElementById('chatTabPrivate').classList.toggle('active', mode === 'private');
 
+    document.getElementById('chatGuestBanner').style.display = currentUser.isGuest ? 'block' : 'none';
     document.getElementById('groupSelectRow').style.display = (mode === 'group') ? 'flex' : 'none';
     document.getElementById('pmTargetRow').style.display = (mode === 'private') ? 'flex' : 'none';
 
     if(mode === 'group') updateGroupDropdown();
+    if(mode === 'private' && !document.getElementById('pmTargetUser').value) {
+        selectCustomerService();
+    }
+    renderChatMessages();
+}
+
+function selectCustomerService() {
+    document.getElementById('pmTargetUser').value = '官方客服';
     renderChatMessages();
 }
 
@@ -1127,7 +1197,10 @@ function updateGroupDropdown() {
     sel.value = activeGroup;
 }
 
-function openCreateGroupModal() { document.getElementById('createGroupModal').classList.add('active'); }
+function openCreateGroupModal() {
+    if(currentUser.isGuest) return alert('訪客模式無法建立群組！');
+    document.getElementById('createGroupModal').classList.add('active');
+}
 function closeCreateGroupModal() { document.getElementById('createGroupModal').classList.remove('active'); }
 
 function submitCreateGroup() {
@@ -1152,8 +1225,18 @@ function renderChatMessages() {
         activeGroup = document.getElementById('groupSelect').value || '預設討論群';
         list = groupChats[activeGroup] || [];
     } else {
-        const target = document.getElementById('pmTargetUser').value.trim();
-        list = privateChats[[currentUser.name, target].sort().join('_PM_')] || [];
+        const target = document.getElementById('pmTargetUser').value.trim() || '官方客服';
+        const key = [currentUser.name, target].sort().join('_PM_');
+        if (!privateChats[key] && (target === '官方客服' || target === '#0000')) {
+            // 客服歡迎訊息
+            privateChats[key] = [{
+                sender: "官方客服", nickname: "🤖 官方線上客服", avatar: "🤖", publicId: "#0000",
+                content: "您好！我是 108 課綱歷史學習系統的官方線上客服助手。請問有什麼可以協助您的？例如：如何操作閃卡？試題去哪裡下載？",
+                time: "09:00"
+            }];
+            localStorage.setItem('hist_private_chats', JSON.stringify(privateChats));
+        }
+        list = privateChats[key] || [];
     }
 
     if (list.length === 0) {
@@ -1181,6 +1264,11 @@ function renderChatMessages() {
 }
 
 function sendChatMessage() {
+    if (currentUser.isGuest) {
+        alert('⚠️ 訪客模式僅供瀏覽，請登入或註冊帳號後參與發言！');
+        return;
+    }
+
     const input = document.getElementById('chatInputText');
     const text = input.value.trim();
     if (!text) return;
@@ -1201,7 +1289,26 @@ function sendChatMessage() {
         const key = [currentUser.name, target].sort().join('_PM_');
         if(!privateChats[key]) privateChats[key] = [];
         privateChats[key].push(msgObj);
-        localStorage.setItem('hist_private_chats', JSON.stringify(privateChats));
+
+        // 若私訊對象為客服，觸發自動客服回覆機制
+        if (target === '官方客服' || target === '#0000') {
+            setTimeout(() => {
+                let csReply = `【🤖 客服自動回覆】感謝您的留言！已收到您的問題：「${text}」。`;
+                if(text.includes('閃卡') || text.includes('測驗')) csReply += " 您可以在「🧠 測驗與閃卡系統」進行全考點記憶與自我檢測！";
+                else if(text.includes('地圖')) csReply += " 「🗺️ 歷史數位地圖」收錄了 222 個考點的真實發生地點喔！";
+                else if(text.includes('試題')) csReply += " 「📄 歷屆試題專區」提供大考中心 83~115 年官方試卷原檔連結！";
+                else csReply += " 客服人員將儘速為您處理。";
+
+                privateChats[key].push({
+                    sender: "官方客服", nickname: "🤖 官方線上客服", avatar: "🤖", publicId: "#0000",
+                    content: csReply, time: `${new Date().getHours().toString().padStart(2,'0')}:${new Date().getMinutes().toString().padStart(2,'0')}`
+                });
+                localStorage.setItem('hist_private_chats', JSON.stringify(privateChats));
+                if(chatMode === 'private') renderChatMessages();
+            }, 800);
+        } else {
+            localStorage.setItem('hist_private_chats', JSON.stringify(privateChats));
+        }
     }
 
     input.value = '';
@@ -1247,12 +1354,27 @@ function filterMapByKeyword(kw) {
     renderMapMarkers(HIST_DATA.filter(d => d.title.toLowerCase().includes(k) || d.location.toLowerCase().includes(k)));
 }
 
-/* 年代對照與 Modal */
+/* 年代對照 (點擊中國史顯示朝代領地疆域) */
 function selectDynasty(name, startYr, endYr) {
     const area = document.getElementById('timelineEventsArea');
     const grid = document.getElementById('tlEventsGrid');
+    const terrContainer = document.getElementById('territoryInfoContainer');
+
     document.getElementById('tlEventsTitle').textContent = `${name} 考點事件名冊 (${startYr} ~ ${endYr})`;
     grid.innerHTML = '';
+    terrContainer.innerHTML = '';
+
+    // 若點擊中國史朝代，自動顯示疆域範圍說明卡
+    if (DYNASTY_TERRITORIES[name]) {
+        const terr = DYNASTY_TERRITORIES[name];
+        const box = document.createElement('div');
+        box.className = 'territory-info-box';
+        box.innerHTML = `
+            <div class="territory-title">🗺️ ${terr.title}</div>
+            <div class="territory-desc">${terr.desc}</div>
+        `;
+        terrContainer.appendChild(box);
+    }
 
     const events = HIST_DATA.filter(d => !(d.endYear < startYr || d.startYear > endYr));
     events.forEach(ev => {
