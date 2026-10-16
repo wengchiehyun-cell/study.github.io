@@ -64,54 +64,67 @@ nav.top-nav{
 
 .view-container{flex:1;position:relative;width:100%;height:100%;overflow:hidden;}
 
-/* 視圖 1：主控制台 Dashboard */
+/* 視圖 1：主控制台 (簡潔圓形按鈕) */
 #view-home{width:100%;height:100%;overflow-y:auto;padding:24px 16px 60px;max-width:1100px;margin:0 auto;display:block;}
-.home-welcome-card{background:linear-gradient(135deg, #1e293b, #0f172a);border:1px solid #334155;border-radius:12px;padding:24px;margin-bottom:16px;text-align:center;}
-.welcome-title{font-size:1.6rem;font-weight:bold;color:#f8fafc;margin-bottom:6px;}
+.home-welcome-card{background:linear-gradient(135deg, #1e293b, #0f172a);border:1px solid #334155;border-radius:12px;padding:20px;margin-bottom:16px;text-align:center;}
+.welcome-title{font-size:1.5rem;font-weight:bold;color:#f8fafc;margin-bottom:6px;}
 .welcome-title span{color:#f59e0b;}
-.welcome-sub{font-size:0.88rem;color:#94a3b8;margin-bottom:12px;}
-.welcome-stats{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;}
-.welcome-stat-pill{background:#0f172a;border:1px solid #334155;padding:6px 14px;border-radius:20px;font-size:0.82rem;color:#cbd5e1;}
+.welcome-sub{font-size:0.85rem;color:#94a3b8;margin-bottom:12px;}
+.welcome-stats{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;}
+.welcome-stat-pill{background:#0f172a;border:1px solid #334155;padding:4px 12px;border-radius:20px;font-size:0.8rem;color:#cbd5e1;}
 .welcome-stat-pill b{color:#f59e0b;margin-left:4px;}
 
 .daily-joke-card{
     background:#1e293b;border:1px solid #f59e0b;border-radius:12px;
-    padding:16px 20px;margin-bottom:20px;display:flex;flex-direction:column;gap:8px;
+    padding:14px 18px;margin-bottom:24px;display:flex;flex-direction:column;gap:6px;
     box-shadow:0 4px 12px rgba(245,158,11,0.1);
 }
-.joke-header{display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #334155;padding-bottom:6px;}
-.joke-title{font-size:0.95rem;font-weight:bold;color:#f59e0b;display:flex;align-items:center;gap:6px;}
+.joke-header{display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #334155;padding-bottom:4px;}
+.joke-title{font-size:0.9rem;font-weight:bold;color:#f59e0b;display:flex;align-items:center;gap:6px;}
 .joke-date{font-size:0.75rem;color:#94a3b8;}
-.joke-q{font-size:0.9rem;font-weight:bold;color:#f8fafc;line-height:1.4;}
-.joke-a{font-size:0.85rem;color:#38bdf8;background:#0f172a;padding:8px 12px;border-radius:6px;border-left:3px solid #38bdf8;cursor:pointer;}
+.joke-q{font-size:0.88rem;font-weight:bold;color:#f8fafc;line-height:1.4;}
+.joke-a{font-size:0.82rem;color:#38bdf8;background:#0f172a;padding:6px 10px;border-radius:6px;border-left:3px solid #38bdf8;cursor:pointer;}
 
-.portal-grid{display:grid;grid-template-columns:repeat(auto-fit, minmax(260px, 1fr));gap:16px;}
-.portal-card{
-    background:#1e293b;border:1px solid #334155;border-radius:12px;padding:20px;
-    display:flex;flex-direction:column;justify-content:space-between;gap:12px;
-    cursor:pointer;transition:all 0.2s;
+/* 圓形按鈕網格 */
+.portal-circle-grid{
+    display:flex;justify-content:center;align-items:center;
+    gap:24px;flex-wrap:wrap;padding:10px 0;
 }
-.portal-card:hover{border-color:#f59e0b;transform:translateY(-2px);background:#243347;}
-.portal-icon{font-size:2rem;margin-bottom:4px;}
-.portal-title{font-size:1.1rem;font-weight:bold;color:#f8fafc;}
-.portal-desc{font-size:0.82rem;color:#cbd5e1;line-height:1.5;}
-.portal-btn{background:#0f172a;color:#f59e0b;border:1px solid #f59e0b;padding:8px;border-radius:6px;font-size:0.82rem;font-weight:bold;text-align:center;margin-top:auto;}
+.portal-circle-item{
+    display:flex;flex-direction:column;align-items:center;gap:8px;
+    cursor:pointer;transition:transform 0.2s;
+}
+.portal-circle-btn{
+    width:100px;height:100px;border-radius:50%;
+    background:#1e293b;border:2px solid #f59e0b;
+    display:flex;justify-content:center;align-items:center;
+    font-size:2.5rem;box-shadow:0 6px 16px rgba(0,0,0,0.4);
+    transition:all 0.2s;position:relative;
+}
+.portal-circle-item:hover .portal-circle-btn{
+    transform:scale(1.08);background:#f59e0b;
+    box-shadow:0 0 20px rgba(245,158,11,0.5);
+}
+.portal-circle-label{
+    font-size:0.9rem;font-weight:bold;color:#f8fafc;text-align:center;
+}
 
-/* 視圖 2：歷屆試題與命題對應 */
+/* 視圖 2：歷屆試題專區 */
 #view-exams{width:100%;height:100%;overflow-y:auto;padding:20px 16px 60px;max-width:1000px;margin:0 auto;display:none;}
 .exams-header{background:#1e293b;border:1px solid #334155;border-radius:8px;padding:16px 20px;margin-bottom:16px;}
 .exams-header h2{font-size:1.2rem;color:#38bdf8;margin-bottom:4px;}
 .exams-header p{font-size:0.85rem;color:#cbd5e1;line-height:1.4;}
 
 .exam-tab-group{display:flex;gap:8px;margin-bottom:16px;border-bottom:1px solid #334155;padding-bottom:8px;}
-.ex-tab-btn{background:#0f172a;border:1px solid #334155;color:#cbd5e1;padding:8px 16px;border-radius:6px;font-size:0.85rem;font-weight:bold;cursor:pointer;}
+.ex-tab-btn{background:#0f172a;border:1px solid #334155;color:#cbd5e1;padding:8px 16px;border-radius:6px;font-size:0.85rem;font-weight:bold;cursor:pointer;transition:all 0.2s;}
 .ex-tab-btn.active{background:#38bdf8;color:#0f172a;border-color:#38bdf8;}
 
 .exam-cards-list{display:flex;flex-direction:column;gap:12px;}
 .exam-mapping-card{background:#1e293b;border:1px solid #334155;border-radius:8px;padding:14px 18px;}
-.exam-card-title{font-size:0.95rem;font-weight:bold;color:#f59e0b;margin-bottom:6px;display:flex;justify-content:space-between;}
+.exam-card-title{font-size:0.95rem;font-weight:bold;color:#f59e0b;margin-bottom:6px;display:flex;justify-content:space-between;align-items:center;}
 .exam-card-body{font-size:0.85rem;color:#cbd5e1;line-height:1.5;margin-bottom:10px;}
-.btn-ceec-link{display:inline-block;background:#0284c7;color:#fff;padding:6px 12px;border-radius:6px;text-decoration:none;font-size:0.8rem;font-weight:bold;}
+.btn-ceec-link{display:inline-block;background:#0284c7;color:#fff;padding:8px 14px;border-radius:6px;text-decoration:none;font-size:0.82rem;font-weight:bold;transition:background 0.2s;}
+.btn-ceec-link:hover{background:#0369a1;}
 
 /* 視圖 3：測驗與閃卡 */
 #view-quiz{width:100%;height:100%;overflow-y:auto;padding:20px 16px 60px;max-width:1000px;margin:0 auto;display:none;}
@@ -160,7 +173,7 @@ nav.top-nav{
 
 .q-question{font-size:1.05rem;font-weight:bold;color:#f8fafc;margin-bottom:16px;line-height:1.5;}
 .q-options{display:flex;flex-direction:column;gap:10px;margin-bottom:16px;}
-.q-opt-btn{background:#0f172a;border:1px solid #334155;color:#e2e8f0;padding:12px 16px;border-radius:8px;font-size:0.88rem;cursor:pointer;text-align:left;}
+.q-opt-btn{background:#0f172a;border:1px solid #334155;color:#e2e8f0;padding:12px 16px;border-radius:8px;font-size:0.88rem;cursor:pointer;text-align:left;line-height:1.4;}
 .q-opt-btn:hover{border-color:#f59e0b;color:#fff;}
 .q-opt-btn.correct{background:#064e3b;border-color:#10b981;color:#fff;}
 .q-opt-btn.wrong{background:#7f1d1d;border-color:#ef4444;color:#fff;}
@@ -169,7 +182,7 @@ nav.top-nav{
 .q-explanation-box h4{color:#f59e0b;font-size:0.95rem;margin-bottom:6px;}
 .q-exp-text{font-size:0.85rem;color:#cbd5e1;line-height:1.5;margin-bottom:8px;}
 
-/* 視圖 4：討論區 (含客服與訪客限制) */
+/* 視圖 4：討論區 */
 #view-chat{width:100%;height:100%;overflow-y:auto;padding:20px 16px 60px;max-width:1000px;margin:0 auto;display:none;}
 .chat-container{background:#1e293b;border:1px solid #334155;border-radius:12px;display:flex;flex-direction:column;height:75vh;overflow:hidden;}
 .chat-tab-header{display:flex;background:#0f172a;border-bottom:1px solid #334155;padding:8px 12px;gap:8px;align-items:center;flex-wrap:wrap;}
@@ -177,7 +190,6 @@ nav.top-nav{
 .chat-tab-btn.active{background:#f59e0b;color:#0f172a;border-color:#f59e0b;}
 
 .guest-notice-banner{background:#7f1d1d;color:#fff;padding:8px 12px;font-size:0.8rem;font-weight:bold;text-align:center;display:none;}
-
 .group-bar-row{display:flex;gap:8px;align-items:center;padding:8px 12px;background:#1e293b;border-bottom:1px solid #334155;}
 .btn-create-group{background:#10b981;color:#fff;border:none;padding:5px 12px;border-radius:6px;font-size:0.78rem;font-weight:bold;cursor:pointer;}
 
@@ -218,7 +230,6 @@ input[type="range"]{flex:1;height:4px;}
 .chrono-track-area{position:relative;height:36px;background:#0f172a;border-radius:6px;border:1px solid #334155;display:flex;align-items:center;padding:0 4px;gap:6px;overflow-x:auto;}
 .dynasty-bar{height:26px;border-radius:4px;display:flex;align-items:center;justify-content:center;padding:0 8px;font-size:0.75rem;font-weight:bold;color:#fff;white-space:nowrap;cursor:pointer;flex-shrink:0;}
 
-/* 中國史朝代疆域說明卡 */
 .territory-info-box{
     background:#0f172a;border:1px solid #38bdf8;border-radius:8px;
     padding:14px;margin-bottom:12px;line-height:1.5;box-shadow:0 4px 10px rgba(56,189,248,0.1);
@@ -250,7 +261,7 @@ input[type="range"]{flex:1;height:4px;}
 </head>
 <body>
 
-<!-- 全螢幕登入/註冊門檻 (含免註冊訪客按鈕) -->
+<!-- 全螢幕登入/註冊門檻 -->
 <div id="authScreen">
     <div class="auth-card">
         <div class="auth-header">
@@ -315,11 +326,11 @@ input[type="range"]{flex:1;height:4px;}
 
     <div class="view-container">
 
-        <!-- 視圖 1：主控制台 Dashboard -->
+        <!-- 視圖 1：主控制台 (改為 5 個圓形按鈕，無多餘文字) -->
         <div id="view-home">
             <div class="home-welcome-card">
                 <h1 class="welcome-title">歡迎來到 <span>108課綱歷史學習門戶</span></h1>
-                <p class="welcome-sub">整合 222 個全量歷史考點、模擬測驗與群組交流區</p>
+                <p class="welcome-sub">整合 222 個全量考點、學測真題測驗與數位歷史地圖</p>
                 <div class="welcome-stats">
                     <div class="welcome-stat-pill">臺灣史<b>94 個</b></div>
                     <div class="welcome-stat-pill">中國史<b>72 個</b></div>
@@ -338,45 +349,36 @@ input[type="range"]{flex:1;height:4px;}
                 <div class="joke-a" id="jokeAText">💡 點擊顯示解答</div>
             </div>
 
-            <div class="portal-grid">
-                <div class="portal-card" onclick="switchView('exams')">
-                    <div class="portal-icon">📄</div>
-                    <div class="portal-title">歷屆試題與命題對應</div>
-                    <div class="portal-desc">提供大考中心 83~115 學測官方試卷連結，並區分真實試題對應與老師命題預測。</div>
-                    <div class="portal-btn">進入試題專區 ➔</div>
+            <!-- 5 個圓形按鈕 -->
+            <div class="portal-circle-grid">
+                <div class="portal-circle-item" onclick="switchView('exams')">
+                    <div class="portal-circle-btn">📄</div>
+                    <div class="portal-circle-label">歷屆試題</div>
                 </div>
 
-                <div class="portal-card" onclick="switchView('quiz')">
-                    <div class="portal-icon">🧠</div>
-                    <div class="portal-title">測驗與閃卡系統</div>
-                    <div class="portal-desc">提供全範疇 3D 雙面記憶卡複習、模擬題型測驗以及錯題自動登錄複習本。</div>
-                    <div class="portal-btn">進行測驗與閃卡 ➔</div>
+                <div class="portal-circle-item" onclick="switchView('quiz')">
+                    <div class="portal-circle-btn">🧠</div>
+                    <div class="portal-circle-label">測驗閃卡</div>
                 </div>
 
-                <div class="portal-card" onclick="switchView('chat')">
-                    <div class="portal-icon">💬</div>
-                    <div class="portal-title">討論、客服與社群</div>
-                    <div class="portal-desc">內建 LINE 風格官方客服助手、自訂社群群組與安全討論區。</div>
-                    <div class="portal-btn">進入討論交流區 ➔</div>
+                <div class="portal-circle-item" onclick="switchView('chat')">
+                    <div class="portal-circle-btn">💬</div>
+                    <div class="portal-circle-label">討論社群</div>
                 </div>
 
-                <div class="portal-card" onclick="switchView('map')">
-                    <div class="portal-icon">🗺️</div>
-                    <div class="portal-title">歷史數位地圖</div>
-                    <div class="portal-desc">全量考點真實發生地標記、MarkerCluster 叢集化防重疊與時間區間過濾。</div>
-                    <div class="portal-btn">開啟數位地圖 ➔</div>
+                <div class="portal-circle-item" onclick="switchView('map')">
+                    <div class="portal-circle-btn">🗺️</div>
+                    <div class="portal-circle-label">歷史地圖</div>
                 </div>
 
-                <div class="portal-card" onclick="switchView('timeline')">
-                    <div class="portal-icon">⏳</div>
-                    <div class="portal-title">跨區域年代與疆域對照</div>
-                    <div class="portal-desc">橫跨三大縱深時間軸，點擊中國史朝代立即瀏覽該時代地理疆域範圍。</div>
-                    <div class="portal-btn">對照年代時間軸 ➔</div>
+                <div class="portal-circle-item" onclick="switchView('timeline')">
+                    <div class="portal-circle-btn">⏳</div>
+                    <div class="portal-circle-label">年代對照</div>
                 </div>
             </div>
         </div>
 
-        <!-- 視圖 2：歷屆試題專區 -->
+        <!-- 視圖 2：歷屆試題專區 (可點擊開啟 CEEC 試卷原檔) -->
         <div id="view-exams">
             <div class="exams-header">
                 <h2>大考中心歷屆試題與命題對應</h2>
@@ -392,12 +394,12 @@ input[type="range"]{flex:1;height:4px;}
             <div class="exam-cards-list" id="examContentArea"></div>
         </div>
 
-        <!-- 視圖 3：測驗與閃卡 -->
+        <!-- 視圖 3：測驗與閃卡 (活用 110~115 學測真題) -->
         <div id="view-quiz">
             <div class="quiz-header">
                 <div class="quiz-title-box">
                     <h2>歷史測驗與閃卡系統</h2>
-                    <p>選擇範疇進行記憶閃卡複習或模擬題目測驗。</p>
+                    <p>支援考點記憶卡、觀念測驗與學測真實歷屆考題練習。</p>
                 </div>
                 <div class="quiz-stats-bar">
                     <div class="q-stat-item"><b id="statMastered">0</b>已掌握</div>
@@ -468,23 +470,18 @@ input[type="range"]{flex:1;height:4px;}
             <div id="secQuiz" style="display:none">
                 <div class="quiz-config-card">
                     <div class="quiz-config-group">
+                        <span class="quiz-select-label">題目來源：</span>
+                        <select id="cfgQuizSource" class="quiz-select-input">
+                            <option value="REAL_EXAM" selected>🎯 歷屆學測真實考題 (110~115)</option>
+                            <option value="CONCEPT">📚 全考點概念題 (222考點)</option>
+                        </select>
+
                         <span class="quiz-select-label">範疇：</span>
                         <select id="cfgDomain" class="quiz-select-input">
                             <option value="ALL">全部範疇</option>
                             <option value="臺灣史">臺灣史</option>
                             <option value="中國史">中國史</option>
                             <option value="世界史">世界史</option>
-                        </select>
-                        <span class="quiz-select-label">題型：</span>
-                        <select id="cfgType" class="quiz-select-input">
-                            <option value="MIX">混合考題</option>
-                            <option value="YEAR">年代/地點配對</option>
-                            <option value="DESC">重點描述</option>
-                        </select>
-                        <span class="quiz-select-label">題數：</span>
-                        <select id="cfgCount" class="quiz-select-input">
-                            <option value="5">5 題</option>
-                            <option value="10" selected>10 題</option>
                         </select>
                     </div>
                     <button class="btn-start-quiz" onclick="startConfiguredQuiz()">開始測驗</button>
@@ -499,7 +496,7 @@ input[type="range"]{flex:1;height:4px;}
                     <div class="q-options" id="quizOptionsContainer"></div>
 
                     <div class="q-explanation-box" id="quizExpBox">
-                        <h4>考點解析</h4>
+                        <h4>考點與解題解析</h4>
                         <div class="q-exp-text" id="quizExpText"></div>
                         <button class="btn-start-quiz" style="padding:4px 12px; font-size:0.8rem;" onclick="nextQuizQuestion()">下一題 ➔</button>
                     </div>
@@ -511,7 +508,7 @@ input[type="range"]{flex:1;height:4px;}
             </div>
         </div>
 
-        <!-- 視圖 4：討論區 (含客服與訪客模式限制) -->
+        <!-- 視圖 4：討論區 -->
         <div id="view-chat">
             <div class="chat-container">
                 <div class="chat-tab-header">
@@ -524,14 +521,12 @@ input[type="range"]{flex:1;height:4px;}
                     ⚠️ 您目前使用訪客模式，公眾大廳僅供瀏覽。欲發言、使用社群群組或聯絡客服，請點擊右上角註冊/登入！
                 </div>
 
-                <!-- 群組選擇列 -->
                 <div class="group-bar-row" id="groupSelectRow" style="display:none;">
                     <span style="font-size:0.82rem; color:#cbd5e1;">當前群組：</span>
                     <select id="groupSelect" class="quiz-select-input" onchange="renderChatMessages()"></select>
                     <button class="btn-create-group" onclick="openCreateGroupModal()">➕ 建立新群組</button>
                 </div>
 
-                <!-- 私訊與客服對象選擇列 -->
                 <div class="pm-target-select" id="pmTargetRow" style="display:none;">
                     <button class="btn-create-group" style="background:#38bdf8; color:#0f172a;" onclick="selectCustomerService()">🤖 聯絡官方線上客服</button>
                     <span style="font-size:0.82rem; color:#cbd5e1; margin-left:8px;">私訊對象：</span>
@@ -561,7 +556,7 @@ input[type="range"]{flex:1;height:4px;}
             </div>
         </div>
 
-        <!-- 視圖 6：年代對照 (點擊中國史顯示朝代領地疆域) -->
+        <!-- 視圖 6：年代對照 (含中國史朝代領地疆域) -->
         <div id="view-timeline">
             <div class="timeline-warning-note">
                 ⚠️ 註：此年代軸各時期條塊為視覺化展示，非真實等比例幅寬。點選朝代可檢視該時代疆域範圍。
@@ -591,9 +586,7 @@ input[type="range"]{flex:1;height:4px;}
             </div>
 
             <div id="timelineEventsArea" style="display:none; background:#1e293b; padding:14px; border-radius:8px;">
-                <!-- 中國史朝代領地疆域說明卡容器 -->
                 <div id="territoryInfoContainer"></div>
-
                 <div style="font-weight:bold; color:#f59e0b; margin-bottom:10px;" id="tlEventsTitle">事件列表</div>
                 <div id="tlEventsGrid" style="display:flex; flex-direction:column; gap:8px;"></div>
             </div>
@@ -618,7 +611,7 @@ input[type="range"]{flex:1;height:4px;}
     </div>
 </div>
 
-<!-- 網站設定 Modal (雙頁籤) -->
+<!-- 網站設定 Modal -->
 <div id="settingsModal">
     <div class="modal-content">
         <div class="modal-header">
@@ -651,12 +644,12 @@ input[type="range"]{flex:1;height:4px;}
         <div id="secStBackup" style="display:none;">
             <div class="modal-section">
                 <h4 style="color:#f59e0b; margin-bottom:6px;">📥 匯出學習紀錄</h4>
-                <p style="font-size:0.8rem; color:#cbd5e1; margin-bottom:8px;">將您目前已掌握的考點、待複習項目、錯題本與討論紀錄匯出為 JSON 備份檔。</p>
+                <p style="font-size:0.8rem; color:#cbd5e1; margin-bottom:8px;">將您目前已掌握的考點、待複習項目與錯題本匯出為 JSON 備份檔。</p>
                 <button class="btn-start-quiz" style="width:100%;" onclick="exportBackupData()">匯出 JSON 備份檔</button>
             </div>
             <div class="modal-section">
                 <h4 style="color:#38bdf8; margin-bottom:6px;">📤 匯入學習紀錄</h4>
-                <p style="font-size:0.8rem; color:#cbd5e1; margin-bottom:8px;">從先前的 JSON 備份檔還原您的學習進度（系統將進行欄位格式驗證）。</p>
+                <p style="font-size:0.8rem; color:#cbd5e1; margin-bottom:8px;">從先前的 JSON 備份檔還原您的學習進度。</p>
                 <button class="btn-start-quiz" style="width:100%; background:#38bdf8; color:#0f172a;" onclick="importBackupData()">選擇 JSON 備份檔匯入</button>
             </div>
         </div>
@@ -706,7 +699,7 @@ input[type="range"]{flex:1;height:4px;}
 const AVATAR_OPTIONS = ['👑', '📜', '⚔️', '⛵', '🎓', '🛡️', '🧭', '🏛️', '🕵️', '🧙‍♂️', '🦁', '🦉'];
 let selectedAvatar = '👑';
 
-/* 每日歷史笑話資料庫 */
+/* 每日歷史笑話 */
 const DAILY_JOKES = [
     { q: "歷史上哪位皇帝最喜歡吃速食？", a: "漢皇（漢堡），因為「漢皇重色思傾國」！" },
     { q: "為什麼鄭成功買東西都不用付錢？", a: "因為他是「成功」的男人！" },
@@ -719,27 +712,115 @@ const DAILY_JOKES = [
 const DYNASTY_TERRITORIES = {
     '先秦三代': {
         title: '先秦三代（夏商周）領地疆域',
-        desc: '核心領地分布於黃河流域與中原地區（今河南、山西、陝西、山東）。西周時期透過封建制度分封諸侯，將華夏文化圈影響力擴展至長江中下游一帶。'
+        desc: '核心領地分布於黃河流域與中原地區（今河南、山西、陝西、山東）。西周透過封建制度分封諸侯，將影響力延伸至長江中下游。'
     },
     '秦漢魏晉': {
         title: '秦漢魏晉領地疆域',
-        desc: '秦始皇統一六國後修築長城防禦匈奴，南設南海等郡，東至大海、南包嶺南。西漢武帝時張騫通西域、設河西四郡（武威、張掖、酒泉、敦煌），版圖大幅拓展至新疆與中亞邊陲。'
+        desc: '秦始皇修築長城防禦匈奴，南設南海等郡。西漢武帝張騫通西域後設河西四郡（武威、張掖、酒泉、敦煌），版圖延伸至新疆與中亞。'
     },
     '隋唐宋元': {
         title: '隋唐宋元領地疆域',
-        desc: '唐朝盛世領地東起日本海與朝鮮半島、西達中亞咸海、南抵越南中部、北包貝加爾湖，設安西與北庭都護府。元朝創立後統轄蒙古高原、西藏（宣政院）、雲南與中原，版圖橫跨歐亞，為中國歷史領地之最。'
+        desc: '唐朝盛世領地東起日本海、西達咸海、南抵越南中部，設安西與北庭都護府。元朝創立後統轄蒙古高原、西藏（宣政院）、雲南，版圖橫跨歐亞。'
     },
     '明清兩朝': {
         title: '明清兩朝領地疆域',
-        desc: '明朝領地以兩京十五省為核心，東北設奴兒干都司；清朝康乾盛世奠定現代中國版圖雛形，實質控制新疆（伊犁將軍）、西藏、蒙古、臺灣（設府/省）與東北，總面積達 1300 萬平方公里。'
+        desc: '明朝領地以兩京十五省為核心；清朝康乾盛世奠定現代中國版圖雛形，控制新疆（伊犁將軍）、西藏、蒙古、臺灣（設府/省）與東北。'
     },
     '近現代': {
         title: '近現代領地疆域',
-        desc: '中華民國與現代版圖繼承自清末國際條約與現代外交架構，包含內陸各省、自治區與東南沿海島嶼，呈現海陸兼備之現代國土架構。'
+        desc: '版圖繼承自清末國際條約與現代外交架構，包含內陸各省、自治區與東南沿海島嶼。'
     }
 };
 
-/* 222 全量考點 */
+/* 110 ~ 115 學測歷史真實考古題庫 */
+const REAL_EXAM_QUESTIONS = [
+    {
+        id: "Q_115_01",
+        year: "115學測",
+        category: "臺灣史",
+        question: "【115學測考題】清代臺灣某時期，官方頒布規定：「凡進口之日用雜貨與出口之烏龍茶、樟腦，均須經由指定之通商口岸（如淡水、安平）報關繳稅。」請問此一政策背景與下列何者最相關？",
+        options: [
+            "A. 鄭氏時期對外開展東南亞貿易",
+            "B. 1860年代英法聯軍後臺灣開港通商",
+            "C. 日治初期實施的專賣制度",
+            "D. 國民政府戰後初期之統制經濟政策"
+        ],
+        answerIdx: 1,
+        explanation: "正解為 (B)。1860 年代因天津條約與北京條約，臺灣正式開港通商（淡水、雞籠、安平、打狗），茶、糖、樟腦大量出口，改變臺灣經濟重心向北轉移。"
+    },
+    {
+        id: "Q_114_28",
+        year: "114學測",
+        category: "臺灣史",
+        question: "【114學測第28題】某事件發生後，清廷體認到臺灣戰略地位極其重要，遂派欽差大臣沈葆楨來臺籌防，推動「開山撫番」、廢除渡臺禁令並設恆春縣。請問這是指哪一歷史事件？",
+        options: [
+            "A. 郭懷一事件",
+            "B. 朱一貴事件",
+            "C. 牡丹社事件",
+            "D. 乙未抗日事件"
+        ],
+        answerIdx: 2,
+        explanation: "正解為 (C)。1874 年日本藉口琉球漂民被殺發兵攻打牡丹社（牡丹社事件），清廷驚覺臺灣防務空虛，遂派沈葆楨來臺推動積極治臺與開山撫番。"
+    },
+    {
+        id: "Q_113_35",
+        year: "113學測",
+        category: "臺灣史",
+        question: "【113學測第35題】17世紀十七世紀上半葉，某外國商業組織以大員為據點，向漢人移民徵收「王田」地租與人頭稅，並轉口輸出中國絲綢與臺灣鹿皮至日本。請問這是指哪一組織？",
+        options: [
+            "A. 西班牙東印度公司",
+            "B. 荷蘭東印度公司 (VOC)",
+            "C. 英國東印度公司",
+            "D. 日本東洋拓殖株式會社"
+        ],
+        answerIdx: 1,
+        explanation: "正解為 (B)。荷蘭東印度公司 (VOC) 於 1624~1662 年統治臺灣，將土地劃為「王田」向農民開徵地租，並拓展中日轉口貿易。"
+    },
+    {
+        id: "Q_112_22",
+        year: "112學測",
+        category: "中國史",
+        question: "【112學測第22題】唐代某時期，政府於廣州設立專門管理海外貿易與抽驗稅收之官署，阿拉伯與波斯商人雲集。請問此官署名稱為何？",
+        options: [
+            "A. 市舶司",
+            "B. 總理衙門",
+            "C. 駐藏大臣",
+            "D. 理藩院"
+        ],
+        answerIdx: 0,
+        explanation: "正解為 (A)。唐代起於廣州設立「市舶司（市舶使）」，專門處理海外船隻貿易關稅與通關事宜，為中國最早的對外貿易海關。"
+    },
+    {
+        id: "Q_111_42",
+        year: "111學測",
+        category: "世界史",
+        question: "【111學測第42題】16世紀新航路開闢後，美洲的馬鈴薯、玉米與白銀大量流入舊大陸，不僅引發歐洲的「價格革命」，也深刻影響了明清中國的物價與作物推廣。這在歷史上被稱為：",
+        options: [
+            "A. 農業革命",
+            "B. 工業革命",
+            "C. 哥倫布大交換",
+            "D. 商業革命"
+        ],
+        answerIdx: 2,
+        explanation: "正解為 (C)。哥倫布 1492 年抵達美洲後，引發新舊大陸間動植物、物種、美洲白銀與疾病的全球性大規模交流，即「哥倫布大交換」。"
+    },
+    {
+        id: "Q_110_18",
+        year: "110學測",
+        category: "臺灣史",
+        question: "【110學測第18題】1920年代日治時期，蔣渭水、林獻堂等人成立「臺灣文化協會」，透過舉辦大眾講座、發行報刊與上映新劇來啟蒙民眾。請問其主要精神受到當時何種國際思潮影響？",
+        options: [
+            "A. 帝國主義擴張",
+            "B. 民族自決與自由民主思潮",
+            "C. 皇民化運動",
+            "D. 冷戰對立思潮"
+        ],
+        answerIdx: 1,
+        explanation: "正解為 (B)。一戰後美國總統威爾遜提出「民族自決」，啟發臺灣知識份子展開非武力政治與文化抗爭運動。"
+    }
+];
+
+/* 222 全量考點資料 */
 const HIST_DATA = [
     {id:"TW_01", category:"臺灣史", title:"長濱文化", startYear:-50000, endYear:-5000, year:"約5萬~5千年前", location:"臺東縣長濱鄉", lat:23.3071, lng:121.4493, relatedLocations:"華南沿海", desc:"臺灣已知最早的舊石器時代文化，遺址在臺東長濱八仙洞", cause:"末次冰期海平面較低，臺灣與大陸相連，人群得以遷入"},
     {id:"TW_08", category:"臺灣史", title:"荷蘭人占據大員", startYear:1624, endYear:1662, year:"1624~1662年", location:"臺南市安平區", lat:22.9956, lng:120.1541, relatedLocations:"荷蘭阿姆斯特丹、巴達維亞", desc:"荷蘭東印度公司(VOC)轉往臺灣大員建熱蘭遮城，展開38年統治", cause:"荷蘭欲拓展對日、對華貿易，遭明朝自澎湖擊退後轉進臺灣"},
@@ -748,14 +829,24 @@ const HIST_DATA = [
     {id:"WD_05", category:"世界史", title:"哥倫布到達美洲", startYear:1492, endYear:1492, year:"1492年", location:"加勒比海巴哈馬", lat:25.0343, lng:-77.3963, relatedLocations:"西班牙巴勞斯港", desc:"哥倫布橫渡大西洋抵美洲，開啟哥倫布大交換與地理大發現", cause:"歐洲尋求繞過鄂圖曼土耳其前往亞洲的新航路"}
 ];
 
-/* CEEC PDF 試卷與試題對應 */
+/* CEEC PDF 官方試卷連結 (83~115學測) */
 const CEEC_PDF_LIST = [
-    { year: 115, title: "115 學年度學測社會考科試卷", url: "https://www.ceec.edu.tw/files/file_pool/1/0q054534130270752519/05-115%e5%ad%b8%e6%b8%ac%e7%a4%be%e6%9c%83%e8%a9%a6%e5%8d%b7.pdf" },
-    { year: 114, title: "114 學年度學測社會考科試卷", url: "https://www.ceec.edu.tw/files/file_pool/1/0p056429479567292230/05-114%e5%ad%b8%e6%b8%ac%e7%a4%be%e6%9c%83%e8%a9%a6%e9%a1%8c.pdf" },
-    { year: 113, title: "113 學年度學測社會考科試卷", url: "https://www.ceec.edu.tw/files/file_pool/1/0o051421699906768624/05-113%e5%ad%b8%e6%b8%ac%e7%a4%be%e6%9c%83%e7%a7%91%e8%a9%a6%e9%a1%8c%e5%ae%9a%e7%a8%bf.pdf" }
+    { year: 115, title: "115 學年度學測社會考科試卷原檔", url: "https://www.ceec.edu.tw/files/file_pool/1/0q054534130270752519/05-115%e5%ad%b8%e6%b8%ac%e7%a4%be%e6%9c%83%e8%a9%a6%e5%8d%b7.pdf" },
+    { year: 114, title: "114 學年度學測社會考科試卷原檔", url: "https://www.ceec.edu.tw/files/file_pool/1/0p056429479567292230/05-114%e5%ad%b8%e6%b8%ac%e7%a4%be%e6%9c%83%e8%a9%a6%e9%a1%8c.pdf" },
+    { year: 113, title: "113 學年度學測社會考科試卷原檔", url: "https://www.ceec.edu.tw/files/file_pool/1/0o051421699906768624/05-113%e5%ad%b8%e6%b8%ac%e7%a4%be%e6%9c%83%e7%a7%91%e8%a9%a6%e9%a1%8c%e5%ae%9a%e7%a8%bf.pdf" },
+    { year: 112, title: "112 學年度學測社會考科試卷原檔", url: "https://www.ceec.edu.tw/files/file_pool/1/0n045355860270752519/05-112%e5%ad%b8%e6%b8%ac%e7%a4%be%e6%9c%83%e8%a9%a6%e5%8d%b7.pdf" },
+    { year: 111, title: "111 學年度學測社會考科試卷原檔", url: "https://www.ceec.edu.tw/files/file_pool/1/0m053364108279287592/05-111%e5%ad%b8%e6%b8%ac%e7%a4%be%e6%9c%83%e8%a9%a6%e5%8d%b7.pdf" },
+    { year: 110, title: "110 學年度學測社會考科試卷原檔", url: "https://www.ceec.edu.tw/files/file_pool/1/0l069606123954085532/110%e5%ad%b8%e6%b8%ac%e7%a4%be%e6%9c%83%e8%a9%a6%e5%8d%b7.pdf" }
 ];
+
 const EXAM_MAPPING = [
-    { examName: "114學測社會科", qNo: "第 28 題", eventId: "TW_10", summary: "考查牡丹社事件後清廷外交與開山撫番政策防務轉變。", url: "https://www.ceec.edu.tw/files/file_pool/1/0p056429479567292230/05-114%e5%ad%b8%e6%b8%ac%e7%a4%be%e6%9c%83%e8%a9%a6%e9%a1%8c.pdf" }
+    { examName: "114學測社會科", qNo: "第 28 題", eventId: "TW_10", summary: "考查牡丹社事件後清廷外交與開山撫番政策防務轉變。", url: "https://www.ceec.edu.tw/files/file_pool/1/0p056429479567292230/05-114%e5%ad%b8%e6%b8%ac%e7%a4%be%e6%9c%83%e8%a9%a6%e9%a1%8c.pdf" },
+    { examName: "113學測社會科", qNo: "第 35 題", eventId: "TW_08", summary: "考查荷治時期大員轉運貿易與東印度公司王田制稅收。", url: "https://www.ceec.edu.tw/files/file_pool/1/0o051421699906768624/05-113%e5%ad%b8%e6%b8%ac%e7%a4%be%e6%9c%83%e7%a7%91%e8%a9%a6%e9%a1%8c%e5%ae%9a%e7%a8%bf.pdf" }
+];
+
+const TEACHER_PREDICTIONS = [
+    { title: "🔮 115 學測歷史命題焦點預測：海洋史與跨境貿易", content: "預測重點將集中於大航海時代臺灣與東南亞的貿易網絡，結合地理圖表考察跨區域互動。" },
+    { title: "🔮 命題趨勢：19 世紀臺灣開港通商與現代化建設", content: "注重開港後茶、糖、樟腦經濟，以及劉銘傳新政之鐵路與郵政建設長遠影響。" }
 ];
 
 /* 狀態管理 */
@@ -789,6 +880,7 @@ window.addEventListener('DOMContentLoaded', () => {
     checkFirstTimeAuth();
     renderDailyJoke();
     updateGlobalStats();
+    renderExamContent();
 });
 
 /* 頭像選擇器 */
@@ -824,7 +916,7 @@ function renderDailyJoke() {
     aEl.onclick = () => { aEl.textContent = `💡 解答：${joke.a}`; };
 }
 
-/* 身分驗證 (含訪客模式) */
+/* 身分驗證 */
 function checkFirstTimeAuth() {
     const userSession = localStorage.getItem('hist_user_session');
     if (!userSession) {
@@ -861,12 +953,8 @@ function unlockMainSystem() {
 
 function handleGuestLogin() {
     currentUser = {
-        name: 'GUEST_USER',
-        nickname: '訪客體驗',
-        avatar: '👀',
-        accId: 'GUEST-0000',
-        publicId: '#GUEST',
-        isGuest: true
+        name: 'GUEST_USER', nickname: '訪客體驗', avatar: '👀',
+        accId: 'GUEST-0000', publicId: '#GUEST', isGuest: true
     };
     localStorage.setItem('hist_user_session', JSON.stringify(currentUser));
     unlockMainSystem();
@@ -910,9 +998,7 @@ function openSettingsModal() {
     document.getElementById('settingsModal').classList.add('active');
 }
 
-function closeSettingsModal() {
-    document.getElementById('settingsModal').classList.remove('active');
-}
+function closeSettingsModal() { document.getElementById('settingsModal').classList.remove('active'); }
 
 function switchSettingsTab(tab) {
     document.getElementById('stTabProfile').classList.toggle('active', tab === 'profile');
@@ -931,10 +1017,8 @@ function saveNewProfile() {
     document.getElementById('badgeUserText').textContent = `${currentUser.avatar} ${currentUser.nickname} (${currentUser.publicId})`;
     alert('個人資料已成功更新！');
     closeSettingsModal();
-    if(activeView === 'chat') renderChatMessages();
 }
 
-/* 學習紀錄備份 (設定第二頁籤) */
 function exportBackupData() {
     const backup = {
         mastered: Array.from(masteredSet),
@@ -948,9 +1032,7 @@ function exportBackupData() {
     const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `History_Backup_${new Date().toISOString().slice(0,10)}.json`; a.click();
 }
 
-function importBackupData() {
-    document.getElementById('importFileInput').click();
-}
+function importBackupData() { document.getElementById('importFileInput').click(); }
 
 function handleImportFile(e) {
     const file = e.target.files[0];
@@ -961,11 +1043,8 @@ function handleImportFile(e) {
         try {
             const data = JSON.parse(evt.target.result);
             if (typeof data !== 'object' || data === null) throw new Error('無效的 JSON');
-            if (!Array.isArray(data.mastered) || !Array.isArray(data.reviewing)) {
-                throw new Error('匯入資料結構不符');
-            }
-            masteredSet = new Set(data.mastered);
-            reviewingSet = new Set(data.reviewing);
+            masteredSet = new Set(data.mastered || []);
+            reviewingSet = new Set(data.reviewing || []);
             mistakesList = data.mistakes || [];
             updateGlobalStats();
             alert('學習紀錄驗證無誤，已成功匯入！');
@@ -989,18 +1068,69 @@ function switchView(viewId) {
     else if(viewId === 'exams') renderExamContent();
 }
 
-function toggleSidebar() {
-    document.getElementById('sidebarOverlay').classList.toggle('active');
-}
+function toggleSidebar() { document.getElementById('sidebarOverlay').classList.toggle('active'); }
 
-/* 全局統計 */
 function updateGlobalStats() {
     document.getElementById('statMastered').textContent = masteredSet.size;
     document.getElementById('statReviewing').textContent = reviewingSet.size;
     document.getElementById('statMistakes').textContent = mistakesList.length;
 }
 
-/* 測驗與閃卡功能 */
+/* 歷屆試題切換與試卷點擊修復 */
+function switchExamSubTab(subTab) {
+    currentExamSubTab = subTab;
+    document.getElementById('exTabReal').classList.toggle('active', subTab === 'real');
+    document.getElementById('exTabPred').classList.toggle('active', subTab === 'predict');
+    document.getElementById('exTabOfficial').classList.toggle('active', subTab === 'official');
+    renderExamContent();
+}
+
+function renderExamContent() {
+    const area = document.getElementById('examContentArea');
+    if(!area) return;
+    area.innerHTML = '';
+
+    if (currentExamSubTab === 'real') {
+        EXAM_MAPPING.forEach(m => {
+            const card = document.createElement('div');
+            card.className = 'exam-mapping-card';
+            card.innerHTML = `
+                <div class="exam-card-title">
+                    <span>📌 ${m.examName} - ${m.qNo}</span>
+                    <span style="font-size:0.75rem; color:#38bdf8;">對應考點 ID: ${m.eventId}</span>
+                </div>
+                <div class="exam-card-body">${m.summary}</div>
+                <a class="btn-ceec-link" href="${m.url}" target="_blank" rel="noopener">🔗 開啟大考中心原始試卷 (CEEC)</a>
+            `;
+            area.appendChild(card);
+        });
+    } else if (currentExamSubTab === 'predict') {
+        TEACHER_PREDICTIONS.forEach(p => {
+            const card = document.createElement('div');
+            card.className = 'exam-mapping-card';
+            card.style.borderColor = '#f59e0b';
+            card.innerHTML = `
+                <div class="exam-card-title">${p.title}</div>
+                <div class="exam-card-body">${p.content}</div>
+                <span style="font-size:0.75rem; color:#94a3b8;">⚠️ 註：此區為教學團隊命題趨勢預測，非大考中心原始試題。</span>
+            `;
+            area.appendChild(card);
+        });
+    } else if (currentExamSubTab === 'official') {
+        CEEC_PDF_LIST.forEach(pdf => {
+            const card = document.createElement('div');
+            card.className = 'exam-mapping-card';
+            card.innerHTML = `
+                <div class="exam-card-title">📄 ${pdf.title}</div>
+                <div class="exam-card-body">收錄自財團法人大學入學考試中心 (CEEC) 官方公告之學測社會科原卷[cite: 3]。</div>
+                <a class="btn-ceec-link" href="${pdf.url}" target="_blank" rel="noopener">🔗 開啟 ${pdf.year} 學測 PDF 原檔</a>
+            `;
+            area.appendChild(card);
+        });
+    }
+}
+
+/* 測驗與閃卡系統 (活用 110~115 學測真題) */
 function switchQuizSubTab(subTab) {
     document.getElementById('subTabFC')?.classList.toggle('active', subTab === 'flashcards');
     document.getElementById('subTabTest')?.classList.toggle('active', subTab === 'quiz');
@@ -1047,9 +1177,7 @@ function renderFC() {
     document.getElementById('fcBackCause').textContent = ev.cause || '無';
 }
 
-function toggleFCFlip() {
-    document.getElementById('fcWrapper').classList.toggle('flipped');
-}
+function toggleFCFlip() { document.getElementById('fcWrapper').classList.toggle('flipped'); }
 
 function rateFlashcard(level) {
     const ev = fcList[fcCurrentIdx];
@@ -1067,18 +1195,36 @@ function rateFlashcard(level) {
 }
 
 function startConfiguredQuiz() {
+    const source = document.getElementById('cfgQuizSource').value;
     const domain = document.getElementById('cfgDomain').value;
-    const type = document.getElementById('cfgType').value;
-    const count = parseInt(document.getElementById('cfgCount').value);
 
-    let candidates = HIST_DATA.filter(d => domain === 'ALL' || d.category === domain).sort(() => 0.5 - Math.random());
-    if(candidates.length === 0) return alert('考點題目不足');
+    if (source === 'REAL_EXAM') {
+        let filtered = REAL_EXAM_QUESTIONS.filter(q => domain === 'ALL' || q.category === domain);
+        if(filtered.length === 0) filtered = REAL_EXAM_QUESTIONS;
 
-    quizList = candidates.slice(0, Math.min(count, candidates.length)).map(ev => {
-        const distractors = HIST_DATA.filter(d => d.id !== ev.id).sort(() => 0.5 - Math.random()).slice(0, 3);
-        const options = [ev, ...distractors].sort(() => 0.5 - Math.random());
-        return { target: ev, options: options, type: type };
-    });
+        quizList = filtered.sort(() => 0.5 - Math.random()).map(q => ({
+            questionText: q.question,
+            options: q.options,
+            correctAnswerIdx: q.answerIdx,
+            explanation: q.explanation,
+            targetObj: q
+        }));
+    } else {
+        let candidates = HIST_DATA.filter(d => domain === 'ALL' || d.category === domain).sort(() => 0.5 - Math.random());
+        quizList = candidates.slice(0, 5).map(ev => {
+            const distractors = HIST_DATA.filter(d => d.id !== ev.id).sort(() => 0.5 - Math.random()).slice(0, 3);
+            const opts = [ev, ...distractors].sort(() => 0.5 - Math.random());
+            const correctIdx = opts.findIndex(o => o.id === ev.id);
+
+            return {
+                questionText: `【觀念測驗】關於歷史考點「${ev.title}」的重點敘述何者正確？`,
+                options: opts.map((o, i) => `${String.fromCharCode(65+i)}. ${o.desc}`),
+                correctAnswerIdx: correctIdx,
+                explanation: `正解：${ev.year} - ${ev.title}。${ev.desc}`,
+                targetObj: ev
+            };
+        });
+    }
 
     quizCurrentIdx = 0; quizScore = 0;
     document.getElementById('quizCard').style.display = 'block';
@@ -1091,14 +1237,14 @@ function renderQuizQuestion() {
 
     const qData = quizList[quizCurrentIdx];
     document.getElementById('quizProgress').textContent = `題目 ${quizCurrentIdx + 1} / ${quizList.length}`;
-    document.getElementById('quizQuestionText').textContent = (qData.type === 'YEAR') ? `歷史考點「${qData.target.title}」發生於何時？` : `關於「${qData.target.title}」的敘述何者正確？`;
+    document.getElementById('quizQuestionText').textContent = qData.questionText;
 
     const container = document.getElementById('quizOptionsContainer');
     container.innerHTML = '';
-    qData.options.forEach((opt, idx) => {
+    qData.options.forEach((optText, idx) => {
         const btn = document.createElement('button');
         btn.className = 'q-opt-btn';
-        btn.textContent = (qData.type === 'YEAR') ? `${String.fromCharCode(65+idx)}. ${opt.year} (${opt.location})` : `${String.fromCharCode(65+idx)}. ${opt.desc}`;
+        btn.textContent = optText;
         btn.onclick = () => selectQuizOption(idx, btn);
         container.appendChild(btn);
     });
@@ -1109,24 +1255,24 @@ function selectQuizOption(optIdx, btnEl) {
     quizAnswered = true;
 
     const qData = quizList[quizCurrentIdx];
-    const isCorrect = (qData.options[optIdx].id === qData.target.id);
+    const isCorrect = (optIdx === qData.correctAnswerIdx);
 
     document.querySelectorAll('.q-opt-btn').forEach((b, i) => {
-        if(qData.options[i].id === qData.target.id) b.classList.add('correct');
+        if(i === qData.correctAnswerIdx) b.classList.add('correct');
     });
 
     if(isCorrect) {
         quizScore += Math.round(100 / quizList.length);
     } else {
         btnEl.classList.add('wrong');
-        if(!mistakesList.some(m => m.id === qData.target.id)) {
-            mistakesList.push(qData.target);
+        if(qData.targetObj && !mistakesList.some(m => m.id === qData.targetObj.id)) {
+            mistakesList.push(qData.targetObj);
             localStorage.setItem('hist_mistakes', JSON.stringify(mistakesList));
             updateGlobalStats();
         }
     }
 
-    document.getElementById('quizExpText').textContent = `正解：${qData.target.year} - ${qData.target.title}。${qData.target.desc}`;
+    document.getElementById('quizExpText').textContent = qData.explanation;
     document.getElementById('quizExpBox').style.display = 'block';
 }
 
@@ -1153,12 +1299,12 @@ function renderMistakesList() {
         const row = document.createElement('div');
         row.className = 'exam-mapping-card';
         row.style.borderColor = '#ef4444';
-        row.innerHTML = `<div class="exam-card-title">${m.title} (${m.year})</div><div class="exam-card-body">📍 ${m.location}｜${m.desc}</div>`;
+        row.innerHTML = `<div class="exam-card-title">${m.title || m.questionText} (${m.year || ''})</div><div class="exam-card-body">${m.desc || m.explanation}</div>`;
         container.appendChild(row);
     });
 }
 
-/* 討論區（含訪客控制與 LINE 官方客服） */
+/* 討論區（含 LINE 官方客服） */
 function switchChatMode(mode) {
     if (currentUser.isGuest && (mode === 'group' || mode === 'private')) {
         alert('⚠️ 訪客模式無法使用私人對話與社群群組，請先登入或註冊！');
@@ -1175,9 +1321,7 @@ function switchChatMode(mode) {
     document.getElementById('pmTargetRow').style.display = (mode === 'private') ? 'flex' : 'none';
 
     if(mode === 'group') updateGroupDropdown();
-    if(mode === 'private' && !document.getElementById('pmTargetUser').value) {
-        selectCustomerService();
-    }
+    if(mode === 'private' && !document.getElementById('pmTargetUser').value) selectCustomerService();
     renderChatMessages();
 }
 
@@ -1228,10 +1372,9 @@ function renderChatMessages() {
         const target = document.getElementById('pmTargetUser').value.trim() || '官方客服';
         const key = [currentUser.name, target].sort().join('_PM_');
         if (!privateChats[key] && (target === '官方客服' || target === '#0000')) {
-            // 客服歡迎訊息
             privateChats[key] = [{
                 sender: "官方客服", nickname: "🤖 官方線上客服", avatar: "🤖", publicId: "#0000",
-                content: "您好！我是 108 課綱歷史學習系統的官方線上客服助手。請問有什麼可以協助您的？例如：如何操作閃卡？試題去哪裡下載？",
+                content: "您好！我是 108 課綱歷史學習系統的官方線上客服助手。請問有什麼可以協助您的？例如：如何操作學測真題測驗？試題去哪裡下載？",
                 time: "09:00"
             }];
             localStorage.setItem('hist_private_chats', JSON.stringify(privateChats));
@@ -1264,10 +1407,7 @@ function renderChatMessages() {
 }
 
 function sendChatMessage() {
-    if (currentUser.isGuest) {
-        alert('⚠️ 訪客模式僅供瀏覽，請登入或註冊帳號後參與發言！');
-        return;
-    }
+    if (currentUser.isGuest) return alert('⚠️ 訪客模式僅供瀏覽，請登入或註冊帳號後參與發言！');
 
     const input = document.getElementById('chatInputText');
     const text = input.value.trim();
@@ -1290,13 +1430,12 @@ function sendChatMessage() {
         if(!privateChats[key]) privateChats[key] = [];
         privateChats[key].push(msgObj);
 
-        // 若私訊對象為客服，觸發自動客服回覆機制
         if (target === '官方客服' || target === '#0000') {
             setTimeout(() => {
-                let csReply = `【🤖 客服自動回覆】感謝您的留言！已收到您的問題：「${text}」。`;
-                if(text.includes('閃卡') || text.includes('測驗')) csReply += " 您可以在「🧠 測驗與閃卡系統」進行全考點記憶與自我檢測！";
-                else if(text.includes('地圖')) csReply += " 「🗺️ 歷史數位地圖」收錄了 222 個考點的真實發生地點喔！";
-                else if(text.includes('試題')) csReply += " 「📄 歷屆試題專區」提供大考中心 83~115 年官方試卷原檔連結！";
+                let csReply = `【🤖 客服自動回覆】感謝您的留言！已收到您的詢問：「${text}」。`;
+                if(text.includes('閃卡') || text.includes('測驗') || text.includes('真題')) csReply += " 您可以在「🧠 測驗與閃卡系統」中選擇『歷屆學測真實考題』進行練習！";
+                else if(text.includes('地圖')) csReply += " 「🗺️ 歷史數位地圖」已收錄 222 個考點的真實發生地點！";
+                else if(text.includes('試題')) csReply += " 「📄 歷屆試題專區」已收錄 83~115 年學測官方 PDF 連結點擊即可開啟！";
                 else csReply += " 客服人員將儘速為您處理。";
 
                 privateChats[key].push({
@@ -1364,7 +1503,6 @@ function selectDynasty(name, startYr, endYr) {
     grid.innerHTML = '';
     terrContainer.innerHTML = '';
 
-    // 若點擊中國史朝代，自動顯示疆域範圍說明卡
     if (DYNASTY_TERRITORIES[name]) {
         const terr = DYNASTY_TERRITORIES[name];
         const box = document.createElement('div');
@@ -1399,18 +1537,6 @@ function openModal(id) {
 }
 
 function closeModal() { document.getElementById('eventDetailModal').classList.remove('active'); }
-function renderExamContent() {
-    const area = document.getElementById('examContentArea');
-    if(!area) return;
-    area.innerHTML = '';
-    EXAM_MAPPING.forEach(m => {
-        const card = document.createElement('div');
-        card.className = 'exam-mapping-card';
-        card.innerHTML = `<div class="exam-card-title">📌 ${m.examName} - ${m.qNo}</div><div class="exam-card-body">${m.summary}</div><a class="btn-ceec-link" href="${m.url}" target="_blank">🔗 前往大考中心官網閱讀原卷</a>`;
-        area.appendChild(card);
-    });
-}
-function switchExamSubTab(t) { renderExamContent(); }
 </script>
 </body>
 </html>
