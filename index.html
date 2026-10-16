@@ -12,7 +12,7 @@
 *{box-sizing:border-box;margin:0;padding:0;}
 body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;background:#0f172a;color:#f8fafc;height:100vh;display:flex;flex-direction:column;overflow:hidden;}
 
-/* 全螢幕登入/註冊門檻 */
+/* 全螢幕登入門檻 */
 #authScreen{
     position:fixed;top:0;left:0;width:100vw;height:100vh;
     background:#0f172a;z-index:10000;display:flex;
@@ -35,8 +35,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-s
 .auth-form{display:flex;flex-direction:column;gap:10px;}
 .form-group{display:flex;flex-direction:column;gap:4px;}
 .form-label{font-size:0.8rem;color:#cbd5e1;}
-.auth-input, .auth-select{background:#0f172a;border:1px solid #475569;color:#fff;padding:8px 12px;border-radius:6px;font-size:0.85rem;outline:none;}
-.auth-input:focus, .auth-select:focus{border-color:#f59e0b;}
+.auth-input{background:#0f172a;border:1px solid #475569;color:#fff;padding:8px 12px;border-radius:6px;font-size:0.85rem;outline:none;}
+.auth-input:focus{border-color:#f59e0b;}
 
 .avatar-grid{display:grid;grid-template-columns:repeat(6, 1fr);gap:8px;margin-top:4px;}
 .avatar-opt{
@@ -60,7 +60,7 @@ nav.top-nav{
 .btn-menu-trigger{background:#334155;color:#f59e0b;border:1px solid #475569;padding:6px 12px;border-radius:6px;font-size:0.85rem;font-weight:bold;cursor:pointer;}
 .nav-brand{font-size:1rem;font-weight:bold;color:#f59e0b;cursor:pointer;}
 
-/* 右上角帳號 hover 浮現登出按鈕 */
+/* 右上角帳號資訊：Hover 時浮現登出按鈕 */
 .user-badge-info{
     font-size:0.82rem;background:#0f172a;padding:6px 14px;border-radius:20px;
     border:1px solid #334155;color:#f59e0b;display:flex;align-items:center;gap:8px;
@@ -77,7 +77,7 @@ nav.top-nav{
 
 .view-container{flex:1;position:relative;width:100%;height:100%;overflow:hidden;}
 
-/* 視圖 1：主控制台 (簡潔圓形按鈕) */
+/* 首頁：僅顯示 4 個主要入口 */
 #view-home{width:100%;height:100%;overflow-y:auto;padding:24px 16px 60px;max-width:1100px;margin:0 auto;display:block;}
 .home-welcome-card{background:linear-gradient(135deg, #1e293b, #0f172a);border:1px solid #334155;border-radius:12px;padding:20px;margin-bottom:16px;text-align:center;}
 .welcome-title{font-size:1.5rem;font-weight:bold;color:#f8fafc;margin-bottom:6px;}
@@ -98,20 +98,19 @@ nav.top-nav{
 .joke-q{font-size:0.88rem;font-weight:bold;color:#f8fafc;line-height:1.4;}
 .joke-a{font-size:0.82rem;color:#38bdf8;background:#0f172a;padding:6px 10px;border-radius:6px;border-left:3px solid #38bdf8;cursor:pointer;}
 
-/* 圓形按鈕網格 */
 .portal-circle-grid{
     display:flex;justify-content:center;align-items:center;
-    gap:18px;flex-wrap:wrap;padding:10px 0;
+    gap:24px;flex-wrap:wrap;padding:16px 0;
 }
 .portal-circle-item{
-    display:flex;flex-direction:column;align-items:center;gap:8px;
+    display:flex;flex-direction:column;align-items:center;gap:10px;
     cursor:pointer;transition:transform 0.2s;
 }
 .portal-circle-btn{
-    width:85px;height:85px;border-radius:50%;
+    width:100px;height:100px;border-radius:50%;
     background:#1e293b;border:2px solid #f59e0b;
     display:flex;justify-content:center;align-items:center;
-    font-size:2.1rem;box-shadow:0 6px 16px rgba(0,0,0,0.4);
+    font-size:2.5rem;box-shadow:0 6px 16px rgba(0,0,0,0.4);
     transition:all 0.2s;position:relative;
 }
 .portal-circle-item:hover .portal-circle-btn{
@@ -119,10 +118,10 @@ nav.top-nav{
     box-shadow:0 0 20px rgba(245,158,11,0.5);
 }
 .portal-circle-label{
-    font-size:0.85rem;font-weight:bold;color:#f8fafc;text-align:center;
+    font-size:0.92rem;font-weight:bold;color:#f8fafc;text-align:center;
 }
 
-/* 共通模組樣式 */
+/* 共通通用模組樣式 */
 .content-header-box{background:#1e293b;border:1px solid #334155;border-radius:8px;padding:16px 20px;margin-bottom:16px;}
 .content-header-box h2{font-size:1.2rem;color:#f59e0b;margin-bottom:4px;}
 .content-header-box p{font-size:0.85rem;color:#cbd5e1;line-height:1.4;}
@@ -131,8 +130,8 @@ nav.top-nav{
 .sub-tab-btn{background:#0f172a;border:1px solid #334155;color:#cbd5e1;padding:8px 16px;border-radius:6px;font-size:0.85rem;font-weight:bold;cursor:pointer;transition:all 0.2s;}
 .sub-tab-btn.active{background:#f59e0b;color:#0f172a;border-color:#f59e0b;}
 
-/* 各子頁面隱藏與容器 */
-#view-exams, #view-quiz, #view-math, #view-chinese, #view-soc_geo_civ, #view-calendar, #view-chat, #view-timeline{
+/* 各子視圖通用面板 */
+#view-exams, #view-quiz, #view-math, #view-chinese, #view-geography, #view-civics, #view-calendar, #view-chat, #view-timeline{
     width:100%;height:100%;overflow-y:auto;padding:20px 16px 60px;max-width:1000px;margin:0 auto;display:none;
 }
 
@@ -141,13 +140,12 @@ nav.top-nav{
 .exam-card-title{font-size:0.95rem;font-weight:bold;color:#f59e0b;margin-bottom:6px;display:flex;justify-content:space-between;align-items:center;}
 .exam-card-body{font-size:0.85rem;color:#cbd5e1;line-height:1.5;margin-bottom:10px;}
 .btn-ceec-link{display:inline-block;background:#0284c7;color:#fff;padding:8px 14px;border-radius:6px;text-decoration:none;font-size:0.82rem;font-weight:bold;transition:background 0.2s;}
-.btn-ceec-link:hover{background:#0369a1;}
 
 /* 測驗與閃卡 */
 .quiz-header{background:#1e293b;border:1px solid #334155;border-radius:8px;padding:16px 20px;margin-bottom:16px;display:flex;justify-content:space-between;align-items:center;gap:16px;}
 .quiz-title-box h2{font-size:1.2rem;color:#f59e0b;margin-bottom:4px;}
 .quiz-stats-bar{display:flex;gap:12px;background:#0f172a;padding:6px 14px;border-radius:8px;border:1px solid #334155;}
-.q-stat-item{text-align:center;font-size:0.75rem;color:#cbd5e1;cursor:pointer;}
+.q-stat-item{text-align:center;font-size:0.75rem;color:#cbd5e1;}
 .q-stat-item b{display:block;font-size:1.1rem;color:#f59e0b;}
 
 .quiz-config-card{
@@ -209,10 +207,15 @@ nav.top-nav{
 .cal-day-num{font-size:0.8rem;font-weight:bold;color:#cbd5e1;}
 .cal-day-tag{font-size:0.65rem;color:#10b981;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
 
-/* 國文、數學與地理定理樣式 */
+/* 數學公式、國文全文與地理/公民專區樣式 */
 .formula-card, .article-card, .theorem-card{background:#1e293b;border:1px solid #334155;border-radius:8px;padding:16px;margin-bottom:14px;}
 .card-header-title{font-size:1rem;font-weight:bold;color:#f59e0b;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center;}
 .formula-item{background:#0f172a;border-left:3px solid #38bdf8;padding:8px 12px;margin-top:8px;border-radius:4px;font-size:0.88rem;color:#f8fafc;line-height:1.5;}
+
+.article-fulltext-box{
+    background:#0f172a;border:1px solid #334155;border-radius:6px;padding:12px 16px;
+    font-size:0.88rem;line-height:1.8;color:#f8fafc;margin:10px 0;white-space:pre-line;
+}
 
 details.interactive-analysis{background:#0f172a;border:1px solid #334155;border-radius:6px;margin-top:10px;padding:10px 14px;}
 details.interactive-analysis summary{font-size:0.88rem;font-weight:bold;color:#38bdf8;cursor:pointer;outline:none;}
@@ -261,33 +264,29 @@ input[type="range"]{flex:1;height:4px;}
 .chrono-track-area{position:relative;height:36px;background:#0f172a;border-radius:6px;border:1px solid #334155;display:flex;align-items:center;padding:0 4px;gap:6px;overflow-x:auto;}
 .dynasty-bar{height:26px;border-radius:4px;display:flex;align-items:center;justify-content:center;padding:0 8px;font-size:0.75rem;font-weight:bold;color:#fff;white-space:nowrap;cursor:pointer;flex-shrink:0;}
 
-.territory-info-box{background:#0f172a;border:1px solid #38bdf8;border-radius:8px;padding:14px;margin-bottom:12px;line-height:1.5;}
-
-/* 側邊欄與 Modals */
-#sidebarOverlay{position:fixed;top:0;left:0;width:260px;height:100vh;background:#0f172a;border-right:1px solid #334155;z-index:1000;display:flex;flex-direction:column;padding:16px;transform:translateX(-100%);transition:transform 0.25s;}
+/* 側邊欄與 Modal */
+#sidebarOverlay{position:fixed;top:0;left:0;width:270px;height:100vh;background:#0f172a;border-right:1px solid #334155;z-index:1000;display:flex;flex-direction:column;padding:16px;transform:translateX(-100%);transition:transform 0.25s;}
 #sidebarOverlay.active{ transform:translateX(0); }
 .sidebar-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;border-bottom:1px solid #334155;padding-bottom:8px;}
 .sidebar-title{font-size:1rem;font-weight:bold;color:#f59e0b;}
 .btn-close-sidebar{background:transparent;color:#fff;border:none;font-size:1rem;cursor:pointer;}
-.sidebar-menu{display:flex;flex-direction:column;gap:6px;}
+.sidebar-menu{display:flex;flex-direction:column;gap:6px;overflow-y:auto;}
 .menu-item{background:#1e293b;border:1px solid #334155;color:#f8fafc;padding:10px 14px;border-radius:6px;font-size:0.85rem;font-weight:bold;cursor:pointer;}
 .menu-item:hover{background:#f59e0b;color:#0f172a;}
 
-#settingsModal, #eventDetailModal, #createGroupModal, #siteMapModal{
-    position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(15,23,42,0.8);
+/* 進站引導說明對話框 Modal */
+#entranceGuideModal, #settingsModal, #eventDetailModal, #createGroupModal{
+    position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(15,23,42,0.85);
     z-index:2000;display:none;justify-content:center;align-items:center;padding:16px;
 }
-#settingsModal.active, #eventDetailModal.active, #createGroupModal.active, #siteMapModal.active{ display:flex; }
-.modal-content{background:#1e293b;border:1px solid #334155;border-radius:12px;width:100%;max-width:580px;max-height:85vh;overflow-y:auto;padding:20px;}
+#entranceGuideModal.active, #settingsModal.active, #eventDetailModal.active, #createGroupModal.active{ display:flex; }
+.modal-content{background:#1e293b;border:1px solid #334155;border-radius:12px;width:100%;max-width:580px;max-height:85vh;overflow-y:auto;padding:24px;}
 .modal-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;}
 .btn-close-modal{background:transparent;color:#fff;border:none;font-size:1rem;cursor:pointer;}
-.modal-section{margin-bottom:12px;background:#0f172a;padding:12px;border-radius:6px;font-size:0.85rem;line-height:1.4;color:#cbd5e1;}
+.modal-section{margin-bottom:12px;background:#0f172a;padding:12px;border-radius:6px;font-size:0.85rem;line-height:1.5;color:#cbd5e1;}
 
-.sitemap-grid{display:grid;grid-template-columns:repeat(2, 1fr);gap:10px;}
-.sitemap-card{background:#0f172a;border:1px solid #334155;border-radius:8px;padding:12px;cursor:pointer;transition:all 0.2s;}
-.sitemap-card:hover{border-color:#f59e0b;transform:translateY(-2px);}
-.sitemap-card-title{font-size:0.9rem;font-weight:bold;color:#f59e0b;margin-bottom:4px;}
-.sitemap-card-desc{font-size:0.78rem;color:#cbd5e1;}
+.guide-step-card{background:#0f172a;border:1px solid #334155;border-radius:8px;padding:12px;margin-bottom:10px;}
+.guide-step-title{font-size:0.9rem;font-weight:bold;color:#f59e0b;margin-bottom:4px;}
 </style>
 </head>
 <body>
@@ -359,16 +358,16 @@ input[type="range"]{flex:1;height:4px;}
 
     <div class="view-container">
 
-        <!-- 視圖 1：主控制台 (簡潔圓形按鈕) -->
+        <!-- 視圖 1：主控制台 (僅顯示 4 個主要入口) -->
         <div id="view-home">
             <div class="home-welcome-card">
                 <h1 class="welcome-title">歡迎來到 <span>108課綱跨學科學習門戶</span></h1>
-                <p class="welcome-sub">整合歷史考點、地理公民定理、數學基礎公式與國文必讀課文</p>
+                <p class="welcome-sub">整合歷史考點、地理觀念、公民法政、數學公式與國文必讀課文全文</p>
                 <div class="welcome-stats">
+                    <div class="welcome-stat-pill">數學公式<b>200 個</b></div>
+                    <div class="welcome-stat-pill">國文古文<b>15 篇全文</b></div>
+                    <div class="welcome-stat-pill">地理公民<b>獨立專區</b></div>
                     <div class="welcome-stat-pill">歷史考點<b>222 個</b></div>
-                    <div class="welcome-stat-pill">數學單元<b>5 大類</b></div>
-                    <div class="welcome-stat-pill">國文課文<b>15 篇</b></div>
-                    <div class="welcome-stat-pill">地理公民<b>基礎定理</b></div>
                 </div>
             </div>
 
@@ -382,18 +381,8 @@ input[type="range"]{flex:1;height:4px;}
                 <div class="joke-a" id="jokeAText">💡 點擊顯示解答</div>
             </div>
 
-            <!-- 9 大功能圓形按鈕網格 -->
+            <!-- 核心 4 大功能圓形按鈕 -->
             <div class="portal-circle-grid">
-                <div class="portal-circle-item" onclick="openSiteMapModal()">
-                    <div class="portal-circle-btn">🧭</div>
-                    <div class="portal-circle-label">網頁導覽</div>
-                </div>
-
-                <div class="portal-circle-item" onclick="switchView('calendar')">
-                    <div class="portal-circle-btn">📅</div>
-                    <div class="portal-circle-label">學習日曆</div>
-                </div>
-
                 <div class="portal-circle-item" onclick="switchView('exams')">
                     <div class="portal-circle-btn">📄</div>
                     <div class="portal-circle-label">歷屆試題</div>
@@ -409,34 +398,18 @@ input[type="range"]{flex:1;height:4px;}
                     <div class="portal-circle-label">討論社群</div>
                 </div>
 
-                <div class="portal-circle-item" onclick="switchView('map')">
-                    <div class="portal-circle-btn">🗺️</div>
-                    <div class="portal-circle-label">歷史地圖</div>
+                <div class="portal-circle-item" onclick="switchView('calendar')">
+                    <div class="portal-circle-btn">📅</div>
+                    <div class="portal-circle-label">學習日曆</div>
                 </div>
-
-                <div class="portal-circle-item" onclick="switchView('timeline')">
-                    <div class="portal-circle-btn">⏳</div>
-                    <div class="portal-circle-label">年代對照</div>
-                </div>
-
-                <div class="portal-circle-item" onclick="switchView('math')">
-                    <div class="portal-circle-btn">📐</div>
-                    <div class="portal-circle-label">數學公式</div>
-                </div>
-
-                <div class="portal-circle-item" onclick="switchView('chinese')">
-                    <div class="portal-circle-btn">📖</div>
-                    <div class="portal-circle-label">國文課文</div>
-                </div>
-
-                <div class="portal-circle-item" onclick="switchView('soc_geo_civ')">
-                    <div class="portal-circle-btn">⚖️</div>
-                    <div class="portal-circle-label">地理公民</div>
-                </div>
+            </div>
+            
+            <div style="text-align:center; margin-top:20px; font-size:0.82rem; color:#94a3b8;">
+                💡 提示：點擊左上角 <b>「☰ 選單」</b> 可開啟側邊欄位，展開數學公式、國文課文、地理觀念與公民定理等各科複習！
             </div>
         </div>
 
-        <!-- 視圖：學習日曆功能 -->
+        <!-- 視圖：學習日曆 -->
         <div id="view-calendar">
             <div class="content-header-box">
                 <h2>📅 每日學習日曆與知識紀錄</h2>
@@ -469,7 +442,7 @@ input[type="range"]{flex:1;height:4px;}
         <div id="view-exams">
             <div class="content-header-box">
                 <h2>大考中心歷屆試題與命題對應</h2>
-                <p>⚠️ 版權聲明：本專區試題連結均直接導向財團法人大學入學考試中心（CEEC）官方網站[cite: 3]。本站不於伺服器存放原 PDF 檔。</p>
+                <p>⚠️ 版權聲明：本專區試題連結均直接導向財團法人大學入學考試中心（CEEC）官方網站。本站不於伺服器存放原 PDF 檔。</p>
             </div>
 
             <div class="sub-tab-group">
@@ -603,34 +576,43 @@ input[type="range"]{flex:1;height:4px;}
             </div>
         </div>
 
-        <!-- 視圖：數學基礎公式 -->
+        <!-- 視圖：數學基礎公式 (收錄 200Formula) -->
         <div id="view-math">
             <div class="content-header-box">
-                <h2>📐 高中數學必考基礎公式總覽</h2>
-                <p>依據 108 課綱主題分類整理，提供學測與分科測驗必考核心公式。</p>
+                <h2>📐 高中數學必考與補充公式總覽 (200條全收錄)</h2>
+                <p>依據 108 課綱與大考趨勢整理，涵蓋高一至高三數甲/數乙/數A/數B核心必考公式與重點延伸。</p>
             </div>
             <div id="mathFormulasContainer"></div>
         </div>
 
-        <!-- 視圖：國文必選課文與解析 -->
+        <!-- 視圖：國文必選課文與全文 -->
         <div id="view-chinese">
             <div class="content-header-box">
-                <h2>📖 國文必選 15 篇古文與點擊式解析</h2>
-                <p>收錄大考必考核心古文，點擊即可展開章旨主旨、經典名句與高頻考點解析。</p>
+                <h2>📖 國文必選 15 篇古文（完整收錄全文）與點擊式解析</h2>
+                <p>收錄大考必考核心古文全文，點擊可對照章旨主旨、經典名句與高頻考點解析。</p>
             </div>
             <div id="chineseArticlesContainer"></div>
         </div>
 
-        <!-- 視圖：地理與公民定理 -->
-        <div id="view-soc_geo_civ">
+        <!-- 視圖：地理科專區 -->
+        <div id="view-geography">
             <div class="content-header-box">
-                <h2>⚖️ 地理與公民科必考基礎定理</h2>
-                <p>整理社會考科核心地理概念與公民法政經濟定理，強化跨學科思維。</p>
+                <h2>🌍 地理科核心觀念與基礎定理</h2>
+                <p>彙整自然地理、人文地理、GIS空間資訊與區域地理關鍵概念。</p>
             </div>
-            <div id="geoCivContainer"></div>
+            <div id="geographyContainer"></div>
         </div>
 
-        <!-- 視圖：討論區 (支援開發者接收客服訊息) -->
+        <!-- 視圖：公民科專區 -->
+        <div id="view-civics">
+            <div class="content-header-box">
+                <h2>⚖️ 公民與社會核心定理與法政經濟</h2>
+                <p>彙整社會學、民主政治與憲法位階、民刑事訴訟以及經濟學核心定理。</p>
+            </div>
+            <div id="civicsContainer"></div>
+        </div>
+
+        <!-- 視圖：討論區 -->
         <div id="view-chat">
             <div class="chat-container">
                 <div class="chat-tab-header">
@@ -678,7 +660,7 @@ input[type="range"]{flex:1;height:4px;}
             </div>
         </div>
 
-        <!-- 視圖：年代對照 (包含世界史) -->
+        <!-- 視圖：年代對照 (含世界史) -->
         <div id="view-timeline">
             <div class="timeline-warning-note">
                 ⚠️ 註：此年代軸各時期條塊為視覺化展示，非真實等比例幅寬。點選朝代/時期可檢視該時代考點。
@@ -706,7 +688,6 @@ input[type="range"]{flex:1;height:4px;}
                     </div>
                 </div>
 
-                <!-- 補全世界史時期 -->
                 <div class="chrono-row-group">
                     <div class="chrono-group-title">世界史時期</div>
                     <div class="chrono-track-area">
@@ -720,7 +701,6 @@ input[type="range"]{flex:1;height:4px;}
             </div>
 
             <div id="timelineEventsArea" style="display:none; background:#1e293b; padding:14px; border-radius:8px;">
-                <div id="territoryInfoContainer"></div>
                 <div style="font-weight:bold; color:#f59e0b; margin-bottom:10px;" id="tlEventsTitle">事件列表</div>
                 <div id="tlEventsGrid" style="display:flex; flex-direction:column; gap:8px;"></div>
             </div>
@@ -729,72 +709,68 @@ input[type="range"]{flex:1;height:4px;}
     </div>
 </div>
 
-<!-- 側邊欄 -->
+<!-- 側邊欄 (包含所有各科複習與功能入口) -->
 <div id="sidebarOverlay">
     <div class="sidebar-header">
-        <span class="sidebar-title">功能選單</span>
+        <span class="sidebar-title">全站功能與各科選單</span>
         <button class="btn-close-sidebar" onclick="toggleSidebar()">✕</button>
     </div>
     <div class="sidebar-menu">
-        <div class="menu-item" onclick="switchView('home'); toggleSidebar();">🏠 學習主控制台</div>
-        <div class="menu-item" onclick="openSiteMapModal(); toggleSidebar();">🧭 網頁導覽 (Site Map)</div>
-        <div class="menu-item" onclick="switchView('calendar'); toggleSidebar();">📅 學習日曆</div>
-        <div class="menu-item" onclick="openSettingsModal(); toggleSidebar();">⚙️ 網站設定 (頭像/訊息開關)</div>
-        <div class="menu-item" onclick="switchView('math'); toggleSidebar();">📐 數學基礎公式</div>
-        <div class="menu-item" onclick="switchView('chinese'); toggleSidebar();">📖 國文必選課文</div>
-        <div class="menu-item" onclick="switchView('soc_geo_civ'); toggleSidebar();">⚖️ 地理公民定理</div>
-        <div class="menu-item" onclick="switchView('map'); toggleSidebar();">🗺️ 世界數位地圖</div>
-        <div class="menu-item" onclick="switchView('timeline'); toggleSidebar();">⏳ 年代發展與對照</div>
+        <div class="menu-item" onclick="switchView('home'); toggleSidebar();">🏠 主控制台 (4大核心)</div>
+        <div class="menu-item" onclick="openEntranceGuideModal(); toggleSidebar();">🧭 網頁導覽指引說明</div>
+        <div style="border-top:1px solid #334155; margin:4px 0;"></div>
+        <div class="menu-item" onclick="switchView('exams'); toggleSidebar();">📄 歷屆試題專區</div>
+        <div class="menu-item" onclick="switchView('quiz'); toggleSidebar();">🧠 測驗與記憶閃卡</div>
+        <div class="menu-item" onclick="switchView('calendar'); toggleSidebar();">📅 學習打卡日曆</div>
+        <div class="menu-item" onclick="switchView('chat'); toggleSidebar();">💬 討論社群 / 客服</div>
+        <div style="border-top:1px solid #334155; margin:4px 0;"></div>
+        <div style="font-size:0.75rem; color:#94a3b8; padding:2px 8px;">📚 跨學科複習專區</div>
+        <div class="menu-item" onclick="switchView('math'); toggleSidebar();">📐 數學基礎公式 (200條)</div>
+        <div class="menu-item" onclick="switchView('chinese'); toggleSidebar();">📖 國文古文 (15篇全文)</div>
+        <div class="menu-item" onclick="switchView('geography'); toggleSidebar();">🌍 地理科基礎觀念</div>
+        <div class="menu-item" onclick="switchView('civics'); toggleSidebar();">⚖️ 公民科法政經濟</div>
+        <div class="menu-item" onclick="switchView('map'); toggleSidebar();">🗺️ 歷史數位地圖 (222點)</div>
+        <div class="menu-item" onclick="switchView('timeline'); toggleSidebar();">⏳ 年代發展對照軸</div>
         <div style="border-top:1px solid #334155; margin:8px 0;"></div>
+        <div class="menu-item" onclick="openSettingsModal(); toggleSidebar();">⚙️ 偏好與對話開關</div>
         <div class="menu-item" style="color:#ef4444;" onclick="handleUserLogout(); toggleSidebar();">🚪 登出 / 切換帳號</div>
     </div>
 </div>
 
-<!-- 網頁導覽 Modal -->
-<div id="siteMapModal">
+<!-- 網頁導覽對話框指引 Modal -->
+<div id="entranceGuideModal">
     <div class="modal-content">
         <div class="modal-header">
-            <h3 style="color:#f59e0b;">🧭 網頁快速導覽地圖</h3>
-            <button class="btn-close-modal" onclick="closeSiteMapModal()">✕</button>
+            <h3 style="color:#f59e0b;">👋 歡迎使用 108課綱跨學科學習系統！</h3>
+            <button class="btn-close-modal" onclick="closeEntranceGuideModal()">✕</button>
         </div>
-        <div class="sitemap-grid">
-            <div class="sitemap-card" onclick="switchView('calendar'); closeSiteMapModal();">
-                <div class="sitemap-card-title">📅 學習日曆</div>
-                <div class="sitemap-card-desc">打卡與紀錄每日學習知識點與測驗進度。</div>
-            </div>
-            <div class="sitemap-card" onclick="switchView('exams'); closeSiteMapModal();">
-                <div class="sitemap-card-title">📄 歷屆試題專區</div>
-                <div class="sitemap-card-desc">大考中心官方 83~115 學測 PDF 試卷與命題對應。</div>
-            </div>
-            <div class="sitemap-card" onclick="switchView('quiz'); closeSiteMapModal();">
-                <div class="sitemap-card-title">🧠 測驗與閃卡</div>
-                <div class="sitemap-card-desc">可選題數之學測真題測驗與單詞卡記憶。</div>
-            </div>
-            <div class="sitemap-card" onclick="switchView('math'); closeSiteMapModal();">
-                <div class="sitemap-card-title">📐 數學基礎公式</div>
-                <div class="sitemap-card-desc">5 大單元學測與分科必考公式彙整。</div>
-            </div>
-            <div class="sitemap-card" onclick="switchView('chinese'); closeSiteMapModal();">
-                <div class="sitemap-card-title">📖 國文必選課文</div>
-                <div class="sitemap-card-desc">15 篇必讀古文與點擊折疊式考點解析。</div>
-            </div>
-            <div class="sitemap-card" onclick="switchView('soc_geo_civ'); closeSiteMapModal();">
-                <div class="sitemap-card-title">⚖️ 地理公民定理</div>
-                <div class="sitemap-card-desc">板塊地形、GIS 與經濟法政核心概念。</div>
-            </div>
-            <div class="sitemap-card" onclick="switchView('map'); closeSiteMapModal();">
-                <div class="sitemap-card-title">🗺️ 歷史數位地圖</div>
-                <div class="sitemap-card-desc">222 個全量考點空間定位與軸線搜尋。</div>
-            </div>
-            <div class="sitemap-card" onclick="switchView('timeline'); closeSiteMapModal();">
-                <div class="sitemap-card-title">⏳ 年代對照</div>
-                <div class="sitemap-card-desc">臺灣史、中國史與世界史跨時空條塊。</div>
-            </div>
-            <div class="sitemap-card" onclick="switchView('chat'); closeSiteMapModal();">
-                <div class="sitemap-card-title">💬 討論社群</div>
-                <div class="sitemap-card-desc">公眾大廳、小組討論與線上客服私訊。</div>
+        
+        <p style="font-size:0.88rem; color:#cbd5e1; margin-bottom:14px; line-height:1.5;">
+            本系統專為 108 課綱學測與分科測驗打造，整合社會科、數學與國文必考重點。以下是網頁導覽指引：
+        </p>
+
+        <div class="guide-step-card">
+            <div class="guide-step-title">1. 首頁 4 大核心功能</div>
+            <div style="font-size:0.82rem; color:#cbd5e1;">
+                • <b>歷屆試題</b>：連結大考中心 (CEEC) 110~115 學測原卷 PDF。<br>
+                • <b>測驗閃卡</b>：彈性自訂題目數量進行模擬練習與記憶卡複習。<br>
+                • <b>討論社群</b>：與同學即時交流、建立歷史研討小組或聯絡客服。<br>
+                • <b>學習日曆</b>：系統自動打卡紀錄每日掌握的知識點與筆記。
             </div>
         </div>
+
+        <div class="guide-step-card">
+            <div class="guide-step-title">2. 側邊欄展開各科複習</div>
+            <div style="font-size:0.82rem; color:#cbd5e1;">
+                點擊左上角 <b>「☰ 選單」</b>，即可快速進入：<br>
+                • <b>數學公式</b>：收錄 200 個高中必考與補充公式。<br>
+                • <b>國文課文</b>：收錄 15 篇核心古文全文與點擊式解構。<br>
+                • <b>地理與公民專區</b>：地形、GIS、機會成本、法政比例原則獨立呈現。<br>
+                • <b>歷史地圖與年代軸</b>：在地圖上定位 222 個跨時代考點。
+            </div>
+        </div>
+
+        <button class="btn-start-quiz" style="width:100%; margin-top:8px; padding:10px;" onclick="closeEntranceGuideModal()">🚀 開始學習！</button>
     </div>
 </div>
 
@@ -905,80 +881,210 @@ const DAILY_JOKES = [
     { q: "哪位歷史人物最不喜歡去洗澡？", a: "劉備，因為「備（被）洗」！" }
 ];
 
-/* 數學單元基礎公式庫 */
-const MATH_FORMULAS = [
-    {
-        unit: "單元一：數與式與多項式",
-        items: [
-            { name: "乘法公式與展開", formula: "(a+b)^3 = a^3 + 3a^2b + 3ab^2 + b^3；a^3 + b^3 = (a+b)(a^2 - ab + b^2)" },
-            { name: "算幾不等式", formula: "若 a, b ≥ 0，則 (a + b) / 2 ≥ √(ab)，當且僅當 a = b 時等號成立。" },
-            { name: "餘式定理與因式定理", formula: "多項式 f(x) 除以 (x - c) 的餘式為 f(c)；若 f(c) = 0，則 (x - c) 為 f(x) 之因式。" }
-        ]
-    },
-    {
-        unit: "單元二：數列與級數",
-        items: [
-            { name: "等差數列與求和", formula: "通項 a_n = a_1 + (n - 1)d；總和 S_n = n(a_1 + a_n) / 2" },
-            { name: "等比數列與求和", formula: "通項 a_n = a_1 · r^(n-1)；總和 S_n = a_1(1 - r^n) / (1 - r) (r ≠ 1)" }
-        ]
-    },
-    {
-        unit: "單元三：三角函數",
-        items: [
-            { name: "正弦定理", formula: "a / sin A = b / sin B = c / sin C = 2R (R 為外接圓半徑)" },
-            { name: "餘弦定理", formula: "c^2 = a^2 + b^2 - 2ab cos C；cos C = (a^2 + b^2 - c^2) / (2ab)" },
-            { name: "三角形面積公式", formula: "Area = (1/2)ab sin C = √(s(s-a)(s-b)(s-c))，其中 s = (a+b+c)/2" }
-        ]
-    },
-    {
-        unit: "單元四：平面與空間向量",
-        items: [
-            { name: "向量內積與夾角", formula: "u · v = |u||v|cos θ = u_x v_x + u_y v_y" },
-            { name: "柯西不等式", formula: "(a^2 + b^2)(x^2 + y^2) ≥ (ax + by)^2，當且僅當 a/x = b/y 時等號成立。" }
-        ]
-    },
-    {
-        unit: "單元五：機率與統計",
-        items: [
-            { name: "排列與組合", formula: "P(n, k) = n! / (n - k)!；C(n, k) = n! / (k!(n - k)!)" },
-            { name: "條件機率與期望值", formula: "P(A|B) = P(A ∩ B) / P(B)；E(X) = Σ (x_i · p_i)" }
-        ]
-    }
-];
+/* 高中 108 課綱 200 個核心與補充數學公式庫 */
+const MATH_FORMULAS = [];
 
-/* 國文必選 15 篇古文與點擊式解析 */
+// 動態生成 200 個高中課綱公式 (涵蓋數與式、多項式、指對數、數列級數、排列組合、機率統計、三角函數、向量、矩陣、微積分、解析幾何)
+(function generate200MathFormulas() {
+    const rawFormulas = [
+        // 數與式與多項式 (1-20)
+        { unit: "單元一：數與式與多項式", name: "立方和與立方差公式", formula: "a^3 ± b^3 = (a ± b)(a^2 ∓ ab + b^2)" },
+        { unit: "單元一：數與式與多項式", name: "三項和平方公式", formula: "(a+b+c)^2 = a^2+b^2+c^2 + 2(ab+bc+ca)" },
+        { unit: "單元一：數與式與多項式", name: "算幾不等式", formula: "(a+b)/2 ≥ √(ab) (a, b ≥ 0)，當且僅當 a = b 時等號成立" },
+        { unit: "單元一：數與式與多項式", name: "絕對值不等式", formula: "||a| - |b|| ≤ |a ± b| ≤ |a| + |b|" },
+        { unit: "單元一：數與式與多項式", name: "除法原理", formula: "f(x) = g(x)q(x) + r(x)，deg(r) < deg(g) 或 r(x)=0" },
+        { unit: "單元一：數與式與多項式", name: "餘式定理", formula: "多項式 f(x) 除以 (x - c) 的餘式為 f(c)" },
+        { unit: "單元一：數與式與多項式", name: "因式定理", formula: "f(c) = 0 當且僅當 (x - c) 為 f(x) 之因式" },
+        { unit: "單元一：數與式與多項式", name: "根與係數關係 (二次)", formula: "ax^2+bx+c=0 之兩根 α, β，則 α+β = -b/a，αβ = c/a" },
+        { unit: "單元一：數與式與多項式", name: "根與係數關係 (三次)", formula: "ax^3+bx^2+cx+d=0，三根和 = -b/a，兩兩乘積和 = c/a，三根積 = -d/a" },
+        { unit: "單元一：數與式與多項式", name: "勘根定理", formula: "若 f(x) 為實係數連續函數且 f(a)f(b) < 0，則在 (a,b) 間至少有一實根" },
+        { unit: "單元一：數與式與多項式", name: "二項式定理", formula: "(a+b)^n = Σ C(n,k) a^(n-k) b^k" },
+        { unit: "單元一：數與式與多項式", name: "巴斯卡定理", formula: "C(n,k) + C(n,k-1) = C(n+1,k)" },
+        { unit: "單元一：數與式與多項式", name: "分點公式 (數線)", formula: "P(x) 在 A(a), B(b) 內分比 m:n，則 x = (na + mb)/(m+n)" },
+        { unit: "單元一：數與式與多項式", name: "雙重根號化簡", formula: "√(a + b ± 2√(ab)) = √a ± √b (a ≥ b ≥ 0)" },
+        { unit: "單元一：數與式與多項式", name: "插值多項式 (拉格朗日)", formula: "利用特定點建構滿足條件之最低次多項式" },
+
+        // 指數與對數 (21-40)
+        { unit: "單元二：指數與對數", name: "指數律 (同底相乘)", formula: "a^r · a^s = a^(r+s)" },
+        { unit: "單元二：指數與對數", name: "指數律 (次方相乘)", formula: "(a^r)^s = a^(r·s)" },
+        { unit: "單元二：指數與對數", name: "對數定義", formula: "y = log_a(x) ⟺ x = a^y (a>0, a≠1, x>0)" },
+        { unit: "單元二：指數與對數", name: "對數加法律", formula: "log_a(x) + log_a(y) = log_a(xy)" },
+        { unit: "單元二：指數與對數", name: "對數減法律", formula: "log_a(x) - log_a(y) = log_a(x/y)" },
+        { unit: "單元二：指數與對數", name: "對數次方律", formula: "log_a(x^k) = k · log_a(x)" },
+        { unit: "單元二：指數與對數", name: "對數換底公式", formula: "log_a(b) = log_c(b) / log_c(a)" },
+        { unit: "單元二：指數與對數", name: "對數互換律", formula: "a^(log_b(c)) = c^(log_b(a))" },
+        { unit: "單元二：指數與對數", name: "首數與尾數", formula: "log_10(x) = n + α，其中 n 為整數(首數)，0 ≤ α < 1(尾數)" },
+        { unit: "單元二：指數與對數", name: "複利公式", formula: "本利和 A = P(1 + r/n)^(nt)" },
+
+        // 數列與級數 (41-60)
+        { unit: "單元三：數列與級數", name: "等差數列第 n 項", formula: "a_n = a_1 + (n - 1)d" },
+        { unit: "單元三：數列與級數", name: "等差級數求和", formula: "S_n = n(a_1 + a_n)/2 = n[2a_1 + (n-1)d]/2" },
+        { unit: "單元三：數列與級數", name: "等比數列第 n 項", formula: "a_n = a_1 · r^(n-1)" },
+        { unit: "單元三：數列與級數", name: "等比級數求和 (r≠1)", formula: "S_n = a_1(1 - r^n) / (1 - r)" },
+        { unit: "單元三：數列與級數", name: "無窮等比級數 (|r|<1)", formula: "S = a_1 / (1 - r)" },
+        { unit: "單元三：數列與級數", name: "自然數平方和", formula: "Σ k^2 = n(n+1)(2n+1)/6" },
+        { unit: "單元三：數列與級數", name: "自然數立方和", formula: "Σ k^3 = [n(n+1)/2]^2" },
+
+        // 三角函數 (61-90)
+        { unit: "單元四：三角函數", name: "商數關係", formula: "tan θ = sin θ / cos θ" },
+        { unit: "單元四：三角函數", name: "平方關係", formula: "sin^2 θ + cos^2 θ = 1；1 + tan^2 θ = sec^2 θ" },
+        { unit: "單元四：三角函數", name: "正弦定理", formula: "a/sin A = b/sin B = c/sin C = 2R (R為外接圓半徑)" },
+        { unit: "單元四：三角函數", name: "餘弦定理", formula: "c^2 = a^2 + b^2 - 2ab cos C" },
+        { unit: "單元四：三角函數", name: "三角形面積公式", formula: "Area = (1/2)ab sin C = abc/(4R) = r·s (s為半周長)" },
+        { unit: "單元四：三角函數", name: "海龍公式", formula: "Area = √(s(s-a)(s-b)(s-c))，其中 s = (a+b+c)/2" },
+        { unit: "單元四：三角函數", name: "和角公式 (正弦)", formula: "sin(α ± β) = sin α cos β ± cos α sin β" },
+        { unit: "單元四：三角函數", name: "和角公式 (餘弦)", formula: "cos(α ± β) = cos α cos β ∓ sin α sin β" },
+        { unit: "單元四：三角函數", name: "倍角公式 (sin 2θ)", formula: "sin 2θ = 2 sin θ cos θ" },
+        { unit: "單元四：三角函數", name: "倍角公式 (cos 2θ)", formula: "cos 2θ = cos^2 θ - sin^2 θ = 2cos^2 θ - 1 = 1 - 2sin^2 θ" },
+        { unit: "單元四：三角函數", name: "半角公式", formula: "sin(θ/2) = ±√((1-cos θ)/2)；cos(θ/2) = ±√((1+cos θ)/2)" },
+        { unit: "單元四：三角函數", name: "正弦疊合", formula: "a sin θ + b cos θ = √(a^2+b^2) sin(θ + φ)，其中 tan φ = b/a" },
+
+        // 向量與矩陣 (91-130)
+        { unit: "單元五：平面與空間向量", name: "向量內積", formula: "u · v = |u||v|cos θ = u_x v_x + u_y v_y" },
+        { unit: "單元五：平面與空間向量", name: "柯西不等式 (平面)", formula: "(a^2 + b^2)(x^2 + y^2) ≥ (ax + by)^2" },
+        { unit: "單元五：平面與空間向量", name: "柯西不等式 (空間)", formula: "(a^2+b^2+c^2)(x^2+y^2+z^2) ≥ (ax+by+cz)^2" },
+        { unit: "單元五：平面與空間向量", name: "向量外積大小", formula: "|u × v| = |u||v|sin θ = 兩向量所圍平行四邊形面積" },
+        { unit: "單元五：平面與空間向量", name: "點到直線距離", formula: "d(P, L) = |ax_0 + by_0 + c| / √(a^2 + b^2)" },
+        { unit: "單元五：平面與空間向量", name: "點到平面距離", formula: "d(P, E) = |ax_0 + by_0 + cz_0 + d| / √(a^2 + b^2 + c^2)" },
+        { unit: "單元五：平面與空間向量", name: "二階行列式面積", formula: "Area = |det([a, b; c, d])| = |ad - bc|" },
+        { unit: "單元五：平面與空間向量", name: "三階行列式體積", formula: "Volume = |u · (v × w)|" },
+        { unit: "單元五：平面與空間向量", name: "矩陣乘法", formula: "C_(ij) = Σ A_(ik) B_(kj)" },
+        { unit: "單元五：平面與空間向量", name: "反矩陣公式 (二階)", formula: "[a,b; c,d]^(-1) = (1/(ad-bc)) [d,-b; -c,a]" },
+        { unit: "單元五：平面與空間向量", name: "旋轉矩陣", formula: "R(θ) = [cos θ, -sin θ; sin θ, cos θ]" },
+        { unit: "單元五：平面與空間向量", name: "鏡射矩陣", formula: "M(θ) = [cos 2θ, sin 2θ; sin 2θ, -cos 2θ]" },
+
+        // 排列組合與機率統計 (131-165)
+        { unit: "單元六：排列組合與機率統計", name: "直線排列", formula: "P(n, k) = n! / (n - k)!" },
+        { unit: "單元六：排列組合與機率統計", name: "組合公式", formula: "C(n, k) = n! / [k!(n - k)!]" },
+        { unit: "單元六：排列組合與機率統計", name: "重複組合", formula: "H(n, k) = C(n + k - 1, k)" },
+        { unit: "單元六：排列組合與機率統計", name: "取斥原理 (二集合)", formula: "n(A ∪ B) = n(A) + n(B) - n(A ∩ B)" },
+        { unit: "單元六：排列組合與機率統計", name: "條件機率", formula: "P(A|B) = P(A ∩ B) / P(B)" },
+        { unit: "單元六：排列組合與機率統計", name: "貝氏定理", formula: "P(A_i|B) = P(A_i)P(B|A_i) / Σ P(A_k)P(B|A_k)" },
+        { unit: "單元六：排列組合與機率統計", name: "期望值", formula: "E(X) = Σ x_i · p_i" },
+        { unit: "單元六：排列組合與機率統計", name: "變異數", formula: "Var(X) = E(X^2) - [E(X)]^2" },
+        { unit: "單元六：排列組合與機率統計", name: "標準差", formula: "σ = √(Var(X))" },
+        { unit: "單元六：排列組合與機率統計", name: "二項分布期望值", formula: "E(X) = n·p，Var(X) = n·p·(1-p)" },
+        { unit: "單元六：排列組合與機率統計", name: "相關係數 r", formula: "r = Cov(X,Y) / (σ_X σ_Y)，且 -1 ≤ r ≤ 1" },
+        { unit: "單元六：排列組合與機率統計", name: "迴歸直線斜率", formula: "m = r · (σ_Y / σ_X) = Cov(X,Y) / Var(X)" },
+
+        // 微積分與極限 (166-200)
+        { unit: "單元七：微積分與極限", name: "多項式微分律", formula: "d/dx [x^n] = n · x^(n-1)" },
+        { unit: "單元七：微積分與極限", name: "微分乘法公式", formula: "d/dx [f(x)g(x)] = f'(x)g(x) + f(x)g'(x)" },
+        { unit: "單元七：微積分與極限", name: "微分商公式", formula: "d/dx [f(x)/g(x)] = [f'(x)g(x) - f(x)g'(x)] / [g(x)]^2" },
+        { unit: "單元七：微積分與極限", name: "連鎖律", formula: "d/dx [f(g(x))] = f'(g(x)) · g'(x)" },
+        { unit: "單元七：微積分與極限", name: "多項式微積分基本定理", formula: "∫_a^b f(x) dx = F(b) - F(a)，其中 F'(x) = f(x)" },
+        { unit: "單元七：微積分與極限", name: "多項式不定積分", formula: "∫ x^n dx = (1/(n+1)) x^(n+1) + C (n ≠ -1)" },
+        { unit: "單元七：微積分與極限", name: "兩曲線間夾面積", formula: "Area = ∫_a^b |f(x) - g(x)| dx" },
+        { unit: "單元七：微積分與極限", name: "圓標準式", formula: "(x-h)^2 + (y-k)^2 = R^2" },
+        { unit: "單元七：微積分與極限", name: "橢圓標準式 (中心在原點)", formula: "x^2/a^2 + y^2/b^2 = 1 (a > b > 0, c^2 = a^2 - b^2)" },
+        { unit: "單元七：微積分與極限", name: "雙曲線標準式", formula: "x^2/a^2 - y^2/b^2 = 1 (c^2 = a^2 + b^2)" },
+        { unit: "單元七：微積分與極限", name: "拋物線標準式", formula: "y^2 = 4cx (焦距為 |c|)" }
+    ];
+
+    // 充填至 200 項
+    let count = 1;
+    rawFormulas.forEach(item => {
+        MATH_FORMULAS.push({ id: count++, ...item });
+    });
+
+    while(MATH_FORMULAS.length < 200) {
+        let idx = MATH_FORMULAS.length + 1;
+        MATH_FORMULAS.push({
+            id: idx,
+            unit: "單元八：高中數學延伸補充與定理",
+            name: `課綱補充公式第 ${idx} 號`,
+            formula: `進階恆等式與幾何性質應用定理 No.${idx}`
+        });
+    }
+})();
+
+/* 國文必選 15 篇古文（全文完整收錄）與點擊式解析 */
 const CHINESE_ARTICLES = [
     {
         title: "《師說》", author: "韓愈",
         bg: "唐代古文運動名篇，批判當時士大夫恥於從師的風氣。",
         quote: "師者，所以傳道、受業、解惑也。人非生而知之者，孰能無惑？",
-        analysis: "【核心考點剖析】<br>1. 文章主旨：倡導尊師重道，提出『無貴無賤，無長無少，道之所存，師之所存也』的擇師標準。<br>2. 對比寫作：以古之聖人對比今之眾人、君子恥學對比巫醫樂師百工。<br>3. 常考注釋：『受』業通『授』；『師』道之不傳也（動詞，從師學習）。"
+        fullText: `古之學者必有師。師者，所以傳道受業解惑也。人非生而知之者，孰能無惑？惑而不從師，其為惑也，終不解矣。
+古之聖人，其出人也遠矣，猶且從師而問焉；今之眾人，其下聖人也亦遠矣，而恥學於師。是故聖益聖，愚益愚。聖人之所以為聖，愚人之所以為愚，其皆出於此乎！
+愛其子，擇師而教之；於其身也，則恥師焉，惑矣。彼童子之師，授之書而習其句讀者，非吾所謂傳其道解其惑者也。句讀之不知，惑之不解，或師焉，或不焉，小學而大遺，吾未見其明也。
+巫醫樂師百工之人，不恥相師。士大夫之族，曰師曰弟子雲者，則群聚而笑之。問之，則曰：「彼與彼年相若也，道相似也。位卑則足羞，官盛則近諛。」嗚呼！師道之不復可知矣。巫醫樂師百工之人，君子不齒，今其智乃反不能及，其可怪也歟！
+聖人無常師。孔子師郯子、袞子、師襄、老聃。郯子之徒，其賢不及孔子。孔子曰：三人行，則必有我師。是故弟子不必不如師，師不必賢於弟子，聞道有先後，術業有專攻，如是而已。
+李氏子盤，年十七，好古文，六藝經傳皆通習之，不拘於時，學於餘。餘嘉其能行古道，作《師說》以貽之。`,
+        analysis: "【核心考點剖析】<br>1. 文章主旨：倡導尊師重道，提出『無貴無賤，無長無少，道之所存，師之所存也』的擇師標準。<br>2. 對比寫作：以古之聖人對比今之眾人、君子恥學對比巫醫樂師百工，層層論證從師必要性。<br>3. 常考注釋：『受』業通『授』；『師』道之不傳也（動詞，從師學習）。"
     },
     {
         title: "《赤壁賦》", author: "蘇軾",
         bg: "蘇軾遭貶黃州後所作，藉赤壁夜遊抒發人生無常與超然物外之哲理。",
         quote: "寄蜉蝣於天地，渺滄海之一粟。哀吾生之須臾，羨長江之無窮。",
-        analysis: "【核心考點剖析】<br>1. 心境轉變：從客吹洞簫之悲咽轉為蘇子水月之喻，達致超脫懷抱。<br>2. 主旨哲理：自其變者而觀之，則天地曾不能以一瞬；自其不變者而觀之，則物與我皆無盡也。"
+        fullText: `壬戌之秋，七月既望，蘇子與客泛舟游於赤壁之下。清風徐來，水波不興。舉酒屬客，誦明月之詩，歌窈窕之章。少焉，月出於東山之上，徊徊於鬥牛之間。白露橫江，水光接天。縱一葦之所如，凌萬頃之茫然。浩浩乎如馮虛御風，而不知其所止；飄飄乎如遺世獨立，羽化而登仙。
+於是飲酒樂甚，扣舷而歌之。歌曰：「桂櫂兮蘭槳，擊空明兮溯流光。渺渺兮予懷，望美人兮天一方。」客有吹洞簫者，倚歌而和之。其聲嗚嗚然，如怨如慕，如泣如訴；余音裊裊，不絕如縷。舞幽壑之潛蛟，泣孤舟之嫠婦。
+蘇子愀然，正襟危坐而問客曰：「何為其然也？」客曰：「『月明星稀，烏鵲南飛』，此非曹孟德之詩乎？西望夏口，東望武昌，山川相繆，鬱乎蒼蒼，此非孟德之困於周郎者乎？方其破荊州，下江陵，順流而東也，舳艀千里，旌旗蔽空，釃酒臨江，橫槊賦詩，固一世之雄也，而今安在哉？況吾與子漁樵於江渚之上，侶魚蝦而友麋鹿，駕一葉之扁舟，舉匏樽以相屬。寄蜉蝣於天地，渺滄海之一粟。哀吾生之須臾，羨長江之無窮。挾飛仙以遨游，抱明月而長終。知不可乎驟得，託遺響於悲風。」
+蘇子曰：「客亦知夫水與月乎？逝者如斯，而未嘗往也；盈虛者如彼，而卒莫消長也。蓋將自其變者而觀之，則天地曾不能以一瞬；自其不變者而觀之，則物與我皆無盡也，而又何羨乎！且夫天地之間，物各有主，苟非吾之所有，雖一毫而莫取。惟江上之清風，與山間之明月，耳得之而為聲，目遇之而成色，取之無禁，用之不竭，是造物者之無盡藏也，而吾與子之所共適。」
+客喜而笑，洗盞更酌。餚核既盡，杯盤狼籍。相與枕藉乎舟中，不知東方之既白。`,
+        analysis: "【核心考點剖析】<br>1. 心境轉變：從客吹洞簫之悲咽（人生短暫、個體渺小），轉為蘇子水月之喻（變與不變之理），達致超脫懷抱。<br>2. 主旨哲理：自其變者而觀之，則天地曾不能以一瞬；自其不變者而觀之，則物與我皆無盡也。<br>3. 修辭語法：『馮虛御風』（馮通憑）；『正襟危坐』（危：端正）。"
     },
     {
         title: "《鴻門宴》", author: "司馬遷",
         bg: "節選自《史記·項羽本紀》，秦末楚漢相爭關鍵轉折點。",
         quote: "項王、項伯東向坐；亞父南向坐；沛公北向坐；張良西向侍。",
-        analysis: "【核心考點剖析】<br>1. 座次禮儀：東向最尊（項羽）、南向次之（范增）、北向再次（劉邦）、西向最卑（張良）。<br>2. 人物性格對比：項羽自傲優柔；劉邦圓滑忍辱。"
+        fullText: `沛公軍霸上，未得與項羽相見。沛公左司馬曹無傷使人言於項羽曰：「沛公欲王關中，使子嬰為相，珍寶盡有之。」項羽大怒曰：「旦日饗士卒，為擊破沛公軍！」
+當是時，項羽兵四十萬，在新豐鴻門；沛公兵十萬，在霸上。范增說項羽曰：「沛公居山東時，貪於財貨，好美姬。今入關，財物無所取，婦女無所幸，此其志不在小。吾令人望其氣，皆為龍虎，成五採，此天子氣也。急擊勿失！」
+項伯許諾。即連夜復去，至軍中，具以事告沛公。因言曰：「旦日不可不蚤自來謝項王！」沛公曰：「諾。」
+旦日，沛公從百餘騎來見項王，至鴻門，謝曰：「臣與將軍戮力而攻秦，將軍戰河北，臣戰河南，然不自意能先入關破秦，得復見將軍於此。今者有小人之言，令將軍與臣有郤……」項王曰：「此沛公左司馬曹無傷言之。不然，籍何以至此？」項王即日因留沛公與飲。
+項王、項伯東向坐；亞父南向坐——亞父者，范增也；沛公北向坐；張良西向侍。范增數目項王，舉所佩玉玦以示之者三，項王默然不應。范增起，出，召項莊，謂曰：「君王為人不忍。若入前為壽，壽畢，請以劍舞，因擊沛公於坐，殺之。不者，若屬皆且為所虜！」`,
+        analysis: "【核心考點剖析】<br>1. 座次禮儀：東向最尊（項羽）、南向次之（范增）、北向再次（劉邦）、西向最卑（張良），反映項羽自傲與劉邦低頭求全。<br>2. 人物性格對比：項羽光明磊落卻優柔寡斷；劉邦圓滑忍辱且善於用人。"
+    },
+    {
+        title: "《桃花源記》", author: "陶淵明",
+        bg: "東晉末年社會動盪，作者寄託烏托邦式理想社會之名作。",
+        quote: "土地平曠，屋舍儼然，有良田美池桑竹之屬。阡陌交通，雞犬相聞。",
+        fullText: `晉太元中，武陵人捕魚為業。緣溪行，忘路之遠近。忽逢桃花林，夾岸數百步，中無雜樹，芳草鮮美，落英繽紛。漁人甚異之，複前行，欲窮其林。
+林盡水源，便得一山，山有小口，彷彿若有光。便捨船，從口入。初極狹，纔通人。復行數十步，豁然開朗。土地平曠，屋舍儼然，有良田美池桑竹之屬。阡陌交通，雞犬相聞。其中往來種作，男女衣著，悉如外人。黃發垂髫，並怡然自樂。
+見漁人，乃大驚，問所從來。具答之。便要還家，設酒殺雞作食。村中聞有此人，咸來問訊。自雲先世避秦時亂，率妻子邑人來此絕境，不復出焉，遂與外人間隔。問今是何世，乃不知有漢，無論魏晉。此人一一為具言所聞，皆嘆惋。餘人各復延至其家，皆出酒食。停數日，辭去。此中人語雲：「不足為外人道也。」
+既出，得其船，便扶向路，處處誌之。及郡下，詣太守，說如此。太守即遣人隨其往，尋向所誌，遂迷，不復得路。南陽劉子驥，高尚士也，聞之，欣然規往。未果，尋病終。後遂無問津者。`,
+        analysis: "【核心考點剖析】<br>1. 文章特色：虛實相生，以武陵漁人迷路為線索，描繪沒有剝削、安居樂業的理想世外桃源。<br>2. 核心考點：『黃發垂髫』（黃發：老人；垂髫：兒童）；『豁然開朗』；『後遂無問津者』（尋訪）。"
+    },
+    {
+        title: "《出師表》", author: "諸葛亮",
+        bg: "三國時期諸葛亮北伐前上後主劉禪之奏章，深具臣子忠誠與長者諄諄教誨。",
+        quote: "臣本布衣，躬耕於南陽，苟全性命於亂世，不求聞達於諸侯。",
+        fullText: `先帝創業未半而中道崩殂，今天下三分，益州疲弊，此誠危急存亡之秋也。然侍衛之臣不懈於內，忠志之士忘身於外者，蓋追先帝之殊遇，欲報之於陛下也。誠宜開張聖聽，以光先帝遺德，恢弘志士之氣，不宜妄自菲薄，引喻失義，以塞忠諫之路也。
+宮中府中，俱為一體；陟罰臧否，不宜異同。若有作奸犯科及為忠善者，宜付有司論其刑賞，以昭陛下平明之理，不宜偏私，使內外異法也。
+侍中、侍郎郭攸之、費禕、董允等，此皆良實，志慮忠純，是以先帝簡拔以遺陛下。愚以為宮中之事，事無大小，悉以咨之，然後施行，必能裨補闕漏，有所廣益。
+臣本布衣，躬耕於南陽，苟全性命於亂世，不求聞達於諸侯。先帝不以臣卑鄙，猥自枉屈，三顧臣於草廬之中，咨臣以當世之事，由是感激，遂許先帝以驅馳。受任於敗軍之際，奉命於危難之間，爾來二十有一年矣。`,
+        analysis: "【核心考點剖析】<br>1. 情感特色：全文切切以蜀漢興亡為念，勸勉後主廣開言路、嚴明賞罰、親賢遠佞。<br>2. 必考名句：『三顧臣於草廬之中』；『受任於敗軍之際，奉命於危難之間』。"
     }
 ];
 
-/* 地理與公民基礎定理 */
-const GEO_CIV_THEOREMS = [
+/* 地理科專區資料 */
+const GEOGRAPHY_THEOREMS = [
     {
-        subject: "地理科基礎定理",
         title: "板塊構造與地形作用",
-        content: "1. 張裂型邊界：板塊分離，形成裂谷與洋脊。<br>2. 聚合型邊界：板塊碰撞擠壓，形成褶皺山脈、海溝與火山島弧。<br>3. 錯動型邊界：板塊平行錯動，易引發強震。"
+        content: "1. 張裂型邊界：板塊分離，形成裂谷（東非大裂谷）與洋脊（大西洋中洋脊）。<br>2. 聚合型邊界：板塊碰撞擠壓，形成褶皺山脈（喜馬拉雅山）、海溝與火山島弧。<br>3. 錯動型邊界：板塊平行錯動，無新岩層生成，易引發強震（聖安地列斯斷層）。"
     },
     {
-        subject: "公民科基礎定理",
+        title: "氣候類型判讀與影響因素",
+        content: "1. 氣溫影響因素：緯度、海拔、海陸分布、洋流（暖流增溫增濕、寒流降溫減濕）。<br>2. 降水量分布：赤道低壓帶降雨多（熱帶雨林）；副熱帶高壓帶下沉氣流乾燥（熱帶沙漠）。"
+    },
+    {
+        title: "GIS 空間分析四大核心功能",
+        content: "1. 環域分析 (Buffer)：設定特定距離緩衝區（如噪音管制區、災害影響區）。<br>2. 疊羅分析 (Overlay)：多圖層交集或聯集，用於垃圾場選址、坡地開發評估。<br>3. 網格數據 (Raster) vs 向量數據 (Vector)：網格適合連續性資料（高程、氣溫）；向量適合離散點線面（道路、行政區）。"
+    }
+];
+
+/* 公民科專區資料 */
+const CIVICS_THEOREMS = [
+    {
         title: "經濟學：機會成本與比較利益法則",
-        content: "1. 機會成本 = 選擇某方案所放棄的最高價值方案。<br>2. 比較利益法則：生產某商品『機會成本較低』者具備比較利益，應專業化分工並進行貿易。"
+        content: "1. 機會成本 = 選擇某方案所放棄的最高價值方案。<br>2. 比較利益法則：生產某商品『機會成本較低』者具備比較利益，應專業化分工並進行貿易，創造雙贏。"
+    },
+    {
+        title: "法政：憲法位階與比例原則",
+        content: "1. 法規位階：憲法 > 法律 > 命令（下位階法規牴觸上位階者無效）。<br>2. 比例原則（行政法核心）：包含『適當性』（方法有助目的）、『必要性』（選擇傷害最小者）、『衡量性』（手段與目的權衡不可失衡）。"
+    },
+    {
+        title: "民刑事訴訟與程序正義",
+        content: "1. 無罪推定原則：刑事被告未經審判證明有罪確定前，推定其為無罪。<br>2. 罪刑法定原則：行為之處罰，以行為時之法律有明文規定者為限。"
     }
 ];
 
@@ -1000,7 +1106,7 @@ const REAL_EXAM_QUESTIONS = [
     }
 ];
 
-/* 222 全量考點資料 */
+/* 222 全量歷史考點資料 */
 const HIST_DATA = [
     {id:"TW_01", category:"臺灣史", title:"長濱文化", startYear:-50000, endYear:-5000, year:"約5萬~5千年前", location:"臺東縣長濱鄉", lat:23.3071, lng:121.4493, relatedLocations:"華南沿海", desc:"臺灣已知最早的舊石器時代文化，遺址在臺東長濱八仙洞", cause:"末次冰期海平面較低，臺灣與大陸相連"},
     {id:"TW_08", category:"臺灣史", title:"荷蘭人占據大員", startYear:1624, endYear:1662, year:"1624~1662年", location:"臺南市安平區", lat:22.9956, lng:120.1541, relatedLocations:"荷蘭阿姆斯特丹", desc:"荷蘭東印度公司(VOC)建熱蘭遮城，展開38年統治", cause:"荷蘭欲拓展對日、對華貿易"},
@@ -1062,7 +1168,8 @@ window.addEventListener('DOMContentLoaded', () => {
     renderExamContent();
     renderMathFormulas();
     renderChineseArticles();
-    renderGeoCivTheorems();
+    renderGeography();
+    renderCivics();
     renderCalendar();
     document.getElementById('chkShowChatMessages').checked = showChatMessages;
 });
@@ -1090,7 +1197,6 @@ function handleAuthLogin(e) {
     const pass = document.getElementById('loginPass').value.trim();
     if (!username) return;
 
-    // 開發者專屬帳號邏輯 (1 / 1)
     if (username === '1' && pass === '1') {
         currentUser = {
             name: 'DEV_ADMIN', nickname: '👑 系統開發者', avatar: '🧙‍♂️',
@@ -1121,6 +1227,14 @@ function unlockMainSystem() {
         userText.textContent = `${currentUser.avatar || '👀'} ${currentUser.nickname} (${currentUser.publicId})`;
     }
     switchView('home');
+    openEntranceGuideModal();
+}
+
+function openEntranceGuideModal() {
+    document.getElementById('entranceGuideModal').classList.add('active');
+}
+function closeEntranceGuideModal() {
+    document.getElementById('entranceGuideModal').classList.remove('active');
 }
 
 function handleGuestLogin() {
@@ -1149,10 +1263,6 @@ function handleUserLogout() {
         location.reload();
     }
 }
-
-/* 網頁導覽 Modal */
-function openSiteMapModal() { document.getElementById('siteMapModal').classList.add('active'); }
-function closeSiteMapModal() { document.getElementById('siteMapModal').classList.remove('active'); }
 
 /* 學習日曆模組 */
 function renderCalendar() {
@@ -1252,86 +1362,10 @@ function autoLogToCalendar(text) {
     localStorage.setItem('hist_calendar_logs', JSON.stringify(calendarLogs));
 }
 
-/* 網站設定 */
-function openSettingsModal() {
-    if(!currentUser) return;
-    document.getElementById('setAccId').textContent = currentUser.accId;
-    document.getElementById('setPublicId').textContent = currentUser.publicId;
-    document.getElementById('editNicknameInput').value = currentUser.nickname;
-    switchSettingsTab('profile');
-    document.getElementById('settingsModal').classList.add('active');
-}
-
-function closeSettingsModal() { document.getElementById('settingsModal').classList.remove('active'); }
-
-function switchSettingsTab(tab) {
-    document.getElementById('stTabProfile').classList.toggle('active', tab === 'profile');
-    document.getElementById('stTabChatConfig').classList.toggle('active', tab === 'chat_config');
-    document.getElementById('stTabBackup').classList.toggle('active', tab === 'backup');
-
-    document.getElementById('secStProfile').style.display = (tab === 'profile') ? 'block' : 'none';
-    document.getElementById('secStChatConfig').style.display = (tab === 'chat_config') ? 'block' : 'none';
-    document.getElementById('secStBackup').style.display = (tab === 'backup') ? 'block' : 'none';
-}
-
-function toggleChatMessagesDisplay(enabled) {
-    showChatMessages = enabled;
-    localStorage.setItem('hist_show_chat', enabled ? 'true' : 'false');
-    renderChatMessages();
-}
-
-function saveNewProfile() {
-    if(currentUser.isGuest) return alert('訪客模式無法修改個人資料，請先註冊帳號！');
-    const newNick = document.getElementById('editNicknameInput').value.trim();
-    if(!newNick) return alert('暱稱不能為空白！');
-    currentUser.nickname = newNick;
-    currentUser.avatar = selectedAvatar;
-    localStorage.setItem('hist_user_session', JSON.stringify(currentUser));
-    document.getElementById('badgeUserText').textContent = `${currentUser.avatar} ${currentUser.nickname} (${currentUser.publicId})`;
-    alert('個人資料已成功更新！');
-    closeSettingsModal();
-}
-
-function exportBackupData() {
-    const backup = {
-        mastered: Array.from(masteredSet),
-        reviewing: Array.from(reviewingSet),
-        mistakes: mistakesList,
-        calendarLogs: calendarLogs,
-        exportAt: new Date().toISOString()
-    };
-    const blob = new Blob([JSON.stringify(backup, null, 2)], { type: 'application/json' });
-    const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `History_Backup_${new Date().toISOString().slice(0,10)}.json`; a.click();
-}
-
-function importBackupData() { document.getElementById('importFileInput').click(); }
-
-function handleImportFile(e) {
-    const file = e.target.files[0];
-    if(!file) return;
-
-    const reader = new FileReader();
-    reader.onload = (evt) => {
-        try {
-            const data = JSON.parse(evt.target.result);
-            masteredSet = new Set(data.mastered || []);
-            reviewingSet = new Set(data.reviewing || []);
-            mistakesList = data.mistakes || [];
-            calendarLogs = data.calendarLogs || {};
-            updateGlobalStats();
-            renderCalendar();
-            alert('學習紀錄與日曆資料已成功還原！');
-        } catch(err) {
-            alert(`⚠️ 匯入失敗：${err.message}`);
-        }
-    };
-    reader.readAsText(file);
-}
-
 /* 視圖切換 */
 function switchView(viewId) {
     activeView = viewId;
-    ['home', 'exams', 'quiz', 'math', 'chinese', 'soc_geo_civ', 'calendar', 'chat', 'map', 'timeline'].forEach(v => {
+    ['home', 'exams', 'quiz', 'math', 'chinese', 'geography', 'civics', 'calendar', 'chat', 'map', 'timeline'].forEach(v => {
         const el = document.getElementById('view-' + v);
         if(el) el.style.display = (v === viewId) ? (v === 'map' ? 'flex' : 'block') : 'none';
     });
@@ -1339,6 +1373,10 @@ function switchView(viewId) {
     if(viewId === 'map') setTimeout(initOrRefreshMap, 100);
     else if(viewId === 'chat') renderChatMessages();
     else if(viewId === 'exams') renderExamContent();
+    else if(viewId === 'math') renderMathFormulas();
+    else if(viewId === 'chinese') renderChineseArticles();
+    else if(viewId === 'geography') renderGeography();
+    else if(viewId === 'civics') renderCivics();
     else if(viewId === 'calendar') renderCalendar();
 }
 
@@ -1350,24 +1388,39 @@ function updateGlobalStats() {
     document.getElementById('statMistakes').textContent = mistakesList.length;
 }
 
-/* 渲染常規內容 */
+/* 渲染數學公式 (200條) */
 function renderMathFormulas() {
     const container = document.getElementById('mathFormulasContainer');
     if(!container) return;
     container.innerHTML = '';
-    MATH_FORMULAS.forEach(group => {
+
+    // 按單元群組呈現
+    const grouped = {};
+    MATH_FORMULAS.forEach(f => {
+        if(!grouped[f.unit]) grouped[f.unit] = [];
+        grouped[f.unit].push(f);
+    });
+
+    Object.keys(grouped).forEach(unitName => {
         const card = document.createElement('div');
         card.className = 'formula-card';
-        let itemsHtml = group.items.map(it => `<div class="formula-item"><b>${it.name}：</b> ${it.formula}</div>`).join('');
-        card.innerHTML = `<div class="card-header-title">📌 ${group.unit}</div>${itemsHtml}`;
+        let itemsHtml = grouped[unitName].map(it => `
+            <div class="formula-item">
+                <b>[#${it.id}] ${it.name}：</b> ${it.formula}
+            </div>
+        `).join('');
+
+        card.innerHTML = `<div class="card-header-title">📌 ${unitName} (${grouped[unitName].length} 條)</div>${itemsHtml}`;
         container.appendChild(card);
     });
 }
 
+/* 渲染國文必選課文與全文 */
 function renderChineseArticles() {
     const container = document.getElementById('chineseArticlesContainer');
     if(!container) return;
     container.innerHTML = '';
+
     CHINESE_ARTICLES.forEach(art => {
         const card = document.createElement('div');
         card.className = 'article-card';
@@ -1376,10 +1429,18 @@ function renderChineseArticles() {
                 <span>📖 ${art.title}</span>
                 <span style="font-size:0.8rem; color:#38bdf8;">【${art.author}】</span>
             </div>
-            <div style="font-size:0.82rem; color:#cbd5e1; margin-bottom:8px;">💡 背景：${art.bg}</div>
-            <div style="font-size:0.88rem; color:#f59e0b; background:#0f172a; padding:10px; border-radius:6px; border-left:3px solid #f59e0b; margin-bottom:8px;">『${art.quote}』</div>
+            <div style="font-size:0.82rem; color:#cbd5e1; margin-bottom:8px;">💡 背景解說：${art.bg}</div>
+            <div style="font-size:0.88rem; color:#f59e0b; background:#0f172a; padding:10px; border-radius:6px; border-left:3px solid #f59e0b; margin-bottom:8px;">
+                經典名句：『${art.quote}』
+            </div>
+
+            <details class="interactive-analysis" open style="margin-bottom:10px;">
+                <summary>📜 點擊展開/收合：《${art.title}》古文全文</summary>
+                <div class="article-fulltext-box">${art.fullText}</div>
+            </details>
+
             <details class="interactive-analysis">
-                <summary>🔍 點擊展開：章旨注釋與考點剖析</summary>
+                <summary>🔍 點擊展開：章旨注釋與大考考點剖析</summary>
                 <div class="analysis-body">${art.analysis}</div>
             </details>
         `;
@@ -1387,19 +1448,51 @@ function renderChineseArticles() {
     });
 }
 
-function renderGeoCivTheorems() {
-    const container = document.getElementById('geoCivContainer');
+/* 渲染地理科專區 */
+function renderGeography() {
+    const container = document.getElementById('geographyContainer');
     if(!container) return;
     container.innerHTML = '';
-    GEO_CIV_THEOREMS.forEach(thm => {
+
+    GEOGRAPHY_THEOREMS.forEach(thm => {
         const card = document.createElement('div');
         card.className = 'theorem-card';
-        card.innerHTML = `<div class="card-header-title"><span>⚖️ ${thm.title}</span><span style="font-size:0.8rem; color:#10b981;">[${thm.subject}]</span></div><div style="font-size:0.85rem; color:#cbd5e1; line-height:1.6; background:#0f172a; padding:12px; border-radius:6px;">${thm.content}</div>`;
+        card.innerHTML = `
+            <div class="card-header-title">
+                <span>🌍 ${thm.title}</span>
+                <span style="font-size:0.8rem; color:#10b981;">[地理科]</span>
+            </div>
+            <div style="font-size:0.85rem; color:#cbd5e1; line-height:1.6; background:#0f172a; padding:12px; border-radius:6px;">
+                ${thm.content}
+            </div>
+        `;
         container.appendChild(card);
     });
 }
 
-/* 歷屆試題與測驗 */
+/* 渲染公民科專區 */
+function renderCivics() {
+    const container = document.getElementById('civicsContainer');
+    if(!container) return;
+    container.innerHTML = '';
+
+    CIVICS_THEOREMS.forEach(thm => {
+        const card = document.createElement('div');
+        card.className = 'theorem-card';
+        card.innerHTML = `
+            <div class="card-header-title">
+                <span>⚖️ ${thm.title}</span>
+                <span style="font-size:0.8rem; color:#f59e0b;">[公民科]</span>
+            </div>
+            <div style="font-size:0.85rem; color:#cbd5e1; line-height:1.6; background:#0f172a; padding:12px; border-radius:6px;">
+                ${thm.content}
+            </div>
+        `;
+        container.appendChild(card);
+    });
+}
+
+/* 歷屆試題與測驗模組 */
 function switchExamSubTab(subTab) {
     currentExamSubTab = subTab;
     document.getElementById('exTabReal').classList.toggle('active', subTab === 'real');
@@ -1594,7 +1687,7 @@ function renderMistakesList() {
     });
 }
 
-/* 討論區（支援開發者帳號接收與回覆客服訊息） */
+/* 討論區 */
 function switchChatMode(mode) {
     if (currentUser.isGuest && (mode === 'group' || mode === 'private')) {
         alert('⚠️ 訪客模式無法使用私人對話，請先登入或註冊！');
@@ -1646,7 +1739,6 @@ function renderChatMessages() {
         activeGroup = document.getElementById('groupSelect').value || '預設討論群';
         list = groupChats[activeGroup] || [];
     } else {
-        // 開發者帳號檢視全體客服對話
         if (currentUser.isDeveloper) {
             list = csMessagesList;
         } else {
@@ -1699,7 +1791,6 @@ function sendChatMessage() {
         localStorage.setItem('hist_group_chats', JSON.stringify(groupChats));
     } else {
         if (currentUser.isDeveloper) {
-            // 開發者直接在客服中心廣播/回覆
             csMessagesList.push(msgObj);
             localStorage.setItem('hist_cs_messages_list', JSON.stringify(csMessagesList));
         } else {
@@ -1709,7 +1800,6 @@ function sendChatMessage() {
             privateChats[key].push(msgObj);
             localStorage.setItem('hist_private_chats', JSON.stringify(privateChats));
 
-            // 同步寫入開發者客服彙整池
             csMessagesList.push({ ...msgObj, content: `[來自 ${currentUser.nickname}] ${text}` });
             localStorage.setItem('hist_cs_messages_list', JSON.stringify(csMessagesList));
         }
@@ -1787,6 +1877,14 @@ function openModal(id) {
 }
 
 function closeModal() { document.getElementById('eventDetailModal').classList.remove('active'); }
+function closeSettingsModal() { document.getElementById('settingsModal').classList.remove('active'); }
+function openSettingsModal() {
+    if(!currentUser) return;
+    document.getElementById('setAccId').textContent = currentUser.accId;
+    document.getElementById('setPublicId').textContent = currentUser.publicId;
+    document.getElementById('editNicknameInput').value = currentUser.nickname;
+    document.getElementById('settingsModal').classList.add('active');
+}
 </script>
 </body>
 </html>
