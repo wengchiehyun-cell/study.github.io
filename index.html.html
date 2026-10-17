@@ -1,0 +1,1045 @@
+<!DOCTYPE html>
+<html lang="zh-TW"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>108課綱跨學科學習系統</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,"Segoe UI","Noto Sans TC",Arial,sans-serif;background:#0f172a;color:#f8fafc;height:100vh;height:100dvh;overflow:hidden}
+button,input,select{font:inherit}
+.btn{background:#f59e0b;color:#0f172a;border:0;padding:8px 14px;border-radius:6px;font-weight:bold;cursor:pointer;font-size:.85rem}
+.btn.alt{background:#334155;color:#f8fafc}.btn.blue{background:#38bdf8}
+input.in,select.in{background:#0f172a;border:1px solid #475569;color:#fff;padding:8px 10px;border-radius:6px;font-size:16px;outline:0}
+.card{background:#1e293b;border:1px solid #334155;border-radius:10px;padding:16px;margin-bottom:12px}
+.card h3{color:#f59e0b;font-size:1rem;margin-bottom:6px;display:flex;justify-content:space-between;gap:8px}
+.box{background:#0f172a;border-left:3px solid #38bdf8;padding:8px 12px;border-radius:6px;font-size:.88rem;line-height:1.6;margin:6px 0}
+.muted{color:#94a3b8;font-size:.82rem}
+#auth{position:fixed;inset:0;background:#0f172a;z-index:50;display:flex;justify-content:center;align-items:center;padding:16px}
+.ac{width:100%;max-width:420px;display:flex;flex-direction:column;gap:10px}
+.ac h2{color:#f59e0b;text-align:center}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+.tab{background:#0f172a;border:1px solid #334155;color:#cbd5e1;padding:7px 14px;border-radius:6px;cursor:pointer;font-weight:bold;font-size:.85rem}
+.tab.on{background:#f59e0b;color:#0f172a;border-color:#f59e0b}
+.av{display:grid;grid-template-columns:repeat(6,1fr);gap:6px}
+.av span{font-size:1.3rem;text-align:center;padding:4px;border:1px solid #334155;border-radius:8px;cursor:pointer}
+.av span.on{border-color:#f59e0b;background:#334155}
+#app{display:none;flex-direction:column;height:100vh;height:100dvh}
+nav{background:#1e293b;border-bottom:1px solid #334155;padding:10px 16px;display:flex;justify-content:space-between;align-items:center}
+nav b{color:#f59e0b;cursor:pointer}
+.badge{background:#0f172a;border:1px solid #334155;border-radius:20px;padding:5px 12px;font-size:.82rem;color:#f59e0b}
+.views{flex:1;overflow:hidden;position:relative}
+.view{display:none;height:100%;overflow-y:auto;padding:18px 16px 60px;max-width:1000px;margin:0 auto}
+.portal{display:flex;gap:24px;justify-content:center;flex-wrap:wrap;margin:20px 0}
+.portal div{text-align:center;cursor:pointer;font-weight:bold}
+.portal i{display:flex;width:90px;height:90px;border-radius:50%;background:#1e293b;border:2px solid #f59e0b;font-size:2.3rem;justify-content:center;align-items:center;font-style:normal;margin-bottom:6px;transition:.2s}
+.portal div:hover i{background:#f59e0b;transform:scale(1.08)}
+details{background:#0f172a;border:1px solid #334155;border-radius:6px;padding:8px 12px;margin-top:6px}
+summary{color:#38bdf8;cursor:pointer;font-size:.85rem;font-weight:bold}
+.st{display:flex;gap:8px;margin-top:8px}
+.st button{background:#0f172a;border:1px solid #334155;color:#cbd5e1;padding:3px 10px;border-radius:4px;font-size:.75rem;cursor:pointer}
+.st .m{background:#064e3b;color:#34d399;border-color:#10b981}.st .r{background:#7f1d1d;color:#f87171;border-color:#ef4444}
+.cfg{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:14px}
+.fc{perspective:1000px;max-width:650px;height:300px;margin:0 auto 14px;cursor:pointer}
+.fci{position:relative;width:100%;height:100%;transition:transform .5s;transform-style:preserve-3d}
+.fc.flip .fci{transform:rotateY(180deg)}
+.fc .f,.fc .b{position:absolute;inset:0;backface-visibility:hidden;border-radius:12px;border:1px solid #334155;padding:20px;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;gap:10px}
+.fc .f{background:#1e293b;font-size:1.3rem;font-weight:bold;color:#f59e0b}
+.fc .b{background:#0f172a;transform:rotateY(180deg);border-color:#f59e0b;overflow-y:auto;font-size:.9rem;line-height:1.6;justify-content:flex-start}
+.opt{display:block;width:100%;text-align:left;background:#0f172a;border:1px solid #334155;color:#e2e8f0;padding:11px 14px;border-radius:8px;margin-bottom:8px;cursor:pointer;font-size:.88rem}
+.opt:hover{border-color:#f59e0b}.opt.ok{background:#064e3b;border-color:#10b981}.opt.no{background:#7f1d1d;border-color:#ef4444}
+.cal{display:grid;grid-template-columns:repeat(7,1fr);gap:5px}
+.cd{aspect-ratio:1;background:#0f172a;border:1px solid #334155;border-radius:6px;padding:4px;font-size:.78rem;cursor:pointer;position:relative}
+.cd.today{border-color:#38bdf8}.cd.sel{background:#334155}.cd.log::after{content:"";position:absolute;top:4px;right:4px;width:6px;height:6px;border-radius:50%;background:#f59e0b}
+.chatbox{height:50vh;overflow-y:auto;background:#0f172a;border-radius:8px;padding:12px;display:flex;flex-direction:column;gap:8px;margin-bottom:8px}
+.msg{max-width:80%;padding:7px 11px;border-radius:8px;font-size:.88rem;background:#1e293b;border:1px solid #334155;align-self:flex-start}
+.msg.me{align-self:flex-end;background:#f59e0b;color:#0f172a;font-weight:bold}.msg small{display:block;font-size:.7rem;opacity:.7}
+#side{position:fixed;top:0;left:0;width:270px;height:100vh;height:100dvh;background:#0f172a;border-right:1px solid #334155;z-index:40;padding:16px;transform:translateX(-100%);transition:.25s;overflow-y:auto}
+#side.on{transform:none}
+.mi{background:#1e293b;border:1px solid #334155;padding:10px 14px;border-radius:6px;margin-bottom:6px;cursor:pointer;font-size:.85rem;font-weight:bold}
+.mi:hover{background:#f59e0b;color:#0f172a}
+.modal{position:fixed;inset:0;background:rgba(15,23,42,.88);z-index:60;display:none;justify-content:center;align-items:center;padding:16px}
+.modal.on{display:flex}.mc{background:#1e293b;border:1px solid #334155;border-radius:12px;width:100%;max-width:520px;max-height:85vh;overflow-y:auto;padding:22px}
+#map{height:calc(100vh - 130px);height:calc(100dvh - 130px);border-radius:8px}
+.tl{border-left:3px solid #f59e0b;padding:6px 12px;margin:0 0 8px 6px;background:#1e293b;border-radius:0 6px 6px 0;font-size:.88rem}
+.fr{display:inline-flex;flex-direction:column;vertical-align:middle;text-align:center;margin:0 3px;font-size:.95em}.fr>span:first-child{border-bottom:1.5px solid currentColor;padding:0 4px}.fr>span:last-child{padding:0 4px}
+.cb{display:inline-flex;flex-direction:column;font-size:.65em;line-height:1.05;vertical-align:middle;margin-left:1px}
+.mx table{display:inline-table;vertical-align:middle;border-collapse:collapse;border-left:2px solid currentColor;border-right:2px solid currentColor;margin:0 3px}.mx td{padding:2px 8px;text-align:center}
+
+.crumb{margin-bottom:10px;font-size:.88rem}.crumb a{color:#38bdf8;cursor:pointer}
+
+.folders{display:block;border-top:1px solid #475569}
+.fold{cursor:pointer;display:flex;flex-direction:row;justify-content:space-between;align-items:baseline;background:none;border:0;border-bottom:1px solid #334155;border-radius:0;padding:13px 4px;text-align:left;transform:none;font-family:"Noto Serif TC","Songti TC",serif;font-size:1.02rem}
+.fold:hover{background:#1e293b;transform:none}
+.row{border-radius:0;background:none;border:0;border-bottom:1px solid #334155;padding:12px 4px;margin-bottom:8px;cursor:pointer;font-family:"Noto Serif TC","Songti TC",serif}.row:hover{background:#1e293b;border-color:#f59e0b}
+.sheet{border-top:2px solid #94a3b8;padding-top:14px;font-family:"Noto Serif TC","Songti TC",serif}
+.big{background:none;border:0;border-left:0;padding:12px 0;color:#e2e8f0;font-size:1.3rem;line-height:2.4}
+.proof{background:none;border:0;border-left:2px solid #64748b;padding:6px 14px;margin-top:8px;line-height:2.1;font-size:.95rem;color:#cbd5e1}
+.lv{font-family:-apple-system,"Segoe UI",sans-serif;font-size:.72rem;border:1px solid #64748b;padding:0 6px;margin-left:10px;color:#94a3b8;font-weight:normal}
+.lvbar a{display:inline-block;padding:4px 14px;border:1px solid #475569;margin-right:-1px;cursor:pointer;font-size:.9rem}.lvbar a.on{background:#e2e8f0;color:#0f172a}
+.toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);background:#7f1d1d;color:#fff;padding:8px 14px;border-radius:8px;font-size:.85rem;z-index:100;max-width:90vw;display:none}
+:focus-visible{outline:2px solid #38bdf8;outline-offset:2px}
+.st button{padding:8px 12px;font-size:.82rem}
+#sideBg{position:fixed;inset:0;background:rgba(15,23,42,.6);z-index:39;display:none}
+#tourHL{position:fixed;z-index:70;border:2px solid #f59e0b;border-radius:8px;box-shadow:0 0 0 9999px rgba(15,23,42,.72);pointer-events:none;display:none}
+#tourTip{position:fixed;z-index:71;left:50%;transform:translateX(-50%);bottom:12px;max-width:420px;width:calc(100% - 24px);background:#1e293b;border:1px solid #f59e0b;border-radius:10px;padding:14px;display:none}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}.portal div:hover i{transform:none}}
+</style></head><body>
+
+<div id="auth"><div class="card ac">
+<h2>108課綱跨學科學習系統</h2>
+<div class="tabs"><button class="tab on" id="tl" onclick="authTab('l')">登入</button><button class="tab" id="tr" onclick="authTab('r')">註冊</button></div>
+<form id="fl" onsubmit="doLogin(event)" style="display:flex;flex-direction:column;gap:8px">
+<input class="in" id="lu" placeholder="帳號" autocomplete="username" required><input class="in" id="lp" type="password" placeholder="密碼" autocomplete="current-password" required><button class="btn">登入</button></form>
+<form id="fr" onsubmit="doReg(event)" style="display:none;flex-direction:column;gap:8px">
+<input class="in" id="ru" placeholder="帳號（2–20 字：中英文、數字、_ . -）" autocomplete="username" maxlength="20" required><input class="in" id="rn" placeholder="暱稱（最多 12 字）" maxlength="12" required><div class="av" id="ravs"></div>
+<input class="in" id="rp" type="password" placeholder="密碼（至少 6 個字元）" autocomplete="new-password" required><input class="in" id="rp2" type="password" placeholder="再輸入一次密碼" autocomplete="new-password" required><button class="btn">完成註冊</button></form>
+<button class="btn alt" onclick="guest()">👀 訪客模式（免註冊）</button>
+<div class="muted" style="text-align:center;font-size:.75rem">此為「本機帳號」：資料只存在這台裝置的瀏覽器，用來區分學習紀錄。密碼雖已加密儲存，仍請勿使用常用密碼。</div>
+<div class="muted" id="authMsg" style="text-align:center"></div>
+</div></div>
+
+<div id="app">
+<div id="storeWarn" style="display:none;background:#7f1d1d;color:#fff;padding:6px 12px;font-size:.82rem;text-align:center">⚠️ 此瀏覽器無法儲存資料（可能是無痕模式或內嵌瀏覽器）。關閉頁面後進度會消失，請記得到「個人設定」匯出備份。</div>
+<nav><div style="display:flex;gap:10px;align-items:center"><button class="btn alt" onclick="side()">☰ 選單</button><b onclick="go('home')">📜 108課綱學習門戶</b></div>
+<div class="badge"><span id="who"></span> <button class="btn" style="padding:2px 8px;background:#ef4444;color:#fff" onclick="logout()">登出</button></div></nav>
+<div class="views">
+
+<div class="view" id="v-home">
+<div class="card" style="text-align:center"><h2 style="margin-bottom:6px">歡迎來到 <span style="color:#f59e0b">跨學科學習門戶</span></h2>
+<div class="muted">數學 · 國文 · 歷史 · 地理 · 公民　共 <b id="kbN" style="color:#f59e0b"></b> 個知識點</div>
+<div class="muted" style="margin-top:6px">已掌握 <b id="sM" style="color:#34d399">0</b>　待複習 <b id="sR" style="color:#f87171">0</b>　今日到期 <b id="sD" style="color:#38bdf8">0</b></div></div>
+<div class="card" style="border-color:#f59e0b"><div class="muted">🤣 今日冷笑話（一天一則） <span id="jS" style="color:#38bdf8"></span></div>
+<div style="font-weight:bold;margin:6px 0" id="jQ"></div><div class="box" style="cursor:pointer" id="jA"></div></div>
+<div class="portal">
+<div onclick="go('exams')"><i>📄</i>考點與試題</div><div onclick="go('quiz')"><i>🧠</i>測驗閃卡</div>
+<div onclick="go('chat')"><i>💬</i>討論社群</div><div onclick="go('cal')"><i>📅</i>學習日曆</div></div>
+<div class="muted" style="text-align:center;margin-top:14px">各科主頁</div>
+<div class="portal" id="subjPortal"></div>
+<div class="muted" style="text-align:center">點選左上「☰ 選單」進入各科複習、歷史地圖與年代軸</div></div>
+
+<div class="view" id="v-subj"></div>
+<div class="view" id="v-study"><div class="card"><h3 id="stTitle"></h3><div class="muted" id="stSub"></div></div>
+<input class="in" id="stSearch" style="width:100%;margin-bottom:10px" placeholder="🔍 搜尋全部知識點（標題或內容）" oninput="doSearch(this.value)">
+<div class="tabs" id="stTabs"></div><div id="stList"></div></div>
+
+<div class="view" id="v-exams"><div class="card"><h3>高頻考點與大考中心官方試題</h3><div class="muted">官方試題請至財團法人大學入學考試中心下載，本站僅整理高頻考點。</div></div>
+<div class="tabs"><button class="tab on" id="et1" onclick="examTab(1)">📌 高頻考點對應</button><button class="tab" id="et2" onclick="examTab(2)">🔗 官方網站</button></div>
+<div id="exArea"></div></div>
+
+<div class="view" id="v-quiz"><div class="card"><h3>跨學科測驗與記憶閃卡</h3><div class="muted">題目由各科知識庫自動生成，可自選科目、題型與數量，並可新增多組混合。</div></div>
+<div class="tabs"><button class="tab on" id="qt1" onclick="quizTab(1)">🗂️ 記憶閃卡</button><button class="tab" id="qt2" onclick="quizTab(2)">📝 模擬測驗</button></div>
+<div class="card" id="qCfg"></div>
+<div id="qArea"></div></div>
+
+<div class="view" id="v-cal"><div class="card"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+<button class="btn" onclick="calMove(-1)">❮</button><h3 id="calT" style="margin:0"></h3><button class="btn" onclick="calMove(1)">❯</button></div>
+<div class="cal" style="text-align:center;color:#f59e0b;margin-bottom:6px"><div>日</div><div>一</div><div>二</div><div>三</div><div>四</div><div>五</div><div>六</div></div>
+<div class="cal" id="calG"></div></div>
+<div class="card"><h3 id="selT"></h3><div id="selL"></div>
+<div class="cfg" style="margin:8px 0 0"><input class="in" id="logIn" style="flex:1" placeholder="輸入學習心得…"><button class="btn" onclick="addLog()">➕ 打卡</button></div></div></div>
+
+<div class="view" id="v-chat"><div class="card"><div class="tabs"><button class="tab on" id="ct1" onclick="chatTab('pub')">💬 本機大廳</button><button class="tab" id="ct2" onclick="chatTab('bot')">🛟 線上客服</button></div>
+<div class="muted" id="gBan" style="color:#f87171;display:none">訪客模式僅供瀏覽，請登入後發言。</div>
+<div class="muted" id="pubNote">此大廳的訊息只存在這台裝置的瀏覽器，不會傳給其他人。</div>
+<div class="chatbox" id="chatBox"></div>
+<div class="cfg" style="margin:0"><input class="in" id="chIn" style="flex:1" placeholder="輸入訊息…" onkeydown="if(event.key=='Enter')sendChat()"><button class="btn" onclick="sendChat()">發送</button></div></div></div>
+
+<div class="view" id="v-map" style="max-width:none;padding:10px"><div id="map"></div></div>
+<div class="view" id="v-time"><div class="card"><h3>⏳ 跨時空年代對照軸</h3></div><div id="tlArea"></div></div>
+</div></div>
+
+<div id="tourHL"></div><div id="tourTip"><div class="muted" id="tourStep"></div><div id="tourTxt" style="margin:6px 0 10px;line-height:1.6"></div><div class="cfg" style="margin:0;justify-content:flex-end"><button class="btn alt" onclick="tourEnd()">結束導覽</button><button class="btn blue" id="tourNext" onclick="tourNext()">下一步</button></div></div>
+<div class="toast" id="toast"></div>
+<div id="sideBg" onclick="side()"></div>
+<div id="side"><div class="mi" onclick="side()" style="text-align:right">✕ 關閉選單</div><div class="mi" onclick="go('home');side()">🏠 主控制台</div><div class="mi" onclick="guide();side()">🧭 使用導覽</div>
+<div class="muted" style="margin:8px 0">📚 各科複習</div><div id="sideSubj"></div>
+<div class="mi" onclick="go('map');side()">🗺️ 歷史數位地圖</div><div class="mi" onclick="go('time');side()">⏳ 年代對照軸</div>
+<div class="mi" onclick="go('exams');side()">📄 考點與試題</div><div class="mi" onclick="go('quiz');side()">🧠 測驗閃卡</div>
+<div class="mi" onclick="go('cal');side()">📅 學習日曆</div><div class="mi" onclick="go('chat');side()">💬 討論社群</div>
+<div class="mi" onclick="openSet();side()">⚙️ 個人設定與備份</div><div class="mi" onclick="side()" style="text-align:center">✕ 離開選單</div></div>
+
+<div class="modal" id="mGuide"><div class="mc"><h3 style="color:#f59e0b;margin-bottom:10px">👋 使用導覽</h3>
+<div class="box">• 五個科目：數學、國文、歷史、地理、公民，各有主頁、進度與單元<br>• 每個知識點可標記熟練／不熟，並依間隔複習安排「今日到期」<br>• 測驗可自選科目、題型與題數，也能新增多組混合<br>• 資料僅存在本機瀏覽器，請定期備份</div>
+<div class="muted" style="margin-bottom:8px">互動導覽會帶你實際操作一遍（會真的標記一個知識點、做一次閃卡，之後可自行取消）。</div>
+<button class="btn" style="width:100%;margin-bottom:8px" onclick="startTour()">🚀 帶我實際操作一遍</button>
+<button class="btn alt" style="width:100%" onclick="$('mGuide').classList.remove('on')">略過，我自己看</button></div></div>
+
+<div class="modal" id="mSet"><div class="mc"><h3 style="color:#f59e0b;margin-bottom:10px">⚙️ 個人設定與備份</h3>
+<input class="in" id="setNick" style="width:100%;margin-bottom:8px" placeholder="暱稱"><div class="av" id="savs"></div>
+<button class="btn" style="width:100%;margin:8px 0" onclick="saveProfile()">儲存暱稱與頭像</button>
+<label class="muted"><input type="checkbox" id="chkChat" checked onchange="st.hideChat=!this.checked;save();renderChat()"> 顯示討論區訊息</label>
+<div class="cfg" style="margin-top:10px"><button class="btn" onclick="exportData()">📥 匯出備份</button><button class="btn blue" onclick="$('imp').click()">📤 匯入備份</button>
+<button class="btn alt" onclick="closeSet()">關閉</button></div><div class="muted" id="setMsg" style="margin-top:6px"></div>
+<input type="file" id="imp" accept=".json" style="display:none" onchange="importData(event)"></div></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"></script>
+<script>
+function mk(n){let s=null;try{s=window[n];s.setItem('_t','1');s.removeItem('_t')}catch(e){s=null}const m={};return{ok:!!s,getItem:k=>s?s.getItem(k):(k in m?m[k]:null),setItem:(k,v)=>{s?s.setItem(k,v):m[k]=String(v)},removeItem:k=>{s?s.removeItem(k):delete m[k]}}}
+const LS=mk('localStorage'),SS=mk('sessionStorage');
+function showErr(m){const a=document.getElementById('authMsg'),au=document.getElementById('auth');
+ if(a&&au&&au.style.display!=='none'){a.textContent=m;return}
+ const t=document.getElementById('toast');if(!t)return;t.textContent=m;t.style.display='block';clearTimeout(showErr.t);showErr.t=setTimeout(()=>{t.style.display='none'},4000)}
+window.addEventListener('error',e=>showErr('發生錯誤：'+e.message));
+window.addEventListener('unhandledrejection',e=>showErr('發生錯誤：'+((e.reason&&e.reason.message)||e.reason)));
+const $=id=>document.getElementById(id),esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const AV=['👑','📜','⚔️','⛵','🎓','🛡️','🧭','🏛️','🕵️','🧙‍♂️','🦁','🦉'];let selAv=AV[0];
+const SUBJ={math:'📐 數學',chi:'📖 國文',hist:'📜 歷史',geo:'🌍 地理',civ:'⚖️ 公民'};
+const SUBJ_DESC={math:'依課綱章節整理公式、定理與證明',chi:'古文選文（附全文）、字音、字形',hist:'臺灣史與世界史，附年代軸與歷史地圖',geo:'自然與人文地理、GIS 與區域發展',civ:'經濟、憲法與法律、政治與公民素養'};
+const SUB_NAME={math:'數學',chi:'國文',geo:'地理',civ:'公民',tw:'臺灣史',world:'世界史',chz:'國文',chx:'國文'};
+const JOKES=[["數學","質數為什麼很難交朋友？","因為除了自己和 1，沒有人能「整除」他。"],
+["數學","圓周率為什麼不能當班長？","因為他無限不循環，講話永遠沒有重點。"],
+["數學","為什麼 x 總是被大家找？","因為每個人都想「求」他。"],
+["國文","陶淵明為什麼只上了三天班就辭職？","因為薪水只有五斗米，連腰都不夠折。"],
+["地理","風向為什麼不需要導航？","因為他總是往氣壓低的地方走，哪裡「低」就往哪裡去。"],
+["公民","通貨膨脹為什麼最會減肥？","因為它能讓你的錢越來越「薄」。"],
+["歷史","為什麼歷史課特別容易睡著？","因為每個年代都已經是「過去式」。"],
+["數學","為什麼數學課本總是很憂鬱？","因為它有太多「問題」，卻沒有人幫它「解」。"],
+["公民","我選擇睡覺而不讀書，機會成本是什麼？","是考試的分數。反過來選讀書，機會成本是黑眼圈。"],
+["地理","等高線為什麼很會畫重點？","因為越密的地方越陡，一看就知道哪裡最「費力」。"],
+["歷史","秦始皇為什麼最不怕當老闆？","因為他連度量衡都統一了，連請假天數都一樣。"],
+["國文","荀子的學生考試考差了，跟老師說「青出於藍」，老師怎麼回？","「那你的分數就請『冰』起來，不要再『寒』了。」"],
+["數學","sin 和 cos 為什麼總是形影不離？","因為只要少了一個，平方和就湊不成 1。"],
+["地理","板塊為什麼不會吵架？","因為他們吵不過就「錯開」，再不行就「擠」在一起。"]];
+let ji=0;
+
+/* ===== 知識庫：[id,標題,說明,詳解,(年份,緯度,經度)] ===== */
+const KB=[];
+function A(s,rows){rows.forEach(r=>KB.push({id:s+r[0],s,t:r[1],d:r[2],x:r[3],y:r[4],lat:r[5],lng:r[6]}))}
+</script>
+<script>
+A('math',[
+[1,'對數定義與條件','y = log_a(x) ⟺ x = a^y（a>0, a≠1, x>0）','指數與對數互為反函數。底數須為正且不等於1，真數須為正。'],
+[2,'積變和公式','log_a(x) + log_a(y) = log_a(xy)','設 a^u=x、a^v=y，則 xy=a^(u+v)，取對數得 u+v。'],
+[3,'商變差公式','log_a(x) − log_a(y) = log_a(x/y)','x/y = a^(u−v)，取對數得 u−v。'],
+[4,'真數次方提係數','log_a(x^k) = k·log_a(x)','x^k 為 k 個 x 相乘，由積變和公式得 k 個 log_a(x) 相加。'],
+[5,'換底公式','log_a(b) = log_c(b) / log_c(a)','設 x=log_a(b)，則 a^x=b，兩邊取 log_c：x·log_c(a)=log_c(b)。'],
+[6,'倒數公式','log_a(b) = 1 / log_b(a)','在換底公式中取 c=b，log_b(b)=1。'],
+[7,'底數真數次方互提','log_(a^m)(b^n) = (n/m)·log_a(b)','由換底公式：n·log_c(b) / (m·log_c(a))。'],
+[8,'指對數抵銷','a^(log_a b) = b','由 y=log_a(b) ⟺ a^y=b，代回即得。'],
+[9,'指數互換公式','a^(log_b c) = c^(log_b a)','兩邊取 log_b，皆等於 log_b(a)·log_b(c)。'],
+[10,'對數函數單調性','a>1 遞增；0<a<1 遞減','解對數不等式時，若底數介於 0 與 1 之間，不等號要變號，並注意真數>0。'],
+[11,'立方和與立方差','a³ ± b³ = (a ± b)(a² ∓ ab + b²)','展開右式：(a+b)(a²−ab+b²)=a³+b³。'],
+[12,'算幾不等式','(a+b)/2 ≥ √(ab)（a,b≥0）','由 (√a−√b)² ≥ 0 展開得 a+b ≥ 2√(ab)；等號成立於 a=b。'],
+[13,'二次方程式公式解','x = [−b ± √(b²−4ac)] / 2a','配方法：ax²+bx+c=0 ⟹ (x+b/2a)² = (b²−4ac)/4a²。判別式 D=b²−4ac 決定根的個數。'],
+[14,'三角函數平方關係','sin²θ + cos²θ = 1','由單位圓上點 (cosθ, sinθ) 與原點距離為 1 得出（畢氏定理）。']]);
+A('math',[
+[16,'等差數列通項與和','a_n = a_1+(n−1)d；S_n = n(a_1+a_n)/2','證明：S_n = a_1+…+a_n，倒序再寫一次相加，每對和皆為 a_1+a_n，共 n 對，故 2S_n = n(a_1+a_n)。'],
+[17,'等比數列求和','S_n = a(1−r^n)/(1−r)（r≠1）','證明：S_n − rS_n = a − ar^n，因為中間各項兩兩抵銷，故 S_n(1−r)=a(1−r^n)。'],
+[18,'無窮等比級數','|r|<1 時，Σ a·r^(k−1) = a/(1−r)','證明：由 S_n = a(1−r^n)/(1−r)，|r|<1 時 r^n→0，極限為 a/(1−r)。'],
+[19,'餘弦和角公式','cos(A+B) = cosA cosB − sinA sinB','證明：單位圓上 P(cosA, sinA)、Q(cosB, −sinB) 的距離平方 = 2−2(cosA cosB − sinA sinB)；旋轉後等於 (cos(A+B), sin(A+B)) 到 (1,0) 的距離平方 = 2−2cos(A+B)，兩者相等即得。'],
+[20,'正弦和角公式','sin(A+B) = sinA cosB + cosA sinB','證明：sin(A+B) = cos(90°−A−B) = cos((90°−A)−B)，用餘弦差角公式展開，並用 cos(90°−A)=sinA、sin(90°−A)=cosA。'],
+[21,'倍角公式','sin2A = 2sinA cosA；cos2A = cos²A − sin²A = 2cos²A−1 = 1−2sin²A','證明：在和角公式令 B=A；再以 sin²A+cos²A=1 互相代換得另兩種形式。'],
+[22,'三角形面積公式','S = ½ab·sinC','證明：作 AB 邊上的高 h，h = b·sinC，面積 = ½·底·高。'],
+[23,'海龍公式','S = √[s(s−a)(s−b)(s−c)]，s=(a+b+c)/2','證明：16S² = 4a²b²sin²C = 4a²b² − (a²+b²−c²)²（用餘弦定律）= [(a+b)²−c²][c²−(a−b)²] = (a+b+c)(a+b−c)(c+a−b)(c−a+b)，即 16s(s−a)(s−b)(s−c)。'],
+[24,'正弦定律','a/sinA = b/sinB = c/sinC = 2R','證明：作外接圓直徑 BD，則 ∠BCD=90°，∠D=A（或補角，sin 相等），故 a = BD·sinA = 2R·sinA。'],
+[25,'餘弦定律','c² = a²+b²−2ab·cosC','證明：取 C(0,0)、B(a,0)、A(b cosC, b sinC)，AB² = (b cosC−a)²+(b sinC)² = a²+b²−2ab cosC。'],
+[26,'畢氏定理','a²+b² = c²','證明：邊長 a+b 的大正方形，內含 4 個兩股為 a、b 的直角三角形與邊長 c 的正方形：(a+b)² = 4·½ab + c²，化簡得 a²+b²=c²。'],
+[27,'點到直線距離公式','d = |ax₀+by₀+c| / √(a²+b²)','證明：取直線上一點 (x₁,y₁)，則 ax₁+by₁=−c。向量 (x₀−x₁, y₀−y₁) 在法向量 (a,b) 上的投影長即為距離：|a(x₀−x₁)+b(y₀−y₁)|/√(a²+b²) = |ax₀+by₀+c|/√(a²+b²)。'],
+[28,'內積座標公式','a·b = a₁b₁ + a₂b₂ = |a||b|cosθ','證明：餘弦定律 |a−b|² = |a|²+|b|²−2|a||b|cosθ；以座標展開 |a−b|² 後比較，得 |a||b|cosθ = a₁b₁+a₂b₂。'],
+[29,'柯西不等式','(a₁²+a₂²)(b₁²+b₂²) ≥ (a₁b₁+a₂b₂)²','證明：令 f(t) = (a₁t−b₁)²+(a₂t−b₂)² ≥ 0 對所有實數 t 成立，故判別式 ≤ 0，即 4(a₁b₁+a₂b₂)² − 4(a₁²+a₂²)(b₁²+b₂²) ≤ 0。等號成立於兩向量平行。'],
+[30,'橢圓標準式','x²/a² + y²/b² = 1，b² = a²−c²','證明：由 |PF₁|+|PF₂| = 2a，F(±c,0)：√((x+c)²+y²) = 2a − √((x−c)²+y²)，兩邊平方整理再平方，得 (a²−c²)x²+a²y² = a²(a²−c²)，令 b²=a²−c² 即得。'],
+[31,'拋物線標準式','y² = 4cx（焦點 (c,0)，準線 x=−c）','證明：點到焦點距離等於到準線距離：√((x−c)²+y²) = x+c，兩邊平方得 y² = 4cx。'],
+[32,'雙曲線標準式','x²/a² − y²/b² = 1，b² = c²−a²','證明：由 ||PF₁|−|PF₂|| = 2a，與橢圓同法平方化簡，並令 b² = c²−a²。漸近線為 y = ±(b/a)x。'],
+[33,'組合數公式','C(n,r) = n! / [r!(n−r)!]','證明：從 n 個選 r 個排列有 n!/(n−r)! 種；每個組合被重複計算 r! 次（r 個物排列），故除以 r!。'],
+[34,'巴斯卡恆等式','C(n,r) = C(n−1,r−1) + C(n−1,r)','證明：固定某一元素。選到它：從其餘 n−1 個再選 r−1 個；沒選它：從其餘 n−1 個選 r 個。兩類不重疊且完整。'],
+[35,'二項式定理','(a+b)ⁿ = Σ C(n,k) aⁿ⁻ᵏ bᵏ','證明：n 個因式 (a+b) 相乘，每個因式選 a 或 b；恰有 k 個選 b 的方法數為 C(n,k)，該項為 aⁿ⁻ᵏbᵏ。令 a=b=1 得 ΣC(n,k)=2ⁿ。'],
+[36,'條件機率與乘法公式','P(A∩B) = P(A)·P(B|A)','證明：由條件機率定義 P(B|A) = P(A∩B)/P(A) 兩邊乘 P(A)。若 A、B 獨立則 P(B|A)=P(B)。'],
+[37,'貝氏定理','P(A|B) = P(B|A)P(A) / P(B)','證明：P(A∩B) = P(A|B)P(B) = P(B|A)P(A)，兩式相等後除以 P(B)。'],
+[38,'變異數公式','Var(X) = E(X²) − [E(X)]²','證明：Var(X)=E[(X−μ)²] = E(X²) − 2μE(X) + μ² = E(X²) − μ²。'],
+[39,'二項分布期望值與變異數','E = np，Var = npq','證明：X = X₁+…+Xₙ（獨立伯努利）。E(Xᵢ)=p，Var(Xᵢ)=p−p²=pq，獨立變數變異數可加，故得 np、npq。'],
+[40,'重要極限','lim(x→0) sinx / x = 1','證明：單位圓、0<x<π/2 時 sinx < x < tanx，同除 sinx 得 cosx < sinx/x < 1，x→0 時 cosx→1，由夾擠定理得極限為 1。'],
+[41,'冪函數導數','(xⁿ)′ = n·xⁿ⁻¹','證明：(x+h)ⁿ 二項展開為 xⁿ + n xⁿ⁻¹h + C(n,2)xⁿ⁻²h²+…，減去 xⁿ 除以 h，h→0 時只剩 n xⁿ⁻¹。'],
+[42,'乘法法則','(fg)′ = f′g + fg′','證明：[f(x+h)g(x+h) − f(x)g(x)]/h = [f(x+h)−f(x)]/h·g(x+h) + f(x)·[g(x+h)−g(x)]/h，h→0 取極限。'],
+[43,'連鎖律','[f(g(x))]′ = f′(g(x))·g′(x)','證明：令 u=g(x)，Δy/Δx = (Δy/Δu)(Δu/Δx)，Δx→0 時 Δu→0，兩因子分別趨近 f′(u)、g′(x)。'],
+[44,'自然對數導數','(ln x)′ = 1/x','證明：令 y = ln x，則 x = eʸ，對 x 微分（連鎖律）：1 = eʸ·y′，故 y′ = 1/eʸ = 1/x。'],
+[45,'微積分基本定理','∫ₐᵇ f(x)dx = F(b) − F(a)，F′=f','證明：令 A(x)=∫ₐˣ f，則 [A(x+h)−A(x)]/h 為 f 在 [x,x+h] 的平均值，h→0 趨近 f(x)，故 A′=f；A 與 F 只差常數，且 A(a)=0，得 A(b)=F(b)−F(a)。'],
+[46,'分部積分','∫u dv = uv − ∫v du','證明：對 (uv)′ = u′v + uv′ 兩邊積分得 uv = ∫v du + ∫u dv，移項即得。'],
+[47,'棣美弗定理','(cosθ + i sinθ)ⁿ = cos nθ + i sin nθ','證明：數學歸納法。n=1 顯然；設 n=k 成立，乘以 (cosθ+i sinθ)，用和角公式得 cos(k+1)θ + i sin(k+1)θ。'],
+[48,'根與係數關係','x₁+x₂ = −b/a，x₁x₂ = c/a','證明：ax²+bx+c = a(x−x₁)(x−x₂) = a[x² − (x₁+x₂)x + x₁x₂]，比較係數即得。'],
+[49,'餘式定理','f(x) 除以 (x−a) 的餘式 = f(a)','證明：除法原理 f(x) = (x−a)q(x) + r，r 為常數，代入 x=a 得 r = f(a)。餘式為 0 即 (x−a) 為因式。'],
+[50,'輾轉相除法','gcd(a,b) = gcd(b, a mod b)','證明：a = qb + r。任何整除 a、b 的數必整除 r = a−qb；反之整除 b、r 的數必整除 a，故兩組公因數相同，最大公因數相同。'],
+[51,'費馬小定理','p 為質數、p∤a：aᵖ⁻¹ ≡ 1 (mod p)','證明：a, 2a, …, (p−1)a 模 p 後恰為 1,…,p−1 的一個排列，故 aᵖ⁻¹·(p−1)! ≡ (p−1)! (mod p)，因 (p−1)! 與 p 互質可約去。'],
+[52,'裴蜀定理','ax + by = gcd(a,b) 有整數解','證明：取集合 {ax+by>0} 的最小元 d。以 d 除 a，餘式仍屬此形式且小於 d，必為 0，故 d|a，同理 d|b，所以 d ≤ gcd；又 gcd 整除 d，得 d = gcd(a,b)。'],
+[53,'連續整數平方和','Σk² = n(n+1)(2n+1)/6','證明：歸納法。n=1 成立；設 n 成立，則 n(n+1)(2n+1)/6 + (n+1)² = (n+1)(n+2)(2n+3)/6。'],
+[54,'連續整數立方和','Σk³ = [n(n+1)/2]²','證明：歸納法。[n(n+1)/2]² + (n+1)³ = [(n+1)(n+2)/2]²（提出 (n+1)² 後化簡 n²/4 + (n+1) = (n+2)²/4）。'],
+[55,'三元算幾不等式','(a+b+c)/3 ≥ ∛(abc)（a,b,c>0）','證明：令 a=x³、b=y³、c=z³，x³+y³+z³−3xyz = ½(x+y+z)[(x−y)²+(y−z)²+(z−x)²] ≥ 0。等號成立於 a=b=c。'],
+[56,'圓周角定理','圓周角 = ½ 圓心角（同弧）','證明：圓心在角的一邊上時，由等腰三角形，圓心角為底角的外角 = 2 倍底角；圓心在角內或角外時，作過頂點的直徑拆成（或相減）兩個前述情形。'],
+[57,'內角平分線性質','BD/DC = AB/AC','證明：對 △ABD、△ACD 用正弦定律：BD/sin(A/2) = AB/sin∠ADB，DC/sin(A/2) = AC/sin∠ADC；∠ADB 與 ∠ADC 互補，正弦相等，兩式相除即得。'],
+[58,'重心公式','G = (A+B+C)/3，且分中線為 2:1','證明：中線 AM 上，M=(B+C)/2。點 (A+2M)/3 = (A+B+C)/3 分 AM 為 AG:GM = 2:1；此式對三條中線對稱，故三中線共點。'],
+[59,'二階反矩陣','[[a,b],[c,d]]⁻¹ = 1/(ad−bc)·[[d,−b],[−c,a]]','證明：直接相乘 [[a,b],[c,d]]·[[d,−b],[−c,a]] = (ad−bc)·I，兩邊除以 ad−bc（≠0）。'],
+[60,'克拉瑪公式（二元）','x = Dₓ/D，y = D_y/D','證明：由 ax+by=e、cx+dy=f，消去 y：(ad−bc)x = ed−bf，即 x = (ed−bf)/(ad−bc)；同理消去 x 得 y。'],
+[61,'線性規劃頂點定理','線性目標函數的極值發生在可行區域的頂點','證明：區域內任一點可表為頂點的凸組合；線性函數 f 在凸組合上為各頂點函數值的加權平均，故不超過頂點中的最大（最小）值。']]);
+A('math',[
+[62,'絕對值三角不等式','|a+b| ≤ |a|+|b|','證明：−|a| ≤ a ≤ |a|、−|b| ≤ b ≤ |b|，相加得 −(|a|+|b|) ≤ a+b ≤ |a|+|b|，即 |a+b| ≤ |a|+|b|。'],
+[63,'伯努利不等式','(1+x)ⁿ ≥ 1+nx（x ≥ −1，n 為正整數）','證明：歸納法。n=1 等號成立；設 (1+x)ᵏ ≥ 1+kx，兩邊乘 (1+x) ≥ 0 得 (1+x)ᵏ⁺¹ ≥ 1+(k+1)x+kx² ≥ 1+(k+1)x。'],
+[64,'重複組合','H(n,r) = C(n+r−1, r)','證明：把 r 個相同物分給 n 種類，等價於在 r 個物之間插入 n−1 個隔板，共 n+r−1 個位置選 r 個放物，即 C(n+r−1,r)。'],
+[65,'圓排列','n 個相異物圍成圓排列有 (n−1)! 種','證明：直線排列 n! 種，每種圓排列可旋轉成 n 個不同的直線排列，故 n!/n = (n−1)!。'],
+[66,'三集合排容原理','|A∪B∪C| = |A|+|B|+|C| − |A∩B| − |B∩C| − |C∩A| + |A∩B∩C|','證明：只在 A 的元素被計 1 次；在 A、B 的元素：+2−1=1；三者皆在：+3−3+1=1。每個元素恰好被計 1 次。'],
+[67,'tan 和角公式','tan(A+B) = (tanA+tanB)/(1−tanA·tanB)','證明：tan(A+B) = sin(A+B)/cos(A+B) = (sinA cosB+cosA sinB)/(cosA cosB−sinA sinB)，分子分母同除 cosA cosB。'],
+[68,'三倍角公式','sin3A = 3sinA − 4sin³A；cos3A = 4cos³A − 3cosA','證明：sin3A = sin(2A+A) = 2sinA cos²A + (1−2sin²A)sinA = 2sinA(1−sin²A) + sinA − 2sin³A = 3sinA − 4sin³A。'],
+[69,'降冪（半角）公式','sin²A = (1−cos2A)/2；cos²A = (1+cos2A)/2','證明：cos2A = 1−2sin²A = 2cos²A−1，移項即得。'],
+[70,'和差化積','sinA+sinB = 2sin((A+B)/2)cos((A−B)/2)','證明：令 A=x+y、B=x−y，則 sin(x+y)+sin(x−y) = 2sinx cos y（和角公式兩式相加），再代回 x=(A+B)/2、y=(A−B)/2。'],
+[71,'積化和差','sinA cosB = ½[sin(A+B)+sin(A−B)]','證明：sin(A+B)+sin(A−B) = (sinA cosB+cosA sinB)+(sinA cosB−cosA sinB) = 2sinA cosB。'],
+[72,'三角函數疊合','a·sinx + b·cosx = √(a²+b²)·sin(x+φ)，tanφ = b/a','證明：提出 √(a²+b²)，令 cosφ=a/√(a²+b²)、sinφ=b/√(a²+b²)（兩者平方和為 1），再用 sin(x+φ) 展開。最大值 √(a²+b²)。'],
+[73,'正弦函數導數','(sinx)′ = cosx','證明：[sin(x+h)−sinx]/h = sinx·(cosh−1)/h + cosx·sinh/h；h→0 時 (cosh−1)/h→0、sinh/h→1，得 cosx。'],
+[74,'商法則','(f/g)′ = (f′g − fg′)/g²','證明：令 q=f/g，則 f = qg，用乘法法則 f′ = q′g + qg′，解得 q′ = (f′ − qg′)/g = (f′g − fg′)/g²。'],
+[75,'指數函數導數','(eˣ)′ = eˣ；(aˣ)′ = aˣ ln a','證明：(eˣ⁺ʰ−eˣ)/h = eˣ·(eʰ−1)/h；令 t=eʰ−1，h=ln(1+t)，t/ln(1+t)→1，故極限為 eˣ。aˣ = eˣˡⁿᵃ，用連鎖律得 aˣ ln a。'],
+[76,'均值定理','f 在 [a,b] 連續、(a,b) 可微 ⟹ 存在 c 使 f′(c) = [f(b)−f(a)]/(b−a)','證明：令 g(x) = f(x) − f(a) − [f(b)−f(a)]/(b−a)·(x−a)，則 g(a)=g(b)=0，由羅爾定理存在 c 使 g′(c)=0，即得結論。'],
+[77,'導數與增減性','f′(x) > 0 於區間 ⟹ f 嚴格遞增','證明：任取 x₁<x₂，由均值定理 f(x₂)−f(x₁) = f′(c)(x₂−x₁) > 0。'],
+[78,'冪函數積分','∫xⁿ dx = xⁿ⁺¹/(n+1) + C（n≠−1）','證明：對右式微分：[xⁿ⁺¹/(n+1)]′ = (n+1)xⁿ/(n+1) = xⁿ。由原函數定義即得。'],
+[79,'旋轉體體積（圓盤法）','V = π∫ₐᵇ [f(x)]² dx','證明：把 [a,b] 分成小段 Δx，每段近似圓柱，體積 π[f(x)]²Δx；求和取極限即為定積分。'],
+[80,'球體積','V = (4/3)πr³','證明：將半圓 y=√(r²−x²) 繞 x 軸旋轉，V = π∫₋ᵣʳ (r²−x²)dx = π[r²x − x³/3]₋ᵣʳ = π(2r³ − 2r³/3) = 4πr³/3。'],
+[81,'圓錐體積','V = (1/3)πr²h','證明：圓錐由 y=(r/h)x（0≤x≤h）繞 x 軸旋轉，V = π∫₀ʰ (r²/h²)x² dx = π(r²/h²)(h³/3) = πr²h/3。'],
+[82,'相交弦定理','圓內兩弦 AB、CD 交於 P：PA·PB = PC·PD','證明：△PAC ∼ △PDB（∠A=∠D、∠C=∠B，同弧圓周角），故 PA/PD = PC/PB，交叉相乘得 PA·PB = PC·PD。'],
+[83,'切割線定理','PT 為切線、PAB 為割線：PT² = PA·PB','證明：△PTA ∼ △PBT（公共角 P，弦切角 ∠PTA = ∠PBT），故 PT/PB = PA/PT，得 PT² = PA·PB。'],
+[84,'西瓦定理','AD、BE、CF 共點 ⟺ (AF/FB)(BD/DC)(CE/EA) = 1','證明（必要性）：設共點 P，AF/FB = S△APC/S△BPC（同高比底），同理 BD/DC = S△APB/S△APC，CE/EA = S△BPC/S△APB，三式相乘為 1。'],
+[85,'平面法向量','平面 ax+by+cz=d 的法向量為 (a,b,c)','證明：平面上任兩點 P、Q 滿足 a·Δx+b·Δy+c·Δz = d−d = 0，即 (a,b,c)·PQ = 0，故 (a,b,c) 垂直平面上所有向量。'],
+[86,'點到平面距離','d = |ax₀+by₀+cz₀−d₀| / √(a²+b²+c²)','證明：取平面上任一點 Q，向量 QP 在法向量 n=(a,b,c) 上的投影長 |QP·n|/|n| 即為距離；因 n·Q = d₀，化簡得上式。'],
+[87,'兩平行線距離','d = |c₁−c₂| / √(a²+b²)','證明：在 ax+by+c₁=0 上取一點 (x₀,y₀)，則 ax₀+by₀ = −c₁；代入點到直線距離公式得 |−c₁+c₂|/√(a²+b²)。'],
+[88,'兩直線夾角','tanθ = |(m₁−m₂)/(1+m₁m₂)|','證明：設傾斜角 α、β，m₁=tanα、m₂=tanβ，夾角 θ=α−β，由 tan 差角公式 tan(α−β) = (tanα−tanβ)/(1+tanα tanβ)。'],
+[89,'複數共軛性質','conj(z₁z₂) = conj(z₁)·conj(z₂)；z·conj(z) = |z|²','證明：設 z₁=a+bi、z₂=c+di，展開 (ac−bd)+(ad+bc)i 的共軛 = (ac−bd)−(ad+bc)i，與 (a−bi)(c−di) 相等；z·conj(z) = (a+bi)(a−bi) = a²+b²。'],
+[90,'複數三角不等式','|z₁+z₂| ≤ |z₁|+|z₂|','證明：|z₁+z₂|² = |z₁|²+|z₂|²+2Re(z₁·conj z₂) ≤ |z₁|²+|z₂|²+2|z₁||z₂| = (|z₁|+|z₂|)²，開根號即得。'],
+[91,'n 次單位根之和','ω ≠ 1、ωⁿ=1：1+ω+…+ωⁿ⁻¹ = 0','證明：等比級數和 = (1−ωⁿ)/(1−ω) = 0（因 ωⁿ=1 且 ω≠1）。幾何意義：正 n 邊形頂點的向量和為零。'],
+[92,'實係數虛根成對','實係數多項式若 a+bi 為根，則 a−bi 亦為根','證明：f(z)=Σcₖzᵏ，cₖ 為實數，則 conj(f(z)) = Σcₖ·conj(z)ᵏ = f(conj z)。若 f(z)=0，則 f(conj z) = conj(0) = 0。'],
+[93,'數列與部分和關係','a₁ = S₁；n≥2：aₙ = Sₙ − Sₙ₋₁','證明：Sₙ = a₁+…+aₙ，Sₙ₋₁ = a₁+…+aₙ₋₁，兩式相減得 aₙ。注意 n=1 須另外檢驗。'],
+[94,'等差中項與等比中項','a,b,c 成等差 ⟺ 2b=a+c；成等比 ⟺ b²=ac','證明：等差：b−a = c−b，移項得 2b=a+c。等比：b/a = c/b，交叉相乘得 b²=ac。'],
+[95,'裂項相消','Σ 1/[k(k+1)] = 1 − 1/(n+1)','證明：1/[k(k+1)] = 1/k − 1/(k+1)，連續相加時中間項兩兩抵銷，只剩 1 − 1/(n+1)。'],
+[96,'二次函數頂點','y = ax²+bx+c 的頂點為 (−b/2a, −D/4a)','證明：配方 y = a(x+b/2a)² + c − b²/4a = a(x+b/2a)² − (b²−4ac)/4a，故頂點在 x=−b/2a。a>0 為最小值。'],
+[97,'倒數和不等式','x>0：x + 1/x ≥ 2','證明：由算幾不等式 (x+1/x)/2 ≥ √(x·1/x) = 1，等號成立於 x=1。亦可由 (√x−1/√x)² ≥ 0 展開得到。'],
+[98,'圓內接四邊形','對角互補（∠A+∠C = 180°）','證明：∠A 與 ∠C 所對的弧合為整個圓（360°），圓周角各為所對弧的一半，故 ∠A+∠C = ½·360° = 180°。'],
+[99,'三角形內角和','∠A+∠B+∠C = 180°','證明：過 A 作 BC 的平行線，由內錯角相等，BC 上方的兩個角分別等於 ∠B、∠C，與 ∠A 合成一平角 180°。'],
+[100,'歐拉公式','e^(iθ) = cosθ + i sinθ','證明（冪級數）：e^(iθ) = Σ(iθ)ⁿ/n!，依 n 的餘數分組：實部為 1−θ²/2!+θ⁴/4!−… = cosθ，虛部為 θ−θ³/3!+… = sinθ。令 θ=π 得 e^(iπ)+1=0。']]);
+A('math',[
+[101,'期望值的線性性','E(aX+bY) = aE(X) + bE(Y)（不需獨立）','證明：E(aX+bY) = ΣΣ(ax+by)p(x,y) = aΣx·p_X(x) + bΣy·p_Y(y)，其中邊際機率 p_X(x)=Σ_y p(x,y)。'],
+[102,'變異數的平移與伸縮','Var(aX+b) = a²·Var(X)','證明：期望值變為 aμ+b，所以 (aX+b−(aμ+b))² = a²(X−μ)²，取期望得 a²Var(X)。平移 b 不影響離散程度。'],
+[103,'獨立變數的變異數可加','X、Y 獨立 ⟹ Var(X+Y) = Var(X)+Var(Y)','證明：Var(X+Y) = Var(X)+Var(Y)+2E[(X−μ_X)(Y−μ_Y)]；獨立時乘積的期望等於期望的乘積，E(X−μ_X)=0，交叉項為 0。'],
+[104,'全機率公式','A₁,…,Aₙ 互斥且聯集為樣本空間：P(B) = ΣP(Aᵢ)P(B|Aᵢ)','證明：B = ∪(B∩Aᵢ)，各項互斥，故 P(B) = ΣP(B∩Aᵢ)，再由 P(B∩Aᵢ)=P(Aᵢ)P(B|Aᵢ) 得證。'],
+[105,'幾何分布期望值','首次成功發生在第 k 次的機率 q^(k−1)p，則 E = 1/p','證明：E = Σk·q^(k−1)p，利用 Σk·q^(k−1) = 1/(1−q)² = 1/p²（等比級數微分或錯位相減），得 p·(1/p²) = 1/p。'],
+[106,'標準化','Z = (X−μ)/σ 的期望值為 0，變異數為 1','證明：E(Z) = (E(X)−μ)/σ = 0；Var(Z) = Var(X)/σ² = 1（由變異數的伸縮性質）。'],
+[107,'最小平方迴歸直線','y = a + bx，b = Σ(x−x̄)(y−ȳ) / Σ(x−x̄)²，a = ȳ − b·x̄','證明：令 S(a,b)=Σ(yᵢ−a−bxᵢ)²。對 a 微分令為 0 得 a = ȳ − b·x̄；代入對 b 微分令為 0：Σ(xᵢ−x̄)(yᵢ−ȳ−b(xᵢ−x̄)) = 0，解得 b。所以迴歸線過 (x̄, ȳ)。'],
+[108,'樣本平均數的變異數','X̄ = (X₁+…+Xₙ)/n（獨立同分布）：E(X̄)=μ，Var(X̄)=σ²/n','證明：E(X̄) = nμ/n = μ；Var(X̄) = (1/n²)·nσ² = σ²/n（獨立變數變異數可加）。樣本越大，平均數越集中。'],
+[109,'柴比雪夫不等式','P(|X−μ| ≥ kσ) ≤ 1/k²','證明：σ² = Σ(x−μ)²p(x) ≥ Σ_{|x−μ|≥kσ}(x−μ)²p(x) ≥ k²σ²·P(|X−μ|≥kσ)，兩邊除以 k²σ²。'],
+[110,'外積的性質','a×b 垂直於 a、b，且 |a×b| = |a||b|sinθ','證明：外積分量為 (a₂b₃−a₃b₂, a₃b₁−a₁b₃, a₁b₂−a₂b₁)，與 a 做內積展開後恆為 0（同理 b）。再由拉格朗日恆等式 |a×b|² = |a|²|b|²−(a·b)² = |a|²|b|²sin²θ。'],
+[111,'平行六面體體積','V = |a·(b×c)|','證明：底面積 = |b×c|，b×c 是底面法向量；高 = a 在法向量上的投影長 |a·(b×c)|/|b×c|，相乘得體積。'],
+[112,'向量的正射影','a 在 b 上的正射影 = (a·b / |b|²)·b','證明：令 a = λb + w，w ⊥ b。兩邊與 b 內積：a·b = λ|b|²（因 w·b=0），故 λ = a·b/|b|²。'],
+[113,'兩平面夾角','cosθ = |n₁·n₂| / (|n₁||n₂|)','證明：兩平面所成二面角等於其法向量夾角或其補角；取絕對值使 θ 落在 0°~90°，再用內積公式。'],
+[114,'空間中點到直線的距離','d = |AP×v| / |v|（A 在直線上，v 為方向向量）','證明：AP 與 v 張成平行四邊形，面積 = |AP×v|；又面積 = 底 |v| × 高 d，所以 d = |AP×v|/|v|。'],
+[115,'兩歪斜線的距離','d = |(P₂−P₁)·(v₁×v₂)| / |v₁×v₂|','證明：v₁×v₂ 同時垂直兩直線，是公垂線方向。兩線上任兩點連線在公垂線方向上的投影長即為最短距離。'],
+[116,'球面方程式','(x−a)²+(y−b)²+(z−c)² = r²','證明：球面是到球心 (a,b,c) 的距離等於 r 的所有點。由空間距離公式 √[(x−a)²+(y−b)²+(z−c)²] = r，平方即得。'],
+[117,'球被平面所截的圓','截圓半徑 r′ = √(R²−d²)（d 為球心到平面距離）','證明：球心 O、截面圓心 H、截圓上一點 P 構成直角三角形（OH ⊥ 平面），OP=R，OH=d，由畢氏定理 HP² = R²−d²。'],
+[118,'內分點公式','P 在 AB 上且 AP:PB = m:n，則 P = (nA+mB)/(m+n)','證明：AP = (m/(m+n))·AB，故 P = A + (m/(m+n))(B−A) = (nA+mB)/(m+n)。'],
+[119,'二階行列式乘積','det(AB) = det(A)·det(B)','證明：設 A=[[a,b],[c,d]]、B=[[e,f],[g,h]]，直接算 AB 的行列式 (ae+bg)(cf+dh)−(af+bh)(ce+dg)，展開後化簡為 (ad−bc)(eh−fg)。'],
+[120,'乘積的反矩陣','(AB)⁻¹ = B⁻¹A⁻¹','證明：(AB)(B⁻¹A⁻¹) = A(BB⁻¹)A⁻¹ = AA⁻¹ = I，由反矩陣的唯一性得證。'],
+[121,'乘積的轉置','(AB)ᵀ = BᵀAᵀ','證明：(AB)ᵀ 的第 (i,j) 項 = (AB)_{ji} = Σₖ a_{jk}b_{ki} = Σₖ (Bᵀ)_{ik}(Aᵀ)_{kj}，即 BᵀAᵀ 的第 (i,j) 項。'],
+[122,'旋轉矩陣','逆時針旋轉 θ：R(θ) = [[cosθ, −sinθ],[sinθ, cosθ]]','證明：矩陣的兩行是基底 e₁=(1,0)、e₂=(0,1) 的像。e₁ 轉 θ 為 (cosθ, sinθ)；e₂ 轉 θ 為 (−sinθ, cosθ)。'],
+[123,'旋轉的合成','R(α)R(β) = R(α+β)','證明：直接相乘，第一行第一列 cosαcosβ−sinαsinβ = cos(α+β)，第二行第一列 sinαcosβ+cosαsinβ = sin(α+β)，其餘類推。'],
+[124,'鏡射矩陣','對過原點、傾斜角 θ 的直線鏡射：[[cos2θ, sin2θ],[sin2θ, −cos2θ]]','證明：極角 φ 的點鏡射後極角變 2θ−φ。e₁（φ=0）變 (cos2θ, sin2θ)；e₂（φ=90°）變 (cos(2θ−90°), sin(2θ−90°)) = (sin2θ, −cos2θ)。'],
+[125,'行列式與面積','矩陣 [[a,b],[c,d]] 將圖形面積放大 |ad−bc| 倍','證明：單位正方形被映成由 (a,c)、(b,d) 張成的平行四邊形，面積 = |ad−bc|；線性變換對所有圖形的面積放大倍率相同。'],
+[126,'特徵方程','λ 為 A 的特徵值 ⟺ det(A−λI) = 0','證明：Av=λv 且 v≠0 ⟺ (A−λI)v=0 有非零解 ⟺ A−λI 不可逆 ⟺ det(A−λI)=0。'],
+[127,'二階凱萊－漢彌爾頓定理','A² − (a+d)A + (ad−bc)I = O','證明：A=[[a,b],[c,d]]，A² = [[a²+bc, b(a+d)],[c(a+d), d²+bc]]，(a+d)A = [[a²+ad, ab+bd],[ac+cd, ad+d²]]，相減得對角線 bc−ad，加上 (ad−bc)I 即為零矩陣。'],
+[128,'一階線性遞迴','aₙ₊₁ = r·aₙ + d（r≠1）⟹ aₙ = c + rⁿ⁻¹(a₁−c)，c = d/(1−r)','證明：c 滿足 c = rc+d，兩式相減得 aₙ₊₁−c = r(aₙ−c)，所以 {aₙ−c} 是公比 r 的等比數列。'],
+[129,'等差乘等比求和','Σ_{k=1}^{n} k·r^(k−1) = [1−(n+1)rⁿ+n·rⁿ⁺¹]/(1−r)²（r≠1）','證明：令 S 為左式，S−rS = 1+r+…+r^(n−1) − n·rⁿ = (1−rⁿ)/(1−r) − n·rⁿ，除以 (1−r) 並化簡即得。'],
+[130,'調和級數發散','1 + 1/2 + 1/3 + … 無窮大','證明：1/3+1/4 > 1/2，1/5+…+1/8 > 1/2，依此分組每組都大於 1/2，有無限多組，部分和趨近無限大。'],
+[131,'連續奇數和','1+3+5+…+(2n−1) = n²','證明：這是首項 1、公差 2、末項 2n−1 的等差數列，和 = n(1+2n−1)/2 = n²。'],
+[132,'平方倒數和的上界','Σ 1/k² < 2','證明：k≥2 時 1/k² < 1/(k(k−1)) = 1/(k−1) − 1/k，裂項相消得 Σ ≤ 1 + (1 − 1/n) < 2。'],
+[133,'級數收斂的必要條件','Σaₙ 收斂 ⟹ aₙ → 0（逆命題不成立）','證明：設 Sₙ→S，aₙ = Sₙ − Sₙ₋₁ → S−S = 0。反例：調和級數 aₙ=1/n→0 但發散。'],
+[134,'循環小數化分數','0.ababab… = ab/99','證明：令 x = 0.ababab…，則 100x = ab.ababab…，兩式相減 99x = ab，所以 x = ab/99。'],
+[135,'k·k! 求和','Σ_{k=1}^{n} k·k! = (n+1)! − 1','證明：k·k! = (k+1)! − k!，連續相加中間項抵銷，剩 (n+1)! − 1!。'],
+[136,'二項係數加權和','Σ k·C(n,k) = n·2^(n−1)','證明：k·C(n,k) = n·C(n−1,k−1)（由組合數公式展開），所以和 = nΣC(n−1,k−1) = n·2^(n−1)。'],
+[137,'分式柯西不等式','a²/x + b²/y ≥ (a+b)²/(x+y)（x,y>0）','證明：由柯西不等式 (a²/x + b²/y)(x+y) ≥ (a+b)²，兩邊除以 x+y。等號成立於 a/x = b/y。'],
+[138,'調和平均 ≤ 幾何平均','2ab/(a+b) ≤ √(ab)（a,b>0）','證明：由算幾不等式 (a+b)/2 ≥ √(ab)，故 2ab/(a+b) = ab/((a+b)/2) ≤ ab/√(ab) = √(ab)。'],
+[139,'平方和不小於兩兩乘積和','a²+b²+c² ≥ ab+bc+ca','證明：a²+b²+c²−ab−bc−ca = ½[(a−b)²+(b−c)²+(c−a)²] ≥ 0。等號成立於 a=b=c。'],
+[140,'三數和的平方上界','(a+b+c)² ≤ 3(a²+b²+c²)','證明：3(a²+b²+c²) − (a+b+c)² = (a−b)²+(b−c)²+(c−a)² ≥ 0。'],
+[141,'指數函數的切線不等式','eˣ ≥ 1 + x（x 為實數）','證明：令 f(x)=eˣ−1−x，f′(x)=eˣ−1。x<0 時 f′<0、x>0 時 f′>0，故 x=0 為最小，f(0)=0，所以 f(x) ≥ 0。'],
+[142,'對數的不等式','ln x ≤ x − 1（x>0）','證明：令 g(x)=x−1−ln x，g′(x)=1−1/x。x<1 時 g′<0、x>1 時 g′>0，最小值 g(1)=0，所以 g(x) ≥ 0。'],
+[143,'質數有無限多個','不存在最大的質數','證明（歐幾里得）：若質數只有 p₁,…,pₙ，令 N = p₁p₂…pₙ + 1。N 有質因數，但它除以任何 pᵢ 都餘 1，不可能是 pᵢ，矛盾。'],
+[144,'整除的線性組合','a|b 且 a|c ⟹ a|(bx+cy)（x,y 為整數）','證明：設 b=ak、c=al，則 bx+cy = a(kx+ly)，是 a 的倍數。'],
+[145,'同餘的消去律','ab ≡ ac (mod m) 且 gcd(a,m)=1 ⟹ b ≡ c (mod m)','證明：m | a(b−c)。由裴蜀定理 ax+my=1，(b−c) = (b−c)(ax+my) = x·a(b−c) + m·y(b−c)，兩項都被 m 整除，故 m|(b−c)。'],
+[146,'威爾遜定理','p 為質數：(p−1)! ≡ −1 (mod p)','證明：2 到 p−2 的每個數 x 在模 p 下有反元素 x⁻¹ ≠ x（因 x²≡1 只有 x≡±1），兩兩配對乘積為 1；剩下 1 與 p−1，故 (p−1)! ≡ 1·(p−1) ≡ −1。'],
+[147,'完全平方數除以 4','平方數除以 4 的餘數只有 0 或 1','證明：偶數 n=2k，n²=4k²≡0；奇數 n=2k+1，n²=4k²+4k+1≡1 (mod 4)。'],
+[148,'大於 3 的質數的平方','質數 p>3：p² ≡ 1 (mod 24)','證明：p²−1=(p−1)(p+1)。p 為奇數，兩因數是連續偶數，其中一個是 4 的倍數，積為 8 的倍數；p 不是 3 的倍數，p−1、p+1 其一是 3 的倍數。8 與 3 互質，故 24 整除。'],
+[149,'座標三角形面積','S = ½|x₁(y₂−y₃)+x₂(y₃−y₁)+x₃(y₁−y₂)|','證明：S = ½|AB×AC| = ½|(x₂−x₁)(y₃−y₁) − (x₃−x₁)(y₂−y₁)|，展開重新整理即為上式。'],
+[150,'兩圓位置關係','圓心距 d：外切 d=r₁+r₂；內切 d=|r₁−r₂|；相交 |r₁−r₂|<d<r₁+r₂','證明：兩圓交點 P 與兩圓心構成三角形，邊長為 d、r₁、r₂，由三角形兩邊之和大於第三邊、兩邊之差小於第三邊得相交條件；等號成立時退化為相切。']]);
+A('math',[
+[151,'半角正切公式','tan(A/2) = sinA/(1+cosA)','證明：sinA = 2sin(A/2)cos(A/2)，1+cosA = 2cos²(A/2)，兩式相除得 sin(A/2)/cos(A/2) = tan(A/2)。'],
+[152,'三角形內切圓半徑','r = S/s，s = (a+b+c)/2','證明：內心與三頂點連線把三角形分成三個小三角形，高都是 r，所以 S = ½r(a+b+c) = rs。'],
+[153,'三角形外接圓半徑','R = abc/(4S)','證明：S = ½ab·sinC，又由正弦定律 sinC = c/(2R)，代入得 S = abc/(4R)，移項即得。'],
+[154,'中線定理','AB²+AC² = 2(AM²+BM²)（M 為 BC 中點）','證明：設 ∠AMB=α，則 ∠AMC=180°−α。對兩個小三角形用餘弦定律：AB² = AM²+BM²−2AM·BM·cosα，AC² = AM²+BM²+2AM·BM·cosα（BM=CM），兩式相加即得。'],
+[155,'tan 倍角公式','tan2A = 2tanA/(1−tan²A)','證明：在 tan 和角公式 tan(A+B) = (tanA+tanB)/(1−tanA·tanB) 中令 B=A。'],
+[156,'積化和差（餘弦）','cosA·cosB = ½[cos(A+B)+cos(A−B)]','證明：cos(A+B)+cos(A−B) = (cosAcosB−sinAsinB)+(cosAcosB+sinAsinB) = 2cosAcosB。'],
+[157,'三角形的 tan 恆等式','A+B+C = 180° 時，tanA+tanB+tanC = tanA·tanB·tanC','證明：tan(A+B) = −tanC，即 (tanA+tanB)/(1−tanA·tanB) = −tanC，兩邊同乘分母後移項即得。'],
+[158,'中點連線定理','三角形兩邊中點的連線平行第三邊，且等於第三邊的一半','證明：M、N 為 AB、AC 中點，向量 MN = AN−AM = ½AC−½AB = ½BC，所以 MN 平行 BC 且長度為 BC 的一半。'],
+[159,'圓外一點的兩切線長相等','PA = PB','證明：OA⊥PA、OB⊥PB，OA=OB，OP 共用，兩個直角三角形全等（RHS），故 PA=PB。'],
+[160,'弦切角定理','弦切角等於它所對弧上的圓周角','證明：切線為 TP，弦為 TA，作直徑 TD 並連 AD。∠DAT=90°，故 ∠ADT+∠ATD=90°；切線垂直直徑，故 ∠PTA+∠ATD=90°。所以 ∠PTA=∠ADT。'],
+[161,'多邊形內角和','凸 n 邊形內角和 = (n−2)×180°','證明：從一個頂點向其他頂點作對角線，把多邊形分成 n−2 個三角形，每個三角形內角和為 180°。'],
+[162,'正 n 邊形面積','S = ½·n·R²·sin(360°/n)（R 為外接圓半徑）','證明：從中心連到各頂點，分成 n 個全等的等腰三角形，頂角 360°/n，每個面積 ½R²sin(360°/n)。'],
+[163,'相似形的面積比','相似比為 k，則面積比為 k²','證明：相似三角形的底與高各放大 k 倍，面積 ½×底×高 放大 k² 倍；任意多邊形可拆成相似三角形，故結論成立。'],
+[164,'兩點距離公式','d = √[(x₂−x₁)²+(y₂−y₁)²]','證明：以兩點連線為斜邊作直角三角形，兩股長為 |x₂−x₁| 與 |y₂−y₁|，由畢氏定理得斜邊長。'],
+[165,'兩直線垂直的條件','斜率 m₁·m₂ = −1','證明：兩直線的方向向量為 (1, m₁) 與 (1, m₂)，垂直即內積 1+m₁m₂ = 0。'],
+[166,'圓外一點的切線長','切線長 = √(d²−r²)（d 為該點到圓心距離，r 為半徑）','證明：切線垂直於過切點的半徑，圓心、切點、外點構成直角三角形，斜邊 d，一股 r，由畢氏定理得另一股。'],
+[167,'直線與圓的位置關係','圓心到直線距離 d：d<r 相交於兩點；d=r 相切；d>r 不相交','證明：直線上離圓心最近的點是垂足，距離為 d。d<r 時垂足在圓內，直線兩側各穿出圓一次；d=r 時恰碰一點；d>r 時所有點都在圓外。'],
+[168,'橢圓面積','S = πab','證明：橢圓 x²/a²+y²/b²=1 可看成圓 x²+y²=a² 在 y 方向壓縮為 b/a 倍，面積變為 (b/a)·πa² = πab。'],
+[169,'餘弦函數導數','(cosx)′ = −sinx','證明：cosx = sin(π/2−x)，用連鎖律：(cosx)′ = cos(π/2−x)·(−1) = −sinx。'],
+[170,'正切函數導數','(tanx)′ = 1/cos²x','證明：tanx = sinx/cosx，用商法則：[cosx·cosx − sinx·(−sinx)]/cos²x = 1/cos²x。'],
+[171,'反函數的導數','y=f(x) 的反函數 x=g(y)，則 g′(y) = 1/f′(x)','證明：f(g(y)) = y，兩邊對 y 微分，用連鎖律 f′(g(y))·g′(y) = 1，所以 g′(y) = 1/f′(g(y))。'],
+[172,'定積分的線性性','∫(a·f+b·g)dx = a∫f dx + b∫g dx','證明：黎曼和 Σ(a·f(xᵢ)+b·g(xᵢ))Δx = aΣf(xᵢ)Δx + bΣg(xᵢ)Δx，兩邊取極限即得。'],
+[173,'奇偶函數的對稱區間積分','f 為奇函數：∫₋ₐᵃ f = 0；f 為偶函數：∫₋ₐᵃ f = 2∫₀ᵃ f','證明：在 ∫₋ₐ⁰ f(x)dx 中令 u=−x，得 ∫₀ᵃ f(−u)du。奇函數 f(−u)=−f(u)，與右半部抵銷；偶函數 f(−u)=f(u)，兩半相等。'],
+[174,'二階導數判別極值','f′(c)=0 且 f″(c)>0 ⟹ f(c) 為極小值','證明：f″>0 表示 f′ 遞增，且 f′(c)=0，所以 c 左邊 f′<0（遞減）、右邊 f′>0（遞增），c 為極小點。f″(c)<0 同理為極大。'],
+[175,'羅爾定理','f 在 [a,b] 連續、(a,b) 可微且 f(a)=f(b) ⟹ 存在 c 使 f′(c)=0','證明：若 f 為常數函數顯然成立；否則最大值或最小值發生在內部某點 c，該點的導數必為 0（極值點切線水平）。'],
+[176,'1/x 的積分','∫(1/x)dx = ln|x| + C','證明：x>0 時 (ln x)′ = 1/x；x<0 時 [ln(−x)]′ = (−1)/(−x) = 1/x，所以 ln|x| 的導數恆為 1/x。'],
+[177,'錯排公式','Dₙ = n!·[1 − 1/1! + 1/2! − … + (−1)ⁿ/n!]','證明：用排容原理。至少 k 個元素在原位的排列數為 C(n,k)·(n−k)!，交錯加減得 Dₙ = Σ(−1)ᵏ·C(n,k)(n−k)! = n!·Σ(−1)ᵏ/k!。'],
+[178,'正整數解的個數','x₁+x₂+…+xᵣ = n 的正整數解有 C(n−1, r−1) 組','證明：把 n 個 1 排成一列，中間有 n−1 個空隙，從中選 r−1 個放隔板，把 1 分成 r 組，每組個數即各 xᵢ。'],
+[179,'排列數公式','P(n,r) = n!/(n−r)!','證明：第 1 個位置有 n 種選法，第 2 個有 n−1 種，…，第 r 個有 n−r+1 種，相乘得 n(n−1)…(n−r+1) = n!/(n−r)!。'],
+[180,'組合數的對稱性','C(n,r) = C(n, n−r)','證明：從 n 個選出 r 個，等同於決定不選的 n−r 個，兩種選法一一對應，所以數量相同。'],
+[181,'最大公因數與最小公倍數','gcd(a,b)·lcm(a,b) = a·b','證明：把 a、b 做質因數分解，對每個質數 p，gcd 取較小指數、lcm 取較大指數，兩者指數和等於 a、b 該質數指數之和。'],
+[182,'3 的倍數判別法','一個整數是 3 的倍數 ⟺ 各位數字和是 3 的倍數','證明：10 ≡ 1 (mod 3)，所以 10ᵏ ≡ 1。整數 N = Σdₖ·10ᵏ ≡ Σdₖ (mod 3)。把 3 換成 9 同理。'],
+[183,'11 的倍數判別法','奇位數字和與偶位數字和的差是 11 的倍數','證明：10 ≡ −1 (mod 11)，所以 10ᵏ ≡ (−1)ᵏ。N = Σdₖ·10ᵏ ≡ Σ(−1)ᵏdₖ (mod 11)。'],
+[184,'歐拉定理','gcd(a,n)=1 ⟹ a^φ(n) ≡ 1 (mod n)','證明：設與 n 互質的餘數為 r₁,…,r_φ。各乘以 a 後仍與 n 互質且兩兩不同餘，只是重排。故 a^φ·Πrᵢ ≡ Πrᵢ，Πrᵢ 與 n 互質可約去。'],
+[185,'正因數個數','N = p₁^e₁·p₂^e₂…pₖ^eₖ，則正因數個數 = (e₁+1)(e₂+1)…(eₖ+1)','證明：每個正因數對每個質數 pᵢ 的指數可取 0,1,…,eᵢ，共 eᵢ+1 種，各質數獨立選擇，用乘法原理相乘。'],
+[186,'獨立事件的聯集機率','A、B 獨立：P(A∪B) = 1 − P(A′)·P(B′)','證明：P(A∪B) = 1 − P((A∪B)′) = 1 − P(A′∩B′)；A、B 獨立則 A′、B′ 也獨立，所以 = 1 − P(A′)P(B′)。'],
+[187,'二項分布機率','P(X=k) = C(n,k)·pᵏ·qⁿ⁻ᵏ（q=1−p）','證明：n 次試驗中選出 k 次成功的位置有 C(n,k) 種，每一種發生的機率都是 pᵏ·qⁿ⁻ᵏ（各次獨立），相乘即得。'],
+[188,'獨立事件的補事件','A、B 獨立 ⟹ A 與 B′ 也獨立','證明：P(A∩B′) = P(A) − P(A∩B) = P(A) − P(A)P(B) = P(A)[1−P(B)] = P(A)P(B′)。'],
+[189,'標準差的平移與伸縮','每筆資料加 b，標準差不變；乘以 k，標準差變為 |k| 倍','證明：新平均數為 k·x̄+b，每筆離差為 k(x−x̄)，離差平方的平均為 k²σ²，開根號得 |k|σ；加 b 時離差完全不變。'],
+[190,'平均數使離差平方和最小','Σ(xᵢ−c)² 在 c = x̄ 時最小','證明：Σ(xᵢ−c)² = Σ(xᵢ−x̄)² + n(x̄−c)²（交叉項為 0），第二項 ≥ 0，當 c=x̄ 時為 0，所以最小。'],
+[191,'三次立方恆等式','a³+b³+c³−3abc = (a+b+c)(a²+b²+c²−ab−bc−ca)','證明：把右式乘開，a²b、ab² 等交叉項成對抵銷，剩下 a³+b³+c³−3abc。'],
+[192,'三次方程式根與係數','ax³+bx²+cx+d=0 的三根 α、β、γ：α+β+γ = −b/a，αβ+βγ+γα = c/a，αβγ = −d/a','證明：ax³+bx²+cx+d = a(x−α)(x−β)(x−γ)，展開右式後比較各次項係數即得。'],
+[193,'重根與導數','(x−a)² 整除 f(x) ⟹ f(a)=0 且 f′(a)=0','證明：設 f(x) = (x−a)²g(x)，則 f′(x) = 2(x−a)g(x) + (x−a)²g′(x)，代入 x=a 兩者皆為 0。'],
+[194,'二次不等式的解','a>0，兩根 α<β：ax²+bx+c>0 ⟺ x<α 或 x>β','證明：ax²+bx+c = a(x−α)(x−β)。兩因式同號時乘積為正：同為正即 x>β，同為負即 x<α；介於兩根之間時異號為負。'],
+[195,'xⁿ−1 的因式分解','xⁿ−1 = (x−1)(xⁿ⁻¹+xⁿ⁻²+…+x+1)','證明：右式乘開，各中間項兩兩抵銷（例如 x·x^(n−2) 與 −x^(n−1)），只剩 xⁿ−1。'],
+[196,'複數乘法的幾何意義','|z₁z₂| = |z₁||z₂|，輻角相加','證明：設 zᵢ = rᵢ(cosθᵢ+i·sinθᵢ)，相乘後用和角公式得 r₁r₂[cos(θ₁+θ₂)+i·sin(θ₁+θ₂)]。'],
+[197,'複數的倒數','1/z = z̄/|z|²（z̄ 為共軛複數）','證明：z·z̄ = |z|²，兩邊同除以 z·|z|² 得 1/z = z̄/|z|²。'],
+[198,'實係數二次方程的虛根','判別式 D<0：x = (−b ± i√(−D))/(2a)','證明：公式解中 √D = √(−1)·√(−D) = i√(−D)。兩根互為共軛複數。'],
+[199,'複數的 n 次方根','z = r(cosθ+i·sinθ) 的 n 次方根為 r^(1/n)[cos((θ+2kπ)/n) + i·sin((θ+2kπ)/n)]，k=0,1,…,n−1','證明：由棣美弗定理，上式 n 次方得 r[cos(θ+2kπ)+i·sin(θ+2kπ)] = z。k 取 0 到 n−1 得到 n 個不同的根，而 n 次方程式至多 n 個根。'],
+[200,'向量柯西不等式','|a·b| ≤ |a|·|b|','證明：a·b = |a||b|cosθ，而 |cosθ| ≤ 1，所以 |a·b| ≤ |a||b|。等號成立於 a、b 平行。']]);
+A('math',[
+[201,'同底數相乘','aᵐ·aⁿ = a^(m+n)','證明：m、n 為正整數時，aᵐ 是 m 個 a 相乘，aⁿ 是 n 個 a 相乘，合起來共 m+n 個 a 相乘。其他指數（0、負數、分數）是為了讓這條律仍然成立而定義的。'],
+[202,'指數的次方','(aᵐ)ⁿ = a^(mn)','證明：(aᵐ)ⁿ 是 n 個 aᵐ 相乘，每個 aᵐ 含 m 個 a，共 m×n 個 a 相乘。'],
+[203,'積的次方','(ab)ⁿ = aⁿbⁿ','證明：(ab)ⁿ 是 n 個 ab 相乘，乘法可交換、可結合，把 a 全部放一起、b 全部放一起，得 aⁿbⁿ。'],
+[204,'商的次方','(a/b)ⁿ = aⁿ/bⁿ（b≠0）','證明：n 個 (a/b) 相乘，分子是 n 個 a、分母是 n 個 b，所以等於 aⁿ/bⁿ。'],
+[205,'同底數相除','aᵐ/aⁿ = a^(m−n)（a≠0）','證明：m>n 時，分子分母各約掉 n 個 a，剩 m−n 個 a。m≤n 的情形由零指數與負指數的定義（下兩條）得到。'],
+[206,'零指數','a⁰ = 1（a≠0）','為什麼這樣定義：要使 aᵐ·a⁰ = a^(m+0) = aᵐ 仍成立，a⁰ 只能是 1。0⁰ 沒有定義。'],
+[207,'負指數','a^(−n) = 1/aⁿ（a≠0）','為什麼這樣定義：要使 aⁿ·a^(−n) = a⁰ = 1 仍成立，所以 a^(−n) 必須是 aⁿ 的倒數。'],
+[208,'分數指數（根式）','a^(1/n) = ⁿ√a（a>0）','為什麼這樣定義：要使 (a^(1/n))ⁿ = a^(n/n) = a 成立，所以 a^(1/n) 就是「n 次方後等於 a」的那個正數，即 n 次方根。'],
+[209,'有理數指數','a^(m/n) = (ⁿ√a)ᵐ = ⁿ√(aᵐ)','證明：a^(m/n) = (a^(1/n))ᵐ = (ⁿ√a)ᵐ；也可寫成 (aᵐ)^(1/n) = ⁿ√(aᵐ)，用的是 (aᵐ)ⁿ = a^(mn) 的指數律。'],
+[210,'根式的乘法','ⁿ√(ab) = ⁿ√a · ⁿ√b（a,b>0）','證明：ⁿ√(ab) = (ab)^(1/n) = a^(1/n)·b^(1/n)，由積的次方得到。'],
+[211,'指數函數的基本性質','y = aˣ（a>0, a≠1）：定義域為全體實數，值域為正實數，圖形過 (0,1)','說明：a>0 時 a 的任何次方都是正數，所以 y>0；a⁰=1，所以過 (0,1)；x 軸是水平漸近線。'],
+[212,'指數函數的增減','a>1 時嚴格遞增；0<a<1 時嚴格遞減','證明：設 x₁<x₂，則 a^(x₂)/a^(x₁) = a^(x₂−x₁)。a>1 時 a 的正數次方大於 1，所以比值大於 1，a^(x₂)>a^(x₁)；0<a<1 時比值小於 1，方向相反。'],
+[213,'底數互為倒數','y=aˣ 與 y=(1/a)ˣ 的圖形對稱於 y 軸','證明：(1/a)ˣ = a^(−x)。點 (x,y) 在 y=aˣ 上，則 (−x,y) 在 y=(1/a)ˣ 上，兩點對稱於 y 軸。'],
+[214,'指數方程式（同底）','a^f = a^g ⟺ f = g（a>0, a≠1）','證明：指數函數嚴格單調，所以一對一：不同的指數一定得到不同的值，反過來函數值相同時指數必相同。'],
+[215,'指數不等式','a>1：a^f > a^g ⟺ f > g；0<a<1：a^f > a^g ⟺ f < g','證明：由指數函數的增減性。底數介於 0 與 1 之間時函數遞減，不等號要反向。'],
+[216,'換成同一個底','a^x = b^(x·log_b a)（a,b>0，b≠1）','證明：a = b^(log_b a)（對數的定義），兩邊取 x 次方，用 (aᵐ)ⁿ = a^(mn)。'],
+[217,'指數方程式化為二次','例：4ˣ − 3·2ˣ + 2 = 0','解法：令 t=2ˣ（t>0），則 4ˣ=(2ˣ)²=t²，方程式變成 t²−3t+2=0，即 (t−1)(t−2)=0，t=1 或 2，所以 x=0 或 x=1。注意 t 必須大於 0，負的 t 要捨去。'],
+[218,'按比例成長','每期成長為原來的 r 倍：yₙ = y₀·rⁿ','證明：第 1 期 y₁=y₀r，第 2 期 y₂=y₁r=y₀r²，依此類推（數學歸納法）。年增率 p% 時 r=1+p/100；衰退則 r<1。'],
+[219,'半衰期','N = N₀·(1/2)^(t/T)','證明：每過一個半衰期 T，剩下一半。經過 t 時間共有 t/T 個半衰期，所以剩下 N₀ 乘上 (1/2)^(t/T)。'],
+[220,'複利公式','A = P(1+i)ⁿ','證明：每期結束本利和變成上一期的 (1+i) 倍，P 經過 n 期就乘 n 次 (1+i)。這是 218 的特例（r=1+i）。'],
+[221,'年金終值','每期末存 P，利率 i，n 期後共 P·[(1+i)ⁿ − 1]/i','證明：第 1 期末存的錢放 n−1 期，值 P(1+i)^(n−1)，……，最後一期存的錢值 P。總和是首項 P、公比 (1+i) 的等比級數，用等比級數和公式得結果。'],
+[222,'連續複利','A = P·e^(rt)（r 為年利率，t 為年數）','說明：一年分 n 期複利，t 年後為 P(1+r/n)^(nt)。n 越來越大時 (1+r/n)^(n/r) 趨近 e，所以趨近 P·e^(rt)。這是數學 B 才有的主題，數學 A 課綱沒有。'],
+[223,'自然對數','ln(e^x) = x；e^(ln x) = x（x>0）','說明：自然對數是以 e 為底的對數，與 e^x 互為反函數，所以代入後互相抵銷。'],
+[224,'任意底數化為 e','aˣ = e^(x·ln a)（a>0）','證明：a = e^(ln a)，兩邊取 x 次方得 aˣ = e^(x·ln a)。'],
+[225,'指數與對數互為反函數','y = aˣ 與 y = log_a x 的圖形對稱於直線 y = x','證明：點 (p,q) 在 y=aˣ 上 ⟺ q = aᵖ ⟺ p = log_a q ⟺ 點 (q,p) 在 y=log_a x 上。(p,q) 與 (q,p) 對稱於 y=x。'],
+[226,'位數與首位','正整數 N 的位數 = ⌊log N⌋ + 1（log 為常用對數）','證明：N 有 k 位 ⟺ 10^(k−1) ≤ N < 10^k ⟺ k−1 ≤ log N < k，所以 k−1 = ⌊log N⌋。'],
+[227,'平均成長率','兩期成長倍數為 r₁、r₂，平均每期成長倍數 r = √(r₁r₂)','證明：若每期都以 r 倍成長，兩期後是 r²，要和實際的 r₁r₂ 相同，所以 r² = r₁r₂。這是幾何平均數，不是算術平均數。'],
+[228,'指數函數的加法性質','f(x) = aˣ 滿足 f(x+y) = f(x)·f(y)','證明：a^(x+y) = aˣ·aʸ，就是同底數相乘的指數律。'],
+[229,'倍增時間','按比例成長 r 倍，要成長到 2 倍所需期數 n = (log 2)/(log r)','證明：r^n = 2，兩邊取常用對數：n·log r = log 2，所以 n = (log 2)/(log r)。'],
+[230,'比較大小（同指數化同底）','例：比較 2^(30) 與 3^(20)','做法：2^(30) = (2³)^(10) = 8^(10)，3^(20) = (3²)^(10) = 9^(10)。指數相同，底數 9 > 8，所以 3^(20) > 2^(30)。'],
+[231,'指數函數的值恆正與平方差','a^(2x) − b^(2x) = (aˣ − bˣ)(aˣ + bˣ)','證明：a^(2x) = (aˣ)²，b^(2x) = (bˣ)²，套用平方差公式 u²−v² = (u−v)(u+v)，令 u=aˣ、v=bˣ。'],
+]);
+
+</script>
+<script>
+A('chi',[
+[1,'《燭之武退秦師》','左丘明《左傳》：燭之武夜縋出城，說服秦伯退兵。','名句：「因人之力而敝之，不仁；失其所與，不知；以亂易整，不武。」考點：分化秦晉利益、外交辭令。'],
+[2,'《勸學》','荀子：青，取之於藍，而青於藍；冰，水為之，而寒於水。','強調學習積累。考點：比喻論證、「積土成山」、「騏驥一躍」與「駑馬十駕」的對比。'],
+[3,'《大同與小康》','《禮記》：大道之行也，天下為公。選賢與能，講信修睦。','大同＝天下為公；小康＝天下為家，以禮義為紀。考點：兩種社會型態對比。'],
+[4,'《諫逐客書》','李斯：泰山不讓土壤，故能成其大；河海不擇細流，故能就其深。','秦王逐客，李斯上書陳客卿之功。考點：排比、舉例論證、廣納人才。'],
+[5,'《鴻門宴》','司馬遷《史記》：項王、項伯東向坐；亞父南向坐；沛公北向坐；張良西向侍。','座次反映權力尊卑。考點：項羽自負寡斷與劉邦能屈能伸的人物對照。'],
+[6,'《出師表》','諸葛亮：臣本布衣，躬耕於南陽，苟全性命於亂世，不求聞達於諸侯。','北伐前上後主。考點：親賢臣遠小人、賞罰公平、感念三顧之恩。'],
+[7,'《桃花源記》','陶淵明：土地平曠，屋舍儼然，有良田美池桑竹之屬。','魏晉亂世的理想社會。考點：虛實相生、「豁然開朗」、結尾「無問津者」的失落。'],
+[8,'《師說》','韓愈：師者，所以傳道、受業、解惑也。','唐代古文運動名篇。考點：「道之所存，師之所存」、三組對比論證。'],
+[9,'《赤壁賦》','蘇軾：寄蜉蝣於天地，渺滄海之一粟。','貶謫黃州時作。考點：「變與不變」的哲理、主客問答、造物者無盡藏。'],
+[10,'《項脊軒志》','歸有光：庭有枇杷樹，吾妻死之年所手植也，今已亭亭如蓋矣。','借老屋與庭樹抒懷念亡妻、祖母之情。考點：借物抒情、以景結情。'],
+[11,'《晚遊六橋待月記》','袁宏道：西湖最盛，為春為月。','公安派「獨抒性靈」。考點：月景勝日景、山水小品、性靈說。'],
+[12,'《裨海紀遊》選（北投硫穴記）','郁永河：清領初期來臺採硫，記錄臺灣北部地理與原住民風土。','臺灣早期探險文學。考點：硫磺開採過程、自然環境險惡、番社風俗紀錄。'],
+[13,'《鹿港乘桴記》','洪繻：感嘆鹿港由繁盛港口因淤積而沒落，兼有時代滄桑。','考點：港口淤積與經濟變遷、傳統士人在時代變局中的感懷。'],
+[14,'《畫菊自序》','張李德和：臺灣女性文人以畫菊自述志趣與品格。','考點：女性文人主體意識、菊花象徵高潔。'],
+[15,'《臺灣通史序》','連橫：臺灣固無史也，荷人啟之，鄭氏作之，清代營之。','說明修史的目的在保存臺灣文化血脈。考點：撰史動機、民族意識。']]);
+
+</script>
+<script>
+window.FULLTEXT=Object.assign(window.FULLTEXT||{},{
+chi7:`晉太元中，武陵人捕魚為業。緣溪行，忘路之遠近。忽逢桃花林，夾岸數百步，中無雜樹，芳草鮮美，落英繽紛。漁人甚異之。復前行，欲窮其林。
+林盡水源，便得一山，山有小口，彷彿若有光。便捨船，從口入。初極狹，纔通人。復行數十步，豁然開朗。土地平曠，屋舍儼然，有良田美池桑竹之屬。阡陌交通，雞犬相聞。其中往來種作，男女衣著，悉如外人。黃髮垂髫，並怡然自樂。
+見漁人，乃大驚，問所從來。具答之。便要還家，設酒殺雞作食。村中聞有此人，咸來問訊。自云先世避秦時亂，率妻子邑人來此絕境，不復出焉，遂與外人間隔。問今是何世，乃不知有漢，無論魏晉。此人一一為具言所聞，皆歎惋。餘人各復延至其家，皆出酒食。停數日，辭去。此中人語云：「不足為外人道也。」
+既出，得其船，便扶向路，處處誌之。及郡下，詣太守，說如此。太守即遣人隨其往，尋向所誌，遂迷，不復得路。
+南陽劉子驥，高尚士也，聞之，欣然規往。未果，尋病終。後遂無問津者。`,
+chi8:`古之學者必有師。師者，所以傳道、受業、解惑也。人非生而知之者，孰能無惑？惑而不從師，其為惑也，終不解矣。生乎吾前，其聞道也固先乎吾，吾從而師之；生乎吾後，其聞道也亦先乎吾，吾從而師之。吾師道也，夫庸知其年之先後生於吾乎？是故無貴無賤，無長無少，道之所存，師之所存也。
+嗟乎！師道之不傳也久矣！欲人之無惑也難矣！古之聖人，其出人也遠矣，猶且從師而問焉；今之眾人，其下聖人也亦遠矣，而恥學於師。是故聖益聖，愚益愚。聖人之所以為聖，愚人之所以為愚，其皆出於此乎？愛其子，擇師而教之；於其身也，則恥師焉，惑矣。彼童子之師，授之書而習其句讀者，非吾所謂傳其道解其惑者也。句讀之不知，惑之不解，或師焉，或不焉，小學而大遺，吾未見其明也。巫醫樂師百工之人，不恥相師。士大夫之族，曰師曰弟子云者，則群聚而笑之。問之，則曰：「彼與彼年相若也，道相似也，位卑則足羞，官盛則近諛。」嗚呼！師道之不復可知矣。巫醫樂師百工之人，君子不齒，今其智乃反不能及，其可怪也歟！
+聖人無常師。孔子師郯子、萇弘、師襄、老聃。郯子之徒，其賢不及孔子。孔子曰：「三人行，則必有我師。」是故弟子不必不如師，師不必賢於弟子，聞道有先後，術業有專攻，如是而已。
+李氏子蟠，年十七，好古文，六藝經傳皆通習之，不拘於時，學於余。余嘉其能行古道，作師說以貽之。`
+});
+window.FULLTEXT=Object.assign(window.FULLTEXT||{},{
+chi1:`九月甲午，晉侯、秦伯圍鄭，以其無禮於晉，且貳於楚也。晉軍函陵，秦軍氾南。
+佚之狐言於鄭伯曰：「國危矣！若使燭之武見秦君，師必退。」公從之。辭曰：「臣之壯也，猶不如人；今老矣，無能為也已。」公曰：「吾不能早用子，今急而求子，是寡人之過也。然鄭亡，子亦有不利焉！」許之。
+夜縋而出，見秦伯曰：「秦、晉圍鄭，鄭既知亡矣。若亡鄭而有益於君，敢以煩執事。越國以鄙遠，君知其難也，焉用亡鄭以陪鄰？鄰之厚，君之薄也。若舍鄭以為東道主，行李之往來，共其乏困，君亦無所害。且君嘗為晉君賜矣，許君焦、瑕，朝濟而夕設版焉，君之所知也。夫晉，何厭之有？既東封鄭，又欲肆其西封，若不闕秦，將焉取之？闕秦以利晉，唯君圖之。」
+秦伯說，與鄭人盟。使杞子、逢孫、楊孫戍之，乃還。
+子犯請擊之。公曰：「不可。微夫人之力不及此。因人之力而敝之，不仁；失其所與，不知；以亂易整，不武。吾其還也。」亦去之。`,
+chi2:`君子曰：學不可以已。
+青，取之於藍，而青於藍；冰，水為之，而寒於水。木直中繩，輮以為輪，其曲中規。雖有槁暴，不復挺者，輮使之然也。故木受繩則直，金就礪則利，君子博學而日參省乎己，則知明而行無過矣。
+吾嘗終日而思矣，不如須臾之所學也；吾嘗跂而望矣，不如登高之博見也。登高而招，臂非加長也，而見者遠；順風而呼，聲非加疾也，而聞者彰。假輿馬者，非利足也，而致千里；假舟楫者，非能水也，而絕江河。君子生非異也，善假於物也。
+積土成山，風雨興焉；積水成淵，蛟龍生焉；積善成德，而神明自得，聖心備焉。故不積跬步，無以至千里；不積小流，無以成江海。騏驥一躍，不能十步；駑馬十駕，功在不舍。鍥而舍之，朽木不折；鍥而不舍，金石可鏤。螾無爪牙之利，筋骨之強，上食埃土，下飲黃泉，用心一也。蟹六跪而二螯，非蛇鱔之穴無可寄託者，用心躁也。`,
+chi3:`大道之行也，天下為公。選賢與能，講信修睦。故人不獨親其親，不獨子其子，使老有所終，壯有所用，幼有所長，矜寡孤獨廢疾者，皆有所養。男有分，女有歸。貨惡其棄於地也，不必藏於己；力惡其不出於身也，不必為己。是故謀閉而不興，盜竊亂賊而不作，故外戶而不閉，是謂大同。
+今大道既隱，天下為家。各親其親，各子其子，貨力為己。大人世及以為禮，城郭溝池以為固。禮義以為紀，以正君臣，以篤父子，以睦兄弟，以和夫婦，以設制度，以立田里，以賢勇知，以功為己。故謀用是作，而兵由此起。禹、湯、文、武、成王、周公，由此其選也。此六君子者，未有不謹於禮者也。以著其義，以考其信，著有過，刑仁講讓，示民有常。如有不由此者，在埶者去，眾以為殃，是謂小康。`,
+chi6:`臣亮言：先帝創業未半，而中道崩殂。今天下三分，益州疲弊，此誠危急存亡之秋也。然侍衛之臣不懈於內，忠志之士忘身於外者，蓋追先帝之殊遇，欲報之於陛下也。誠宜開張聖聽，以光先帝遺德，恢弘志士之氣，不宜妄自菲薄，引喻失義，以塞忠諫之路也。
+宮中府中，俱為一體，陟罰臧否，不宜異同。若有作姦犯科，及為忠善者，宜付有司論其刑賞，以昭陛下平明之理，不宜偏私，使內外異法也。
+侍中、侍郎郭攸之、費禕、董允等，此皆良實，志慮忠純，是以先帝簡拔以遺陛下。愚以為宮中之事，事無大小，悉以咨之，然後施行，必能裨補闕漏，有所廣益。
+將軍向寵，性行淑均，曉暢軍事，試用於昔日，先帝稱之曰「能」，是以眾議舉寵為督。愚以為營中之事，悉以咨之，必能使行陣和睦，優劣得所。
+親賢臣，遠小人，此先漢所以興隆也；親小人，遠賢臣，此後漢所以傾頹也。先帝在時，每與臣論此事，未嘗不歎息痛恨於桓、靈也。侍中、尚書、長史、參軍，此悉貞良死節之臣，願陛下親之信之，則漢室之隆，可計日而待也。
+臣本布衣，躬耕於南陽，苟全性命於亂世，不求聞達於諸侯。先帝不以臣卑鄙，猥自枉屈，三顧臣於草廬之中，諮臣以當世之事，由是感激，遂許先帝以驅馳。後值傾覆，受任於敗軍之際，奉命於危難之間，爾來二十有一年矣。
+先帝知臣謹慎，故臨崩寄臣以大事也。受命以來，夙夜憂歎，恐託付不效，以傷先帝之明，故五月渡瀘，深入不毛。今南方已定，兵甲已足，當獎率三軍，北定中原，庶竭駑鈍，攘除姦凶，興復漢室，還於舊都。此臣所以報先帝而忠陛下之職分也。至於斟酌損益，進盡忠言，則攸之、禕、允之任也。
+願陛下託臣以討賊興復之效，不效，則治臣之罪，以告先帝之靈。若無興德之言，則責攸之、禕、允等之慢，以彰其咎；陛下亦宜自謀，以諮諏善道，察納雅言，深追先帝遺詔。臣不勝受恩感激。
+今當遠離，臨表涕零，不知所言。`,
+chi9:`壬戌之秋，七月既望，蘇子與客泛舟，遊於赤壁之下。清風徐來，水波不興。舉酒屬客，誦明月之詩，歌窈窕之章。少焉，月出於東山之上，徘徊於斗牛之間。白露橫江，水光接天。縱一葦之所如，凌萬頃之茫然。浩浩乎如馮虛御風，而不知其所止；飄飄乎如遺世獨立，羽化而登仙。
+於是飲酒樂甚，扣舷而歌之。歌曰：「桂棹兮蘭槳，擊空明兮溯流光。渺渺兮予懷，望美人兮天一方。」客有吹洞簫者，倚歌而和之。其聲嗚嗚然，如怨如慕，如泣如訴；餘音嫋嫋，不絕如縷。舞幽壑之潛蛟，泣孤舟之嫠婦。
+蘇子愀然，正襟危坐，而問客曰：「何為其然也？」客曰：「『月明星稀，烏鵲南飛』，此非曹孟德之詩乎？西望夏口，東望武昌，山川相繆，鬱乎蒼蒼，此非孟德之困於周郎者乎？方其破荊州，下江陵，順流而東也，舳艫千里，旌旗蔽空，釃酒臨江，橫槊賦詩，固一世之雄也，而今安在哉？況吾與子漁樵於江渚之上，侶魚蝦而友麋鹿，駕一葉之扁舟，舉匏樽以相屬。寄蜉蝣於天地，渺滄海之一粟。哀吾生之須臾，羨長江之無窮。挾飛仙以遨遊，抱明月而長終。知不可乎驟得，託遺響於悲風。」
+蘇子曰：「客亦知夫水與月乎？逝者如斯，而未嘗往也；盈虛者如彼，而卒莫消長也。蓋將自其變者而觀之，則天地曾不能以一瞬；自其不變者而觀之，則物與我皆無盡也，而又何羨乎！且夫天地之間，物各有主，苟非吾之所有，雖一毫而莫取。惟江上之清風，與山間之明月，耳得之而為聲，目遇之而成色，取之無禁，用之不竭，是造物者之無盡藏也，而吾與子之所共適。」
+客喜而笑，洗盞更酌。肴核既盡，杯盤狼籍。相與枕藉乎舟中，不知東方之既白。`,
+chi10:`項脊軒，舊南閤子也。室僅方丈，可容一人居。百年老屋，塵泥滲漉，雨澤下注；每移案，顧視無可置者。又北向，不能得日，日過午已昏。余稍為修葺，使不上漏；前闢四窗，垣牆周庭，以當南日，日影反照，室始洞然。又雜植蘭桂竹木於庭，舊時欄楯，亦遂增勝。借書滿架，偃仰嘯歌，冥然兀坐，萬籟有聲；而庭階寂寂，小鳥時來啄食，人至不去。三五之夜，明月半牆，桂影斑駁，風移影動，珊珊可愛。
+然余居於此，多可喜，亦多可悲。先是，庭中通南北為一。迨諸父異爨，內外多置小門，牆往往而是。東犬西吠，客逾庖而宴，雞棲於廳。庭中始為籬，已為牆，凡再變矣。家有老嫗，嘗居於此。嫗，先大母婢也，乳二世，先妣撫之甚厚。室西連於中閨，先妣嘗一至。嫗每謂余曰：「某所，而母立於茲。」嫗又曰：「汝姊在吾懷，呱呱而泣；娘以指叩門扉曰：『兒寒乎？欲食乎？』吾從板外相為應答。」語未畢，余泣，嫗亦泣。余自束髮，讀書軒中。一日，大母過余曰：「吾兒，久不見若影，何竟日默默在此，大類女郎也？」比去，以手闔門，自語曰：「吾家讀書久不效，兒之成，則可待乎！」頃之，持一象笏至，曰：「此吾祖太常公宣德間執此以朝，他日汝當用之！」瞻顧遺跡，如在昨日，令人長號不自禁。
+軒東故嘗為廚，人往，從軒前過。余扃牖而居，久之，能以足音辨人。軒凡四遭火，得不焚，殆有神護者。
+項脊生曰：「蜀清守丹穴，利甲天下，其後秦皇帝築女懷清臺；劉玄德與曹操爭天下，諸葛孔明起隴中。方二人之昧昧於一隅也，世何足以知之？余區區處敗屋中，方揚眉瞬目，謂有奇景。人知之者，其謂與坎井之蛙何異？」
+余既為此志，後五年，吾妻來歸，時至軒中，從余問古事，或憑几學書。吾妻歸寧，述諸小妹語曰：「聞姊家有閣子，且何謂閣子也？」其後六年，吾妻死，室壞不修。其後二年，余久臥病無聊，乃使人復葺南閤子，其制稍異於前。然自後余多在外，不常居。
+庭有枇杷樹，吾妻死之年所手植也，今已亭亭如蓋矣。`,
+chi11:`西湖最盛，為春為月。一日之盛，為朝煙，為夕嵐。今歲春雪甚盛，梅花為寒所勒，與杏桃相次開發，尤為奇觀。
+石簣數為余言：「傅金吾園中梅，張功甫玉照堂故物也，急往觀之。」余時為桃花所戀，竟不忍去湖上。由斷橋至蘇堤一帶，綠煙紅霧，瀰漫二十餘里。歌吹為風，粉汗為雨，羅紈之盛，多於堤畔之草，豔冶極矣。
+然杭人遊湖，止午、未、申三時。其實湖光染翠之工，山嵐設色之妙，皆在朝日始出，夕舂未下，始極其濃媚。月景尤不可言，花態柳情，山容水意，別是一種趣味。此樂留以與山僧遊客受用，安可為俗士道哉！`
+});
+window.FULLTEXT=Object.assign(window.FULLTEXT||{},{
+chi12:`余問番人硫土所產，指茅廬後山麓間。明日，拉顧君偕往，坐莽葛中，命二番兒操楫緣溪入，溪盡為內北社。呼社人為導。
+轉東行半里，入茆棘中。勁茆高丈餘，兩手排之，側體而入。炎日薄茆上，暑氣蒸鬱，覺悶甚。草下一徑，逶迤僅容蛇伏。顧君濟勝有具，與導人行輒前，余與從者後，五步之內，已各不相見，慮或相失，各聽呼應聲為近遠。
+約行二三里，渡兩小溪，皆履而涉。復入深林中，林木蓊翳，大小不可辨名，老藤纏結其上，若虯龍環繞。風過葉落，有大如掌者。又有巨木裂土而出，兩葉如孼，已大十圍，導人謂楠也。楠之始生，已具全體，歲久則堅，終不加大，蓋與竹笋同理，樹上禽聲萬態，耳所創聞，目不得睹其狀，涼風襲肌，幾忘炎暑。
+復越峻坂五六，值大溪，溪廣四五丈，水潺潺巉石間，與石皆作藍靛色。導人謂此水源出硫穴，下是沸泉也。余以一指試之，猶熱甚，扶杖躡巉石渡，更進二三里，林木忽斷，始見前山。又陟一小山顛，覺履底漸熱，視草色萎黃無生意，望前山半麓，白氣縷縷，如山雲乍吐，搖曳青嶂間。導人指曰：「是硫穴也。」風至，硫氣甚惡。
+更進半里，草木不生，地熱如炙。左右兩山多巨石，為磺氣所觸，剝蝕如粉。白氣五十餘道，皆從地底騰激而出，沸珠噴濺，出地尺許。余攬衣即穴旁視之，聞怒雷震蕩地底，而驚濤與沸鼎聲間之，地復岌岌欲動，令人心悸。蓋周廣百畝間，實一大沸鑊，余身乃行鑊蓋上，所賴以不陷者，熱氣鼓之耳。右旁巨石間，一穴獨大，思巨石無陷理，乃即石上俯瞰之。穴中毒焰撲人，目不能視，觸腦欲裂，急退百步乃止。左旁一溪，聲如倒峽，即沸泉所出源也。
+還就深林小憩，循舊路返，衣染硫氣，累日不散，始悟向之倒峽崩崖，轟耳不輟者，是硫穴中沸聲也。`,
+chi13:`樓閣萬家，街衢對峙，有亭翼然，亙二、三里，直如弦，平如砥，暑行不汗身，雨行不濡履。一水通津，出海之涘，估帆葉葉，潮汐下上，去來如龍，貨舶相望。而店前可以驅車，店後可以繫榜者：昔之鹿港也。人煙猶是，而蕭條矣；邑里猶是，而泬寥矣。海天蒼蒼，海水茫茫，去之五里，涸為鹽場，萬瓦如甃，長隄如隍。無懋遷，無利涉，望之黯然可傷者：今之鹿港也。
+昔之盛，固余所不見；而其未至於斯之衰也，尚為余少時所目覩。蓋鹿港扼南北之中，其海口去閩南之泉州，僅隔一海峽而遙。閩南、浙、粵之貨，每由鹿港運輸而入，而臺北、臺南所需之貨，恆由鹿港輸出，乃至臺灣土產之輸於閩、粵者，亦靡不以鹿港為中樞。蓋藏既富，絃誦興焉，故黌序之士相望於道，而春秋試之貢於京師、注名仕籍者，歲有其人，非猶夫以學校聚奴隸者也。
+而是時鹿港通海之水已淺可涉矣，海艟之來，止泊於沖西內津，昔之所謂「鹿港飛帆」者，已不概見矣。綑載之往來，皆以竹筏運赴大艑矣。然是時之竹筏，猶千百數也；衣食於其中者，尚數百家也。迄於今版圖既易，海關之吏猛於虎豹，華貨之不來者有之矣。洎乎火車之路全通，外貨之來由南北而入，不復由鹿港而出矣；重以關稅之苛，關吏之酷，牟販之夫多至破家，而閩貨之不能由南北來者，亦復不敢由鹿港來也。鹽田之築，肇自近年。日本官吏固云欲以阜鹿民也，而其究竟，則實民間之輸巨貲以供官府之收厚利而已。且因是而阻水不行，山潦之來，鹿港人家半入洪浸，屋廬之日就頹毀，人民之日即離散，有由然矣。
+余往年攜友乘桴游於海濱，是時新鹽田未興築，舊鹽田猶未竣工。余亦無心至於隄下，臨海徘徊，海水浮天如笠，一白萬里如銀，滉漾碧綠如琉璃。夕陽欲下，月鉤初上，水鳥不飛，篙工撐棹，向新溝迤邐而行，則密邇鹿港之舊津。向時估帆所出入者，時已淤為沙灘，為居民鋤作菜圃矣。沿新溝而南至於大橋頭，則已挈鹿港之首尾而全觀之矣。望街尾一隅而至安平鎮，則割臺後之飛甍鱗次數百家燬於丙申兵火者，今猶瓦礫成丘，荒涼慘目也。猶幸市況凋零，為當道所不齒，不至於市區改正，破裂闤闠，驅逐人家以為通衢也。然而再經數年，則不可知之矣。滄桑時之可怖心，類如此也。游興已終，舍桴而步，遠近燈火明滅，屈指盛時所號萬家邑者，今裁三千家而已，可勝慨哉？`,
+chi14:`人為萬物之靈，志有萬端之異。學琴學詩，均從所好；工書工畫，各有專長。是故咳唾珠玉，謫仙闢詩學之源；節奏鏗鏘，蔡女撰胡笳之拍，此皆不墮聰明，而有志竟成者也。
+若夫銀鈎鐵畫，固屬難窺。儷白妃青，亦非易事。余因停機教子之餘，調藥助夫之暇，竊慕管夫人之墨竹，紙上生風；敢藉陶彭澤之黃花，圖中寫影。庶幾秋姿不老，四座流芬，得比勁節長垂，千人共仰，竟率意而鴉塗，莫自知其鳩拙云爾。
+庚寅年仲秋（西元一九五○年農曆八月）
+題襟亭主人 張李德和`,
+chi15:`臺灣固無史也。荷人啟之，鄭氏作之，清代營之，開物成務，以立我丕基，至於今三百有餘年矣。而舊志誤謬，文采不彰，其所記載，僅隸有清一朝；荷人、鄭氏之事，闕而弗錄，竟以島夷海寇視之。烏乎！此非舊史氏之罪歟？且府志重修於乾隆二十九年，臺、鳳、彰、淡諸志，雖有續修，侷促一隅，無關全局，而書又已舊。苟欲以二三陳編而知臺灣大勢，是猶以管窺天，以蠡測海，其被囿也亦巨矣。
+夫臺灣固海上之荒島爾！蓽路藍縷，以啟山林，至於今是賴。顧自海通以來，西力東漸，運會之趨，莫可阻遏。於是而有英人之役，有美船之役，有法軍之役，外交兵禍，相逼而來，而舊志不及載也。草澤群雄，後先崛起，朱、林以下，輒啟兵戎，喋血山河，藉言恢復，而舊志亦不備載也。續以建省之議，開山撫番，析疆增吏，正經界，籌軍防，興土宜，勵教育，綱舉目張，百事俱作，而臺灣氣象一新矣。
+夫史者，民族之精神，而人群之龜鑑也。代之盛衰，俗之文野，政之得失，物之盈虛，均於是乎在。故凡文化之國，未有不重其史者也。古人有言：「國可滅而史不可滅。」是以郢書燕說，猶存其名；晉乘楚杌，語多可採；然則臺灣無史，豈非台人之痛歟？
+顧修史固難，修台之史更難，以今日修之尤難，何也？斷簡殘編，蒐羅匪易；郭公夏五，疑信相參；則徵文難。老成凋謝，莫可諮詢；巷議街譚，事多不實；則考獻難。重以改隸之際，兵馬倥傯，檔案俱失；私家收拾，半付祝融，則欲取金匱石室之書，以成風雨名山之業，而有所不可。然及今為之，尚非甚難，若再經十年二十年而後修之，則真有難為者。是臺灣三百年來之史，將無以昭示後人，又豈非今日我輩之罪乎？
+橫不敏，昭告神明，發誓述作，兢兢業業，莫敢自遑，遂以十稔之間，撰成臺灣通史。為紀四、志二十四、傳六十，凡八十有八篇，表圖附焉。起自隋代，終於割讓，縱橫上下，鉅細靡遺，而臺灣文獻於是乎在。
+洪惟我祖先，渡大海，入荒陬，以拓殖斯土，為子孫萬年之業者，其功偉矣！追懷先德，眷顧前途，若涉深淵，彌自儆惕。烏乎！念哉！凡我多士，及我友朋，惟仁惟孝，義勇奉公，以發揚種性；此則不佞之幟也。婆娑之洋，美麗之島，我先王先民之景命，實式憑之。`
+});
+window.FULLTEXT=Object.assign(window.FULLTEXT||{},{
+chi4:`臣聞吏議逐客，竊以為過矣。
+昔繆公求士，西取由余於戎，東得百里奚於宛，迎蹇叔於宋，來丕豹、公孫支於晉。此五子者，不產於秦，而繆公用之，并國二十，遂霸西戎。孝公用商鞅之法，移風易俗，民以殷盛，國以富彊，百姓樂用，諸侯親服，獲楚、魏之師，舉地千里，至今治彊。惠王用張儀之計，拔三川之地，西并巴、蜀，北收上郡，南取漢中，包九夷，制鄢、郢，東據成皋之險，割膏腴之壤，遂散六國之從，使之西面事秦，功施到今。昭王得范睢，廢穰侯，逐華陽，彊公室，杜私門，蠶食諸侯，使秦成帝業。此四君者，皆以客之功。由此觀之，客何負於秦哉！向使四君卻客而不內，疏士而不用，是使國無富利之實，而秦無彊大之名也。
+今陛下致昆山之玉，有隨、和之寶，垂明月之珠，服太阿之劍，乘纖離之馬，建翠鳳之旗，樹靈鼉之鼓。此數寶者，秦不生一焉，而陛下說之，何也？必秦國之所生然後可，則是夜光之璧不飾朝廷，犀象之器不為玩好，鄭、衛之女不充後宮，而駿良駃騠不實外廄，江南金錫不為用，西蜀丹青不為采。所以飾後宮充下陳娛心意說耳目者，必出於秦然後可，則是宛珠之簪，傅璣之珥，阿縞之衣，錦繡之飾不進於前，而隨俗雅化佳冶窈窕趙女不立於側也。夫擊甕叩缶彈箏搏髀，而歌呼嗚嗚快耳者，真秦之聲也；鄭、衛、桑閒、韶、虞、武象者，異國之樂也。今棄擊甕叩缶而就鄭衛，退彈箏而取韶虞，若是者何也？快意當前，適觀而已矣。今取人則不然。不問可否，不論曲直，非秦者去，為客者逐。然則是所重者在乎色樂珠玉，而所輕者在乎人民也。此非所以跨海內制諸侯之術也。
+臣聞地廣者粟多，國大者人眾，兵彊則士勇。是以太山不讓土壤，故能成其大；河海不擇細流，故能就其深；王者不卻眾庶，故能明其德。是以地無四方，民無異國，四時充美，鬼神降福，此五帝、三王之所以無敵也。今乃棄黔首以資敵國，卻賓客以業諸侯，使天下之士退而不敢西向，裹足不入秦，此所謂「藉寇兵而齎盜糧」者也。
+夫物不產於秦，可寶者多；士不產於秦，而願忠者眾。今逐客以資敵國，損民以益讎，內自虛而外樹怨於諸侯，求國無危，不可得也。`,
+chi5:`楚軍夜擊，坑秦卒二十餘萬人新安城南。行略定秦地；至函谷關，有兵守關，不得入。又聞沛公已破咸陽，項羽大怒，使當陽君等擊關。項羽遂入，至於戲西。沛公軍霸上，未得與項羽相見。沛公左司馬曹無傷使人言於項羽曰：「沛公欲王關中，使子嬰為相，珍寶盡有之。」項羽大怒，曰：「旦日饗士卒，為擊破沛公軍！」當是時，項羽兵四十萬，在新豐鴻門，沛公兵十萬，在霸上。范增說項羽曰：「沛公居山東時，貪於財貨，好美姬。今入關，財物無所取，婦女無所幸，此其志不在小。吾令人望其氣，皆為龍虎，成五采，此天子氣也，急擊勿失。」
+楚左尹項伯者，項羽季父也，素善留侯張良。張良是時從沛公，項伯乃夜馳之沛公軍，私見張良，具告以事，欲呼張良與俱去，曰：「毋從俱死也。」張良曰：「臣為韓王送沛公，沛公今事有急，亡去不義，不可不語。」良乃入，具告沛公。沛公大驚，曰：「為之奈何？」張良曰：「誰為大王為此計者？」曰：「鯫生說我曰：『距關，毋內諸侯，秦地可盡王也。』故聽之。」良曰：「料大王士卒足以當項王乎？」沛公默然，曰：「固不如也。且為之奈何？」張良曰：「請往謂項伯，言沛公不敢背項王也。」沛公曰：「君安與項伯有故？」張良曰：「秦時與臣游，項伯殺人，臣活之；今事有急，故幸來告良。」沛公曰：「孰與君少長？」良曰：「長於臣。」沛公曰：「君為我呼入，吾得兄事之。」張良出，要項伯。項伯即入見沛公。沛公奉卮酒為壽，約為婚姻，曰：「吾入關，秋毫不敢有所近，籍吏民，封府庫，而待將軍。所以遣將守關者，備他盜之出入與非常也。日夜望將軍至，豈敢反乎？願伯具言臣之不敢倍德也。」項伯許諾，謂沛公曰：「旦日不可不蚤自來謝項王。」沛公曰：「諾。」於是項伯復夜去，至軍中，具以沛公言報項王，因言曰：「沛公不先破關中，公豈敢入乎？今人有大功而擊之，不義也。不如因善遇之。」項王許諾。
+沛公旦日從百餘騎來見項王，至鴻門。謝曰：「臣與將軍戮力而攻秦，將軍戰河北，臣戰河南，然不自意能先入關破秦，得復見將軍於此。今者有小人之言，令將軍與臣有郤。」項王曰：「此沛公左司馬曹無傷言之。不然，籍何以至此？」項王即日因留沛公與飲。項王、項伯東嚮坐；亞父南嚮坐─亞父者，范增也；沛公北嚮坐；張良西嚮侍。
+范增數目項王，舉所佩玉玦以示之者三，項王默然不應。范增起，出，召項莊，謂曰：「君王為人不忍，若入前為壽；壽畢，請以劍舞，因擊沛公於坐，殺之。不者，若屬皆且為所虜！」莊則入為壽。壽畢，曰：「君王與沛公飲，軍中無以為樂，請以劍舞。」項王曰：「諾。」項莊拔劍起舞。項伯亦拔劍起舞，常以身翼蔽沛公。莊不得擊。
+於是張良至軍門見樊噲。樊噲曰：「今日之事何如？」良曰：「甚急！今者項莊拔劍舞，其意常在沛公也。」噲曰：「此迫矣！臣請入，與之同命。」噲即帶劍擁盾入軍門。交戟之衛士欲止不內。樊噲側其盾以撞，衛士仆地。噲遂入，披帷西嚮立，瞋目視項王，頭髮上指，目眥盡裂。項王按劍而跽曰：「客何為者！」張良曰：「沛公之參乘樊噲者也。」項王曰：「壯士！賜之卮酒！」則與斗卮酒。噲拜謝，起，立而飲之。項王曰：「賜之彘肩！」則與一生彘肩。樊噲覆其盾於地，加彘肩上，拔劍切而啗之。項王曰：「壯士！能復飲乎？」樊噲曰：「臣死且不避，卮酒安足辭！夫秦王有虎狼之心，殺人如不能舉，刑人如恐不勝，天下皆叛之。懷王與諸將約曰：『先破秦入咸陽者王之。』今沛公先破秦入咸陽，毫毛不敢有所近，封閉宮室，還軍霸上，以待大王來。故遣將守關者，備他盜出入與非常也。勞苦而功高如此，未有封侯之賞，而聽細說，欲誅有功之人，此亡秦之續耳。竊為大王不取也！」項王未有以應，曰：「坐。」樊噲從良坐。
+坐須臾，沛公起如廁，因招樊噲出。沛公已出，項王使都尉陳平召沛公。沛公曰：「今者出，未辭也，為之奈何？」樊噲曰：「大行不顧細謹，大禮不辭小讓。如今人方為刀俎，我為魚肉，何辭為？」於是遂去。乃令張良留謝。良問曰：「大王來何操？」曰：「我持白璧一雙，欲獻項王；玉斗一雙，欲與亞父。會其怒，不敢獻。公為我獻之。」張良曰：「謹諾。」當是時，項王軍在鴻門下，沛公軍在霸上，相去四十里。沛公則置車騎，脫身獨騎，與樊噲、夏侯嬰、靳彊、紀信等四人持劍盾步走，從酈山下，道芷陽閒行。沛公謂張良曰：「從此道至吾軍，不過二十里耳。度我至軍中，公乃入。」
+沛公已去，閒至軍中，張良入謝，曰：「沛公不勝桮杓，不能辭。謹使臣良奉白璧一雙，再拜獻大王足下；玉斗一雙，再拜奉大將軍足下。」項王曰：「沛公安在？」良曰：「聞大王有意督過之，脫身獨去，已至軍矣。」項王則受璧，置之坐上。亞父受玉斗，置之地，拔劍撞而破之，曰：「唉！豎子不足與謀！奪項王天下者，必沛公也。吾屬今為之虜矣！」沛公至軍，立誅殺曹無傷。`
+});
+
+</script>
+<script>
+A('geo',[
+[1,'板塊構造三種邊界','張裂（洋脊、裂谷）、聚合（海溝、褶皺山脈）、錯動（斷層）','臺灣位於菲律賓海板塊與歐亞板塊聚合帶，故地震、造山頻繁。'],
+[2,'岩石三大類','火成岩、沉積岩、變質岩','岩石循環：火成岩風化→沉積岩；高溫高壓→變質岩；熔融冷卻→火成岩。'],
+[3,'河流地形','上游：V型谷、瀑布；中游：沖積扇；下游：三角洲、氾濫平原','侵蝕、搬運、堆積三作用隨坡度與流速改變。'],
+[4,'柯本氣候分類','A熱帶、B乾燥、C溫帶、D冷溫帶、E極地','以氣溫與降水量判定。臺灣北部多屬 Cfa，南部多屬 Aw。'],
+[5,'季風與颱風','夏季西南季風／冬季東北季風','東北季風使北臺灣冬季多雨；颱風為熱帶氣旋，需高海溫與科氏力。'],
+[6,'GIS 空間分析','環域分析（Buffer）、疊圖分析（Overlay）','Buffer 評估影響範圍；Overlay 疊合多圖層用於選址與風險評估。'],
+[7,'人口轉型與人口金字塔','高出生高死亡→高出生低死亡→低出生低死亡','臺灣已進入少子化與高齡化階段，金字塔呈壺形。'],
+[8,'都市地理：中地理論','服務範圍、門檻人口、階層性','高級財貨門檻高、服務範圍大，故高級中地數量少、間距大。']]);
+
+</script>
+<script>
+A('civ',[
+[1,'機會成本','放棄的選項中價值最高者','決策時須比較「放棄的價值」，而非全部放棄項目的加總。'],
+[2,'比較利益法則','機會成本較低者具有比較利益','即使無絕對利益，雙方專業化並貿易仍可獲利。'],
+[3,'供給與需求','價格上升→需求量減少、供給量增加','均衡價格由供需交會決定；價格下限造成過剩，價格上限造成短缺。'],
+[4,'憲法位階與法規範體系','憲法＞法律＞命令；地方自治法規不得牴觸憲法、法律或上級自治團體法規','憲法為最高規範，法律不得牴觸憲法，命令不得牴觸憲法與法律；地方自治團體得制定自治條例，但不得牴觸憲法、法律或上級自治法規。違憲審查由憲法法庭行使。'],
+[5,'比例原則','適當性、必要性、衡量性（狹義比例原則）','限制人民權利須手段能達成目的、侵害最小、且利益大於損害。'],
+[6,'權力分立','行政、立法、司法、考試、監察（五權）','相互制衡以防權力濫用，保障人民基本權利。'],
+[7,'刑事程序正義','無罪推定、罪刑法定、不自證己罪','被告在判決確定前視為無罪，檢察官負舉證責任。'],
+[8,'GDP 與通貨膨脹','GDP＝一國境內一年最終財貨與勞務市價總和','通膨為物價持續普遍上漲，會降低貨幣購買力，常以 CPI 衡量。']]);
+
+</script>
+<script>
+A('tw',[
+[1,'荷蘭統治與熱蘭遮城','1624年荷蘭人據大員（安平），築熱蘭遮城','荷蘭東印度公司引進漢人墾殖，發展糖、鹿皮貿易。',1624,23.0,120.16],
+[2,'西班牙據北臺灣','1626年西班牙人占領雞籠，築聖薩爾瓦多城','1642年被荷蘭逐出。',1626,25.13,121.75],
+[3,'鄭成功收復臺灣','1661年鄭成功登陸鹿耳門，次年荷蘭投降','建立東寧王國，設承天府，推行屯田。',1661,23.0,120.15],
+[4,'清領：施琅攻臺','1683年施琅攻澎湖，鄭克塽降清','1684年臺灣納入版圖，隸屬福建省。',1683,23.55,119.58],
+[5,'開港通商','1860年代安平、淡水、基隆、打狗開港','茶、糖、樟腦出口興盛，北臺灣經濟地位上升。',1860,25.17,121.44],
+[6,'臺灣建省與劉銘傳新政','1885年臺灣建省，劉銘傳任首任巡撫','推動鐵路、電報、清賦等現代化建設。牡丹社事件（1874）後清廷加強經營臺灣，沈葆楨開山撫番，終至建省。',1885,25.04,121.51],
+[7,'日本統治開始','1895年依馬關條約，清朝割讓臺灣、澎湖給日本','臺灣民主國短暫成立後瓦解，總督府設於臺北，進入日治時期。',1895,25.04,121.52],
+[8,'二二八事件','1947年因查緝私菸引發全島衝突','後續實施戒嚴，1987年解除，開啟民主化。',1947,25.05,121.51]]);
+
+</script>
+<script>
+A('world',[
+[1,'羅馬帝國東西分裂','395年帝國分為東西；476年西羅馬滅亡','東羅馬（拜占庭）延續至1453年。',395,41.01,28.98],
+[2,'十字軍東征','1095年克萊蒙會議，教宗烏爾班二世號召；1096年第一次十字軍出發','促進東西交流，削弱封建領主與教會權威。',1096,31.77,35.21],
+[3,'文藝復興','14–16世紀，起源於義大利佛羅倫斯','人文主義強調個人價值，達文西、米開朗基羅為代表。',1400,43.77,11.25],
+[4,'地理大發現','1492年哥倫布抵美洲；1498年達伽馬抵印度','大西洋貿易興起，開啟「哥倫布大交換」。',1492,37.19,-6.9],
+[5,'宗教改革','1517年馬丁路德發表《九十五條論綱》','新教興起，歐洲出現宗教戰爭，1648年西伐利亞和約確立主權國家體系。',1517,51.87,12.65],
+[6,'美國獨立戰爭與《獨立宣言》','1776年大陸會議在費城通過《獨立宣言》','啟蒙思想、天賦人權與主權在民影響深遠。',1776,39.95,-75.16],
+[7,'工業革命','18世紀中葉起源於英國','蒸汽機、工廠制度與都市化，催生資本主義與工人運動。',1760,53.48,-2.24],
+[8,'第一次世界大戰','1914–1918年，薩拉熱窩事件引爆','1919年凡爾賽條約；戰後國際聯盟成立。',1914,43.86,18.41],
+[9,'第二次世界大戰與冷戰','1939–1945年；戰後美蘇對峙','聯合國成立，北約與華約對立，1991年蘇聯解體。',1939,52.23,21.01]]);
+A('tw',[[9,'牡丹社事件','1871年琉球漂流民遭殺害，1874年日本出兵臺灣','事件促使清廷重視海防，沈葆楨來臺開山撫番。',1874,22.08,120.80],[10,'馬關條約','1895年清日於日本下關簽訂《馬關條約》','清朝割讓臺灣、澎湖給日本。',1895,33.96,130.94]]);
+A('world',[[10,'法國大革命','1789年攻占巴士底監獄，發表《人權宣言》','推翻舊制度，影響歐洲政治思潮。',1789,48.86,2.35]]);
+
+</script>
+<script>
+/* 規則：知識點 id 一經發布就不可更動或重用（使用者進度以 id 儲存）。
+   新增數學知識點請用新的號碼，並直接寫 cat（章節名）與 lv（AB/A/B/J）欄位，不要再依賴編號區間。
+   已移除的 id：math15（與 math24、math25 重複）。 */
+A('chz',[
+[1,'窈窕','讀音：ㄧㄠˇ ㄊㄧㄠˇ','《赤壁賦》「歌窈窕之章」。形容女子文靜美好。'],
+[2,'屬客','讀音：ㄓㄨˇ ㄎㄜˋ','《赤壁賦》「舉酒屬客」。屬是勸請之意，不讀ㄕㄨˇ。'],
+[3,'舳艫','讀音：ㄓㄨˊ ㄌㄨˊ','船尾與船頭，指首尾相接的船隊。《赤壁賦》「舳艫千里」。'],
+[4,'嫠婦','讀音：ㄌㄧˊ ㄈㄨˋ','寡婦。《赤壁賦》「泣孤舟之嫠婦」。'],
+[5,'釃酒','讀音：ㄕ ㄐㄧㄡˇ','斟酒。《赤壁賦》「釃酒臨江，橫槊賦詩」。'],
+[6,'匏樽','讀音：ㄆㄠˊ ㄗㄨㄣ','用葫蘆做成的酒器。《赤壁賦》。'],
+[7,'愀然','讀音：ㄑㄧㄠˇ ㄖㄢˊ','容色改變、神情嚴肅的樣子。《赤壁賦》。'],
+[8,'蜉蝣','讀音：ㄈㄨˊ ㄧㄡˊ','朝生暮死的小蟲，比喻生命短暫。《赤壁賦》「寄蜉蝣於天地」。'],
+[9,'馮虛御風','讀音：ㄆㄧㄥˊ ㄒㄩ ㄩˋ ㄈㄥ','馮同「憑」，讀ㄆㄧㄥˊ，不讀ㄈㄥˊ。《赤壁賦》。'],
+[10,'枕藉','讀音：ㄓㄣˇ ㄐㄧㄝˋ','互相枕著睡。藉是墊著，讀ㄐㄧㄝˋ。《赤壁賦》「相與枕藉乎舟中」。'],
+[11,'杯盤狼藉','讀音：ㄅㄟ ㄆㄢˊ ㄌㄤˊ ㄐㄧˊ','這裡的藉讀ㄐㄧˊ（雜亂），和「憑藉」「枕藉」的ㄐㄧㄝˋ不同。'],
+[12,'崩殂','讀音：ㄅㄥ ㄘㄨˊ','帝王死亡。《出師表》「先帝創業未半而中道崩殂」。'],
+[13,'陟罰臧否','讀音：ㄓˋ ㄈㄚˊ ㄗㄤ ㄆㄧˇ','否讀ㄆㄧˇ（批評、評斷好壞），不讀ㄈㄡˇ。《出師表》。'],
+[14,'猥自枉屈','讀音：ㄨㄟˇ ㄗˋ ㄨㄤˇ ㄑㄩ','猥是謙詞，指自己降低身分來見訪。《出師表》。'],
+[15,'駑鈍','讀音：ㄋㄨˊ ㄉㄨㄣˋ','比喻才能低劣，是自謙之詞。《出師表》「庶竭駑鈍」。'],
+[16,'裨補闕漏','讀音：ㄅㄧˋ ㄅㄨˇ ㄑㄩㄝ ㄌㄡˋ','裨ㄅㄧˋ，補益；闕ㄑㄩㄝ，同「缺」。《出師表》。'],
+[17,'攘除','讀音：ㄖㄤˇ ㄔㄨˊ','排除、驅除。《出師表》「攘除姦凶」。'],
+[18,'諮諏','讀音：ㄗ ㄗㄡ','詢問、商議。《出師表》「以諮諏善道」。'],
+[19,'玉玦','讀音：ㄩˋ ㄐㄩㄝˊ','環形有缺口的玉，「玦」諧音「決」，暗示決斷。《鴻門宴》。'],
+[20,'卮酒','讀音：ㄓ ㄐㄧㄡˇ','一杯酒。卮是古代盛酒的器皿。《鴻門宴》。'],
+[21,'彘肩','讀音：ㄓˋ ㄐㄧㄢ','豬的前腿（豬肘子）。《鴻門宴》。'],
+[22,'目眥盡裂','讀音：ㄇㄨˋ ㄗˋ ㄐㄧㄣˋ ㄌㄧㄝˋ','眥ㄗˋ，眼眶。形容怒目圓睜。《鴻門宴》。'],
+[23,'瞋目','讀音：ㄔㄣ ㄇㄨˋ','瞪大眼睛。《鴻門宴》「瞋目視項王」。'],
+[24,'刀俎','讀音：ㄉㄠ ㄗㄨˇ','菜刀與砧板，比喻宰割別人的人。《鴻門宴》。'],
+[25,'鯫生','讀音：ㄗㄡ ㄕㄥ','見識淺陋的小人。《鴻門宴》。'],
+[26,'參乘','讀音：ㄘㄢ ㄕㄥˋ','坐在車右陪乘的侍衛。乘讀ㄕㄥˋ。《鴻門宴》。'],
+[27,'戮力','讀音：ㄌㄨˋ ㄌㄧˋ','併力、合力。《鴻門宴》「臣與將軍戮力而攻秦」。'],
+[28,'要項伯','讀音：要ㄧㄠ','要同「邀」，邀請之意，讀ㄧㄠ。《鴻門宴》「張良出，要項伯」。'],
+[29,'數目項王','讀音：數ㄕㄨㄛˋ','數是屢次之意，讀ㄕㄨㄛˋ。《鴻門宴》「范增數目項王」。'],
+[30,'欲王關中','讀音：王ㄨㄤˋ','王作動詞，稱王，讀ㄨㄤˋ。《鴻門宴》。'],
+[31,'繆公','讀音：ㄇㄨˋ ㄍㄨㄥ','繆通「穆」，讀ㄇㄨˋ。《諫逐客書》「昔繆公求士」。'],
+[32,'駃騠','讀音：ㄐㄩㄝˊ ㄊㄧˊ','良馬名。《諫逐客書》。'],
+[33,'黔首','讀音：ㄑㄧㄢˊ ㄕㄡˇ','百姓。《諫逐客書》。'],
+[34,'齎盜糧','讀音：齎ㄐㄧ','齎是付與、送給。《諫逐客書》「藉寇兵而齎盜糧」。'],
+[35,'傅璣之珥','讀音：ㄈㄨˋ ㄐㄧ ㄓ ㄦˇ','傅是附著、鑲嵌；珥是耳飾。《諫逐客書》。'],
+[36,'阿縞','讀音：ㄜ ㄍㄠˇ','東阿所產的白絹。阿是地名，讀ㄜ。《諫逐客書》。'],
+[37,'搏髀','讀音：ㄅㄛˊ ㄅㄧˋ','拍打大腿。《諫逐客書》。'],
+[38,'夜縋而出','讀音：縋ㄓㄨㄟˋ','縋是用繩子拴住人或物從上往下送。《燭之武退秦師》。'],
+[39,'闕秦','讀音：闕ㄑㄩㄝ','闕是削減、損害，同「缺」。《燭之武退秦師》「若不闕秦，將焉取之」。'],
+[40,'氾南','讀音：ㄈㄢˊ ㄋㄢˊ','氾是鄭國地名，讀ㄈㄢˊ。《燭之武退秦師》。'],
+[41,'阡陌','讀音：ㄑㄧㄢ ㄇㄛˋ','田間縱橫交錯的小路。《桃花源記》。'],
+[42,'垂髫','讀音：ㄔㄨㄟˊ ㄊㄧㄠˊ','髫是兒童下垂的頭髮，指小孩。《桃花源記》。'],
+[43,'詣太守','讀音：詣ㄧˋ','前往、拜見。《桃花源記》。'],
+[44,'劉子驥','讀音：ㄌㄧㄡˊ ㄗˇ ㄐㄧˋ','驥是良馬。《桃花源記》。'],
+[45,'修葺','讀音：ㄒㄧㄡ ㄑㄧˋ','修補房屋。葺讀ㄑㄧˋ。《項脊軒志》。'],
+[46,'偃仰','讀音：ㄧㄢˇ ㄧㄤˇ','俯仰，安閒自得。《項脊軒志》「偃仰嘯歌」。'],
+[47,'冥然兀坐','讀音：ㄇㄧㄥˊ ㄖㄢˊ ㄨˋ ㄗㄨㄛˋ','兀ㄨˋ，高聳、獨自端坐。《項脊軒志》。'],
+[48,'諸父異爨','讀音：ㄓㄨ ㄈㄨˋ ㄧˋ ㄘㄨㄢˋ','爨是燒火煮飯，異爨指分家。《項脊軒志》。'],
+[49,'象笏','讀音：ㄒㄧㄤˋ ㄏㄨˋ','象牙做的笏板，古代大臣上朝所持。《項脊軒志》。'],
+[50,'扃牖','讀音：ㄐㄩㄥ ㄧㄡˇ','關閉窗戶。扃是門閂、關閉。《項脊軒志》。'],
+[51,'輮','讀音：ㄖㄡˊ','使彎曲。《勸學》「輮以為輪」。'],
+[52,'槁暴','讀音：ㄍㄠˇ ㄆㄨˋ','槁是枯乾，暴讀ㄆㄨˋ，曬乾。《勸學》。'],
+[53,'跬步','讀音：ㄎㄨㄟˇ ㄅㄨˋ','半步，指很短的距離。《勸學》。'],
+[54,'鍥而不舍','讀音：ㄑㄧㄝˋ ㄦˊ ㄅㄨˋ ㄕㄜˇ','鍥是刻。《勸學》「鍥而不舍，金石可鏤」。'],
+[55,'矜寡孤獨','讀音：ㄍㄨㄢ ㄍㄨㄚˇ ㄍㄨ ㄉㄨˊ','矜同「鰥」，老而無妻的人。《大同與小康》。'],
+[56,'句讀','讀音：ㄐㄩˋ ㄉㄡˋ','文句停頓的地方。《師說》「習其句讀者」。'],
+[57,'郯子','讀音：ㄊㄢˊ ㄗˇ','春秋時郯國國君。《師說》。'],
+[58,'蓊翳','讀音：ㄨㄥˇ ㄧˋ','草木茂盛濃密，遮蔽陽光。《北投硫穴記》。'],
+[59,'逶迤','讀音：ㄨㄟ ㄧˊ','道路彎曲綿長的樣子。《北投硫穴記》。'],
+[60,'蓽路藍縷','讀音：ㄅㄧˋ ㄌㄨˋ ㄌㄢˊ ㄌㄩˇ','形容創業艱辛。《臺灣通史序》。'],
+[61,'闤闠','讀音：ㄏㄨㄢˊ ㄏㄨㄟˋ','市區、街市。《鹿港乘桴記》。'],
+[62,'倥傯','讀音：ㄎㄨㄥˇ ㄗㄨㄥˇ','事情急迫、困苦窘迫。《臺灣通史序》「兵馬倥傯」。']]);
+A('chx',[
+[1,'再接再厲','字形：「厲」，不寫作「勵」','厲是磨礪、奮勉。再接再厲比喻一次又一次地努力。'],
+[2,'一籌莫展','字形：「籌」，不寫作「愁」','籌是計策、辦法。一籌莫展是一點辦法也想不出。'],
+[3,'美輪美奐','字形：「輪」「奐」，不寫作「侖」「煥」','輪是高大，奐是盛多。形容房屋高大華麗。'],
+[4,'針砭','字形：「砭」，不寫作「貶」','砭是古代治病用的石針。比喻指出錯誤、規勸改過。'],
+[5,'變本加厲','字形：「厲」，不寫作「利」','厲是嚴重。比喻情況比原來更加嚴重。'],
+[6,'飲鴆止渴','字形：「鴆」，不寫作「酖」「鳩」','鴆是傳說中羽毛有劇毒的鳥，以其羽泡酒可毒死人。'],
+[7,'責無旁貸','字形：「貸」，不寫作「待」','貸是推卸。責任自己承擔，不能推給別人。'],
+[8,'一絲不苟','字形：「苟」，不寫作「茍」','苟是隨便、馬虎。一絲不苟是一點也不馬虎。'],
+[9,'戛然而止','字形：「戛」，不寫作「嘎」','戛ㄐㄧㄚˊ，形容聲音突然中止。'],
+[10,'好高騖遠','字形：「騖」，不寫作「鶩」','騖是追求、奔馳。比喻不切實際地追求過高、過遠的目標。'],
+[11,'趨之若鶩','字形：「鶩」，不寫作「騖」','鶩是鴨子，像鴨群般爭相奔往。與「好高騖遠」的「騖」要區分。'],
+[12,'嘔心瀝血','字形：「瀝」，不寫作「歷」','瀝是一滴一滴地落下。比喻費盡心思。'],
+[13,'重蹈覆轍','字形：「蹈」「轍」，不寫作「導」「撤」','蹈是踩；覆轍是翻車的車輪痕跡。比喻再犯同樣的錯誤。'],
+[14,'振聾發聵','字形：「聵」，不寫作「潰」','聵是天生耳聾。比喻喚醒糊塗的人。'],
+[15,'不脛而走','字形：「脛」，不寫作「徑」','脛是小腿。沒有腿卻能跑，比喻消息傳得很快。'],
+[16,'如火如荼','字形：「荼」，不寫作「茶」','荼是茅草的白花。形容氣勢旺盛、熱烈。'],
+[17,'噤若寒蟬','字形：「噤」，不寫作「禁」','噤是閉口不作聲。形容不敢說話。'],
+[18,'為虎作倀','字形：「倀」，不寫作「長」','倀是傳說中被老虎吃掉後變成替虎引路的鬼。比喻幫壞人做壞事。'],
+[19,'汗流浹背','字形：「浹」，不寫作「夾」','浹是濕透。汗水流得濕透了背。'],
+[20,'眾口鑠金','字形：「鑠」，不寫作「爍」','鑠是熔化。眾人說的話連金屬都能熔化，比喻輿論力量大。'],
+[21,'罄竹難書','字形：「罄」，不寫作「磬」','罄是用盡；磬是樂器。用盡竹子也寫不完。'],
+[22,'迥然不同','字形：「迥」，不寫作「迴」','迥ㄐㄩㄥˇ，差得很遠。'],
+[23,'一曝十寒','字形：「曝」，不寫作「暴」','曝ㄆㄨˋ，曬。曬一天、凍十天，比喻做事沒有恆心。'],
+[24,'膾炙人口','字形：「膾」，不寫作「燴」','膾是細切的肉，炙是烤肉。比喻詩文受人稱讚、廣為流傳。'],
+[25,'披荊斬棘','字形：「棘」，不寫作「刺」','荊、棘都是帶刺的灌木。比喻開創事業時克服許多困難。'],
+[26,'錙銖必較','字形：「錙」，不寫作「緇」','錙、銖是古代極小的重量單位。形容對很小的事也計較。'],
+[27,'莫衷一是','字形：「衷」，不寫作「終」','衷是折中、決定。意見太多，無法決定哪一個才對。'],
+[28,'川流不息','字形：「川」，不寫作「穿」','川是河流。像河水一樣不停流動。'],
+[29,'針鋒相對','字形：「鋒」，不寫作「峰」','鋒是尖端。針尖對針尖，比喻雙方意見、行動尖銳對立。'],
+[30,'鬼鬼祟祟','字形：「祟」，不寫作「崇」','祟是鬼怪作怪。形容行動偷偷摸摸，不光明。'],
+[31,'暴殄天物','字形：「殄」，不寫作「珍」','殄ㄊㄧㄢˇ，滅絕、糟蹋。比喻任意浪費、糟蹋東西。'],
+[32,'沆瀣一氣','字形：「沆瀣」，不寫作「流瀣」','沆瀣是夜間的水氣。比喻氣味相投的人勾結在一起，多用於壞事。'],
+[33,'如坐針氈','字形：「氈」，不寫作「砧」','氈是用毛製成的墊子。像坐在插滿針的墊子上，形容心神不安。'],
+[34,'義無反顧','字形：「反」，不寫作「返」','反顧是回頭看。為了正義，絕不猶豫退縮。'],
+[35,'不勝枚舉','字形：「勝」，不寫作「甚」','勝ㄕㄥ，盡。數量太多，不能一一列舉。']]);
+const DOMKEYS={hist:['tw','world'],chi:['chi','chz','chx']};
+const bySubj=s=>KB.filter(k=>(DOMKEYS[s]||[s]).includes(k.s));
+const hist=()=>KB.filter(k=>k.s==='tw'||k.s==='world');
+
+/* ===== 狀態（依帳號分開儲存）===== */
+let user=null,st={m:[],r:[],cal:{},chat:[],hideChat:false,box:{}};
+const today=()=>{const d=new Date();return fmt(d.getFullYear(),d.getMonth(),d.getDate())};
+const fmt=(y,m,d)=>`${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+const key=()=>'p_'+user.name;
+function save(){LS.setItem(key(),JSON.stringify(st));stats()}
+function load(){try{st=Object.assign({m:[],r:[],cal:{},chat:[],hideChat:false,box:{}},JSON.parse(LS.getItem(key())||'{}'))}catch(e){}
+ if(!Array.isArray(st.m))st.m=[];if(!Array.isArray(st.r))st.r=[];if(!st.cal||typeof st.cal!=='object')st.cal={};if(!Array.isArray(st.chat))st.chat=[];if(!st.box||typeof st.box!=='object'||Array.isArray(st.box))st.box={}}
+const pubChats=()=>JSON.parse(LS.getItem('pub_chat')||'[]');
+
+/* ===== 登入 ===== */
+const users=()=>{try{return Object.assign(Object.create(null),JSON.parse(LS.getItem('users')||'{}'))}catch(e){return Object.create(null)}};
+function avGrid(id){const g=$(id);g.innerHTML='';AV.forEach(a=>{const s=document.createElement('span');s.textContent=a;if(a===selAv)s.className='on';s.onclick=()=>{selAv=a;document.querySelectorAll('.av span').forEach(e=>e.classList.toggle('on',e.textContent===a))};g.appendChild(s)})}
+function authTab(t){$('fl').style.display=t=='l'?'flex':'none';$('fr').style.display=t=='r'?'flex':'none';$('tl').classList.toggle('on',t=='l');$('tr').classList.toggle('on',t=='r')}
+const RESERVED=['guest','admin','system'],RESERVED_NICK=['客服','系統','管理員','admin','system'];
+const newSalt=()=>Array.from((window.crypto&&crypto.getRandomValues)?crypto.getRandomValues(new Uint8Array(12)):Array.from({length:12},()=>Math.random()*256|0),b=>b.toString(16).padStart(2,'0')).join('');
+async function hashPw(pw,salt,alg){
+ alg=alg||((window.crypto&&crypto.subtle)?'p1':'f1');
+ if(alg==='p1'){if(!(window.crypto&&crypto.subtle))return null;
+  const k=await crypto.subtle.importKey('raw',new TextEncoder().encode(pw),'PBKDF2',false,['deriveBits']);
+  const bits=await crypto.subtle.deriveBits({name:'PBKDF2',salt:new TextEncoder().encode(salt),iterations:120000,hash:'SHA-256'},k,256);
+  return 'p1:'+btoa(String.fromCharCode(...new Uint8Array(bits)))}
+ let h1=0xdeadbeef,h2=0x41c6ce57;const t=salt+pw;
+ for(let i=0;i<t.length;i++){const c=t.charCodeAt(i);h1=Math.imul(h1^c,2654435761);h2=Math.imul(h2^c,1597334677)}
+ h1=Math.imul(h1^(h1>>>16),2246822507)^Math.imul(h2^(h2>>>13),3266489909);h2=Math.imul(h2^(h2>>>16),2246822507)^Math.imul(h1^(h1>>>13),3266489909);
+ return 'f1:'+(4294967296*(2097151&h2)+(h1>>>0)).toString(36)}
+async function doReg(e){e.preventDefault();const M=t=>{$('authMsg').textContent=t},u=$('ru').value.trim(),n=$('rn').value.trim(),p=$('rp').value,all=users();
+ if(!/^[A-Za-z0-9_.\-\u4e00-\u9fa5]{2,20}$/.test(u))return M('帳號需為 2–20 字（中英文、數字、_ . -）');
+ if(RESERVED.includes(u.toLowerCase()))return M('此帳號名稱為系統保留，請換一個');
+ if(all[u])return M('此帳號已存在，請直接登入');
+ if(!n||n.length>12)return M('暱稱需為 1–12 字');
+ if(RESERVED_NICK.includes(n.toLowerCase()))return M('此暱稱為系統保留，請換一個');
+ if(p.length<6)return M('密碼至少 6 個字元');
+ if(p!==$('rp2').value)return M('兩次輸入的密碼不一致');
+ const salt=newSalt(),h=await hashPw(p,salt);
+ all[u]={salt,h,nick:n,av:selAv};LS.setItem('users',JSON.stringify(all));
+ enter({name:u,nickname:n,avatar:selAv,guest:false})}
+async function doLogin(e){e.preventDefault();const M=t=>{$('authMsg').textContent=t},u=$('lu').value.trim(),a=users()[u],p=$('lp').value;
+ if(!a)return M('帳號或密碼錯誤');
+ let ok=false;
+ if(a.h){const h=await hashPw(p,a.salt,a.h.slice(0,2));
+  if(h===null)return M('此環境無法驗證這組密碼，請改用 https 或 localhost 開啟');
+  ok=h===a.h}
+ else if(typeof a.pw==='string'&&a.pw===p){ok=true;const all=users(),salt=newSalt();all[u].salt=salt;all[u].h=await hashPw(p,salt);delete all[u].pw;LS.setItem('users',JSON.stringify(all))}
+ if(!ok)return M('帳號或密碼錯誤');
+ enter({name:u,nickname:a.nick,avatar:a.av,guest:false})}
+function guest(){enter({name:'GUEST',nickname:'訪客體驗',avatar:'👀',guest:true})}
+function enter(u){user=u;LS.setItem('sess',JSON.stringify(u));load();
+ $('auth').style.display='none';$('app').style.display='flex';$('storeWarn').style.display=LS.ok?'none':'block';$('who').textContent=`${u.avatar} ${u.nickname}`;
+ stats();go('home');if(!LS.getItem('seen_guide')){guide();LS.setItem('seen_guide',1)}}
+function logout(){if(confirm('確定要登出？')){LS.removeItem('sess');location.reload()}}
+
+/* ===== 導覽 ===== */
+let mapObj=null;
+function go(v,arg){
+ ['home','subj','study','exams','quiz','cal','chat','map','time'].forEach(x=>$('v-'+x).style.display=x===v?'block':'none');
+ if(v==='home')renderJoke();if(v==='study')renderStudy(arg);if(v==='subj')renderSubj(arg);if(v==='exams')examTab(1);if(v==='quiz')quizInit();
+ if(v==='cal')renderCal();if(v==='chat')chatTab('pub');if(v==='time')renderTime();if(v==='map')initMap();
+}
+function side(){const on=$('side').classList.toggle('on');$('sideBg').style.display=on?'block':'none'}
+function guide(){$('mGuide').classList.add('on')}
+function stats(){const ids=new Set(KB.map(k=>k.id));$('sM').textContent=st.m.filter(x=>ids.has(x)).length;$('sR').textContent=st.r.filter(x=>ids.has(x)).length;$('sD').textContent=KB.filter(k=>{const b=st.box[k.id];return b?b.due<=today():st.r.includes(k.id)}).length;$('kbN').textContent=KB.length}
+
+/* ===== 冷笑話 ===== */
+function renderJoke(){const d=new Date(),n=Math.floor((Date.UTC(d.getFullYear(),d.getMonth(),d.getDate()))/864e5);ji=n%JOKES.length;const j=JOKES[ji];
+ $('jS').textContent=`[${j[0]}]　${today()}`;$('jQ').textContent=j[1];
+ $('jA').textContent='💡 點擊顯示解答';$('jA').onclick=()=>$('jA').textContent='💡 '+j[2]}
+
+/* ===== 各科複習 ===== */
+let curSubj='math';
+function renderStudy(s){if($('stSearch'))$('stSearch').value='';
+ if(s){curSubj=s;if(s==='math'){mCat=null;mId=null}}
+ $('stTitle').textContent=SUBJ[curSubj]+'　知識點與詳解';
+ $('stSub').textContent=`共 ${bySubj(curSubj).length} 個知識點，展開可看詳解，並標記熟練度。`;
+ $('stTabs').innerHTML=Object.keys(SUBJ).map(k=>`<button class="tab ${k===curSubj?'on':''}" onclick="renderStudy('${k}')">${SUBJ[k]}</button>`).join('')+`<button class="btn alt" onclick="go('subj','${curSubj}')">🏠 科目主頁</button><button class="btn blue" onclick="subjQuiz(1)">🗂️ 本科閃卡</button><button class="btn blue" onclick="subjQuiz(2)">📝 本科測驗</button>`;
+ $('stList').innerHTML=studyHtml();
+}
+const CATORDER=['對數與指數','代數與方程式','不等式','數列與級數','排列組合與二項式','機率與統計','三角函數','三角函數與解三角形','向量','平面幾何','解析幾何','空間向量與平面','圓錐曲線','複數與多項式','矩陣與線性方程','線性規劃','數論','微積分','指數與指數函數'];
+function mcat(n){const r=[[1,10,0],[11,11,1],[12,12,2],[13,13,1],[14,15,6],[16,18,3],[19,25,7],[26,26,9],[27,27,10],[28,29,8],[30,32,12],[33,35,4],[36,39,5],[40,46,17],[47,49,13],[50,52,16],[53,54,3],[55,55,2],[56,58,9],[59,60,14],[61,61,15],[62,63,2],[64,66,4],[67,72,7],[73,81,17],[82,84,9],[85,86,11],[87,88,10],[89,92,13],[93,95,3],[96,96,1],[97,97,2],[98,99,9],[100,100,13],[101,109,5],[110,118,11],[119,127,14],[128,135,3],[136,136,4],[137,140,2],[141,142,17],[143,148,16],[149,150,10],[151,157,7],[158,163,9],[164,168,10],[169,176,17],[177,180,4],[181,185,16],[186,190,5],[191,195,1],[196,199,13],[200,200,8],[201,231,18]];for(const x of r)if(n>=x[0]&&n<=x[1])return CATORDER[x[2]];return '其他'}
+function itemHtml(k,n){const F=(window.FULLTEXT||{})[k.id];
+ return `<div class="card"><h3><span>${n}. ${esc(k.t)}</span>${k.y?`<span class="muted">${k.y}</span>`:''}</h3><div class="box">${mt(k,k.d)}</div>
+ <details><summary>💡 展開證明與詳解</summary><div class="box" style="border-color:#f59e0b">${mt(k,k.x)}</div></details>
+ ${k.s==='chi'?(F?`<details><summary>📜 展開全文</summary><div class="box" style="white-space:pre-line;border-color:#f59e0b;line-height:1.9">${esc(F)}</div></details>`:'<div class="muted" style="margin-top:6px">全文尚未收錄</div>'):''}${statusHtml(k.id)}</div>`}
+function studyHtml(){if(curSubj==='math')return mathView();let n=0;
+ if(curSubj==='hist')return [['tw','臺灣史'],['world','世界史']].map(x=>`<div class="card" style="background:#0f172a;border-color:#f59e0b"><h3 style="margin:0">📂 ${x[1]}</h3></div>`+KB.filter(k=>k.s===x[0]).map(k=>itemHtml(k,++n)).join('')).join('');
+ if(curSubj==='chi')return [['chi','古文選文'],['chz','字音（課文中的難字與破音字）'],['chx','字形（形近、同音易錯）']].map(x=>`<div class="card" style="background:#0f172a;border-color:#f59e0b"><h3 style="margin:0">${x[1]}</h3></div>`+KB.filter(k=>k.s===x[0]).map(k=>itemHtml(k,++n)).join('')).join('');
+ return bySubj(curSubj).map(k=>itemHtml(k,++n)).join('')}
+
+function mf(s){const st=[],tk=h=>{st.push(h);return String.fromCharCode(0xE100+st.length-1)},U='\\uE100-\\uF8FF',
+ FC='(?:[A-Za-z0-9_^!²³⁴⁵⁶⁷⁸⁹ⁿ⁻¹₀-₉ₐ-ₜπ√θα-ωΣ·×.′'+U+']|\\([^()]*\\)|\\[[^\\[\\]]*\\])',
+ FR=new RegExp('('+FC+'+)\\s*/\\s*('+FC+'+)'),
+ SP=/([\^_])(\(((?:[^()]|\([^()]*\))*)\)|[−+]?[A-Za-z0-9\uE100-\uF8FF]+)/,
+ strip=x=>{const o=x[0],c=x[x.length-1];if(!((o==='('&&c===')')||(o==='['&&c===']')))return x;let d=0;for(let i=0;i<x.length;i++){if('(['.includes(x[i]))d++;if(')]'.includes(x[i]))d--;if(d===0&&i<x.length-1)return x}return x.slice(1,-1)};
+ function inner(t){let m;
+  t=t.replace(/\[\[([^\[\]]*)\],\s*\[([^\[\]]*)\]\]/g,(a,r1,r2)=>tk('<span class="mx"><table>'+[r1,r2].map(r=>'<tr>'+r.split(',').map(c=>'<td>'+inner(c.trim())+'</td>').join('')+'</tr>').join('')+'</table></span>'));
+  while((m=FR.exec(t)))t=t.slice(0,m.index)+tk('<span class="fr"><span>'+inner(strip(m[1]))+'</span><span>'+inner(strip(m[2]))+'</span></span>')+t.slice(m.index+m[0].length);
+  t=t.replace(/\b([CHP])\(([^(),]+),([^()]+)\)/g,(a,l,x,y)=>tk(l+'<span class="cb"><span>'+inner(x)+'</span><span>'+inner(y)+'</span></span>'));
+  while((m=SP.exec(t))){const tag=m[1]==='^'?'sup':'sub',c=m[3]!==undefined?m[3]:m[2];t=t.slice(0,m.index)+tk('<'+tag+'>'+inner(c)+'</'+tag+'>')+t.slice(m.index+m[0].length)}
+  return t}
+ let t=inner(String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'));
+ while(/[\uE100-\uF8FF]/.test(t))t=t.replace(/[\uE100-\uF8FF]/g,c=>st[c.charCodeAt(0)-0xE100]);return t}
+const mt=(k,t)=>k.s==='math'?mf(t):esc(t);
+let mCat=null,mId=null,mLv='all';
+function mOpen(i){mCat=i;mId=null;renderStudy()}
+function mItem(id){mId=id;renderStudy()}
+function mBack(n){if(n===0)mCat=null;mId=null;renderStudy()}
+const DISP=[0,18,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17];
+const CATLEV={'對數與指數':'AB','指數與指數函數':'AB','代數與方程式':'AB','不等式':'AB','數列與級數':'AB','排列組合與二項式':'AB','機率與統計':'AB','三角函數':'?','三角函數與解三角形':'?','向量':'AB','平面幾何':'?','解析幾何':'AB','空間向量與平面':'A','圓錐曲線':'?','複數與多項式':'?','矩陣與線性方程':'A','線性規劃':'?','數論':'?','微積分':'J'};
+const MLEV={};
+[5,6,7,9,19,20,21,29,59,67,69,72,110,111,113,114,115,137,151,155,157,200].forEach(n=>MLEV[n]='A');
+[14,15,22,23,24,25,26,28,48,49,89,92,112,118,152,153,154,196,197,198].forEach(n=>MLEV[n]='AB');
+[222,223,224].forEach(n=>MLEV[n]='B');
+[47,91,100,193,199].forEach(n=>MLEV[n]='J');
+[60,63,68,70,71,90,103,108,109,116,117,130,132,133,156,168,187].forEach(n=>MLEV[n]='?');
+const setLv=(l,a)=>a.forEach(n=>MLEV[n]=l);/* 依課綱附錄四（A/B 差異表、甲/乙差異表）*/
+setLv('J',[30,31,32,40,42,43,74,79,80,81,105,168,196]);
+setLv('JY',[18,39,41,45,77,78,89,92,134,172,174,187,197,198]);
+setLv('Y',[61]);
+setLv('X',[44,46,73,75,76,130,132,133,141,142,169,170,171,175,176]);
+setLv('A',[29,68,214,215,217]);
+const LVTXT={AB:'數A・數B',A:'僅數A',B:'僅數B',J:'選修數學甲',Y:'選修數學乙',JY:'選修數學甲・乙',X:'附錄未列（延伸）',"?":'待核對'};
+const mnum=k=>+k.id.replace('math','');
+KB.forEach(k=>{if(k.s==='math'){const n=mnum(k);k.cat=k.cat||mcat(n);k.lv=k.lv||MLEV[n]||CATLEV[k.cat]||'?'}});
+const lvOf=k=>k.lv||'?';
+const lvOK=k=>{const l=lvOf(k);return mLv==='all'||(mLv==='A'?(l==='AB'||l==='A'):(l==='AB'||l==='B'))};
+function mSetLv(v){mLv=v;mCat=null;mId=null;renderStudy()}
+function mStatus(id){const m=st.m.includes(id),r=st.r.includes(id);return `<div class="st"><button class="${m?'m':''}" onclick="tog('${id}','m')">${m?'已標記為熟練':'標記為熟練'}</button><button class="${r?'r':''}" onclick="tog('${id}','r')">${r?'已標記為不熟':'標記為不熟'}</button></div>`}
+function mathView(){const L=bySubj('math'),inCat=c=>L.filter(k=>k.cat===CATORDER[c]&&lvOK(k));
+ if(mCat===null){let n=0;
+  return `<div class="lvbar">範圍：${[['all','全部'],['A','數學A'],['B','數學B']].map(x=>`<a class="${mLv===x[0]?'on':''}" onclick="mSetLv('${x[0]}')">${x[1]}</a>`).join('')}</div>
+  <div class="muted" style="margin:8px 0 12px">依《十二年國教課綱》數學領域附錄四「必修 A 類、B 類與選修數學甲、乙差異對照表」整理。標「選修數學甲／乙」者不屬必修；「附錄未列」為延伸內容；「待核對」尚未逐條比對，請以課綱為準。</div>
+  <div class="folders">`+DISP.map(i=>{const g=inCat(i);if(!g.length)return '';n++;return `<div class="fold" onclick="mOpen(${i})"><span>第${n}章　${CATORDER[i]}</span><span class="muted">${g.length} 條</span></div>`}).join('')+'</div>'}
+ const g=inCat(mCat),crumb=`<div class="crumb"><a onclick="mBack(0)">數學</a> › ${mId?`<a onclick="mBack(1)">${CATORDER[mCat]}</a>`:CATORDER[mCat]}</div>`;
+ if(!mId)return crumb+g.map(k=>`<div class="row" onclick="mItem('${k.id}')"><b>${esc(k.t)}</b><span class="lv">${LVTXT[lvOf(k)]}</span>${st.m.includes(k.id)?'<span class="muted">　已熟練</span>':st.r.includes(k.id)?'<span class="muted">　待複習</span>':''}<div class="muted" style="margin-top:4px">${mf(k.d)}</div></div>`).join('');
+ const k=g.find(x=>x.id===mId),i=g.indexOf(k);
+ return crumb+`<div class="sheet"><h3 style="font-size:1.1rem;margin-bottom:4px">${esc(k.t)}<span class="lv">${LVTXT[lvOf(k)]}</span></h3><div class="big">${mf(k.d)}</div><details><summary>證明</summary><div class="proof">${mf(k.x)}</div></details>${mStatus(k.id)}<div class="cfg" style="margin:12px 0 0"><button class="btn alt" ${i>0?'':'disabled'} onclick="mItem('${i>0?g[i-1].id:''}')">上一條</button><button class="btn alt" ${i<g.length-1?'':'disabled'} onclick="mItem('${i<g.length-1?g[i+1].id:''}')">下一條</button></div></div>`}
+function doSearch(q){q=q.trim().toLowerCase();
+ if(!q){$('stList').innerHTML=studyHtml();return}
+ const hits=KB.filter(k=>(k.t+' '+k.d).toLowerCase().includes(q)).slice(0,50);
+ $('stList').innerHTML=hits.length?`<div class="muted" style="margin-bottom:6px">找到 ${hits.length}${hits.length===50?'+':''} 筆（點選開啟）</div>`+hits.map(k=>`<div class="row" onclick="openHit('${k.id}')"><b>${esc(k.t)}</b><span class="lv">${SUB_NAME[k.s]}${k.s==='math'?'・'+LVTXT[lvOf(k)]:''}</span><div class="muted" style="margin-top:4px">${mt(k,k.d)}</div></div>`).join(''):'<div class="muted">沒有符合的知識點。</div>'}
+function openHit(id){const k=KB.find(x=>x.id===id);if(!k)return;if(k.s==='math'){curSubj='math';mLv='all';mCat=CATORDER.indexOf(k.cat);mId=id}else curSubj=({chz:'chi',chx:'chi',tw:'hist',world:'hist'})[k.s]||k.s;renderStudy()}
+function subjUnits(s){
+ if(s==='math')return CATORDER.map((c,i)=>({name:c,items:bySubj('math').filter(k=>k.cat===c),act:`mGo(${i})`})).filter(u=>u.items.length);
+ if(s==='hist')return [['tw','臺灣史'],['world','世界史']].map(x=>({name:x[1],items:KB.filter(k=>k.s===x[0]),act:"go('study','hist')"}));
+ if(s==='chi')return [['chi','古文選文'],['chz','字音'],['chx','字形']].map(x=>({name:x[1],items:KB.filter(k=>k.s===x[0]),act:"go('study','chi')"}));
+ return [{name:'全部知識點',items:bySubj(s),act:`go('study','${s}')`}]}
+function mGo(i){curSubj='math';mLv='all';mCat=i;mId=null;go('study')}
+function renderSubj(s){curSubj=s;const all=bySubj(s),m=all.filter(k=>st.m.includes(k.id)).length,r=all.filter(k=>st.r.includes(k.id)).length;
+ const bar=(a,b)=>`<div style="height:8px;background:#0f172a;border-radius:4px;overflow:hidden;border:1px solid #334155"><div style="width:${b?Math.round(a*100/b):0}%;height:100%;background:#34d399"></div></div>`;
+ $('v-subj').innerHTML=`<div class="card"><h3><span>${SUBJ[s]}　科目主頁</span></h3><div class="muted">${SUBJ_DESC[s]}</div><div style="margin:10px 0">${bar(m,all.length)}</div>
+ <div class="muted">共 ${all.length} 個知識點　已熟練 <b style="color:#34d399">${m}</b>　待複習 <b style="color:#f87171">${r}</b></div>
+ <div class="cfg" style="margin:12px 0 0"><button class="btn" onclick="go('study','${s}')">📖 進入複習</button><button class="btn blue" onclick="subjQuiz(1)">🗂️ 本科閃卡</button><button class="btn blue" onclick="subjQuiz(2)">📝 本科測驗</button>${s==='hist'?`<button class="btn alt" onclick="go('map')">🗺️ 歷史地圖</button><button class="btn alt" onclick="go('time')">⏳ 年代軸</button>`:''}</div></div>
+ <div class="muted" style="margin:6px 0">單元</div>`+subjUnits(s).map(u=>{const a=u.items.filter(k=>st.m.includes(k.id)).length;return `<div class="row" onclick="${u.act}"><b>${esc(u.name)}</b><span class="lv">${u.items.length} 條</span><span class="muted">　已熟練 ${a}</span><div style="margin-top:6px">${bar(a,u.items.length)}</div></div>`}).join('')}
+function subjQuiz(n){go('quiz');qRows=[{d:curSubj,t:'mix',n:10}];quizTab(n);startQuiz()}
+
+/* ===== 實際操作導覽：每一步都要真的做，做完自動進下一步 ===== */
+let tourI=-1,tourT=null,tourScrolled=false;
+const byText=(sel,t)=>[...document.querySelectorAll(sel)].find(e=>e.textContent.includes(t)&&e.offsetParent!==null);
+const vis=id=>$(id).style.display==='block';
+const TOUR=[
+ {pre:()=>go('home'),el:()=>$('subjPortal'),t:'這裡是五個科目的入口。請點「📐 數學」，進入數學主頁。',wait:()=>vis('v-subj')},
+ {el:()=>byText('#v-subj .btn','進入複習'),t:'每個科目都有主頁，顯示進度與單元。請按「📖 進入複習」。',wait:()=>vis('v-study')},
+ {el:()=>document.querySelector('#v-study .fold'),t:'數學依章節整理。請點開任一章。',wait:()=>mCat!==null},
+ {el:()=>document.querySelector('#v-study .row'),t:'請點一條知識點，看公式與證明。',wait:()=>mId!==null},
+ {el:()=>byText('#v-study .st button','標記為熟練'),t:'讀完後請按「標記為熟練」（或「標記為不熟」），系統會記錄進度。',wait:()=>st.m.includes(mId)||st.r.includes(mId)},
+ {el:()=>byText('nav .btn','選單'),t:'請點「☰ 選單」，打開側邊選單。',wait:()=>$('side').classList.contains('on')},
+ {el:()=>byText('#side .mi','測驗閃卡'),t:'請點「🧠 測驗閃卡」。（選單也可用「✕ 關閉選單」、點旁邊暗處或按 Esc 關閉。）',wait:()=>vis('v-quiz')},
+ {pre:()=>{if(qMode!==1)quizTab(1)},el:()=>byText('#qCfg .btn','開始'),t:'這裡設定題目組合：每一組可選科目、題數（測驗模式還能選題型），按「➕ 新增一組」可混合。先直接按「開始」做閃卡。',wait:()=>!!document.querySelector('#qArea .fc')},
+ {el:()=>document.querySelector('#qArea .cfg'),t:'點卡片可翻面看詳解。看完後按「記得」或「還不熟」，系統會安排下次複習時間。',wait:()=>qi>=1},
+ {pre:()=>go('cal'),el:()=>$('calG'),t:'剛才的操作已自動打卡，有紀錄的日期會出現橘點。也可以在下方手動寫學習心得。'},
+ {pre:()=>{go('home');if(!$('side').classList.contains('on'))side()},el:()=>byText('#side .mi','個人設定'),t:'資料只存在這個瀏覽器。記得定期到「⚙️ 個人設定與備份」匯出備份。導覽到此結束！'}];
+function tourGo(i){tourI=i;const s=TOUR[i];if(!s){tourEnd();return}
+ if(s.pre)s.pre();
+ $('tourTip').style.display='block';$('tourStep').textContent=`導覽 ${i+1} / ${TOUR.length}`;$('tourTxt').textContent=s.t;
+ $('tourNext').textContent=s.wait?'略過此步':(i==TOUR.length-1?'完成':'下一步');
+ tourScrolled=false;clearInterval(tourT);tourT=setInterval(tourTick,150);tourTick()}
+function tourTick(){const s=TOUR[tourI];if(!s)return;
+ if(s.wait&&s.wait()){clearInterval(tourT);setTimeout(()=>tourGo(tourI+1),350);return}
+ const e=s.el&&s.el(),h=$('tourHL'),tip=$('tourTip');
+ if(!e){h.style.display='none';return}
+ if(!tourScrolled){e.scrollIntoView({block:'center'});tourScrolled=true}
+ const r=e.getBoundingClientRect();
+ Object.assign(h.style,{display:'block',left:r.left-4+'px',top:r.top-4+'px',width:r.width+8+'px',height:r.height+8+'px'});
+ if(r.top>innerHeight/2){tip.style.top='12px';tip.style.bottom='auto'}else{tip.style.bottom='12px';tip.style.top='auto'}}
+function startTour(){$('mGuide').classList.remove('on');tourGo(0)}
+function tourNext(){clearInterval(tourT);tourGo(tourI+1)}
+function tourEnd(){clearInterval(tourT);tourI=-1;$('tourHL').style.display='none';$('tourTip').style.display='none';if($('side').classList.contains('on'))side()}
+function statusHtml(id){const m=st.m.includes(id),r=st.r.includes(id);
+ return `<div class="st"><button class="${m?'m':''}" onclick="tog('${id}','m')">${m?'✅ 已熟練':'標記熟練'}</button><button class="${r?'r':''}" onclick="tog('${id}','r')">${r?'❌ 待複習':'標記不熟'}</button></div>`}
+function tog(id,t){
+ 
+ if(t==='m'){if(st.m.includes(id))st.m=st.m.filter(x=>x!==id);else{st.m.push(id);st.r=st.r.filter(x=>x!==id);log('熟練：'+KB.find(k=>k.id===id).t)}}
+ else{if(st.r.includes(id))st.r=st.r.filter(x=>x!==id);else{st.r.push(id);st.m=st.m.filter(x=>x!==id)}}
+ save();renderStudy()}
+
+/* ===== 歷屆試題 ===== */
+const EXAM={數學:'對數運算與指數律、三角函數、數列級數、機率統計',國文:'古文閱讀、文白對照、修辭、跨文本比較',地理:'氣候圖判讀、板塊與地形、GIS、區域發展',公民:'經濟供需、憲法權利、比例原則、刑事程序',歷史:'臺灣史（荷鄭清日）、世界史（近代歐洲、兩次大戰）、史料判讀'};
+function examTab(n){$('et1').classList.toggle('on',n==1);$('et2').classList.toggle('on',n==2);
+ $('exArea').innerHTML=n==1?Object.keys(EXAM).map(k=>`<div class="card"><h3>${k}</h3><div class="box">${EXAM[k]}</div></div>`).join('')
+ :`<div class="card"><h3>大考中心官方網站</h3><div class="muted" style="margin-bottom:8px">學測、分科測驗歷年試題與參考答案請至官網「試題與評分標準」下載。</div><a class="btn" style="text-decoration:none;display:inline-block" href="https://www.ceec.edu.tw/" target="_blank" rel="noopener">前往 CEEC 官網 ↗</a></div>`}
+
+/* ===== 測驗與閃卡 ===== */
+let qMode=1,pool=[],qi=0,score=0;
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]]}return a};
+let qT={};
+const QDOM=()=>[['ALL','🌐 全科混合'],...Object.keys(SUBJ).map(k=>[k,SUBJ[k]]),['UNM','❌ 僅不熟知識點'],['DUE','⏰ 今日到期（間隔複習）']];
+const QTYPE=[['mix','🎲 綜合題型'],['d2t','看敘述選名稱'],['t2d','看名稱選敘述'],['year','年份題（僅歷史）']];
+let qRows=[{d:'ALL',t:'mix',n:10}];
+function renderQCfg(){
+ const opt=(a,v)=>a.map(x=>`<option value="${x[0]}"${x[0]==v?' selected':''}>${x[1]}</option>`).join('');
+ $('qCfg').innerHTML=`<div class="muted" style="margin-bottom:8px">題目組合：每一組可選科目${qMode==2?'、題型':''}與題數，可按「新增一組」混合出題</div><ul style="padding-left:20px">`+
+ qRows.map((r,i)=>`<li style="margin-bottom:8px"><span class="cfg" style="display:inline-flex;margin:0"><select class="in" onchange="qRows[${i}].d=this.value">${opt(QDOM(),r.d)}</select>${qMode==2?`<select class="in" onchange="qRows[${i}].t=this.value">${opt(QTYPE,r.t)}</select>`:''}<select class="in" onchange="qRows[${i}].n=+this.value;renderQCfg()">${[5,10,20].map(n=>`<option${n==r.n?' selected':''}>${n}</option>`).join('')}</select><span class="muted">題</span>${qRows.length>1?`<button class="btn alt" onclick="qDel(${i})">✕</button>`:''}</span></li>`).join('')+
+ `</ul><div class="cfg" style="margin:8px 0 0"><button class="btn alt" onclick="qAdd()">➕ 新增一組</button><button class="btn" onclick="startQuiz()">開始（共 ${qRows.reduce((a,r)=>a+r.n,0)} 題）</button></div>`}
+function qAdd(){if(qRows.length>=8)return;qRows.push({d:'ALL',t:'mix',n:10});renderQCfg()}
+function qDel(i){qRows.splice(i,1);renderQCfg()}
+function quizInit(){renderQCfg();$('qArea').innerHTML='<div class="muted">設定題目組合後按「開始」。</div>'}
+function quizTab(n){qMode=n;$('qt1').classList.toggle('on',n==1);$('qt2').classList.toggle('on',n==2);renderQCfg();$('qArea').innerHTML='<div class="muted">設定題目組合後按「開始」。</div>'}
+function getPool(){const used=new Set(),out=[];qT={};
+ qRows.forEach(r=>{let p=r.d==='ALL'?KB:r.d==='UNM'?KB.filter(k=>st.r.includes(k.id)):r.d==='DUE'?KB.filter(k=>{const b=st.box[k.id];return b?b.due<=today():st.r.includes(k.id)}):bySubj(r.d);
+  if(qMode==2&&r.t==='year')p=p.filter(k=>k.y);
+  shuffle(p).filter(k=>!used.has(k.id)).slice(0,r.n).forEach(k=>{used.add(k.id);out.push(k);qT[k.id]=qMode==2?r.t:'mix'})});
+ return shuffle(out)}
+function startQuiz(){pool=getPool();qi=0;score=0;
+ if(!pool.length){$('qArea').innerHTML='<div class="card">目前沒有符合的知識點（今日到期或標記「不熟」的題目會出現在這裡）。</div>';return}
+ qMode==1?showFC():showQ()}
+function showFC(){
+ if(qi>=pool.length){$('qArea').innerHTML='<div class="card">🎉 閃卡複習完成！</div>';return}
+ const k=pool[qi];
+ $('qArea').innerHTML=`<div class="muted" style="text-align:center;margin-bottom:6px">${qi+1} / ${pool.length}　${SUB_NAME[k.s]}</div>
+ <div class="fc" id="fc" onclick="this.classList.toggle('flip')"><div class="fci"><div class="f">${esc(k.t)}<div class="muted">點擊翻面</div></div>
+ <div class="b"><div class="box">${mt(k,k.d)}</div><div class="box" style="border-color:#f59e0b">${mt(k,k.x)}</div></div></div></div>
+ <div class="cfg" style="justify-content:center"><button class="btn alt" onclick="rate(0)">還不熟（明天再看）</button><button class="btn" onclick="rate(1)">記得（拉長間隔）</button></div>`}
+function rate(ok){const k=pool[qi];srs(k.id,ok);if(ok)log('完成閃卡：'+k.t);save();qi++;showFC()}
+const INTV=[1,2,4,8,16];
+function srs(id,ok){const b=(st.box[id]||{b:1}).b,nb=ok?Math.min(5,b+1):1,d=new Date();d.setDate(d.getDate()+INTV[nb-1]);
+ st.box[id]={b:nb,due:fmt(d.getFullYear(),d.getMonth(),d.getDate())};
+ if(ok){if(nb>=3){if(!st.m.includes(id))st.m.push(id);st.r=st.r.filter(x=>x!==id)}}
+ else{if(!st.r.includes(id))st.r.push(id);st.m=st.m.filter(x=>x!==id)}}
+const leak=k=>{const t=k.t.replace(/[《》「」（）()\s]/g,'');for(let i=0;i+3<=t.length;i++)if(k.d.includes(t.slice(i,i+3)))return true;return false};
+function mkQ(k,want){
+ const same=shuffle(KB.filter(o=>o.s===k.s&&o.id!==k.id&&o.t!==k.t)).slice(0,3),
+  ys=[...new Set(KB.filter(o=>o.y&&o.y!==k.y).map(o=>o.y))],types=['t2d'];
+ if(!leak(k))types.push('d2t');
+ if(k.y&&ys.length>=3)types.push('year','year');
+ const ty=(want&&want!=='mix')?(types.includes(want)?want:'t2d'):types[Math.random()*types.length|0];
+ if(ty==='year')return{stem:`「${esc(k.t)}」發生在哪一年（或年代）？`,opts:shuffle([k.y,...shuffle(ys).slice(0,3)]).map(y=>({h:esc(y)+' 年',ok:y===k.y}))};
+ if(ty==='t2d')return{stem:`下列何者最符合「${esc(k.t)}」？`,opts:shuffle([k,...same]).map(o=>({h:mt(o,o.d),ok:o.id===k.id}))};
+ return{stem:`下列何者與此敘述最相符？<br>「${mt(k,k.d)}」`,opts:shuffle([k,...same]).map(o=>({h:esc(o.t),ok:o.id===k.id}))}}
+function showQ(){
+ if(qi>=pool.length){$('qArea').innerHTML=`<div class="card"><h3>🏆 測驗完成</h3>得分：${score} / ${pool.length}</div>`;log(`完成模擬測驗：${score}/${pool.length}`);return}
+ const k=pool[qi],q=mkQ(k,qT[k.id]);
+ $('qArea').innerHTML=`<div class="card"><div class="muted">題目 ${qi+1} / ${pool.length}　${SUB_NAME[k.s]}</div><div style="font-weight:bold;margin:10px 0;line-height:1.6">${q.stem}</div><div id="opts"></div><div id="exp" class="box" style="display:none;border-color:#f59e0b"></div></div>`;
+ q.opts.forEach((o,i)=>{const b=document.createElement('button');b.className='opt';b.innerHTML='ABCD'[i]+'. '+o.h;
+  b.onclick=()=>{if($('opts').dataset.done)return;$('opts').dataset.done=1;
+   if(o.ok)score++;srs(k.id,o.ok);save();
+   b.classList.add(o.ok?'ok':'no');[...$('opts').children].forEach((c,j)=>{if(q.opts[j].ok)c.classList.add('ok')});
+   $('exp').style.display='block';$('exp').innerHTML=`<b>正解：${esc(k.t)}${k.y?'（'+k.y+' 年）':''}</b><br>${mt(k,k.d)}<br>${mt(k,k.x)}<br><button class="btn" style="margin-top:8px" onclick="qi++;showQ()">下一題 ➔</button>`};
+  $('opts').appendChild(b)})}
+
+/* ===== 學習日曆 ===== */
+let cy,cm,sel;
+function log(t){const d=today();(st.cal[d]=st.cal[d]||[]).push(t);save()}
+function renderCal(){const n=new Date();if(cy===undefined){cy=n.getFullYear();cm=n.getMonth();sel=today()}
+ $('calT').textContent=`${cy} 年 ${cm+1} 月`;const g=$('calG');g.innerHTML='';
+ const first=new Date(cy,cm,1).getDay(),days=new Date(cy,cm+1,0).getDate();
+ for(let i=0;i<first;i++)g.appendChild(document.createElement('div'));
+ for(let d=1;d<=days;d++){const ds=fmt(cy,cm,d),c=document.createElement('div');
+  c.className='cd'+(ds===today()?' today':'')+(ds===sel?' sel':'')+(st.cal[ds]&&st.cal[ds].length?' log':'');c.textContent=d;
+  c.onclick=()=>{sel=ds;renderCal()};g.appendChild(c)}
+ $('selT').textContent=`📅 ${sel} 學習紀錄`;const L=st.cal[sel]||[];
+ $('selL').innerHTML=L.length?L.map(x=>`<div class="box">📌 ${esc(x)}</div>`).join(''):'<div class="muted">當日尚無紀錄。</div>'}
+function calMove(d){cm+=d;if(cm<0){cm=11;cy--}if(cm>11){cm=0;cy++}renderCal()}
+function addLog(){const t=$('logIn').value.trim();if(!t)return;(st.cal[sel]=st.cal[sel]||[]).push(t);save();$('logIn').value='';renderCal()}
+
+/* ===== 討論區 ===== */
+let cMode='pub';
+const BOT=[[/登入|密碼/,'帳號資料存於本機瀏覽器，清除瀏覽器資料會遺失，請定期於設定匯出備份。'],[/測驗|閃卡/,'測驗頁可自選科目與題數，選「僅不熟知識點」可針對弱點複習。'],[/日曆|打卡/,'標記熟練、完成閃卡或測驗會自動打卡到日曆。']];
+function chatTab(m){cMode=m;$('ct1').classList.toggle('on',m=='pub');$('ct2').classList.toggle('on',m=='bot');$('gBan').style.display=user.guest&&m=='pub'?'block':'none';$('pubNote').style.display=m=='pub'?'block':'none';renderChat()}
+function renderChat(){const a=cMode=='pub'?pubChats():(st.chat.length?st.chat:[{s:'客服',t:'您好！請問有什麼可以協助？（可詢問登入、測驗、日曆）'}]);
+ if(st.hideChat){$('chatBox').innerHTML='<div class="muted">訊息顯示已關閉（可於設定開啟）</div>';return}
+ $('chatBox').innerHTML=a.map(m=>`<div class="msg ${(m.u?m.u===user.name:m.s===user.nickname)?'me':''}"><small>${esc(m.s)}</small>${esc(m.t)}</div>`).join('');$('chatBox').scrollTop=1e9}
+function sendChat(){const t=$('chIn').value.trim();if(!t)return;
+ if(cMode=='pub'){if(user.guest)return alert('訪客無法發言，請登入。');const a=pubChats();a.push({s:user.nickname,u:user.name,t});LS.setItem('pub_chat',JSON.stringify(a.slice(-200)))}
+ else{if(!st.chat.length)st.chat.push({s:'客服',t:'您好！請問有什麼可以協助？'});st.chat.push({s:user.nickname,u:user.name,t});
+  const r=BOT.find(b=>b[0].test(t));st.chat.push({s:'客服',t:r?r[1]:'已收到您的問題，建議先查看「使用導覽」。'});save()}
+ $('chIn').value='';renderChat()}
+
+/* ===== 地圖與年代軸 ===== */
+function initMap(){if(typeof L==='undefined'){$('map').innerHTML='<div class="card">地圖函式庫載入失敗，請確認網路連線。</div>';return}
+ if(!mapObj){mapObj=L.map('map').setView([30,60],2);L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'© OpenStreetMap'}).addTo(mapObj);
+  hist().forEach(k=>L.marker([k.lat,k.lng]).addTo(mapObj).bindPopup(`<b>${esc(k.t)}</b><br>${k.y}年<br>${mt(k,k.d)}`))}
+ setTimeout(()=>mapObj.invalidateSize(),100)}
+function renderTime(){$('tlArea').innerHTML=hist().sort((a,b)=>a.y-b.y).map(k=>`<div class="tl"><b style="color:#f59e0b">${k.y}</b>　<span class="muted">${SUB_NAME[k.s]}</span><br><b>${esc(k.t)}</b><br>${mt(k,k.d)}</div>`).join('')}
+
+/* ===== 設定與備份 ===== */
+function openSet(){selAv=user.avatar;$('setNick').value=user.nickname;$('setNick').disabled=!!user.guest;$('setMsg').textContent=user.guest?'訪客模式：暱稱與頭像無法儲存，仍可備份學習紀錄。':'';$('chkChat').checked=!st.hideChat;avGrid('savs');$('mSet').classList.add('on')}
+function closeSet(){$('mSet').classList.remove('on')}
+function saveProfile(){if(user.guest){$('setMsg').textContent='訪客無法儲存，請先註冊登入。';return}
+ const n=$('setNick').value.trim();if(!n||n.length>12){$('setMsg').textContent='暱稱需為 1–12 字';return}
+ if(RESERVED_NICK.includes(n.toLowerCase())){$('setMsg').textContent='此暱稱為系統保留';return}
+ user.nickname=n;user.avatar=selAv;LS.setItem('sess',JSON.stringify(user));
+ const all=users();if(all[user.name]){all[user.name].nick=n;all[user.name].av=selAv;LS.setItem('users',JSON.stringify(all))}
+ $('who').textContent=`${user.avatar} ${user.nickname}`;$('setMsg').textContent='✅ 已儲存';setTimeout(closeSet,600)}
+function exportData(){const b=new Blob([JSON.stringify(st)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=`study-backup-${today()}.json`;a.click()}
+function importData(e){const f=e.target.files[0];if(!f)return;
+ if(!confirm('匯入會取代目前這個帳號的學習進度與日曆，確定嗎？')){e.target.value='';return}
+ const r=new FileReader();r.onload=()=>{try{
+  const d=JSON.parse(r.result),ids=new Set(KB.map(k=>k.id));
+  if(!d||!Array.isArray(d.m)||!Array.isArray(d.r)||!d.cal||typeof d.cal!=='object'||!Object.values(d.cal).every(v=>Array.isArray(v)&&v.every(x=>typeof x==='string')))throw 0;
+  st.m=d.m.filter(x=>ids.has(x));st.r=d.r.filter(x=>ids.has(x)&&!st.m.includes(x));st.cal=d.cal;const bx={};if(d.box&&typeof d.box==='object')Object.keys(d.box).forEach(i=>{const v=d.box[i];if(ids.has(i)&&v&&Number.isInteger(v.b)&&v.b>=1&&v.b<=5&&/^\d{4}-\d{2}-\d{2}$/.test(v.due))bx[i]={b:v.b,due:v.due}});st.box=bx;save();alert('匯入成功！');go('home')
+ }catch(x){alert('檔案格式錯誤')}e.target.value=''};r.readAsText(f)}
+
+/* ===== 初始化 ===== */
+avGrid('ravs');$('mSet').onclick=e=>{if(e.target===$('mSet'))closeSet()};
+$('subjPortal').innerHTML=Object.keys(SUBJ).map(k=>`<div onclick="go('subj','${k}')"><i>${SUBJ[k].split(' ')[0]}</i>${SUBJ[k].split(' ')[1]}</div>`).join('');
+$('sideSubj').innerHTML=Object.keys(SUBJ).map(k=>`<div class="mi" onclick="go('subj','${k}');side()">${SUBJ[k]}</div>`).join('');
+const KBSEL='.mi,.portal>div,.fold,.row,.cd,.fc,#jA';
+function kbify(){document.querySelectorAll(KBSEL).forEach(e=>{if(!e.hasAttribute('tabindex')){e.setAttribute('tabindex','0');e.setAttribute('role','button')}})}
+document.addEventListener('keydown',e=>{
+ if(e.key==='Escape'){if(tourI>=0){tourEnd();return}if($('side').classList.contains('on'))side();['mGuide','mSet'].forEach(i=>$(i).classList.remove('on'));return}
+ if((e.key==='Enter'||e.key===' ')&&e.target.matches&&e.target.matches(KBSEL)){e.preventDefault();e.target.click()}});
+new MutationObserver(()=>{if(kbify.t)return;kbify.t=setTimeout(()=>{kbify.t=0;kbify()},50)}).observe(document.body,{childList:true,subtree:true});
+kbify();
+function checkData(){const bad=[],seen=new Set();
+ KB.forEach(k=>{if(seen.has(k.id))bad.push('重複 id：'+k.id);seen.add(k.id);
+  if(!k.t||!k.d||!k.x)bad.push('欄位不完整：'+k.id);
+  if(k.s==='math'){if(!CATORDER.includes(k.cat))bad.push('未知章節：'+k.id+' '+k.cat);if(!LVTXT[k.lv])bad.push('未知層級：'+k.id+' '+k.lv)}
+  if((k.s==='tw'||k.s==='world')&&(!k.y||k.lat==null||k.lng==null))bad.push('缺年份或座標：'+k.id)});
+ const m=bad.length?'[資料檢查] '+bad.length+' 個問題\n'+bad.join('\n'):'[資料檢查] OK，共 '+KB.length+' 筆';
+ try{(bad.length?console.warn:console.log).call(console,m)}catch(e){}}
+try{checkData()}catch(e){}
+if('serviceWorker' in navigator&&/^https?:$/.test(location.protocol))navigator.serviceWorker.register('sw.js').catch(()=>{});
+if(!LS.ok)$('authMsg').textContent='⚠️ 此瀏覽器無法儲存資料，進度關閉頁面後會消失。';
+try{const s=JSON.parse(LS.getItem('sess')||'null');if(s&&(s.guest||users()[s.name]))enter(s)}catch(e){}
+</script></body></html>
