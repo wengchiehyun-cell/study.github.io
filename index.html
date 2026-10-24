@@ -2147,10 +2147,16 @@ window.fbSend=async function(){const t=$('fbTx').value.trim();if(!fbR){$('fbMsg'
 /* ===== 公開大廳（Supabase messages + Realtime）===== */
 let lob=[],lobCh=null;
 const mh2=m=>{const me=!user.guest&&m.nick===user.nickname,ad=isDev(),a=(t,f,i)=>` <a style="cursor:pointer" title="${t}" onclick="${f}(${+m.id})">${i}</a>`;return `<div class="msg ${me?'me':''}"><small>${esc(m.nick)}${!user.guest&&!me?a('檢舉','rptMsg','🚩'):''}${ad?a('禁言','muteMsg','🔇')+a('刪除','admDel','🗑'):''}</small>${esc(m.body)}</div>`};
-async function loadLob(){const r=await sb.from('messages').select('id,nick,body,created_at').order('id',{ascending:false}).limit(100);if(!r.error){lob=r.data.reverse();if(cMode==='pub')renderChat()}}
+let lobErr='',lobRt='',lobT=0;
+function lobStat(){let e=$('lobSt');if(!e){const pn=$('pubNote');if(!pn)return;e=document.createElement('div');e.id='lobSt';e.className='muted';e.style.cssText='margin:4px 0 8px;font-size:.82rem';pn.insertAdjacentElement('afterend',e)}
+ e.style.display=cMode==='pub'?'block':'none';
+ const rt=lobRt==='SUBSCRIBED'?'🟢 即時連線中':lobRt?'🟡 即時連線未成功，改為每 8 秒自動更新':'⚪ 連線中…';
+ e.innerHTML=(lobErr?'🔴 無法讀取大廳訊息：'+esc(lobErr)+'（多半是資料庫的讀取權限設定，請聯絡管理員）':rt+'・共 '+lob.length+' 則・'+new Date(lobT).toLocaleTimeString()+' 更新')+' <a style="cursor:pointer" onclick="loadLob()">🔄 立即更新</a>'}
+async function loadLob(){const r=await sb.from('messages').select('id,nick,body,created_at').order('id',{ascending:false}).limit(100);lobErr=r.error?(r.error.message||r.error.code||'未知錯誤'):'';lobT=Date.now();if(!r.error)lob=r.data.reverse();lobStat();if(cMode==='pub')renderChat()}
+sb.auth.onAuthStateChange(ev=>{if((ev==='SIGNED_IN'||ev==='TOKEN_REFRESHED')&&cMode==='pub'&&user)setTimeout(loadLob,0)});
 function subLob(){if(lobCh)return;lobCh=sb.channel('lobby')
  .on('postgres_changes',{event:'INSERT',schema:'public',table:'messages'},p=>{if(!lob.some(x=>x.id===p.new.id)){lob.push(p.new);lob=lob.slice(-100)}if(cMode==='pub')renderChat()})
- .on('postgres_changes',{event:'DELETE',schema:'public',table:'messages'},p=>{lob=lob.filter(x=>x.id!==p.old.id);if(cMode==='pub')renderChat()}).subscribe()}
+ .on('postgres_changes',{event:'DELETE',schema:'public',table:'messages'},p=>{lob=lob.filter(x=>x.id!==p.old.id);if(cMode==='pub')renderChat()}).subscribe(s=>{lobRt=s;lobStat()})}
 window.rptMsg=async function(id){if(user.guest||!(await uiConfirm('檢舉這則訊息給管理員？')))return;const r=await sb.from('reports').insert({message_id:id});alert(r.error?(/duplicate|23505/i.test(r.error.message)?'你已檢舉過這則訊息':'檢舉失敗，請稍後再試'):'已送出檢舉，謝謝你')};
 window.muteMsg=async function(id){if(isDev()&&await uiConfirm('禁言這位使用者？'))alert((await sb.rpc('admin_mute_by_msg',{p_id:id,p_on:true})).error?'操作失敗':'已禁言')};
 async function loadRpt(){if(!isDev())return;let d=$('rptBox');if(!d){d=document.createElement('div');d.id='rptBox';d.style.marginBottom='8px';$('chatBox').parentNode.insertBefore(d,$('chatBox'))}
@@ -2159,9 +2165,9 @@ async function loadRpt(){if(!isDev())return;let d=$('rptBox');if(!d){d=document.
  const b=(x,a,t)=>`<button class="btn alt" onclick="rpAct(${+x.id},${+x.message_id},'${a}')">${t}</button>`;
  d.innerHTML=`<div class="muted">🚩 待處理檢舉（${r.data.length}）</div>`+r.data.map(x=>`<div class="row"><b>${esc(x.msg_nick)}</b>：${esc(x.msg_body)}<div class="cfg" style="margin:4px 0">${b(x,'mute','禁言並刪除')}${b(x,'del','僅刪除')}${b(x,'ok','忽略')}</div></div>`).join('')}
 window.rpAct=async function(id,mid,a){try{if(a==='mute')await sb.rpc('admin_mute_by_msg',{p_id:mid,p_on:true});if(a!=='ok')await sb.from('messages').delete().eq('id',mid);await sb.from('reports').update({resolved:true}).eq('id',id)}catch(e){}loadRpt();loadLob()};
-const _ct=chatTab;window.chatTab=function(m){_ct(m);if(m!=='pub')return;$('pubNote').textContent='公開大廳：所有使用者都看得到，請友善發言。';loadLob();loadRpt();subLob();cTimer=setInterval(()=>{if(!document.hidden){loadLob();loadRpt()}},20000)};
+const _ct=chatTab;window.chatTab=function(m){_ct(m);if(m!=='pub'){const e=$('lobSt');if(e)e.style.display='none';return}$('pubNote').textContent='公開大廳：所有使用者都看得到，請友善發言。';loadLob();loadRpt();subLob();cTimer=setInterval(()=>{if(!document.hidden){loadLob();loadRpt()}},8000)};
 const _rc=renderChat;window.renderChat=function(){if(cMode!=='pub'||st.hideChat)return _rc();
- const cb=$('chatBox'),atBot=cb.scrollHeight-cb.scrollTop-cb.clientHeight<60;cb.innerHTML=lob.map(mh2).join('')||'<div class="muted">還沒有訊息，來打個招呼吧。</div>';if(atBot)cb.scrollTop=1e9};
+ const cb=$('chatBox'),atBot=cb.scrollHeight-cb.scrollTop-cb.clientHeight<60;cb.innerHTML=lob.map(mh2).join('')||(lobErr?'<div class="muted">讀不到大廳訊息，請看上方紅字說明。</div>':'<div class="muted">還沒有訊息，來打個招呼吧。</div>');if(atBot)cb.scrollTop=1e9};
 const _sc=sendChat;window.sendChat=async function(){if(cMode!=='pub')return _sc();const t=$('chIn').value.trim();if(!t)return;
  if(user.guest)return alert('訪客無法發言，請登入。');if(!(await uid()))return alert('登入已過期，請重新登入');
  const r=await sb.from('messages').insert({body:t.slice(0,300)});
