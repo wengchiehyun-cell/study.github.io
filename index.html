@@ -108,6 +108,12 @@ summary{color:#38bdf8;cursor:pointer;font-size:.85rem;font-weight:bold}
 .mrow{display:flex;align-items:center;gap:4px 16px;flex-wrap:wrap}.mrow .mn{flex:0 1 auto}.mrow .mfm{margin-left:auto;text-align:right;color:#94a3b8;font-size:.95rem;min-width:0;max-width:100%;overflow-wrap:anywhere}
 .mhd{display:flex;align-items:baseline;gap:4px 28px;flex-wrap:wrap;margin-bottom:4px}.mhd .mbig{margin-left:auto;text-align:right;padding:4px 0;white-space:pre-line;font-size:1.25rem;line-height:2}.sheet .proof{white-space:pre-line}
 .tbl{border-collapse:collapse;width:100%;text-align:center;font-size:1.05rem}.tbl th,.tbl td{border:1px solid #334155;padding:6px 8px}.tbl th{background:#0f172a;color:#f59e0b;font-size:.9rem}.tbl .must td{background:rgba(245,158,11,.10)}#mTxt details{max-width:1100px;margin:12px auto 0}
+.vbar{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:4px 0 8px;position:sticky;top:0;background:#0f172a;padding:8px 0;z-index:5}.vtgl{outline:2px solid #f59e0b}
+.vrow{display:grid;grid-template-columns:minmax(130px,.9fr) 1.2fr auto;gap:2px 12px;align-items:center;padding:8px 10px;border-bottom:1px solid #1e293b}.vrow.vok{background:#052e1b}.vrow.vbad{background:#2a1215}
+.vw b{font-size:1.1rem;color:#f59e0b}.vmean{font-size:1rem;color:#e2e8f0}.vmean.hid{filter:blur(7px);cursor:pointer;user-select:none}.vx{grid-column:1/-1;color:#94a3b8;font-size:.9rem}
+.vsp{background:none;border:0;cursor:pointer;font-size:1rem;padding:0 4px}.nosp .vsp{display:none}
+.vs button{background:#0f172a;border:1px solid #334155;border-radius:8px;color:#cbd5e1;cursor:pointer;padding:3px 9px;margin-left:4px}.vs button.m{border-color:#34d399;color:#34d399}.vs button.r{border-color:#f87171;color:#f87171}
+@media(max-width:560px){.vrow{grid-template-columns:1fr auto}}
 </style></head><body><noscript><p style="padding:24px;color:#f8fafc">此網站需要啟用 JavaScript 才能使用。</p></noscript>
 
 <div id="auth"><div class="card ac"><div style="text-align:right"><button class="btn alt langBtn2" onclick="setLang()" style="padding:4px 10px">🌐 EN</button></div>
@@ -1634,6 +1640,7 @@ function itemHtml(k,n){const F=(window.FULLTEXT||{})[k.id],chi=k.s==='chi'&&F;
  return `<div class="sheet" id="it_${k.id}" style="margin-bottom:18px">${hd}${k.cs!==undefined?histRich(k):`<div class="big">${mt(k,k.d)}</div><div class="proof" style="display:block">${mt(k,k.x)}</div>`}${statusHtml(k.id)}</div>`}
 function studyHtml(){if(curSubj==='math')return mathView();if(curSubj==='mex')return exHtml();
  const U=curUnit!==null?subjUnits(curSubj)[curUnit]:null;
+ if(U&&U.items&&curSubj==='eng'&&U.items.length&&U.items[0].s==='evoc')return vocabHtml(U);
  if(U&&U.items){const L=U.items.slice();if(curSubj==='hist')L.sort((a,b)=>a.y-b.y);let n=0;
   if(U.name==='字音字形')return contrastHtml()+zxHtml();if(U.name==='成語')return idiomHtml();return L.map(k=>itemHtml(curSubj==='hist'?Object.assign({},k,{t:k.t+'（'+SUB_NAME[k.s]+'）'}):k,++n)).join('')}
  if(curSubj==='hist')return histView();let n=0;
@@ -1822,7 +1829,7 @@ function tog(id,t){
  
  if(t==='m'){if(st.m.includes(id))st.m=st.m.filter(x=>x!==id);else{st.m.push(id);st.r=st.r.filter(x=>x!==id);log('熟練：'+KB.find(k=>k.id===id).t)}}
  else{if(st.r.includes(id))st.r=st.r.filter(x=>x!==id);else{st.r.push(id);st.m=st.m.filter(x=>x!==id);st.box[id]={b:1,due:today()}}}
- save();const q=$('stSearch').value,v=$('v-study'),y=v.scrollTop;renderStudy();$('stSearch').value=q;if(q.trim())doSearch(q);v.scrollTop=y;txSt()}
+ save();if(window.vRowUpd&&vRowUpd(id)){txSt();return}const q=$('stSearch').value,v=$('v-study'),y=v.scrollTop;renderStudy();$('stSearch').value=q;if(q.trim())doSearch(q);v.scrollTop=y;txSt()}
 
 /* ===== 歷屆試題 ===== */
 const EXAM={數學:'對數運算與指數律、三角函數、數列級數、機率統計',國文:'古文閱讀、文白對照、修辭、跨文本比較',英文:'時態與語態、子句、假設語氣、分詞構句、單字與閱讀理解、引導寫作',地理:'氣候圖判讀、板塊與地形、GIS、區域發展',公民:'經濟供需、憲法權利、比例原則、刑事程序',歷史:'臺灣史（荷鄭清日）、世界史（近代歐洲、兩次大戰）、史料判讀'};
@@ -2501,6 +2508,25 @@ except|prep. 除了|Everyone came except Tom.
 since|prep./conj. 自從；因為|I've lived here since 2020.
 unless|conj. 除非|Unless it rains, we'll go.
 until|prep./conj. 直到|Wait until I come back.`);
+})();
+</script>
+<script>
+/* ===== 英文單字閱覽：精簡列表、發音、隱藏中文、篩選、單元切換 ===== */
+(function(){
+let VO={hm:0,hx:0,f:'all'};try{Object.assign(VO,JSON.parse(LS.getItem('vopt')||'{}'))}catch(e){}
+const sv=()=>{try{LS.setItem('vopt',JSON.stringify(VO))}catch(e){}},q=t=>encodeURIComponent(t).replace(/'/g,'%27'),redraw=()=>{const v=$('v-study'),y=v.scrollTop;renderStudy();v.scrollTop=y};
+const cnt=U=>'已熟練 '+U.items.filter(k=>st.m.includes(k.id)).length+' / '+U.items.length;
+function row(k){const m=st.m.includes(k.id),r=st.r.includes(k.id);
+ return `<div class="vrow${m?' vok':''}${r?' vbad':''}" id="it_${k.id}"><div class="vw"><b>${esc(k.t)}</b><button class="vsp" title="發音" onclick="vsay('${q(k.t)}')">🔊</button></div><div class="vmean${VO.hm?' hid':''}" onclick="this.classList.toggle('hid')">${esc(k.d)}</div><div class="vs"><button class="${m?'m':''}" title="標記熟練" onclick="tog('${k.id}','m')">${m?'✅':'☑'}</button><button class="${r?'r':''}" title="標記不熟" onclick="tog('${k.id}','r')">${r?'❌':'✖'}</button></div>${VO.hx?'':`<div class="vx">${esc(k.x)}<button class="vsp" title="朗讀例句" onclick="vsay('${q(k.x)}')">🔊</button></div>`}</div>`}
+window.vocabHtml=function(U){const F={all:'全部',weak:'不熟',new:'未標記'},tot=subjUnits(curSubj).length,
+ L=U.items.filter(k=>VO.f==='all'||(VO.f==='weak'&&st.r.includes(k.id))||(VO.f==='new'&&!st.m.includes(k.id)&&!st.r.includes(k.id))),
+ b=(a,t,on)=>`<button class="btn alt${on?' vtgl':''}" onclick="${a}">${t}</button>`;
+ return `<div class="${window.speechSynthesis?'':'nosp'}"><div class="vbar">${b("vset('hm')",'🙈 隱藏中文',VO.hm)}${b("vset('hx')",'隱藏例句',VO.hx)}${b('vflt()','篩選：'+F[VO.f],VO.f!=='all')}${curUnit>0?b('vgo(-1)','◀ 上一單元'):''}${curUnit<tot-1?b('vgo(1)','下一單元 ▶'):''}<span class="muted" id="vcnt">${cnt(U)}</span></div>`+(L.length?L.map(row).join(''):'<div class="muted" style="padding:14px">沒有符合篩選的單字。</div>')+'</div>'};
+window.vset=k=>{VO[k]=VO[k]?0:1;sv();redraw()};
+window.vflt=()=>{VO.f={all:'weak',weak:'new',new:'all'}[VO.f];sv();redraw()};
+window.vgo=d=>{curUnit=Math.max(0,Math.min(subjUnits(curSubj).length-1,curUnit+d));renderStudy();$('v-study').scrollTop=0};
+window.vsay=t=>{try{const u=new SpeechSynthesisUtterance(decodeURIComponent(t));u.lang='en-US';u.rate=.9;speechSynthesis.cancel();speechSynthesis.speak(u)}catch(e){}};
+window.vRowUpd=id=>{const e=$('it_'+id);if(!e||!e.classList.contains('vrow')||VO.f!=='all')return false;const k=KB.find(x=>x.id===id);if(!k)return false;e.outerHTML=row(k);const U=subjUnits(curSubj)[curUnit],c=$('vcnt');if(c&&U)c.textContent=cnt(U);return true};
 })();
 </script>
 <script>
