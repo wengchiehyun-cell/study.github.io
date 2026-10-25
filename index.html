@@ -1274,12 +1274,12 @@ const RED2={chi2:'青，取之於藍，而青於藍|積土成山，風雨興焉|
 Object.keys(RHET2).forEach(id=>{const have=new Set((RHET[id]||'').split('|').map(t=>t.split('=')[0]));const add=RHET2[id].split('|').filter(t=>!have.has(t.split('=')[0]));RHET[id]=(RHET[id]?RHET[id]+'|':'')+add.join('|')});
 Object.keys(RED2).forEach(id=>{RED[id]=(RED[id]?RED[id]+'|':'')+RED2[id]});
 AUTH.chi13='洪繻：本名洪攀桂，乙未割臺後改名繻、字棄生，世稱洪棄生，彰化鹿港人，割臺後不仕日本，以詩文抒寫亡國之痛。〈鹿港乘桴記〉感嘆鹿港由盛轉衰。';
-AUTH.chi21="莊子：名周，戰國時宋國蒙人，道家代表人物，主張順應自然、逍遙無待。《莊子》善用寓言與譬喻說理，〈養生主〉屬內篇，〈庖丁解牛〉是其中名篇。";AUTH_META.chi21=["戰國", "bun", "莊"];
-AUTH.chi22="鄭用錫：字在中，號祉亭，清代竹塹（今新竹）人，道光年間進士，有「開臺進士」之稱，著有《北郭園全集》。〈勸和論〉勸導閩粵、漳泉等不同籍貫者停止分類械鬥。（全文依維基文庫等公開版本整理，各版本偶有異文。）";AUTH_META.chi22=["清", "qing", "鄭"];
-AUTH.chi25="《詩經》：我國最早的詩歌總集，收錄西周至春秋中葉的詩歌，分風、雅、頌三類。〈蒹葭〉出自〈國風‧秦風〉，以重章疊句寫追尋伊人而不可得的悵惘。";AUTH_META.chi25=["先秦", "book", "詩"];
-AUTH.chi27="李煜：五代南唐後主，字重光，工詞。亡國被俘後，詞風轉為沉痛深婉，王國維稱其詞是「以血書者」。";AUTH_META.chi27=["五代", "jin", "李"];
-AUTH.chi28="辛棄疾：字幼安，號稼軒，南宋歷城（今山東濟南）人，早年曾率眾抗金後南歸，詞風豪放，與蘇軾並稱「蘇辛」。";AUTH_META.chi28=["南宋", "guan", "辛"];
-AUTH.chi33="徐志摩：浙江海寧人，新月派代表詩人，曾留學英國劍橋，詩作講求音樂美、繪畫美、建築美；〈再別康橋〉寫於1928年。";AUTH_META.chi33=["現代", "modern", "徐"];
+AUTH.chi21="莊子：名周，戰國時宋國蒙人，道家代表人物，主張順應自然、逍遙無待。《莊子》善用寓言與譬喻說理，〈養生主〉屬內篇，〈庖丁解牛〉是其中名篇。";
+AUTH.chi22="鄭用錫：字在中，號祉亭，清代竹塹（今新竹）人，道光年間進士，有「開臺進士」之稱，著有《北郭園全集》。〈勸和論〉勸導閩粵、漳泉等不同籍貫者停止分類械鬥。（全文依維基文庫等公開版本整理，各版本偶有異文。）";
+AUTH.chi25="《詩經》：我國最早的詩歌總集，收錄西周至春秋中葉的詩歌，分風、雅、頌三類。〈蒹葭〉出自〈國風‧秦風〉，以重章疊句寫追尋伊人而不可得的悵惘。";
+AUTH.chi27="李煜：五代南唐後主，字重光，工詞。亡國被俘後，詞風轉為沉痛深婉，王國維稱其詞是「以血書者」。";
+AUTH.chi28="辛棄疾：字幼安，號稼軒，南宋歷城（今山東濟南）人，早年曾率眾抗金後南歸，詞風豪放，與蘇軾並稱「蘇辛」。";
+AUTH.chi33="徐志摩：浙江海寧人，新月派代表詩人，曾留學英國劍橋，詩作講求音樂美、繪畫美、建築美；〈再別康橋〉寫於1928年。";
 /* ===== 逐句白話語譯：依「。！？；」切句，過長者再依逗號細分 ===== */
 function segText(P){const S=P.match(/[^。！？；]*[。！？；]+[」』）]*|[^。！？；]+$/g)||[P],out=[];
  for(const s of S){if(s.length<=48){out.push(s);continue}
@@ -1354,6 +1354,7 @@ function sp(el){const an=el.classList.contains('an'),gi=an?+el.dataset.i:-1,
 /* 作者圖像：預設為示意插圖（SVG）。若要改用真實圖片，填入 AUTH_IMG.chi7='圖片網址'（請確認授權），載入失敗會自動退回示意插圖 */
 const AUTH_IMG={};
 const AUTH_META={chi1:['春秋','bun','左'],chi2:['戰國','guan','荀'],chi3:['先秦至漢','book','禮'],chi4:['秦','guan','李'],chi5:['西漢','guan','司'],chi6:['三國・蜀漢','jin','諸'],chi7:['東晉','jin','陶'],chi8:['唐','guan','韓'],chi9:['北宋','jin','蘇'],chi10:['明','jin','歸'],chi11:['明','jin','袁'],chi12:['清','qing','郁'],chi13:['清末至日治','queue','洪'],chi14:['日治至戰後','woman','張'],chi15:['日治時期','modern','連']};
+AUTH_META.chi21=["戰國", "bun", "莊"];AUTH_META.chi22=["清", "qing", "鄭"];AUTH_META.chi25=["先秦", "book", "詩"];AUTH_META.chi27=["五代", "jin", "李"];AUTH_META.chi28=["南宋", "guan", "辛"];AUTH_META.chi33=["現代", "modern", "徐"];
 function authSvg(id){const m=AUTH_META[id]||['','guan','文'],t=m[1],nm=(AUTH[id]||'').split('：')[0].replace(/[《》]/g,'');
  const late=['qing','queue','modern','woman'].includes(t),g=late?['#d6e0ec','#a9bbd0']:['#f4e9cc','#dcc48f'];
  const rb={guan:'#7f1d1d',jin:'#1e3a5f',bun:'#52525b',qing:'#1e3a5f',queue:'#3f3f46',modern:'#52525b',woman:'#7c2d5a'}[t]||'#444';
