@@ -132,7 +132,7 @@ summary{color:#38bdf8;cursor:pointer;font-size:.85rem;font-weight:bold}
 
 <div class="view" id="v-home">
 <div class="card" style="text-align:center"><h2 style="margin-bottom:6px">歡迎來到 <span style="color:#f59e0b">跨學科學習門戶</span></h2>
-<div class="muted">數學 · 國文 · 歷史 · 地理 · 公民　共 <b id="kbN" style="color:#f59e0b"></b> 個知識點</div>
+<div class="muted">數學 · 國文 · 英文 · 歷史 · 地理 · 公民　共 <b id="kbN" style="color:#f59e0b"></b> 個知識點</div>
 <div class="muted" style="margin-top:6px">已掌握 <b id="sM" style="color:#34d399">0</b>　待複習 <b id="sR" style="color:#f87171">0</b>　今日到期 <b id="sD" style="color:#38bdf8">0</b></div></div>
 <div class="card" style="border-color:#f59e0b"><div class="muted">🤣 今日冷笑話（一天一則） <span id="jS" style="color:#38bdf8"></span></div>
 <div style="font-weight:bold;margin:6px 0" id="jQ"></div><div class="box" style="cursor:pointer" id="jA"></div></div>
@@ -234,9 +234,9 @@ window.addEventListener('error',e=>showErr('發生錯誤：'+e.message));
 window.addEventListener('unhandledrejection',e=>showErr('發生錯誤：'+((e.reason&&e.reason.message)||e.reason)));
 const $=id=>document.getElementById(id),esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const AV=['👑','📜','⚔️','⛵','🎓','🛡️','🧭','🏛️','🕵️','🧙‍♂️','🦁','🦉'];let selAv=AV[0];
-const SUBJ={math:'📐 數學',chi:'📖 國文',hist:'📜 歷史',geo:'🌍 地理',civ:'⚖️ 公民'};
-const SUBJ_DESC={math:'依課綱章節整理定理、定義與性質（附證明）',chi:'古文選文（附全文與字詞注釋）、字音字形對比、成語',hist:'臺灣史、中國史與世界史，依分期整合，附年代軸與歷史地圖',geo:'自然與人文地理、GIS 與區域發展',civ:'經濟、憲法與法律、政治與公民素養'};
-const SUB_NAME={math:'數學',chi:'國文',geo:'地理',civ:'公民',tw:'臺灣史',cn:'中國史',world:'世界史',east:'東亞史',mex:'數學例題',chz:'國文',chx:'國文',chy:'國文'};
+const SUBJ={math:'📐 數學',chi:'📖 國文',eng:'🔤 英文',hist:'📜 歷史',geo:'🌍 地理',civ:'⚖️ 公民'};
+const SUBJ_DESC={math:'依課綱章節整理定理、定義與性質（附證明）',chi:'課文選文（附全文與字詞注釋）、字音字形對比、成語',eng:'文法與用法、易混字、學測高頻單字（附例句）、閱讀與寫作策略',hist:'臺灣史、中國史與世界史，依分期整合，附年代軸與歷史地圖',geo:'自然與人文地理、GIS 與區域發展',civ:'經濟、憲法與法律、政治與公民素養'};
+const SUB_NAME={math:'數學',chi:'國文',eng:'英文',evoc:'英文',geo:'地理',civ:'公民',tw:'臺灣史',cn:'中國史',world:'世界史',east:'東亞史',mex:'數學例題',chz:'國文',chx:'國文',chy:'國文'};
 const JOKES=[["數學","質數為什麼很難交朋友？","因為除了自己和 1，沒有人能「整除」他。"],
 ["數學","圓周率為什麼不能當班長？","因為他無限不循環，講話永遠沒有重點。"],
 ["數學","為什麼 x 總是被大家找？","因為每個人都想「求」他。"],
@@ -500,7 +500,7 @@ A('math',[
 <script>
 A('chi',[
 [1,'《燭之武退秦師》','左丘明《左傳》：燭之武夜縋出城，說服秦伯退兵。','名句：「因人之力而敝之，不仁；失其所與，不知；以亂易整，不武。」考點：分化秦晉利益、外交辭令。'],
-[2,'《勸學》','荀子：青，取之於藍，而青於藍；冰，水為之，而寒於水。','強調學習積累。考點：比喻論證、「積土成山」、「騏驥一躍」與「駑馬十駕」的對比。'],
+[2,'《勸學》','荀子：青，取之於藍，而青於藍；冰，水為之，而寒於水。','強調學習積累。考點：比喻論證、「積土成山」、「騏驥一躍」與「駑馬十駕」的對比。（補充：原列古文 30 篇，未列入 108 課綱 15 篇推薦選文。）'],
 [3,'《大同與小康》','《禮記》：大道之行也，天下為公。選賢與能，講信修睦。','大同＝天下為公；小康＝天下為家，以禮義為紀。考點：兩種社會型態對比。'],
 [4,'《諫逐客書》','李斯：泰山不讓土壤，故能成其大；河海不擇細流，故能就其深。','秦王逐客，李斯上書陳客卿之功。考點：排比、舉例論證、廣納人才。'],
 [5,'《鴻門宴》','司馬遷《史記》：項王、項伯東向坐；亞父南向坐；沛公北向坐；張良西向侍。','座次反映權力尊卑。考點：項羽自負寡斷與劉邦能屈能伸的人物對照。'],
@@ -513,10 +513,157 @@ A('chi',[
 [12,'《裨海紀遊》選（北投硫穴記）','郁永河：清領初期來臺採硫，記錄臺灣北部地理與原住民風土。','臺灣早期探險文學。考點：硫磺開採過程、自然環境險惡、番社風俗紀錄。'],
 [13,'《鹿港乘桴記》','洪繻：感嘆鹿港由繁盛港口因淤積而沒落，兼有時代滄桑。','考點：港口淤積與經濟變遷、傳統士人在時代變局中的感懷。'],
 [14,'《畫菊自序》','張李德和：臺灣女性文人以畫菊自述志趣與品格。','考點：女性文人主體意識、菊花象徵高潔。'],
-[15,'《臺灣通史序》','連橫：臺灣固無史也，荷人啟之，鄭氏作之，清代營之。','說明修史的目的在保存臺灣文化血脈。考點：撰史動機、民族意識。']]);
+[15,'《臺灣通史序》','連橫：臺灣固無史也，荷人啟之，鄭氏作之，清代營之。','說明修史的目的在保存臺灣文化血脈。考點：撰史動機、民族意識。（補充：舊課綱選文，已不在 108 課綱 15 篇推薦選文內，由〈鹿港乘桴記〉取代。）']]);
+A('chi',[
+[21,'《庖丁解牛》','莊子《養生主》：庖丁為文惠君解牛，動作合於音律；以「無厚入有間」，刀刃用了十九年仍如新磨。','文惠君聽後「得養生焉」。寓意：順應自然規律、避開矛盾關鍵處，才能保全自身。考點：成語「游刃有餘」「目無全牛」、寓言說理、道家思想。'],
+[22,'《勸和論》','鄭用錫：勸導臺灣閩、粵等不同籍貫的移民放下械鬥，和睦相處。','鄭用錫為竹塹人，有「開臺進士」之稱。清領時期移民社會常因籍貫、利益而分類械鬥。考點：臺灣古典散文、移民社會背景、勸說的論證方式。'],
+[23,'《虯髯客傳》','杜光庭：李靖、紅拂、虯髯客並稱「風塵三俠」；虯髯客見李世民後，自知難與爭天下。','虯髯客將家財贈予李靖，遠赴海外另創基業。唐代傳奇，考點：人物形象、「真命天子」的主旨、傳奇的小說特色。'],
+[24,'《勞山道士》','蒲松齡《聊齋志異》：王生慕道學法術，卻吃不得苦；最後試穿牆術，撞牆跌倒。','諷刺不肯下苦功、妄想投機取巧的人。清代志怪小說，考點：嘲諷筆法、情節鋪排。'],
+[25,'《蒹葭》','《詩經‧秦風》：蒹葭蒼蒼，白露為霜。所謂伊人，在水一方。','全詩三章，重章疊句，景物與時間層層推進，寫追尋伊人而可望不可即。考點：重章複沓、象徵、意境營造。'],
+[26,'《漁父》','屈原（《楚辭》）：屈原遭放逐，與漁父問答，堅持「舉世皆濁我獨清，眾人皆醉我獨醒」。','漁父主張隨世推移，屈原主張潔身自守。考點：人物對話、處世態度對比、屈原的人格。'],
+[27,'《浪淘沙》（簾外雨潺潺）','李煜：亡國之君追念故國，「流水落花春去也，天上人間」。','南唐後主李煜，降宋後被囚。詞境由夢中貪歡轉入現實悲痛。考點：詞的意象、以水與落花寄寓逝去之感。'],
+[28,'《破陣子》（醉裡挑燈看劍）','辛棄疾：「了卻君王天下事，贏得生前身後名。可憐白髮生！」','為陳亮（同甫）賦壯詞以寄。前九句寫軍旅壯志，結尾陡轉嘆壯志未酬。考點：豪放詞風、前後對比、愛國情懷。'],
+[29,'《髻》','琦君：以母親與姨娘的髮髻，寫童年記憶與對母親的思念。','現代散文，以髻為線索，串連家庭往事與情感。考點：細節描寫、物象作為情感載體、對親人的懷念。'],
+[30,'《孔乙己》','魯迅《吶喊》：以咸亨酒店小夥計的視角，寫落魄讀書人孔乙己受人嘲笑的遭遇。','批判科舉制度對讀書人的毒害與看客的冷漠。考點：第一人稱旁觀視角、白描手法、人物形象與社會批判。'],
+[31,'《一桿「稱仔」》','賴和：日治時期小說，寫農民秦得參受警察欺壓、被迫反抗的悲劇。','反映殖民統治下的壓迫與底層民眾處境，是臺灣新文學的重要作品。考點：社會寫實、殖民批判。'],
+[32,'《散戲》','洪醒夫：以傳統戲班藝人為主角，寫傳統戲曲在時代變遷下的處境。','鄉土小說，關注小人物的堅持與無奈。考點：人物塑造、鄉土文學、傳統文化式微。'],
+[33,'《再別康橋》','徐志摩：以「輕輕的我走了」起筆，寫離別劍橋的依戀情懷。','新月派現代詩，講求音樂美、繪畫美、建築美。考點：意象（雲彩、金柳、星輝）、節奏與形式、離情。'],
+[34,'《論語》選','孔子及其弟子言行：論仁、禮、君子與為學。','語錄體，由弟子及後學記錄。考點：「仁」的內涵、君子與小人對比、學思並重。'],
+[35,'《孟子》選','孟子：主張性善、仁政與義利之辨。','以對話和譬喻論辯。考點：性善說、仁政主張、以譬喻說理的論辯手法。'],
+[36,'《世說新語》選','劉義慶：記錄魏晉名士的言談與軼事，筆調簡練。','志人小說，反映魏晉風度與品評人物之風。考點：人物品評、簡約語言、魏晉名士的性格。'],
+[37,'《郁離子》選','劉基：明初寓言與政論，借故事諷喻治道與人情。','考點：寓言的寄託、諷諭手法、明初士人的政治思考。']]);
 
+A('eng',[[1,"現在完成式 Present Perfect","have/has + 過去分詞，表過去動作對現在的影響，或從過去持續到現在","I have lived here for ten years. 不與 yesterday、ago 等明確過去時間連用。"],
+[2,"過去完成式 Past Perfect","had + 過去分詞，表過去某時間點之前已完成的動作","When I arrived, the movie had already started."],
+[3,"未來進行式 Future Progressive","will be + V-ing，表未來某一時間點正在進行的動作","At this time tomorrow, I will be flying to Tokyo."],
+[4,"現在完成進行式","have/has been + V-ing，強調動作從過去持續至今的過程","She has been studying since morning."],
+[5,"時間與條件副詞子句的時態","表時間、條件的副詞子句，用現在式代替未來式","I will call you when I arrive.（不寫 will arrive）"],
+[6,"被動語態 Passive Voice","be + 過去分詞；只有及物動詞能改被動，動作者以 by 引介（可省略）","The bridge was built in 1990. 不及物動詞（happen、occur）沒有被動。"],
+[7,"不定詞 to V","可作主詞、受詞、補語，也可作形容詞或副詞（表目的）","I came here to study. She decided to leave."],
+[8,"動名詞 V-ing","可作主詞、受詞；介系詞後接動名詞；enjoy、avoid、mind、finish 後接 V-ing","He is good at playing chess. I enjoy reading."],
+[9,"意義不同的 to V 與 V-ing","remember / forget / stop / try 後接 to V 與 V-ing 意義不同","stop to smoke（停下來去抽菸）；stop smoking（戒菸）。remember to lock（記得要鎖）；remember locking（記得鎖過）。"],
+[10,"分詞與分詞構句","V-ing 表主動或進行；過去分詞表被動或完成。分詞構句省略連接詞與重複的主詞","Seeing the teacher, he stood up. 主詞必須與主要子句一致，否則為垂懸分詞。"],
+[11,"名詞子句","由 that、whether / if、疑問詞引導，可作主詞、受詞、補語","I don't know where he lives.（間接問句用直述語序）"],
+[12,"關係代名詞","who / whom / which / that / whose 引導形容詞子句修飾先行詞；whose 表所有","The man who lives next door is a doctor."],
+[13,"關係副詞","where、when、why 引導子句；先行詞為地點、時間、理由","This is the house where I was born.（= in which I was born）"],
+[14,"非限定關係子句","以逗號隔開、補充說明；不可用 that，關代也不可省略","My brother, who lives in Taipei, is a nurse."],
+[15,"假設語氣：與現在事實相反","If + S + 過去式（be 用 were），S + would / could + 原形 V","If I were you, I would apply for it."],
+[16,"假設語氣：與過去事實相反","If + S + had + 過去分詞，S + would have + 過去分詞","If he had studied harder, he would have passed."],
+[17,"wish 與 as if 的假設語氣","wish 後：與現在相反用過去式，與過去相反用 had + 過去分詞","I wish I were taller. He talks as if he knew everything."],
+[18,"倒裝句 Inversion","否定副詞（never、hardly、not only…）置句首時，助動詞提前","Never have I seen such a view. Not only did she sing, but she also danced."],
+[19,"比較級與最高級","-er / -est；more / most；as…as；the + 比較級…, the + 比較級","The more you read, the more you learn."],
+[20,"助動詞表推測","must be（肯定推測）、can't be（否定推測）、may / might（可能）、should have + p.p.（早該…卻沒有）","He must be at home. You should have told me."],
+[21,"although 與 despite","although / though 引導子句，不與 but 並用；despite / in spite of 後接名詞或動名詞","Although it rained, we went out. = Despite the rain, we went out."],
+[22,"連接副詞與標點","however、therefore、moreover 為副詞，連接兩個獨立子句要用分號或句號","It rained; however, we went out."],
+[23,"虛主詞 it 與強調句","It is + adj + (for sb) + to V；It is…that… 強調句","It is important for us to be honest."],
+[24,"感嘆句","What + (a/an) + adj + 名詞！ / How + adj / adv！","What a beautiful day! How beautiful!"],
+[25,"主詞與動詞一致","each、every 接單數；A and B 為複數；the number of 為單數，a number of 為複數","The number of students is increasing. A number of students are absent."],
+[26,"不可數名詞","information、advice、furniture、news 不加 s，用 a piece of 計量","She gave me a piece of advice."],
+[27,"介系詞：時間","at（時刻）、on（日期、星期）、in（月、年、季節）","at 6 o'clock；on Monday；in July。"],
+[28,"片語動詞 Phrasal Verbs","動詞 + 副詞或介系詞；有些可分離，有些不可分離","turn it down（拒絕，可分離）；look after the baby（照顧，不可分離）。"],
+[29,"簡化副詞子句","主詞與主要子句相同時，可省略連接詞後的主詞，動詞改為分詞","While walking home, I met an old friend."],
+[30,"閱讀策略：主旨與細節","先看標題與首尾句找主旨；轉折詞（however、but）後常為重點；推論題要找文中線索","遇到生字先判斷詞性，再用上下文推測詞義。"],
+[31,"英文作文結構","引言（主題句）→ 主體（理由＋例子）→ 結論；善用 first、moreover、in conclusion 等轉承詞","學測寫作含引導寫作與看圖寫作，注意字數、時態與段落。"],
+[32,"易混字：affect 與 effect","affect 是動詞「影響」；effect 是名詞「效果」","Smoking affects your health. The medicine had a good effect."],
+[33,"易混字：lie 與 lay","lie（躺）lay, lain；lay（放置）laid, laid；lie（說謊）lied, lied","He lay on the bed. She laid the book on the table."],
+[34,"易混字：rise 與 raise","rise 不及物（rose, risen）；raise 及物（raised）","The sun rises in the east. She raised her hand."],
+[35,"易混字：borrow 與 lend","borrow 是借入；lend 是借出","Can I borrow your pen? Can you lend me your pen?"],
+[36,"易混字：lose 與 loose","lose 是動詞「遺失」；loose 是形容詞「鬆的」","Don't lose your keys. This shirt is too loose."]]);
+A('evoc',[[1,"abandon","v. 放棄；拋棄","He abandoned his plan to study abroad."],
+[2,"absorb","v. 吸收；使專注","Plants absorb water through their roots."],
+[3,"accomplish","v. 完成；達成","She accomplished her goal."],
+[4,"adapt","v. 適應；改編","Animals adapt to their environment."],
+[5,"adequate","adj. 足夠的；適當的","We have adequate time to finish."],
+[6,"affordable","adj. 負擔得起的","The shop sells affordable clothes."],
+[7,"ambition","n. 抱負；野心","Her ambition is to become a doctor."],
+[8,"anticipate","v. 預期；期待","We anticipate heavy traffic today."],
+[9,"appreciate","v. 感激；欣賞","I appreciate your help."],
+[10,"aspect","n. 方面；層面","Consider every aspect of the problem."],
+[11,"assume","v. 假定；承擔","I assume you are right."],
+[12,"attitude","n. 態度","A positive attitude helps you succeed."],
+[13,"available","adj. 可用的；有空的","Is Dr. Lin available tomorrow?"],
+[14,"benefit","n. 益處　v. 對…有益","Exercise benefits your health."],
+[15,"capable","adj. 有能力的","She is capable of solving it."],
+[16,"campaign","n. 活動；競選","The campaign aims to reduce plastic."],
+[17,"challenge","n. 挑戰　v. 質疑","Learning a language is a challenge."],
+[18,"circumstance","n. 情況；環境","Under no circumstances should you give up."],
+[19,"commit","v. 承諾；犯（罪）","He committed himself to the project."],
+[20,"community","n. 社區；群體","The community built a new library."],
+[21,"concentrate","v. 專心；集中","Please concentrate on your work."],
+[22,"confident","adj. 有信心的","He felt confident about the exam."],
+[23,"conserve","v. 保育；節約","We must conserve water."],
+[24,"contribute","v. 貢獻；捐助；促成","Many people contributed to the fund."],
+[25,"convenient","adj. 方便的","The store is convenient to reach."],
+[26,"cooperate","v. 合作","The two teams cooperated well."],
+[27,"decline","v. 下降；婉拒　n. 衰退","The population declined last year."],
+[28,"demand","n. 需求　v. 要求","There is a high demand for housing."],
+[29,"depend","v. 依賴；取決於","Success depends on effort."],
+[30,"determine","v. 決定；查明","Experts will determine the cause."],
+[31,"distinguish","v. 區別；辨認","Can you distinguish twins?"],
+[32,"diverse","adj. 多元的；不同的","The city has a diverse population."],
+[33,"efficient","adj. 有效率的","This machine is very efficient."],
+[34,"eliminate","v. 消除；排除","We should eliminate waste."],
+[35,"emerge","v. 浮現；出現","A new trend emerged."],
+[36,"emphasize","v. 強調","The teacher emphasized the importance of reading."],
+[37,"encounter","v. 遭遇　n. 邂逅","I encountered a problem."],
+[38,"enhance","v. 提升；增強","Music can enhance your mood."],
+[39,"essential","adj. 必要的；本質的","Water is essential to life."],
+[40,"establish","v. 建立；確立","The school was established in 1950."],
+[41,"estimate","v. 估計　n. 估價","They estimate the cost at ten million."],
+[42,"evidence","n. 證據","There is no evidence of damage."],
+[43,"expand","v. 擴大；擴展","The company plans to expand."],
+[44,"expose","v. 暴露；揭發","Don't expose your skin to the sun."],
+[45,"fundamental","adj. 基本的；根本的","Honesty is a fundamental value."],
+[46,"generate","v. 產生；引起","Wind turbines generate electricity."],
+[47,"hesitate","v. 猶豫","Don't hesitate to ask."],
+[48,"identify","v. 辨識；認同","Can you identify the problem?"],
+[49,"impact","n. 衝擊　v. 影響","Technology has a big impact on life."],
+[50,"implement","v. 實施；執行","The school implemented a new rule."],
+[51,"inevitable","adj. 無可避免的","Change is inevitable."],
+[52,"influence","n. 影響　v. 影響","Parents influence their children."],
+[53,"innovation","n. 創新；新發明","Innovation drives growth."],
+[54,"invest","v. 投資","He invested in a small company."],
+[55,"maintain","v. 維持；保養；主張","It is hard to maintain a healthy diet."],
+[56,"obtain","v. 獲得","She obtained a scholarship."],
+[57,"overcome","v. 克服","He overcame his fear."],
+[58,"perceive","v. 察覺；理解","Some people perceive it as a risk."],
+[59,"persuade","v. 說服","She persuaded me to join."],
+[60,"phenomenon","n. 現象（複數 phenomena）","Rainbows are a natural phenomenon."],
+[61,"potential","n. 潛力　adj. 潛在的","He has great potential."],
+[62,"priority","n. 優先事項","Safety is our top priority."],
+[63,"promote","v. 促進；晉升；推銷","The campaign promotes recycling."],
+[64,"reluctant","adj. 不情願的","She was reluctant to speak."],
+[65,"resolve","v. 解決；決心","They resolved the conflict."],
+[66,"significant","adj. 重要的；顯著的","There is a significant difference."],
+[67,"sustain","v. 維持；支撐","Forests sustain many species."],
+[68,"tendency","n. 傾向","He has a tendency to worry."],
+[69,"vulnerable","adj. 易受傷害的","Young children are vulnerable to illness."]]);
 </script>
 <script>
+window.FULLTEXT=Object.assign(window.FULLTEXT||{},{
+chi21:`庖丁為文惠君解牛，手之所觸，肩之所倚，足之所履，膝之所踦，砉然嚮然，奏刀騞然，莫不中音。合於桑林之舞，乃中經首之會。
+文惠君曰：「譆，善哉！技蓋至此乎？」庖丁釋刀對曰：「臣之所好者道也，進乎技矣。始臣之解牛之時，所見無非牛者。三年之後，未嘗見全牛也。方今之時，臣以神遇而不以目視，官知止而神欲行。依乎天理，批大郤，導大窾，因其固然。技經肯綮之未嘗，而況大軱乎！良庖歲更刀，割也；族庖月更刀，折也。今臣之刀十九年矣，所解數千牛矣，而刀刃若新發於硎。彼節者有間，而刀刃者無厚；以無厚入有間，恢恢乎其於遊刃必有餘地矣，是以十九年而刀刃若新發於硎。雖然，每至於族，吾見其難為，怵然為戒，視為止，行為遲，動刀甚微，謋然已解，如土委地。提刀而立，為之四顧，為之躊躇滿志，善刀而藏之。」
+文惠君曰：「善哉！吾聞庖丁之言，得養生焉。」`,
+chi22:`甚矣，人心之變也，自分類始！其禍倡於匪徒，後遂燎原莫遏，玉石俱焚。雖正人君子，亦受其牽制而或朋從之也。
+夫人與禽各為一類、邪與正各為一類，此不可不分。乃同此血氣、同此官骸、同為國家之良民、同為鄉閭之善人，無分土、無分民，即子夏所言「四海皆兄弟」是也，況當共處一隅？揆諸出入相友之義，即古聖賢所謂同鄉共井者也。在字義，友從兩手、朋從兩肉，是朋友如一身左右手，即吾身之肉也。今試執塗人而語之曰：「爾其自戕爾手！爾其自噬爾肉！」鮮不拂然而怒，何今分類至於此極耶？
+顧分類之害，甚於臺灣，臺屬尤甚於淡之新、艋。臺為五方雜處，自林逆倡亂以來，有分為閩、粵焉，有分為漳、泉焉。閩、粵以其異省也，漳、泉以其異府也。然同自內地播遷而來，則同為臺人而已。今以異省、異府若分畛域，王法在所必誅。矧更同為一府，而亦有秦、越之異，是變本加厲，非奇而又奇者哉？夫人未有不親其所親，而能親其所疏。同居一府，猶同室之兄弟，至親也，乃以同室而操戈，更安能由親及疏，而親隔府之漳人、親隔省之粵人乎？
+淡屬素敦古處，新、艋尤為菁華所聚之區，遊斯土者，嘖嘖稱羨。自分類興，元氣剝削殆盡，未有如去年之甚也！干戈之禍愈烈，村市半成邱墟。問為漳、泉而至此乎？無有也。問為閩、粵而至此乎？無有也。蓋孽由自作，釁起鬩牆，大抵在非漳泉、非閩粵間耳。
+自來物窮必變，慘極知悔，天地有好生之德，人心無不轉之時。願今以後，父誡其子、兄告其弟，各革面、各洗心，勿懷夙忿、勿蹈前愆，既親其所親，亦親其所疏，一體同仁。斯內患不生、外禍不至，漳泉、閩粵之氣習，默消於無形。譬如人身血脈，節節相通，自無他病。數年以後，仍成樂土，豈不休哉！`,
+chi25:`蒹葭蒼蒼，白露為霜。所謂伊人，在水一方。溯洄從之，道阻且長。溯游從之，宛在水中央。
+蒹葭萋萋，白露未晞。所謂伊人，在水之湄。溯洄從之，道阻且躋。溯游從之，宛在水中坻。
+蒹葭采采，白露未已。所謂伊人，在水之涘。溯洄從之，道阻且右。溯游從之，宛在水中沚。`,
+chi27:`簾外雨潺潺，春意闌珊。羅衾不耐五更寒。夢裡不知身是客，一晌貪歡。
+獨自莫憑欄，無限江山，別時容易見時難。流水落花春去也，天上人間。`,
+chi28:`醉裡挑燈看劍，夢迴吹角連營。八百里分麾下炙，五十弦翻塞外聲，沙場秋點兵。
+馬作的盧飛快，弓如霹靂弦驚。了卻君王天下事，贏得生前身後名。可憐白髮生！`,
+chi33:`輕輕的我走了，正如我輕輕的來；我輕輕的招手，作別西天的雲彩。
+那河畔的金柳，是夕陽中的新娘；波光裡的豔影，在我的心頭蕩漾。
+軟泥上的青荇，油油的在水底招搖；在康河的柔波裡，我甘心做一條水草！
+那榆蔭下的一潭，不是清泉，是天上虹；揉碎在浮藻間，沉澱著彩虹似的夢。
+尋夢？撐一支長篙，向青草更青處漫溯；滿載一船星輝，在星輝斑斕裡放歌。
+但我不能放歌，悄悄是別離的笙簫；夏蟲也為我沉默，沉默是今晚的康橋！
+悄悄的我走了，正如我悄悄的來；我揮一揮衣袖，不帶走一片雲彩。`
+});
 window.FULLTEXT=Object.assign(window.FULLTEXT||{},{
 chi7:`晉太元中，武陵人捕魚為業。緣溪行，忘路之遠近。忽逢桃花林，夾岸數百步，中無雜樹，芳草鮮美，落英繽紛。漁人甚異之。復前行，欲窮其林。
 林盡水源，便得一山，山有小口，彷彿若有光。便捨船，從口入。初極狹，纔通人。復行數十步，豁然開朗。土地平曠，屋舍儼然，有良田美池桑竹之屬。阡陌交通，雞犬相聞。其中往來種作，男女衣著，悉如外人。黃髮垂髫，並怡然自樂。
@@ -934,7 +1081,7 @@ A('chx',[
 [33,'如坐針氈','字形：「氈」，不寫作「砧」','氈是用毛製成的墊子。像坐在插滿針的墊子上，形容心神不安。'],
 [34,'義無反顧','字形：「反」，不寫作「返」','反顧是回頭看。為了正義，絕不猶豫退縮。'],
 [35,'不勝枚舉','字形：「勝」，不寫作「甚」','勝ㄕㄥ，盡。數量太多，不能一一列舉。']]);
-const DOMKEYS={hist:['tw','cn','world','east'],chi:['chi','chz','chx','chy']};
+const DOMKEYS={hist:['tw','cn','world','east'],chi:['chi','chz','chx','chy'],eng:['eng','evoc']};
 const bySubj=s=>KB.filter(k=>(DOMKEYS[s]||[s]).includes(k.s));
 const hist=()=>KB.filter(k=>['tw','cn','world','east'].includes(k.s));
 const ERAS=[['古代至中古','約 1450 年以前',y=>y<1450],['早期近代','1450–1840',y=>y>=1450&&y<1840],['近代','1840–1945',y=>y>=1840&&y<1945],['現代','1945 年以後',y=>y>=1945]];
@@ -1127,6 +1274,12 @@ const RED2={chi2:'青，取之於藍，而青於藍|積土成山，風雨興焉|
 Object.keys(RHET2).forEach(id=>{const have=new Set((RHET[id]||'').split('|').map(t=>t.split('=')[0]));const add=RHET2[id].split('|').filter(t=>!have.has(t.split('=')[0]));RHET[id]=(RHET[id]?RHET[id]+'|':'')+add.join('|')});
 Object.keys(RED2).forEach(id=>{RED[id]=(RED[id]?RED[id]+'|':'')+RED2[id]});
 AUTH.chi13='洪繻：本名洪攀桂，乙未割臺後改名繻、字棄生，世稱洪棄生，彰化鹿港人，割臺後不仕日本，以詩文抒寫亡國之痛。〈鹿港乘桴記〉感嘆鹿港由盛轉衰。';
+AUTH.chi21="莊子：名周，戰國時宋國蒙人，道家代表人物，主張順應自然、逍遙無待。《莊子》善用寓言與譬喻說理，〈養生主〉屬內篇，〈庖丁解牛〉是其中名篇。";AUTH_META.chi21=["戰國", "bun", "莊"];
+AUTH.chi22="鄭用錫：字在中，號祉亭，清代竹塹（今新竹）人，道光年間進士，有「開臺進士」之稱，著有《北郭園全集》。〈勸和論〉勸導閩粵、漳泉等不同籍貫者停止分類械鬥。（全文依維基文庫等公開版本整理，各版本偶有異文。）";AUTH_META.chi22=["清", "qing", "鄭"];
+AUTH.chi25="《詩經》：我國最早的詩歌總集，收錄西周至春秋中葉的詩歌，分風、雅、頌三類。〈蒹葭〉出自〈國風‧秦風〉，以重章疊句寫追尋伊人而不可得的悵惘。";AUTH_META.chi25=["先秦", "book", "詩"];
+AUTH.chi27="李煜：五代南唐後主，字重光，工詞。亡國被俘後，詞風轉為沉痛深婉，王國維稱其詞是「以血書者」。";AUTH_META.chi27=["五代", "jin", "李"];
+AUTH.chi28="辛棄疾：字幼安，號稼軒，南宋歷城（今山東濟南）人，早年曾率眾抗金後南歸，詞風豪放，與蘇軾並稱「蘇辛」。";AUTH_META.chi28=["南宋", "guan", "辛"];
+AUTH.chi33="徐志摩：浙江海寧人，新月派代表詩人，曾留學英國劍橋，詩作講求音樂美、繪畫美、建築美；〈再別康橋〉寫於1928年。";AUTH_META.chi33=["現代", "modern", "徐"];
 /* ===== 逐句白話語譯：依「。！？；」切句，過長者再依逗號細分 ===== */
 function segText(P){const S=P.match(/[^。！？；]*[。！？；]+[」』）]*|[^。！？；]+$/g)||[P],out=[];
  for(const s of S){if(s.length<=48){out.push(s);continue}
@@ -1425,7 +1578,7 @@ const CATORDER=['對數與指數','代數與方程式','不等式','數列與級
 function mcat(n){const r=[[1,10,0],[11,11,1],[12,12,2],[13,13,1],[14,15,6],[16,18,3],[19,25,7],[26,26,9],[27,27,10],[28,29,8],[30,32,12],[33,35,4],[36,39,5],[40,46,17],[47,49,13],[50,52,16],[53,54,3],[55,55,2],[56,58,9],[59,60,14],[61,61,15],[62,63,2],[64,66,4],[67,72,7],[73,81,17],[82,84,9],[85,86,11],[87,88,10],[89,92,13],[93,95,3],[96,96,1],[97,97,2],[98,99,9],[100,100,13],[101,109,5],[110,118,11],[119,127,14],[128,135,3],[136,136,4],[137,140,2],[141,142,17],[143,148,16],[149,150,10],[151,157,7],[158,163,9],[164,168,10],[169,176,17],[177,180,4],[181,185,16],[186,190,5],[191,195,1],[196,199,13],[200,200,8],[201,231,18]];for(const x of r)if(n>=x[0]&&n<=x[1])return CATORDER[x[2]];return '其他'}
 function itemHtml(k,n){const F=(window.FULLTEXT||{})[k.id],chi=k.s==='chi'&&F;
  const tg=chi?`<span style="display:flex;gap:6px;flex:none;flex-wrap:wrap;align-items:center">${stMini(k.id)}<button class="btn alt" style="padding:3px 10px;font-size:.8rem" onclick="authOpen('${k.id}')">✍️ 作者說明</button><button class="btn" style="padding:3px 10px;font-size:.8rem" onclick="openTxt('${k.id}')">📜 全文</button></span>`:((k.ys||k.y)?`<span class="muted">${esc(k.ys||k.y)}</span>`:'');
- const hd=`<h3 style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;font-size:1.1rem;color:#f59e0b;margin-bottom:4px"><span>${n}. ${esc(k.t)}</span>${tg}</h3>`;
+ const hd=`<h3 style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;font-size:1.1rem;color:#f59e0b;margin-bottom:4px"><span>${n}. ${esc(k.t)}${k.s==='chi'&&window.chiBadge?chiBadge(k):''}</span>${tg}</h3>`;
  if(chi)return `<div class="sheet" id="it_${k.id}" style="margin-bottom:16px">${hd}</div>`;
  return `<div class="sheet" id="it_${k.id}" style="margin-bottom:18px">${hd}${k.cs!==undefined?histRich(k):`<div class="big">${mt(k,k.d)}</div><div class="proof" style="display:block">${mt(k,k.x)}</div>`}${statusHtml(k.id)}</div>`}
 function studyHtml(){if(curSubj==='math')return mathView();if(curSubj==='mex')return exHtml();
@@ -1433,7 +1586,7 @@ function studyHtml(){if(curSubj==='math')return mathView();if(curSubj==='mex')re
  if(U&&U.items){const L=U.items.slice();if(curSubj==='hist')L.sort((a,b)=>a.y-b.y);let n=0;
   if(U.name==='字音字形')return contrastHtml()+zxHtml();if(U.name==='成語')return idiomHtml();return L.map(k=>itemHtml(curSubj==='hist'?Object.assign({},k,{t:k.t+'（'+SUB_NAME[k.s]+'）'}):k,++n)).join('')}
  if(curSubj==='hist')return histView();let n=0;
- if(curSubj==='chi')return [['chi','古文選文'],['chz','字音字形（用字對比）'],['chy','成語']].map(x=>`<h3 style="color:#38bdf8;margin:22px 0 4px;border-bottom:1px solid #38bdf8;padding-bottom:4px">${x[1]}</h3>`+(x[0]==='chz'?contrastHtml()+zxHtml():x[0]==='chy'?idiomHtml():KB.filter(k=>k.s===x[0]).map(k=>itemHtml(k,++n)).join(''))).join('');
+ if(curSubj==='chi')return [['chi','課文選文'],['chz','字音字形（用字對比）'],['chy','成語']].map(x=>`<h3 style="color:#38bdf8;margin:22px 0 4px;border-bottom:1px solid #38bdf8;padding-bottom:4px">${x[1]}</h3>`+(x[0]==='chz'?contrastHtml()+zxHtml():x[0]==='chy'?idiomHtml():KB.filter(k=>k.s===x[0]).map(k=>itemHtml(k,++n)).join(''))).join('');
  return bySubj(curSubj).map(k=>itemHtml(k,++n)).join('')}
 
 /* ===== 古文全文與字詞注釋 ===== */
@@ -1552,7 +1705,8 @@ function subjUnits(s){let U;
   U=[{g:'歷史工具',ic:'🗺️',name:'歷史數位地圖',sub:'事件地點',act:"go('map')"},{g:'歷史工具',ic:'⏳',name:'跨時空年代軸',sub:'三地對照',act:"go('time')"}]
    .concat(ERAS.map((e,i)=>({g:'依時代（整合臺灣、中國、世界）',ic:ei[i],name:e[0],sub:e[1],items:hist().filter(k=>e[2](k.y))})))
    .concat([['tw','臺灣史','🏝️'],['cn','中國史','🏯'],['world','世界史','🌍']].map(r=>({g:'依區域',ic:r[2],name:r[1],items:KB.filter(k=>k.s===r[0])}))).concat(HP_UNITS())}
- else if(s==='chi')U=[['chi','古文選文','📜','附全文與字詞注釋'],['chz','字音字形','🔊','用字對比：破音字與形近字'],['chy','成語','📚','形近字分組＋典故成語']].map(x=>({g:'單元',ic:x[2],name:x[1],sub:x[3],items:KB.filter(k=>x[0]==='chy'?(k.s==='chy'||k.s==='chx'):k.s===x[0])}));
+ else if(s==='chi')U=[['chi','課文選文','📜','附全文與字詞注釋'],['chz','字音字形','🔊','用字對比：破音字與形近字'],['chy','成語','📚','形近字分組＋典故成語']].map(x=>({g:'單元',ic:x[2],name:x[1],sub:x[3],items:KB.filter(k=>x[0]==='chy'?(k.s==='chy'||k.s==='chx'):k.s===x[0])}));
+ else if(s==='eng')U=[['eng','文法與用法','📘','時態、子句、假設語氣、易混字'],['evoc','核心單字','🔤','學測高頻字彙＋例句']].map(x=>({g:'單元',ic:x[2],name:x[1],sub:x[3],items:KB.filter(k=>k.s===x[0])}));
  else if(s==='geo')U=[['地球與地圖技術','🧭',[6,9,10,11,12,38,39]],['地形與地質','🌋',[1,2,3,21,22,23,24,25]],['氣候與大氣','🌦️',[4,5,13,14,15,16,17,18,19,20,36]],['人口與都市','🏙️',[7,8,28,29,30,31]],['資源、產業與環境','⛽',[26,27,32,33,34,35,37]]].map(x=>({g:'單元',ic:x[1],name:x[0],items:byIds('geo',x[2])}));
  else if(s==='civ')U=[['憲法與人權','⚖️',[4,5,10,11,12,16,41]],['政府與民主政治','🏛️',[6,9,13,14,17,18,19,20]],['法律生活','📑',[7,15,21,22,23,24,25,26,27,28,29,30]],['經濟','💹',[1,2,3,8,31,32,33,34,35,36,37,38,39,40]]].map(x=>({g:'單元',ic:x[1],name:x[0],items:byIds('civ',x[2])}));
  else U=[{g:'單元',ic:SUBJ[s].split(' ')[0],name:'全部知識點',items:bySubj(s)}];
@@ -1612,7 +1766,7 @@ function tog(id,t){
  save();const q=$('stSearch').value,v=$('v-study'),y=v.scrollTop;renderStudy();$('stSearch').value=q;if(q.trim())doSearch(q);v.scrollTop=y;txSt()}
 
 /* ===== 歷屆試題 ===== */
-const EXAM={數學:'對數運算與指數律、三角函數、數列級數、機率統計',國文:'古文閱讀、文白對照、修辭、跨文本比較',地理:'氣候圖判讀、板塊與地形、GIS、區域發展',公民:'經濟供需、憲法權利、比例原則、刑事程序',歷史:'臺灣史（荷鄭清日）、世界史（近代歐洲、兩次大戰）、史料判讀'};
+const EXAM={數學:'對數運算與指數律、三角函數、數列級數、機率統計',國文:'古文閱讀、文白對照、修辭、跨文本比較',英文:'時態與語態、子句、假設語氣、分詞構句、單字與閱讀理解、引導寫作',地理:'氣候圖判讀、板塊與地形、GIS、區域發展',公民:'經濟供需、憲法權利、比例原則、刑事程序',歷史:'臺灣史（荷鄭清日）、世界史（近代歐洲、兩次大戰）、史料判讀'};
 function examTab(n){$('et1').classList.toggle('on',n==1);$('et2').classList.toggle('on',n==2);
  $('exArea').innerHTML=n==1?Object.keys(EXAM).map(k=>`<div class="card"><h3>${k}</h3><div class="box">${EXAM[k]}</div></div>`).join('')
  :`<div class="card"><h3>大考中心官方網站</h3><div class="muted" style="margin-bottom:8px">學測、分科測驗歷年試題與參考答案請至官網「試題與評分標準」下載。</div><a class="btn" style="text-decoration:none;display:inline-block" href="https://www.ceec.edu.tw/" target="_blank" rel="noopener">前往 CEEC 官網 ↗</a></div>`}
@@ -1622,14 +1776,14 @@ let qMode=1,pool=[],qi=0,score=0;
 const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]]}return a};
 let qT={};
 /* ===== 測驗：① 科目範圍 → ② 題型 → ③ 題數 ===== */
-const QDOM=()=>[['ALL','🌐 全科混合'],['math','📐 數學－定理・定義・性質'],['mex','🧮 數學－例題'],['chi','📖 國文'],['hist','📜 歷史'],['geo','🌍 地理'],['civ','⚖️ 公民'],['UNM','❌ 僅不熟知識點'],['DUE','⏰ 今日到期（間隔複習）']];
+const QDOM=()=>[['ALL','🌐 全科混合'],['math','📐 數學－定理・定義・性質'],['mex','🧮 數學－例題'],['chi','📖 國文'],['eng','🔤 英文'],['hist','📜 歷史'],['geo','🌍 地理'],['civ','⚖️ 公民'],['UNM','❌ 僅不熟知識點'],['DUE','⏰ 今日到期（間隔複習）']];
 function qUnits(d){if(['ALL','UNM','DUE'].includes(d))return [];
  if(d==='math')return subjUnits('math').filter(u=>u.g[0]==='定');
  return subjUnits(d).filter(u=>u.items)}
 function qTypesFor(d){const g=['ALL','UNM','DUE'].includes(d);
  return Object.keys(QT).filter(t=>{const a=QT[t].dom;return g||(d==='mex'?a.includes('mex'):(a.includes('all')||a.includes(d)))})}
 let qRows=[{d:'ALL',u:'',ts:['mix'],n:10}];
-function qItems(r){let p=r.d==='ALL'?KB:r.d==='UNM'?KB.filter(k=>st.r.includes(k.id)):r.d==='DUE'?KB.filter(k=>{const b=st.box[k.id];return b?b.due<=today():st.r.includes(k.id)}):bySubj(r.d);
+function qItems(r){let p=r.ids?KB.filter(k=>r.ids.includes(k.id)):r.d==='ALL'?KB:r.d==='UNM'?KB.filter(k=>st.r.includes(k.id)):r.d==='DUE'?KB.filter(k=>{const b=st.box[k.id];return b?b.due<=today():st.r.includes(k.id)}):bySubj(r.d);
  p=p.filter(k=>k.lv!=='S'&&prefOK(k));/* 補充公式（超出課綱）不出題 */
  const U=qUnits(r.d)[r.u];if(r.u!==''&&r.u!=null&&U){const ids=new Set(U.items.map(k=>k.id));p=p.filter(k=>ids.has(k.id))}
  if(qMode==2){const ts=(r.ts||['mix']).filter(t=>t!=='mix');p=p.filter(k=>ts.length?ts.some(t=>QT[t].can(k)):Object.keys(QT).some(t=>QT[t].can(k)))}
@@ -1644,7 +1798,7 @@ function renderQCfg(){
  const D=QDOM(),isR=x=>['UNM','DUE'].includes(x[0]);
  const dsel=(i,v)=>{const o=a=>a.map(x=>`<option value="${x[0]}"${x[0]==v?' selected':''}>${x[1]}</option>`).join('');return `<select class="in" onchange="qSet(${i},'d',this.value)"><optgroup label="學科">${o(D.filter(x=>!isR(x)))}</optgroup><optgroup label="複習">${o(D.filter(isR))}</optgroup></select>`};
  const cnt=d=>qItems({d,u:'',ts:['mix'],n:1}).length,qb=(l,d,n)=>{const c=cnt(d);return `<button class="btn${c?'':' alt'}" ${c?'':'disabled style="opacity:.45;cursor:not-allowed"'} onclick="qQuick('${d}',${n})">${l}${d==='DUE'||d==='UNM'?`（${c}）`:''}</button>`};
- const quick=`<div class="muted" style="margin-bottom:8px"><b>快速開始</b>：點一下就開始${qMode==1?'翻閃卡':'測驗'}</div><div style="display:flex;gap:8px;flex-wrap:wrap">${qb('🎲 全科 10 題','ALL',10)}${qb('⏰ 今日複習','DUE',20)}${qb('❌ 不熟的','UNM',20)}${qb('📐 數學','math',10)}${qb('📖 國文','chi',10)}${qb('📜 歷史','hist',10)}${qb('🌍 地理','geo',10)}${qb('⚖️ 公民','civ',10)}</div>`;
+ const quick=`<div class="muted" style="margin-bottom:8px"><b>快速開始</b>：點一下就開始${qMode==1?'翻閃卡':'測驗'}</div><div style="display:flex;gap:8px;flex-wrap:wrap">${qb('🎲 全科 10 題','ALL',10)}${qb('⏰ 今日複習','DUE',20)}${qb('❌ 不熟的','UNM',20)}${qb('📐 數學','math',10)}${qb('📖 國文','chi',10)}${qb('🔤 英文','eng',10)}${qb('📜 歷史','hist',10)}${qb('🌍 地理','geo',10)}${qb('⚖️ 公民','civ',10)}</div>`;
  const rows=qRows.map((r,i)=>{const U=qUnits(r.d),tys=qTypesFor(r.d),ts=r.ts||['mix'],gs=[...new Set(U.map(u=>u.g))],n=qItems(r).length;
   const chip=(x,l)=>`<button class="chip${ts.includes(x)?' on':''}" onclick="qTog(${i},'${x}')">${l}</button>`;
   const grp=[['通用',['t2d','d2t','tf','unit']],['歷史',['year','order','cause','effect','place','kw']],['國文古文',['auth','yi','gloss','rhet']],['數學例題',['ex']],['多選題',['ms_tf','ms_unit','ms_kw','ms_desc']],['填空題',['fill_t','fill_year','fill_kw','fill_cloze','fill_ex']]];
@@ -1656,7 +1810,7 @@ function renderQCfg(){
  $('qCfg').innerHTML=quick+`<details class="qd" style="margin-top:12px"${qAdv?' open':''} ontoggle="qAdv=this.open"><summary>⚙️ 自訂範圍${qMode==2?'、題型':''}與題數（進階，可混合多組）</summary><div style="margin-top:8px">${rows}<button class="btn alt" onclick="qAdd()"${qRows.length>=8?' disabled':''}>➕ 新增一組混合出題</button></div></details>
  <div class="qbar"><span class="muted">目前設定：${esc(lab)}</span><button class="btn" ${tot?'':'disabled style="opacity:.45"'} onclick="startQuiz()">▶ 開始（共 ${tot} 題）</button></div>`;
  qSave()}
-function qSet(i,k,v){qRows[i][k]=v;if(k==='d'){qRows[i].u='';qRows[i].ts=['mix']}renderQCfg()}
+function qSet(i,k,v){qRows[i][k]=v;if(k==='d'){qRows[i].u='';qRows[i].ts=['mix'];delete qRows[i].ids}renderQCfg()}
 function qTog(i,t){const r=qRows[i];let ts=(r.ts||['mix']).slice();
  if(t==='mix')ts=['mix'];else{ts=ts.filter(x=>x!=='mix');ts=ts.includes(t)?ts.filter(x=>x!==t):ts.concat(t);if(!ts.length)ts=['mix']}
  r.ts=ts;renderQCfg()}
@@ -2254,11 +2408,20 @@ window.txFs=function(d){const cur=txFsV()||parseFloat(getComputedStyle($('txB'))
 window.txPractice=function(){closeTxt();go('quiz');setTimeout(()=>qQuick('chi',10),0)};
 const _ot=window.openTxt;window.openTxt=function(id){_ot(id);txNavDraw(id)};
 const _ao=window.authOpen;window.authOpen=function(id){_ao(id);const e=$('txNav');if(e)e.innerHTML=''};
-const _rs=window.renderSubj;window.renderSubj=function(s){_rs(s);if(s!=='chi')return;const id=LS.getItem('lastTxt'),k=KB.find(x=>x.id===id);if(!k||!(window.FULLTEXT||{})[id])return;$('v-subj').insertAdjacentHTML('afterbegin',`<div class="card" style="border-color:#f59e0b"><b>▶ 繼續上次閱讀：</b>${esc(k.t)}　<button class="btn" onclick="openTxt('${k.id}')">接著讀</button></div>`)};
+const CHI_CORE=['燭之武退秦師','大同與小康','諫逐客書','鴻門宴','出師表','桃花源記','師說','虯髯客傳','赤壁賦','晚遊六橋待月記','項脊軒志','勞山道士','勸和論','鹿港乘桴記','畫菊自序'],CHI_AX=['庖丁解牛','蒹葭','漁父','浪淘沙','破陣子','《髻》','孔乙己','一桿','散戲','再別康橋','《論語》選','《孟子》選','《世說新語》選','《郁離子》選'];
+const chiBs=()=>{try{return JSON.parse(LS.getItem('chiB')||'[]')}catch(e){return[]}};
+window.chiCls=k=>CHI_CORE.some(x=>k.t.includes(x))?'core':CHI_AX.some(x=>k.t.includes(x))?'A':chiBs().includes(k.id)?'B':'';
+window.chiList=c=>{const L=KB.filter(k=>k.s==='chi');return c==='core'?L.filter(k=>chiCls(k)==='core'):c==='A'?L.filter(k=>['core','A'].includes(chiCls(k))):L.filter(k=>chiCls(k)==='B')};
+window.chiBadge=function(k){const c=chiCls(k),m={core:['核心15','#f59e0b'],A:['A類','#38bdf8'],B:['B類','#a78bfa']}[c],b=m?`<span style="font-size:.72rem;border:1px solid ${m[1]};color:${m[1]};border-radius:999px;padding:1px 8px;margin-left:8px">${m[0]}</span>`:'',g=(c===''||c==='B')?`<button class="btn alt" style="padding:1px 8px;font-size:.72rem;margin-left:6px" onclick="chiTogB('${k.id}')">${c==='B'?'取消 B 類':'標為 B 類'}</button>`:'';return `<span id="cb_${k.id}">${b}${g}</span>`};
+window.chiTogB=function(id){let a=chiBs();a=a.includes(id)?a.filter(x=>x!==id):a.concat(id);LS.setItem('chiB',JSON.stringify(a));const k=KB.find(x=>x.id===id),e=$('cb_'+id);if(e)e.outerHTML=chiBadge(k);const n=$('chiBn');if(n)n.textContent=chiList('B').length};
+window.chiPanel=function(){const row=(c,l,d)=>`<div class="box" style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap"><span><b>${l}</b> <span class="muted">${d}</span>（<span${c==='B'?' id="chiBn"':''}>${chiList(c).length}</span> 篇）</span><span style="display:flex;gap:6px"><button class="btn alt" onclick="chiRun('${c}',1)">🗂️ 閃卡</button><button class="btn" onclick="chiRun('${c}',2)">📝 測驗</button></span></div>`;
+ return `<div class="card"><h3 style="margin:0 0 6px">📚 選文分類複習（A 類／B 類）</h3><div class="muted" style="line-height:1.7;margin-bottom:8px">大考中心依選入課本的版本數分類：<b>A 類</b>＝四至五家共同選文（出題不設比例上限，最重要）；<b>B 類</b>＝二至三家共同選文（試題占比約不高於教材選文試題的 40%）；C 類＝僅一家。核心 15 篇為課綱推薦文言選文，也屬 A 類。</div>${row('core','核心 15 篇','課綱推薦文言選文')}${row('A','A 類選文','含核心 15 篇與其他共同選文')}${row('B','B 類選文','依你學校課本，在下方各篇按「標為 B 類」')}<div class="muted" style="margin-top:6px;font-size:.8rem">⚠️ 大考中心沒有公布固定的 A／B 類篇目，會隨應屆考生所用版本而變。本站 A 類為依公開資料整理，請以學校課本與老師提供的名單為準。</div></div>`};
+window.chiRun=function(c,m){const ids=chiList(c).map(k=>k.id);if(!ids.length)return alert('這個分類目前沒有篇目。請先在下方各篇按「標為 B 類」。');go('quiz');setTimeout(()=>{quizTab(m);qRows=[{d:'chi',u:'',ts:['mix'],n:Math.min(10,ids.length),ids}];renderQCfg();startQuiz()},0)};
+const _rs=window.renderSubj;window.renderSubj=function(s){_rs(s);if(s!=='chi')return;const v=$('v-subj'),id=LS.getItem('lastTxt'),k=KB.find(x=>x.id===id);if(k&&(window.FULLTEXT||{})[id])v.insertAdjacentHTML('afterbegin',`<div class="card" style="border-color:#f59e0b"><b>▶ 繼續上次閱讀：</b>${esc(k.t)}　<button class="btn" onclick="openTxt('${k.id}')">接著讀</button></div>`);v.insertAdjacentHTML('afterbegin',chiPanel())};
 document.addEventListener('keydown',e=>{const m=$('mTxt');if(!m||!m.classList.contains('on')||/^(INPUT|TEXTAREA|SELECT)$/.test((document.activeElement||{}).tagName))return;if(e.key==='ArrowLeft')txGo(-1);else if(e.key==='ArrowRight')txGo(1)});
 })();
 (function(){
-const D={"此網站需要啟用 JavaScript 才能使用。": "This site requires JavaScript.", "108課綱跨學科學習系統": "108 Curriculum Cross-Subject Learning System", "登入": "Log in", "註冊": "Sign up", "忘記密碼？": "Forgot password?", "學習設定（之後可在個人設定修改）": "Study settings (changeable later in Settings)", "學習階段": "Level", "國小": "Elementary", "國中": "Junior high", "高中": "Senior high", "請選擇類組": "Choose a track", "第一類組（文法商）": "Track 1 (Humanities & Business)", "第二類組（理工）": "Track 2 (Science & Engineering)", "第三類組（醫農生）": "Track 3 (Medicine & Life Sciences)", "尚未分組（高一）": "Not yet grouped (Grade 10)", "我了解本站會儲存帳號、暱稱、學習階段／年級與學習進度，僅用於提供學習功能與改善服務，不會出售給第三方。未滿 18 歲請在家長或監護人同意下使用；可隨時在「個人設定」匯出資料或刪除帳號。": "I understand this site stores my account, nickname, study level/grade and progress, only to provide learning features and improve the service, and never sells them to third parties. Users under 18 should have parental consent. You can export your data or delete your account anytime in Settings.", "完成註冊": "Create account", "訪客模式（免註冊）": "Guest mode (no sign-up)", "此瀏覽器無法儲存資料（可能是無痕模式或內嵌瀏覽器）。關閉頁面後進度會消失，請記得到「個人設定」匯出備份。": "This browser can't save data (private mode or in-app browser?). Progress will be lost when you close the page; export a backup in Settings.", "選單": "Menu", "108課綱學習門戶": "108 Curriculum Learning Portal", "返回開發者": "Back to developer", "登出": "Log out", "歡迎來到": "Welcome to", "跨學科學習門戶": "Cross-Subject Learning Portal", "數學 · 國文 · 歷史 · 地理 · 公民　共": "Math · Chinese · History · Geography · Civics — ", "個知識點": " knowledge points", "已掌握": "Mastered", "待複習": "To review", "今日到期": "Due today", "今日冷笑話（一天一則）": "Daily joke (one a day)", "考點與試題": "Exam topics", "測驗閃卡": "Quiz & flashcards", "討論社群": "Community", "學習日曆": "Study calendar", "各科主頁": "Subjects", "點選上方任一科目進入該科主頁；歷史科主頁內含歷史地圖與年代軸": "Tap a subject above to open its page. The History page includes a map and a timeline.", "高頻考點與大考中心官方試題": "High-frequency topics & official CEEC papers", "官方試題請至財團法人大學入學考試中心下載，本站僅整理高頻考點。": "Download official papers from the College Entrance Examination Center (CEEC). This site only summarizes high-frequency topics.", "高頻考點對應": "Related topics", "官方網站": "Official site", "跨學科測驗與記憶閃卡": "Cross-subject quiz & memory flashcards", "題目由各科知識庫自動生成。新手直接按「快速開始」；想自訂範圍、題型、題數或混合多科，展開「進階」即可。": "Questions are generated from the knowledge base. New here? Just tap “Quick start”. Expand “Advanced” to customize scope, types, count, or mix subjects.", "記憶閃卡": "Flashcards", "模擬測驗": "Mock quiz", "日": "Sun", "一": "Mon", "二": "Tue", "三": "Wed", "四": "Thu", "五": "Fri", "六": "Sat", "打卡": "Check in", "公開大廳": "Public lobby", "線上客服": "Support", "管理": "Admin", "訪客模式僅供瀏覽，請登入後發言。": "Guest mode is read-only. Log in to post.", "發送": "Send", "歷史主頁": "History home", "跨時空年代對照軸": "Cross-region timeline", "結束導覽": "End tour", "下一步": "Next", "關閉選單": "Close menu", "主控制台": "Dashboard", "使用導覽": "Guided tour", "開發者後台": "Developer console", "各科複習": "Subject review", "意見回饋": "Feedback", "個人設定與備份": "Settings & backup", "五個科目：數學、國文、歷史、地理、公民，各有主頁、進度與單元": "Five subjects: Math, Chinese, History, Geography, Civics — each with a page, progress and units", "每個知識點可標記熟練／不熟，並依間隔複習安排「今日到期」": "Mark each item as mastered or weak; spaced repetition schedules “Due today”", "測驗可自選科目、題型與題數（含單選、多選與填空），也能新增多組混合": "Quizzes let you pick subject, type and count (single, multiple choice, fill-in) and mix several sets", "資料僅存在本機瀏覽器，請定期備份": "Data lives in this browser; please back up regularly", "互動導覽會帶你實際操作一遍（會真的標記一個知識點、做一次閃卡，之後可自行取消）。": "The interactive tour walks you through it (it will really mark one item and run one flashcard; you can undo later).", "帶我實際操作一遍": "Walk me through it", "略過，我自己看": "Skip, I'll explore", "只看紅筆": "Red-pen only", "只看修辭": "Rhetoric only", "關閉": "Close", "整體滿意度": "Overall satisfaction", "功能建議": "Feature request", "內容錯誤": "Content error", "介面問題": "UI issue", "其他": "Other", "送出": "Submit", "確認學習設定": "Confirm study settings", "要使用「該年級」的知識點來建立這個帳號嗎？選「是」會依年級與類組顯示適合的內容；選「否」則顯示全部知識點。之後都可以在「個人設定」修改。": "Use your grade's content for this account? “Yes” shows content for your grade and track; “No” shows everything. You can change this later in Settings.", "是，使用該年級知識點": "Yes, use my grade's content", "否，顯示全部": "No, show everything", "返回修改": "Go back", "儲存暱稱與頭像": "Save nickname & avatar", "學習設定": "Study settings", "使用該年級的知識點（高中會依類組顯示選修內容）": "Use my grade's content (senior high shows electives by track)", "同時顯示前一階段的基礎（國中含國小、高中含國中，複習用）": "Also show the previous level's basics (for review)", "儲存學習設定": "Save study settings", "修改密碼": "Change password", "更新密碼": "Update password", "顯示討論區訊息": "Show community messages", "匯出備份": "Export backup", "匯入備份": "Import backup", "快速開始": "Quick start", "：點一下就開始翻閃卡": ": one tap to start flashcards", "：點一下就開始測驗": ": one tap to start the quiz", "數學": "Math", "國文": "Chinese", "歷史": "History", "地理": "Geography", "公民": "Civics", "全科混合": "All subjects", "自訂範圍、題型與題數（進階，可混合多組）": "Customize scope, types & count (advanced, mix sets)", "自訂範圍與題數（進階，可混合多組）": "Customize scope & count (advanced, mix sets)", "範圍": "Scope", "題型": "Type", "題數": "Count", "新增一組混合出題": "Add a mixed set", "全部單元": "All units", "學科": "Subjects", "複習": "Review", "僅不熟知識點": "Weak items only", "今日到期（間隔複習）": "Due today (spaced review)", "◀ 上一篇": "◀ Previous", "下一篇 ▶": "Next ▶", "練習國文": "Practice Chinese", "繼續上次閱讀：": "Continue reading: ", "接著讀": "Resume", "再輸入一次新密碼": "Re-enter new password", "輸入學習心得…": "Write your study notes…", "密碼（至少 8 個字元）": "Password (min 8 chars)", "輸入訊息…": "Type a message…", "年齡": "Age", "帳號（或已綁定的 Email）": "Username (or linked email)", "搜尋全部知識點（標題或內容）": "Search all knowledge points", "帳號（2–20 字：中英文、數字、_ . -）": "Username (2–20 chars: letters, digits, _ . -)", "新密碼（至少 8 個字元）": "New password (min 8 chars)", "再輸入一次密碼": "Re-enter password", "暱稱": "Nickname", "請描述你的想法或遇到的問題（最多 500 字）": "Describe your idea or problem (max 500 chars)", "目前密碼": "Current password", "暱稱（最多 12 字）": "Nickname (max 12 chars)", "密碼": "Password"},R=[[/^▶ 開始（共 (\d+) 題）$/,'▶ Start ($1 questions)'],[/^第 (\d+) 組$/,'Set $1'],[/^⏰ 今日複習（(\d+)）$/,'⏰ Due today ($1)'],[/^❌ 不熟的（(\d+)）$/,'❌ Weak items ($1)'],[/^🎲 全科 (\d+) 題$/,'🎲 All subjects, $1 Qs'],[/^目前設定：(.*)$/,'Current: $1'],[/^題型：綜合（自動搭配）$/,'Types: mixed (auto)'],[/^題型：已選 (\d+) 種$/,'Types: $1 selected'],[/^第 (\d+) \/ (\d+) 篇$/,'$1 / $2']];
+const D={"此網站需要啟用 JavaScript 才能使用。": "This site requires JavaScript.", "108課綱跨學科學習系統": "108 Curriculum Cross-Subject Learning System", "登入": "Log in", "註冊": "Sign up", "忘記密碼？": "Forgot password?", "學習設定（之後可在個人設定修改）": "Study settings (changeable later in Settings)", "學習階段": "Level", "國小": "Elementary", "國中": "Junior high", "高中": "Senior high", "請選擇類組": "Choose a track", "第一類組（文法商）": "Track 1 (Humanities & Business)", "第二類組（理工）": "Track 2 (Science & Engineering)", "第三類組（醫農生）": "Track 3 (Medicine & Life Sciences)", "尚未分組（高一）": "Not yet grouped (Grade 10)", "我了解本站會儲存帳號、暱稱、學習階段／年級與學習進度，僅用於提供學習功能與改善服務，不會出售給第三方。未滿 18 歲請在家長或監護人同意下使用；可隨時在「個人設定」匯出資料或刪除帳號。": "I understand this site stores my account, nickname, study level/grade and progress, only to provide learning features and improve the service, and never sells them to third parties. Users under 18 should have parental consent. You can export your data or delete your account anytime in Settings.", "完成註冊": "Create account", "訪客模式（免註冊）": "Guest mode (no sign-up)", "此瀏覽器無法儲存資料（可能是無痕模式或內嵌瀏覽器）。關閉頁面後進度會消失，請記得到「個人設定」匯出備份。": "This browser can't save data (private mode or in-app browser?). Progress will be lost when you close the page; export a backup in Settings.", "選單": "Menu", "108課綱學習門戶": "108 Curriculum Learning Portal", "返回開發者": "Back to developer", "登出": "Log out", "歡迎來到": "Welcome to", "跨學科學習門戶": "Cross-Subject Learning Portal", "數學 · 國文 · 英文 · 歷史 · 地理 · 公民　共": "Math · Chinese · History · Geography · Civics — ", "個知識點": " knowledge points", "已掌握": "Mastered", "待複習": "To review", "今日到期": "Due today", "今日冷笑話（一天一則）": "Daily joke (one a day)", "考點與試題": "Exam topics", "測驗閃卡": "Quiz & flashcards", "討論社群": "Community", "學習日曆": "Study calendar", "各科主頁": "Subjects", "點選上方任一科目進入該科主頁；歷史科主頁內含歷史地圖與年代軸": "Tap a subject above to open its page. The History page includes a map and a timeline.", "高頻考點與大考中心官方試題": "High-frequency topics & official CEEC papers", "官方試題請至財團法人大學入學考試中心下載，本站僅整理高頻考點。": "Download official papers from the College Entrance Examination Center (CEEC). This site only summarizes high-frequency topics.", "高頻考點對應": "Related topics", "官方網站": "Official site", "跨學科測驗與記憶閃卡": "Cross-subject quiz & memory flashcards", "題目由各科知識庫自動生成。新手直接按「快速開始」；想自訂範圍、題型、題數或混合多科，展開「進階」即可。": "Questions are generated from the knowledge base. New here? Just tap “Quick start”. Expand “Advanced” to customize scope, types, count, or mix subjects.", "記憶閃卡": "Flashcards", "模擬測驗": "Mock quiz", "日": "Sun", "一": "Mon", "二": "Tue", "三": "Wed", "四": "Thu", "五": "Fri", "六": "Sat", "打卡": "Check in", "公開大廳": "Public lobby", "線上客服": "Support", "管理": "Admin", "訪客模式僅供瀏覽，請登入後發言。": "Guest mode is read-only. Log in to post.", "發送": "Send", "歷史主頁": "History home", "跨時空年代對照軸": "Cross-region timeline", "結束導覽": "End tour", "下一步": "Next", "關閉選單": "Close menu", "主控制台": "Dashboard", "使用導覽": "Guided tour", "開發者後台": "Developer console", "各科複習": "Subject review", "意見回饋": "Feedback", "個人設定與備份": "Settings & backup", "五個科目：數學、國文、歷史、地理、公民，各有主頁、進度與單元": "Five subjects: Math, Chinese, History, Geography, Civics — each with a page, progress and units", "每個知識點可標記熟練／不熟，並依間隔複習安排「今日到期」": "Mark each item as mastered or weak; spaced repetition schedules “Due today”", "測驗可自選科目、題型與題數（含單選、多選與填空），也能新增多組混合": "Quizzes let you pick subject, type and count (single, multiple choice, fill-in) and mix several sets", "資料僅存在本機瀏覽器，請定期備份": "Data lives in this browser; please back up regularly", "互動導覽會帶你實際操作一遍（會真的標記一個知識點、做一次閃卡，之後可自行取消）。": "The interactive tour walks you through it (it will really mark one item and run one flashcard; you can undo later).", "帶我實際操作一遍": "Walk me through it", "略過，我自己看": "Skip, I'll explore", "只看紅筆": "Red-pen only", "只看修辭": "Rhetoric only", "關閉": "Close", "整體滿意度": "Overall satisfaction", "功能建議": "Feature request", "內容錯誤": "Content error", "介面問題": "UI issue", "其他": "Other", "送出": "Submit", "確認學習設定": "Confirm study settings", "要使用「該年級」的知識點來建立這個帳號嗎？選「是」會依年級與類組顯示適合的內容；選「否」則顯示全部知識點。之後都可以在「個人設定」修改。": "Use your grade's content for this account? “Yes” shows content for your grade and track; “No” shows everything. You can change this later in Settings.", "是，使用該年級知識點": "Yes, use my grade's content", "否，顯示全部": "No, show everything", "返回修改": "Go back", "儲存暱稱與頭像": "Save nickname & avatar", "學習設定": "Study settings", "使用該年級的知識點（高中會依類組顯示選修內容）": "Use my grade's content (senior high shows electives by track)", "同時顯示前一階段的基礎（國中含國小、高中含國中，複習用）": "Also show the previous level's basics (for review)", "儲存學習設定": "Save study settings", "修改密碼": "Change password", "更新密碼": "Update password", "顯示討論區訊息": "Show community messages", "匯出備份": "Export backup", "匯入備份": "Import backup", "快速開始": "Quick start", "：點一下就開始翻閃卡": ": one tap to start flashcards", "：點一下就開始測驗": ": one tap to start the quiz", "數學": "Math", "英文": "English", "課文選文": "Reading selections", "國文": "Chinese", "歷史": "History", "地理": "Geography", "公民": "Civics", "全科混合": "All subjects", "自訂範圍、題型與題數（進階，可混合多組）": "Customize scope, types & count (advanced, mix sets)", "自訂範圍與題數（進階，可混合多組）": "Customize scope & count (advanced, mix sets)", "範圍": "Scope", "題型": "Type", "題數": "Count", "新增一組混合出題": "Add a mixed set", "全部單元": "All units", "學科": "Subjects", "複習": "Review", "僅不熟知識點": "Weak items only", "今日到期（間隔複習）": "Due today (spaced review)", "◀ 上一篇": "◀ Previous", "下一篇 ▶": "Next ▶", "練習國文": "Practice Chinese", "繼續上次閱讀：": "Continue reading: ", "接著讀": "Resume", "再輸入一次新密碼": "Re-enter new password", "輸入學習心得…": "Write your study notes…", "密碼（至少 8 個字元）": "Password (min 8 chars)", "輸入訊息…": "Type a message…", "年齡": "Age", "帳號（或已綁定的 Email）": "Username (or linked email)", "搜尋全部知識點（標題或內容）": "Search all knowledge points", "帳號（2–20 字：中英文、數字、_ . -）": "Username (2–20 chars: letters, digits, _ . -)", "新密碼（至少 8 個字元）": "New password (min 8 chars)", "再輸入一次密碼": "Re-enter password", "暱稱": "Nickname", "請描述你的想法或遇到的問題（最多 500 字）": "Describe your idea or problem (max 500 chars)", "目前密碼": "Current password", "暱稱（最多 12 字）": "Nickname (max 12 chars)", "密碼": "Password"},R=[[/^▶ 開始（共 (\d+) 題）$/,'▶ Start ($1 questions)'],[/^第 (\d+) 組$/,'Set $1'],[/^⏰ 今日複習（(\d+)）$/,'⏰ Due today ($1)'],[/^❌ 不熟的（(\d+)）$/,'❌ Weak items ($1)'],[/^🎲 全科 (\d+) 題$/,'🎲 All subjects, $1 Qs'],[/^目前設定：(.*)$/,'Current: $1'],[/^題型：綜合（自動搭配）$/,'Types: mixed (auto)'],[/^題型：已選 (\d+) 種$/,'Types: $1 selected'],[/^第 (\d+) \/ (\d+) 篇$/,'$1 / $2']];
 let lang=LS.getItem('lang')==='en'?'en':'zh';const ATTR=['placeholder','title','aria-label'],SK='script,style,textarea,#txB,#txL,#txY,#chatBox,#v-dev',hz=s=>/[\u4e00-\u9fff]/.test(s);
 function tr(s){const t=s.trim(),i=s.indexOf(t),lead=s.slice(0,i),tail=s.slice(i+t.length);let o=D[t];if(o==null)for(const[r,v]of R)if(r.test(t)){o=t.replace(r,v);break}
  if(o==null){const m=t.match(/^([^\u4e00-\u9fffA-Za-z0-9]+)(.+)$/);if(m&&D[m[2]]!=null)o=m[1]+D[m[2]]}return o==null?s:lead+o+tail}
