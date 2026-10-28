@@ -110,7 +110,7 @@ summary{color:#38bdf8;cursor:pointer;font-size:.85rem;font-weight:bold}
 .tbl{border-collapse:collapse;width:100%;text-align:center;font-size:1.05rem}.tbl th,.tbl td{border:1px solid #334155;padding:6px 8px}.tbl th{background:#0f172a;color:#f59e0b;font-size:.9rem}.tbl .must td{background:rgba(245,158,11,.10)}#mTxt details{max-width:1100px;margin:12px auto 0}
 .vbar{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:4px 0 8px;position:sticky;top:0;background:#0f172a;padding:8px 0;z-index:5}.vtgl{outline:2px solid #f59e0b}
 .vrow{display:grid;grid-template-columns:minmax(130px,.9fr) 1.2fr auto;gap:2px 12px;align-items:center;padding:8px 10px;border-bottom:1px solid #1e293b}.vrow.vok{background:#052e1b}.vrow.vbad{background:#2a1215}
-.vlv{font-size:.68rem;color:#94a3b8;border:1px solid #334155;border-radius:6px;padding:0 5px;margin-left:6px}.vw b{font-size:1.1rem;color:#f59e0b}.vmean{font-size:1rem;color:#e2e8f0}.vmean.hid{filter:blur(7px);cursor:pointer;user-select:none}.vx{grid-column:1/-1;color:#94a3b8;font-size:.9rem}
+.vng{color:#64748b;font-size:.85rem}.vlv{font-size:.68rem;color:#94a3b8;border:1px solid #334155;border-radius:6px;padding:0 5px;margin-left:6px}.vw b{font-size:1.1rem;color:#f59e0b}.vmean{font-size:1rem;color:#e2e8f0}.vmean.hid{filter:blur(7px);cursor:pointer;user-select:none}.vx{grid-column:1/-1;color:#94a3b8;font-size:.9rem}
 .vsp{background:none;border:0;cursor:pointer;font-size:1rem;padding:0 4px}.nosp .vsp{display:none}
 .vs button{background:#0f172a;border:1px solid #334155;border-radius:8px;color:#cbd5e1;cursor:pointer;padding:3px 9px;margin-left:4px}.vs button.m{border-color:#34d399;color:#34d399}.vs button.r{border-color:#f87171;color:#f87171}
 @media(max-width:560px){.vrow{grid-template-columns:1fr auto}}
@@ -3718,12 +3718,7041 @@ W1200.trim().split('\n').forEach(l=>{const [n,t,d,p,lv]=l.split('|'),k=ex.get(t.
  if(k){k.n1200=+n;k.pos=posOf(k);if(lv==='s'&&k.stg!=='國小'){k.stg='國小';k.gd=k.gd||3}}
  else KB.push({id:'evoc'+(5000+ +n),s:'evoc',t,d,x:'教育部基本 1,200 字表第 '+n+' 字',nt:1,stg:lv==='s'?'國小':'國中',gd:lv==='s'?3:7,cat:'基本1200',n1200:+n,pos:p})});
 KB.filter(k=>k.s==='evoc'&&!k.pos).forEach(k=>{k.pos=posOf(k)});
+
+/* 大考中心《高中英文參考詞彙表》（111 學年度起適用，約 6,000 字）：有中文詞義者收錄為一般單字，其餘列為「尚未加入詞義」 */
+const HSALL=`
+a / an|art.|1
+ability|n.|1
+able|adj.|1
+about|prep./adv.|1
+above|prep./adv./adj.|1
+abroad|adv.|1
+across|prep./adv.|1
+act|n./v.|1
+action|n.|1
+actor / actress|n.|1
+add|v.|1
+afraid|adj.|1
+after|prep./conj./adv.|1
+afternoon|n.|1
+again|adv.|1
+age|n./v.|1
+ago|adv.|1
+agree|v./(n.)|1
+air|n.|1
+airplane / plane|n.|1
+airport|n.|1
+all|adj./adv./pron./n.|1
+allow|v.|1
+almost|adv.|1
+along|prep./adv.|1
+already|adv.|1
+also|adv.|1
+although|conj.|1
+always|adv.|1
+am / a.m.|adv.|1
+and|conj.|1
+angry|adj.|1
+animal|n.|1
+another|adj./pron.|1
+answer|n./v.|1
+ant|n.|1
+any|pron./adj./adv.|1
+anybody / anyone|pron.|1
+anything|pron.|1
+apartment|n.|1
+appear|v.|1
+apple|n.|1
+area|n.|1
+arm|n./v.|1
+around|prep./adv.|1
+arrive|v.|1
+art|n.|1
+as|conj./adv./prep.|1
+ask|v.|1
+at|prep.|1
+attack|n./v.|1
+aunt|n.|1
+away|adv.|1
+baby|n.|1
+back|adv./n./v./adj.|1
+bad|adj.|1
+bag|n.|1
+ball|n./v.|1
+banana|n.|1
+band|n.|1
+bank|n./v.|1
+baseball|n.|1
+basket|n.|1
+basketball|n.|1
+bat|n./v.|1
+bath|n.|1
+bathroom|n.|1
+be|v./aux.|1
+beach|n./v.|1
+bean|n.|1
+bear|v./n.|1
+beautiful|adj.|1
+because|conj.|1
+become|v.|1
+bed|n.|1
+bedroom|n.|1
+bee|n.|1
+beef|n.|1
+before|prep./conj./adv.|1
+begin|v.|1
+behind|prep./adv.|1
+believe|v.|1
+bell|n.|1
+belong|v.|1
+below|adv./prep.|1
+belt|n./v.|1
+bench|n.|1
+beside|prep.|1
+best|adj./adv./v./n.|1
+between|prep./adv.|1
+bicycle / bike|n.|1
+big|adj.|1
+bird|n.|1
+bite|n./v.|1
+black|adj./n.|1
+blind|adj./v.|1
+block|n./v.|1
+blow|v.|1
+blue|adj./n.|1
+boat|n.|1
+body|n.|1
+book|n./v.|1
+bored|adj.|1
+boring|adj.|1
+born|adj.|1
+borrow|v.|1
+boss|n./v.|1
+both|pron./adv./adj.|1
+bottle|n./v.|1
+bottom|n./adj./v.|1
+bow|n./v.|1
+bowl|n.|1
+box|n./v.|1
+boy|n.|1
+brave|adj.|1
+bread|n.|1
+break|n./v.|1
+breakfast|n./v.|1
+bridge|n./v.|1
+bright|adj./adv.|1
+bring|v.|1
+brother|n.|1
+brown|adj./v./n.|1
+bug|n./v.|1
+build|v.|1
+bus|n.|1
+business|n.|1
+busy|adj.|1
+but|conj./prep./adv.|1
+butter|n./v.|1
+butterfly|n.|1
+button|n./v.|1
+buy|v./n.|1
+by|prep./adv.|1
+cake|n.|1
+call|v./n.|1
+camera|n.|1
+camp|n./v.|1
+can|aux./n./v.|1
+cap|n./v.|1
+car|n.|1
+card|n.|1
+care|n./v.|1
+careful|adj.|1
+carrot|n.|1
+carry|v.|1
+case|n./v.|1
+cat|n.|1
+catch|v./n.|1
+celebrate|v.|1
+cellphone|n.|1
+cent|n.|1
+center|n.|1
+certain|adj./pron.|1
+chair|n./v.|1
+chance|n./v.|1
+change|n./v.|1
+cheap|adj./adv.|1
+check|v./n.|1
+cheese|n.|1
+chicken|n.|1
+child|n.|1
+chocolate|n.|1
+choice|n./adj.|1
+choose|v.|1
+church|n.|1
+circle|n./v.|1
+city|n.|1
+class|n./v.|1
+clean|adj./v./adv./n.|1
+clear|adj./v./adv.|1
+clerk|n.|1
+climb|v./n.|1
+clock|n.|1
+close|adj./adv./v./n.|1
+clothes|n.|1
+cloud|n.|1
+club|n./v.|1
+coat|n./v.|1
+coffee|n.|1
+cold|adj./n.|1
+collect|v.|1
+color|n./v.|1
+come|v.|1
+comfortable|adj.|1
+common|adj./n.|1
+computer|n.|1
+convenient|adj.|1
+cook|v./n.|1
+cookie|n.|1
+cool|adj./v./n.|1
+copy|n./v.|1
+corner|n.|1
+correct|adj./v.|1
+cost|n./v.|1
+couch|n./v.|1
+count|v./n.|1
+country|n.|1
+course|n./v.|1
+cousin|n.|1
+cover|v./n.|1
+cow|n.|1
+crazy|adj.|1
+cross|n./v.|1
+cry|v./n.|1
+cup|n.|1
+cut|v./n.|1
+cute|adj.|1
+dance|n./v.|1
+dangerous|adj.|1
+dark|adj./n.|1
+date|n./v.|1
+daughter|n.|1
+day|n.|1
+dead|adj.|1
+deal|n./v.|1
+dear|adj./n./adv.|1
+death|n.|1
+decide|v.|1
+deep|adj./adv.|1
+define|v.|1
+desk|n.|1
+dictionary|n.|1
+die|v.|1
+different|adj.|1
+difficult|adj.|1
+dig|v./n.|1
+dinner|n.|1
+dirty|adj./v.|1
+dish|n./v.|1
+do|aux./v.|1
+doctor / doc|n.|1
+dog|n.|1
+doll|n.|1
+dollar|n.|1
+door|n.|1
+down|adv./prep./adj./n./v.|1
+dozen|n.|1
+draw|v./n.|1
+dream|n./v.|1
+dress|n./v.|1
+drink|v./n.|1
+drive|v./n.|1
+driver|n.|1
+drop|v./n.|1
+drum|n./v.|1
+dry|adj./v.|1
+duck|n./v.|1
+during|prep.|1
+each|pron./adj./adv.|1
+ear|n.|1
+early|adj./adv.|1
+earth|n.|1
+east|n./adj./adv.|1
+easy|adj.|1
+eat|v.|1
+egg|n.|1
+either|adv./pron./adj./conj.|1
+elephant|n.|1
+else|adv.|1
+email|n./v.|1
+end|n./v.|1
+engineer|n.|1
+enjoy|v./(n.)|1
+enough|adv./adj./n.|1
+enter|v.|1
+envelope|n.|1
+eraser|n.|1
+error|n.|1
+even|adv./adj./v.|1
+evening|n.|1
+ever|adv.|1
+every|adj.|1
+everyone / everybody|pron.|1
+everything|pron.|1
+example|n.|1
+excellent|adj.|1
+except|prep./conj.|1
+excited|adj.|1
+exciting|adj.|1
+exercise|n./v.|1
+expect|v.|1
+expensive|adj.|1
+experience|n./v.|1
+explain|v.|1
+eye|n.|1
+face|n./v.|1
+fact|n.|1
+factory|n.|1
+fail|v./n.|1
+fall|n./v.|1
+family|n.|1
+famous|adj.|1
+fan|n./v.|1
+far|adv./adj.|1
+farm|n./v.|1
+farmer|n.|1
+fast|adv./adj.|1
+fat|n./adj.|1
+father|n.|1
+feed|v./n.|1
+feel|v./n.|1
+festival|n.|1
+few|adj./pron.|1
+fight|v./n.|1
+file|n./v.|1
+fill|v./n.|1
+finally|adv.|1
+find|v./n.|1
+fine|adj./adv./v./n.|1
+finger|n./v.|1
+finish|v./n.|1
+fire|n./v.|1
+first|n./adv./adj.|1
+fish|n./v.|1
+floor|n./v.|1
+flower|n./v.|1
+fly|v./n.|1
+follow|v.|1
+food|n.|1
+fool|n./v.|1
+foot|n./v.|1
+for|prep./conj.|1
+foreign|adj.|1
+foreigner|n.|1
+forget|v.|1
+fork|n.|1
+free|adj./v./adv.|1
+fresh|adj.|1
+friend|n.|1
+friendly|adj.|1
+frog|n.|1
+from|prep.|1
+front|adj./n.|1
+fruit|n.|1
+full|adj.|1
+fun|n.|1
+funny|adj.|1
+future|n./adj.|1
+game|n.|1
+garden|n./v.|1
+gate|n.|1
+get|v.|1
+ghost|n.|1
+giant|adj./n.|1
+gift|n.|1
+girl|n.|1
+give|v.|1
+glad|adj.|1
+glass|n.|1
+glasses|n.|1
+glove|n.|1
+go|v./n.|1
+god / goddess|n.|1
+good|adj./adv./n.|1
+goodbye|n.|1
+grade|n./v.|1
+grandfather|n.|1
+grandmother|n.|1
+grass|n.|1
+gray|adj./n./v.|1
+great|adj./n.|1
+green|adj./n./v.|1
+ground|n./v.|1
+group|n./v.|1
+grow|v.|1
+guess|v./n.|1
+guitar|n.|1
+guy|n.|1
+habit|n.|1
+hair|n.|1
+half|n./adv./adj.|1
+ham|n.|1
+hand|n./v.|1
+hang|v.|1
+happen|v.|1
+happy|adj.|1
+hard|adj./adv.|1
+hat|n.|1
+hate|v./n.|1
+have|aux./v.|1
+he|pron.|1
+head|n./v.|1
+headache|n.|1
+health|n.|1
+healthy|adj.|1
+hear|v.|1
+heart|n.|1
+heat|n./v.|1
+heavy|adj.|1
+height|n.|1
+hello|n.|1
+help|v./n.|1
+helpful|adj.|1
+hen|n.|1
+here|adv./n.|1
+hide|v.|1
+high|adj./adv./n.|1
+hill|n.|1
+history|n.|1
+hit|v./n.|1
+hobby|n.|1
+hold|v./n.|1
+holiday|n.|1
+home|n./adv./v./adj.|1
+homework|n.|1
+honest|adj.|1
+honey|n.|1
+hope|v./n.|1
+horse|n.|1
+hospital|n.|1
+hot|adj.|1
+hotel|n.|1
+hour|n.|1
+house|n./v.|1
+housewife|n.|1
+how|adv.|1
+however|adv.|1
+hundred|n./adj.|1
+hungry|adj.|1
+hurt|v./n.|1
+husband|n.|1
+I|pron.|1
+ice|n.|1
+idea|n.|1
+if|conj.|1
+important|adj.|1
+in|prep./adv./adj.|1
+inch|n.|1
+insect|n.|1
+inside|prep./adv./n./adj.|1
+interest|n./v.|1
+interested|adj.|1
+interesting|adj.|1
+interview|n./v.|1
+into|prep.|1
+invite|v.|1
+island|n.|1
+it|pron.|1
+item|n.|1
+jacket|n.|1
+jeans|n.|1
+job|n.|1
+join|v./n.|1
+joke|n./v.|1
+joy|n.|1
+juice|n.|1
+jump|v./n.|1
+just|adv./adj.|1
+keep|v./n.|1
+key|adj./n./v.|1
+kick|v./n.|1
+kid|n./v.|1
+kill|v./n.|1
+kind|adj./n.|1
+king|n.|1
+kiss|n./v.|1
+kitchen|n.|1
+kite|n.|1
+knee|n./v.|1
+knife|n./v.|1
+knock|v./n.|1
+know|v.|1
+knowledge|n.|1
+lake|n.|1
+lamp|n.|1
+land|n./v.|1
+language|n.|1
+large|adj.|1
+last|n./v./adv./adj.|1
+late|adj./adv.|1
+later|adv.|1
+laugh|v./n.|1
+lawyer|n.|1
+lazy|adj.|1
+lead|v./n.|1
+leader|n.|1
+learn|v.|1
+least|adv./pron./adj.|1
+leave|v./n.|1
+left|adj./n./adv.|1
+leg|n.|1
+lemon|n.|1
+less|pron./adv./adj./prep.|1
+lesson|n.|1
+let|v.|1
+letter|n.|1
+level|n./adj.|1
+library|n.|1
+lie|v./n.|1
+life|n.|1
+light|n./adj./v./adv.|1
+like|prep./v./n.|1
+line|n./v.|1
+lion|n.|1
+lip|n.|1
+list|n./v.|1
+listen|v.|1
+little|adj./adv./n.|1
+live|v./adj.|1
+lonely|adj.|1
+long|adj./adv./v.|1
+look|v./n.|1
+lose|v.|1
+lot|n.|1
+loud|adv./adj.|1
+love|n./v.|1
+lovely|adj.|1
+low|adj./adv./n.|1
+lucky|adj.|1
+lunch|n./v.|1
+machine|n./v.|1
+mad|adj.|1
+magic|adj./n.|1
+mail|n./v.|1
+main|adj./n.|1
+make|v.|1
+man|n./v.|1
+many|adj./pron.|1
+map|n./v.|1
+mark|n./v.|1
+market|n./v.|1
+married|adj.|1
+mathematics / math|n.|1
+matter|n./v.|1
+may|aux.|1
+maybe|adv.|1
+meal|n.|1
+mean|v./adj.|1
+meat|n.|1
+media|n.|1
+medicine|n.|1
+medium|adj.|1
+meet|v.|1
+meeting|n.|1
+member|n.|1
+menu|n.|1
+middle|adj./n.|1
+milk|n.|1
+million|n.|1
+mind|n./v.|1
+mine|n./v.|1
+minute|n.|1
+miss|v./n.|1
+mistake|n./v.|1
+modern|adj.|1
+moment|n.|1
+money|n.|1
+monkey|n.|1
+month|n.|1
+moon|n.|1
+more|adj./pron./adv.|1
+morning|n.|1
+most|adv./pron./adj.|1
+mother|n.|1
+mountain|n.|1
+mouse|n.|1
+mouth|n./v.|1
+move|v./(n.)|1
+movie / film|n.|1
+Mr. / Mister|n.|1
+Mrs.|n.|1
+Ms.|n.|1
+much|adj./pron./adv.|1
+mud|n.|1
+museum|n.|1
+music|n.|1
+must|aux./n.|1
+name|n./v.|1
+national|adj.|1
+nature|n.|1
+near|prep./adj./adv./v.|1
+neck|n.|1
+need|v./n./aux.|1
+net|n./v.|1
+never|adv.|1
+new|adj.|1
+news|n.|1
+newspaper|n.|1
+next|adj./adv.|1
+nice|adj.|1
+night|n.|1
+no / nope|adj./adv./n.|1
+nobody|pron./n.|1
+noise|n.|1
+noisy|adj.|1
+noon|n.|1
+north|n./adj./adv.|1
+nose|n.|1
+not|adv.|1
+note|n./v.|1
+nothing|pron./n.|1
+notice|v./n.|1
+now|adv./n.|1
+number|n./v.|1
+nurse|n./v.|1
+O.K. / OK / okay|adj./adv./n./v.|1
+o’clock|adv.|1
+of|prep.|1
+off|adv./prep./adj.|1
+office|n.|1
+officer|n.|1
+often|adv.|1
+oil|n./v.|1
+old|adj.|1
+on|prep./adv.|1
+once|adv./conj./n.|1
+online|adj.|1
+only|adv./adj./conj.|1
+open|adj./v.|1
+or|conj.|1
+orange|adj./n.|1
+order|n./v.|1
+other|adj./pron.|1
+out|adv./prep./adj./n./v.|1
+outside|prep./adv./adj./n.|1
+over|prep./adv.|1
+own|adj./pron./v.|1
+pack|n./v.|1
+package|n.|1
+page|n.|1
+paint|n./v.|1
+pair|n.|1
+pants|n.|1
+paper|n./v.|1
+parent|n.|1
+park|n./v.|1
+part|n./v.|1
+party|n./v.|1
+pass|v./n.|1
+past|adj./n./prep./adv.|1
+pay|v./(n.)|1
+pen|n./v.|1
+pencil|n.|1
+people|n./v.|1
+perhaps|adv.|1
+person|n.|1
+pet|n./v.|1
+photograph / photo|n./v.|1
+piano|n.|1
+pick|v./n.|1
+picnic|n./v.|1
+picture|n./v.|1
+pie|n.|1
+piece|n./v.|1
+pig|n./v.|1
+pin|n./v.|1
+pink|adj./n.|1
+pipe|n./v.|1
+place|n./v.|1
+plan|n./v.|1
+planet|n.|1
+plant|n./v.|1
+plate|n.|1
+play|v./n.|1
+player|n.|1
+please|v.|1
+pleasure|n.|1
+pm / p.m.|adv.|1
+pocket|n./v.|1
+point|n./v.|1
+police|n./v.|1
+polite|adj.|1
+pond|n.|1
+pool|n./v.|1
+poor|adj.|1
+popcorn|n.|1
+popular|adj.|1
+possible|adj.|1
+pot|n./v.|1
+potato|n.|1
+power|n./v.|1
+practice|n./v.|1
+prepare|v.|1
+present|adj./n./v.|1
+pretty|adv./adj.|1
+price|n./v.|1
+probably|adv.|1
+problem|n.|1
+program|n./v.|1
+proud|adj.|1
+public|adj./n.|1
+pull|v./n.|1
+push|v./n.|1
+put|v.|1
+quarter|n.|1
+queen|n.|1
+question|n./v.|1
+quick|adj./adv.|1
+quiet|adj./n./v.|1
+quite|adv.|1
+rabbit|n.|1
+race|n./v.|1
+radio|n./v.|1
+rain|n./v.|1
+rainbow|n.|1
+rainy|adj.|1
+raise|v./n.|1
+reach|v./n.|1
+read|v.|1
+ready|adj./v.|1
+real|adj.|1
+really|adv.|1
+reason|n./v.|1
+red|adj./n.|1
+relative|adj./n.|1
+remember|v.|1
+repeat|v.|1
+report|n./v.|1
+reporter|n.|1
+rest|n./v.|1
+restaurant|n.|1
+rice|n.|1
+rich|adj.|1
+ride|n./v.|1
+right|adv./adj./n.|1
+ring|n./v.|1
+rise|n./v.|1
+river|n.|1
+road|n.|1
+robot|n.|1
+rock|n./v.|1
+roll|v./n.|1
+room|n./v.|1
+root|n.|1
+rope|n.|1
+rose|n.|1
+round|adj./n./adv./prep./v.|1
+row|n./v.|1
+rule|n./v.|1
+ruler|n.|1
+run|v.|1
+sad|adj.|1
+safe|adj./n.|1
+salad|n.|1
+sale|n.|1
+salt|n./v./adj.|1
+same|adj./pron./adv.|1
+save|v.|1
+say|v.|1
+school|n./v.|1
+science|n.|1
+sea|n.|1
+season|n.|1
+seat|n./v.|1
+second|adj./n./adv.|1
+secretary|n.|1
+see|v.|1
+seed|n.|1
+sell|v.|1
+send|v.|1
+sentence|n./v.|1
+serious|adj.|1
+service|n.|1
+set|v./n.|1
+several|adj./pron.|1
+shake|v./n.|1
+shall|aux.|1
+shape|n.|1
+share|v./n.|1
+sharp|adj./adv.|1
+she|pron.|1
+sheep|n.|1
+ship|n./v.|1
+shirt|n.|1
+shoe|n.|1
+shop|n./v.|1
+short|adj.|1
+shorts|n.|1
+shoulder|n.|1
+shout|v./n.|1
+show|v./n.|1
+shower|n./v.|1
+sick|adj.|1
+side|n.|1
+sight|n./v.|1
+sign|n./v.|1
+simple|adj.|1
+since|conj./prep./adv.|1
+sing|v.|1
+singer|n.|1
+sir|n.|1
+sister|n.|1
+sit|v.|1
+size|n./v.|1
+skirt|n.|1
+sky|n.|1
+sleep|n./v.|1
+slim|adj.|1
+slow|adj./v./adv.|1
+small|adj./n./adv.|1
+smart|adj.|1
+smell|n./v.|1
+smile|n./v.|1
+smoke|n./v.|1
+snake|n./v.|1
+snow|n./v.|1
+so|adv./conj.|1
+sofa|n.|1
+soldier|n.|1
+some|adj./pron.|1
+someone / somebody|pron./n.|1
+something|pron./n.|1
+sometimes|adv.|1
+somewhere|adv.|1
+son|n.|1
+song|n.|1
+soon|adv.|1
+sore|adj./n.|1
+sorry|adj.|1
+sound|n.|1
+soup|n.|1
+south|n./adj./adv.|1
+space|n./v.|1
+speak|v.|1
+special|adj.|1
+spell|v.|1
+spend|v.|1
+spring|n./v.|1
+square|n./adj.|1
+stair|n.|1
+stand|v./n.|1
+star|n./v.|1
+start|v./n.|1
+station|n.|1
+stay|v./n.|1
+still|adv./adj.|1
+stop|v./n.|1
+store|n./v.|1
+story|n.|1
+straight|adv./adj./n.|1
+strange|adj.|1
+street|n.|1
+string|n.|1
+strong|adj.|1
+student|n.|1
+study|n./v.|1
+stupid|adj.|1
+subject|n.|1
+successful|adj.|1
+sugar|n.|1
+sun|n./v.|1
+sunny|adj.|1
+supermarket|n.|1
+sure|adj./adv.|1
+surprise|n./v.|1
+surprised|adj.|1
+sweet|adj.|1
+table|n.|1
+tail|n.|1
+take|v.|1
+talk|v./n.|1
+tall|adj.|1
+tape|n.|1
+taste|n./v.|1
+taxicab / taxi / cab|n.|1
+tea|n.|1
+teach|v.|1
+teacher|n.|1
+team|n./v.|1
+teenager|n.|1
+telephone / phone|n./v.|1
+television / TV|n.|1
+tell|v.|1
+temple|n.|1
+tennis|n.|1
+terrible|adj.|1
+test|n./v.|1
+than|conj./prep.|1
+thank|v./n.|1
+that|conj./pron./adv./adj.|1
+the|art.|1
+theater|n.|1
+then|adv./adj.|1
+there|adv./n.|1
+these|pron./adj.|1
+theirs, themselves)|pron.|1
+thick|adj.|1
+thin|adj.|1
+thing|n.|1
+think|v.|1
+third|adj./n./adv.|1
+this|pron./adv./adj.|1
+those|pron./adj.|1
+though|conj./adv.|1
+thousand|n./adj.|1
+throat|n.|1
+through|prep./adv.|1
+throw|v./n.|1
+ticket|n.|1
+tidy|adj./v.|1
+tie|n./v.|1
+tiger|n.|1
+time|n./v.|1
+tip|n./v.|1
+tired|adj.|1
+to|prep.|1
+today|adv./n.|1
+toe|n.|1
+together|adv.|1
+toilet|n.|1
+tomato|n.|1
+tomorrow|adv./n.|1
+tonight|adv./n.|1
+too|adv.|1
+tool|n.|1
+tooth|n.|1
+top|n./adj./v.|1
+topic|n.|1
+total|adj./n./v.|1
+touch|n./v.|1
+towel|n./v.|1
+town|n.|1
+toy|n.|1
+traffic|n./v.|1
+train|n./v.|1
+treat|v./(n.)|1
+tree|n.|1
+trip|n./v.|1
+trouble|n./v.|1
+truck|n.|1
+try|v./n.|1
+T-shirt|n.|1
+turn|v./n.|1
+twice|adv.|1
+type|n./v.|1
+uncle|n.|1
+under|prep./adv.|1
+understand|v.|1
+uniform|n.|1
+until|conj./prep.|1
+up|adv./prep./adj./v./n.|1
+use|v./n.|1
+useful|adj.|1
+usually|adv.|1
+vegetable|n.|1
+very|adv.|1
+video|n./v./adj.|1
+violin|n.|1
+visit|v./n.|2
+visitor|n.|2
+voice|n.|2
+wait|v./n.|2
+wake|v.|2
+walk|v./n.|2
+wall|n.|2
+want|v./n.|2
+warm|adj./v.|2
+watch|v./n.|2
+water|n./v.|2
+wave|n./v.|2
+way|n.|2
+we|pron.|2
+weak|adj.|2
+wear|v.|2
+weather|n./v.|2
+week|n.|2
+weekend|n./v.|2
+welcome|v./adj./n.|2
+well|adv./adj./n.|2
+west|n./adj./adv.|2
+wet|adj./v.|2
+what|pron./adj.|2
+when|adv./conj./pron.|2
+where|conj./adv./pron./n.|2
+whether|conj.|2
+which|pron./adj.|2
+while|conj./n./v.|2
+white|adj./n.|2
+who|pron.|2
+whose|pron.|2
+why|adv./n.|2
+wide|adj./adv.|2
+wife|n.|2
+will|aux./n.|2
+win|v./n.|2
+wind|n./v.|2
+window|n.|2
+wise|adj.|2
+wish|v./n.|2
+with|prep.|2
+without|prep./adv.|2
+woman|n.|2
+wonderful|adj.|2
+word|n.|2
+work|n./v.|2
+worker|n.|2
+world|n.|2
+worry|v./n.|2
+write|v.|2
+writer|n.|2
+wrong|adj./adv./n./v.|2
+yard|n.|2
+year|n.|2
+yellow|adj./n./v.|2
+yes / yeah|adv./n.|2
+yesterday|adv./n.|2
+yet|adv./conj.|2
+yourself, yourselves)|pron.|2
+young|adj./n.|2
+zero|n.|2
+zoo|n.|2
+absence|n.|2
+absent|adj./v.|2
+accept|v.|2
+accident|n.|2
+account|n./v.|2
+active|adj.|2
+activity|n.|2
+actual|adj.|2
+addition|n.|2
+address|v./n.|2
+admit|v.|2
+adult|n./adj.|2
+advance|n./v.|2
+advice|n.|2
+affair|n.|2
+affect|v.|2
+against|prep.|2
+ahead|adv.|2
+aid|n./v.|2
+aim|n./v.|2
+aircraft|n.|2
+alarm|n./v.|2
+album|n.|2
+alike|adv./adj.|2
+alive|adj.|2
+alone|adv./adj.|2
+aloud|adv.|2
+altogether|adv.|2
+among|prep.|2
+amount|n./v.|2
+ancient|adj.|2
+anger|n.|2
+angle|n.|2
+ankle|n.|2
+anytime|adv.|2
+anyway|adv.|2
+anywhere / anyplace|adv.|2
+ape|n.|2
+appearance|n.|2
+appetite|n.|2
+apply|v.|2
+appreciate|v.|2
+approach|n./v.|2
+argue|v./(n.)|2
+army|n.|2
+arrange|v./(n.)|2
+arrival|n.|2
+arrow|n.|2
+article|n.|2
+artist|n.|2
+asleep|adj.|2
+attempt|n./v.|2
+attend|v.|2
+attention|n.|2
+author|n./v.|2
+available|adj.|2
+average|adj./n./v.|2
+avoid|v.|2
+backpack|n./v.|2
+backward|adj.|2
+backward / backwards|adv.|2
+badminton|n.|2
+bake|v.|2
+bakery|n.|2
+balance|n./v.|2
+balcony|n.|2
+balloon|n.|2
+bar|n./v.|2
+barbecue|n./v.|2
+barber|n.|2
+bark|n./v.|2
+base|n./v.|2
+basic|adj.|2
+basics|n.|2
+basis|n.|2
+bathe|v.|2
+battle|n./v.|2
+beard|n.|2
+beat|v./n.|2
+beauty|n.|2
+beer|n.|2
+beg|v.|2
+beginner|n.|2
+behave|v.|2
+being|n.|2
+belief|n.|2
+bend|v./n.|2
+better|adj./adv./n./v.|2
+beyond|prep./adv.|2
+bill|n./v.|2
+billion|n.|2
+birth|n.|2
+biscuit|n.|2
+bit|n.|2
+blackboard|n.|2
+blame|v./n.|2
+blank|adj./n.|2
+blanket|n./v.|2
+blood|n.|2
+board|n./v.|2
+boil|n./v.|2
+bone|n.|2
+bookstore|n.|2
+border|n./v.|2
+bother|v./n.|2
+brain|n.|2
+branch|n./v.|2
+brand|n.|2
+brief|adj./n./v.|2
+brilliant|adj.|2
+broad|adj.|2
+brush|n./v.|2
+building|n.|2
+bun|n.|2
+burden|n./v.|2
+burn|v./n.|2
+burst|n./v.|2
+businessman|n.|2
+cabbage|n.|2
+café / cafe|n.|2
+cage|n./v.|2
+calendar|n.|2
+calm v. / adj. / n camel|n.|2
+cancel|v.|2
+cancer|n.|2
+candle|n.|2
+capital|n./adj.|2
+cartoon|n./v.|2
+cash|n./v.|2
+castle|n.|2
+cause|n./v.|2
+ceiling|n.|2
+cell|n.|2
+centimeter|n.|2
+central|adj.|2
+century|n.|2
+cereal|n.|2
+chain|n./v.|2
+chalk|n./v.|2
+challenge|n./v.|2
+channel|n./v.|2
+chapter|n.|2
+character|n.|2
+charge|n./v.|2
+chart|n.|2
+chase|n./v.|2
+cheat|v./n.|2
+cheer|v./n.|2
+chemical|adj./n.|2
+chess|n.|2
+chief|adj./n.|2
+childhood|n.|2
+childish|adj.|2
+china|n.|2
+chopstick|n.|2
+claim|n./v.|2
+clap|v./n.|2
+classic|adj./n.|2
+classical|adj.|2
+classmate|n.|2
+clever|adj.|2
+click|v./n.|2
+climate|n.|2
+cloth|n.|2
+clothing|n.|2
+cloudy|adj.|2
+coal|n.|2
+coast|n.|2
+cockroach / roach|n.|2
+cocoa|n.|2
+coin|n./v.|2
+cola / Coke|n.|2
+college|n.|2
+comb|n./v.|2
+combine|v.|2
+comic|adj./n.|2
+command|n./v.|2
+commercial|adj./n.|2
+company|n.|2
+compare|v.|2
+complete|adj./v.|2
+complex|adj./n.|2
+concern|n./v.|2
+conclude|v.|2
+condition|n./v.|2
+confident|adj.|2
+conflict|n./v.|2
+congratulation|n.|2
+connection|n.|2
+consider|v.|2
+consideration|n.|2
+contact|n./v.|2
+contain|v.|2
+continue|v.|2
+contract|n./v.|2
+control|n./v.|2
+conversation|n.|2
+corn|n.|2
+countryside|n.|2
+couple|n./v.|2
+courage|n.|2
+court|n.|2
+cowboy|n.|2
+crayon|n.|2
+cream|n./adj.|2
+create|v.|2
+crime|n.|2
+crisis|n.|2
+crow|n.|2
+crowd|n./v.|2
+cultural|adj.|2
+culture|n.|2
+cure|n./v.|2
+curious|adj.|2
+current|adj./n.|2
+curtain|n./v.|2
+custom|n.|2
+customer|n.|2
+cycle|n./v.|2
+daily|adj./adv./n.|2
+damage|n./v.|2
+dancer|n.|2
+danger|n.|2
+data|n.|2
+deaf|adj.|2
+debate|n./v.|2
+debt|n.|2
+decision|n.|2
+deer|n.|2
+degree|n.|2
+delay|n./v.|2
+delicious|adj.|2
+deliver|v.|2
+delivery|n.|2
+dentist|n.|2
+deny|v.|2
+department|n.|2
+depend|v.|2
+depth|n.|2
+describe|v.|2
+description|n.|2
+desert|n./v.|2
+design|n./v.|2
+detail|n./v.|2
+develop|v./(n.)|2
+dial|n./v.|2
+dialogue|n.|2
+diamond|n.|2
+diary|n.|2
+diet|n./v.|2
+difference|n.|2
+difficulty|n.|2
+direct|adj./v./adv.|2
+direction|n.|2
+director|n.|2
+disagree|v./(n.)|2
+disappear|v.|2
+discover|v.|2
+discovery|n.|2
+discuss|v.|2
+discussion|n.|2
+disease|n.|2
+display|n./v.|2
+distance|n.|2
+distant|adj.|2
+divide|v./n.|2
+division|n.|2
+domestic|adj.|2
+dot|n./v.|2
+double|adj./v./n./adv.|2
+doubt|n./v.|2
+dove|n.|2
+download|v.|2
+downstairs|adv./n./adj.|2
+dragon|n.|2
+drama|n.|2
+drawer|n.|2
+drawing|n.|2
+drug|n./v.|2
+dryer|n.|2
+due|adj./adv./n.|2
+dull|adj./v.|2
+duty|n.|2
+eagle|n.|2
+earn|v.|2
+earring|n.|2
+earthquake|n.|2
+ease|n./v.|2
+eastern|adj.|2
+edge|n./v.|2
+edition|n.|2
+education|n.|2
+effect|n./v.|2
+effective|adj.|2
+effort|n.|2
+elder|n./adj.|2
+electric|adj.|2
+electrical|adj.|2
+emotion|n.|2
+emphasize|v.|2
+employ|v./(n.)|2
+employee|n.|2
+employer|n.|2
+empty|adj./v.|2
+encourage|v./(n.)|2
+ending|n.|2
+enemy|n.|2
+energy|n.|2
+engine|n.|2
+entire|adj.|2
+entrance|n.|2
+environment|n.|2
+environmental|adj.|2
+equal|adj./v./n.|2
+escape|v./n.|2
+especially|adv.|2
+essay|n.|2
+eve|n.|2
+event|n.|2
+evil|n./adj.|2
+exact|adj.|2
+examination / exam|n.|2
+examine|v.|2
+excite|v./(n.)|2
+excuse|v./n.|2
+exist|v.|2
+existence|n.|2
+exit|n./v.|2
+expense|n.|2
+expert|n./adj.|2
+express|v./adj./adv./n.|2
+expression|n.|2
+extra|adj./adv./n.|2
+eyebrow / brow|n.|2
+factor|n.|2
+failure|n.|2
+fair|adj./n./adv.|2
+false|adj.|2
+fashion|n./v.|2
+fate|n.|2
+fault|n./v.|2
+favor|n./v.|2
+favorite|adj./n.|2
+fear|n./v.|2
+feature|n./v.|2
+fee|n.|2
+feeling|n.|2
+fellow|n.|2
+female|adj./n.|2
+fever|n.|2
+field|n.|2
+figure|n./v.|2
+final|adj./n.|2
+fireman / firewoman|n.|2
+firm|n./adj./v./adv.|2
+fisherman|n.|2
+fit|v./adj./n./adv.|2
+fix|v./n.|2
+flag|n.|2
+flat|adj./adv./n.|2
+flight|n.|2
+flow|n./v.|2
+flu|n.|2
+focus|n./v.|2
+fog|n./v.|2
+folk|n.|2
+following|adj./prep./n.|2
+foolish|adj.|2
+football|n.|2
+force|n./v.|2
+forest|n.|2
+forgive|v.|2
+form|n./v.|2
+formal|adj.|2
+former|adj.|2
+forth|adv.|2
+forward|adj./n./v.|2
+forward / forwards|adv.|2
+found|v.|2
+fox|n.|2
+freedom|n.|2
+friendship|n.|2
+fries|n.|2
+fry|v./n.|2
+function|n./v.|2
+furniture|n.|2
+further|adv./adj./v.|2
+gain|v./n.|2
+garbage|n.|2
+gardener|n.|2
+garlic|n.|2
+gather|v.|2
+general|adj./n.|2
+generous|adj.|2
+gentle|adj.|2
+gentleman|n.|2
+giraffe|n.|2
+glue|n./v.|2
+goal|n.|2
+goat|n.|2
+gold|n./adj.|2
+golden|adj.|2
+goose|n.|2
+govern|v.|2
+government|n.|2
+gradual|adj.|2
+grain|n.|2
+gram|n.|2
+grand|adj.|2
+grape|n.|2
+greet|v.|2
+growth|n.|2
+guard|n./v.|2
+guava|n.|2
+guest|n.|2
+guide|n./v.|2
+gun|n./v.|2
+gymnasium / gym|n.|2
+haircut|n.|2
+hall|n.|2
+hamburger / burger|n.|2
+handle|v./n.|2
+handsome|adj.|2
+hardly|adv.|2
+heaven|n.|2
+hero / heroine|n.|2
+highly|adv.|2
+highway|n.|2
+hike|n./v.|2
+hip|n.|2
+hippopotamus / hippo|n.|2
+historical|adj.|2
+hole|n.|2
+hop|v./n.|2
+host / hostess|n.|2
+huge|adj.|2
+human|adj./n.|2
+humble|adj.|2
+hunt|v./n.|2
+hunter|n.|2
+hurry|v./n.|2
+ideal|adj./n.|2
+identity|n.|2
+ignore|v.|2
+ill|adj./adv./n.|2
+image|n.|2
+imagine|v.|2
+importance|n.|2
+impressive|adj.|2
+improve|v./(n.)|2
+include|v.|2
+income|n.|2
+increase|v./n.|2
+indeed|adv.|2
+independence|n.|2
+independent|adj.|2
+indicate|v.|2
+individual|adj./n.|2
+industry|n.|2
+influence|n./v.|2
+ink|n./v.|2
+insist|v.|2
+instance|n.|2
+instant|adj./n.|2
+instead|adv.|2
+instruction|n.|2
+instrument|n.|2
+internal|adj.|2
+international|adj.|2
+Internet / internet|n.|2
+introduce|v.|2
+introduction|n.|2
+iron|n./v./adj.|2
+jam|n./v.|2
+jog|v./n.|2
+joint|adj./n.|2
+journal|n.|2
+judge|n./v.|2
+judgment / judgement|n.|2
+justice|n.|2
+keeper|n.|2
+ketchup|n.|2
+kilogram|n.|2
+lack|n./v.|2
+lady|n.|2
+ladybug|n.|2
+lamb|n./v.|2
+lane|n.|2
+lantern|n.|2
+lap|n.|2
+latest|adj.|2
+latter|adj.|2
+law|n.|2
+lay|v.|2
+leadership|n.|2
+leaf|n.|2
+legal|adj.|2
+lend|v.|2
+length|n.|2
+lens|n.|2
+liberal|adj.|2
+lid|n.|2
+lift|v./n.|2
+likely|adj./adv.|2
+limit|n./v.|2
+link|n./v.|2
+liquid|n.|2
+listener|n.|2
+liver|n.|2
+load|n./v.|2
+local|adj./n.|2
+lone|adj.|2
+loss|n.|2
+lower|v.|2
+luck|n.|2
+magazine|n.|2
+maintain|v.|2
+major|adj./n./v.|2
+male|adj./n.|2
+manage|v./(n.)|2
+manager|n.|2
+mango|n.|2
+manner|n.|2
+marriage|n.|2
+marry|v.|2
+mask|n./v.|2
+mass|n.|2
+master|n./v.|2
+mat|n.|2
+match|n.|2
+mate|n./v.|2
+material|n.|2
+mature|adj.|2
+meaning|n.|2
+means|n.|2
+measure|v./(n.)|2
+medical|adj.|2
+melody|n.|2
+membership|n.|2
+memory|n.|2
+mention|v./n.|2
+message|n.|2
+metal|n./adj.|2
+meter|n.|2
+method|n.|2
+midnight|n.|2
+mile|n.|2
+military|adj./n.|2
+minor|adj./n.|2
+minority|n.|2
+mirror|n./v.|2
+mix|n./v.|2
+mixture|n.|2
+model|n./v.|2
+mood|n.|2
+mop|n./v.|2
+motion|n.|2
+motorcycle|n.|2
+mug|n.|2
+musical|adj./n.|2
+musician|n.|2
+nail|n.|2
+narrow|adj./v.|2
+nation|n.|2
+natural|adj.|2
+naughty|adj.|2
+nearby|adj./adv.|2
+nearly|adv.|2
+necessary|adj.|2
+necklace|n.|2
+needle|n.|2
+negative|adj./n.|2
+neighbor|n.|2
+neither adj. / adv. / pron. / |conj.|2
+nephew|n.|2
+nerve|n.|2
+nervous|adj.|2
+network|n./v.|2
+niece|n.|2
+nod|n./v.|2
+none|pron./adv.|2
+noodle|n.|2
+nor|conj.|2
+northern|adj.|2
+notebook|n.|2
+novel|n./adj.|2
+nut|n.|2
+obey|v.|2
+object|n./v.|2
+obvious|adj.|2
+occur|v.|2
+ocean|n.|2
+offer|v./n.|2
+official|adj./n.|2
+operate|v.|2
+operator|n.|2
+opinion|n.|2
+ordinary|adj.|2
+organ|n.|2
+organization|n.|2
+origin|n.|2
+owner|n.|2
+pain|n./v.|2
+painful|adj.|2
+painting|n.|2
+pajamas|n.|2
+pale|adj.|2
+pan|n.|2
+panda|n.|2
+papaya|n.|2
+pardon|n./v.|2
+participate|v.|2
+particular|adj.|2
+partner|n.|2
+password|n.|2
+paste|n./v.|2
+path|n.|2
+patient|n./adj.|2
+pattern|n./v.|2
+peace|n.|2
+peaceful|adj.|2
+peach|n.|2
+peak|n./v.|2
+pear|n.|2
+per|prep.|2
+perfect|adj./v./n.|2
+period|n.|2
+personal|adj.|2
+personality|n.|2
+phrase|n./v.|2
+pillow|n.|2
+pizza|n.|2
+plain|adj./n.|2
+platform|n.|2
+playground|n.|2
+pleasant|adj.|2
+plus|prep./n./adj.|2
+poem|n.|2
+poet|n.|2
+poetry|n.|2
+poison|n./v.|2
+policeman / cop|n.|2
+policy|n.|2
+pop|n./adj.|2
+population|n.|2
+pork|n.|2
+port|n.|2
+pose|v./n.|2
+position|n./v.|2
+positive|adj./n.|2
+possibility|n.|2
+post|n./v./adv.|2
+postcard|n.|2
+pound|n.|2
+powerful|adj.|2
+praise|n./v.|2
+pray|v.|2
+prayer|n.|2
+prefer|v.|2
+president|n.|2
+press|n./v.|2
+pressure|n./v.|2
+pride|n./v.|2
+priest|n.|2
+primary|adj.|2
+prince / princess|n.|2
+principal|adj./n.|2
+principle|n.|2
+print|n./v.|2
+printer|n.|2
+prison|n.|2
+prisoner|n.|2
+private|adj.|2
+prize|n./v.|2
+produce|v./n.|2
+production|n.|2
+progress|n./v.|2
+project|n.|2
+promise|n./v.|2
+proper|adj.|2
+propose|v.|2
+protect|v.|2
+protective|adj.|2
+prove|v.|2
+provide|v.|2
+pudding|n.|2
+pumpkin|n.|2
+punish|v./(n.)|2
+pupil|n.|2
+puppy|n.|2
+purple|adj./n.|2
+purpose|n.|2
+puzzle|n./v.|2
+quality|n.|2
+quantity|n.|2
+quiz|n.|2
+railroad / railway|n.|2
+raincoat|n.|2
+range|n./v.|2
+rapid|adj.|2
+rare|adj.|2
+rat|n.|2
+rather|adv.|2
+reality|n.|2
+realize|v.|2
+receive|v.|2
+recent|adj.|2
+record|n./v.|2
+recover|v.|2
+refrigerator / fridge|n.|2
+refuse|v.|2
+regard|n./v.|2
+region|n.|2
+regular|adj./n.|2
+reject|v.|2
+relate|v.|2
+relation|n.|2
+relationship|n.|2
+religion|n.|2
+remove|v.|2
+rent|n./v.|2
+repair|n./v.|2
+reply|n./v.|2
+require|v./(n.)|2
+respect|n./v.|2
+respond|v.|2
+responsible|adj.|2
+restroom|n.|2
+result|n./v.|2
+return|v./n.|2
+review|n./v.|2
+riches|n.|2
+rocky|adj.|2
+role|n.|2
+roof|n./v.|2
+rooster|n.|2
+royal|adj.|2
+rub|v./n.|2
+rubber|n.|2
+rude|adj.|2
+runner|n.|2
+safety|n.|2
+sail|v./n.|2
+sailor|n.|2
+salesperson / salesman / saleswoman|n.|2
+salty|adj.|2
+sample|n./v.|2
+sand|n./v.|2
+sandwich|n./v.|2
+satisfy|v.|2
+saw|v./n.|2
+scare|v./n.|2
+scared|adj.|2
+scene|n.|2
+schedule|n./v.|2
+scooter|n.|2
+score|n./v.|2
+screen|n.|2
+seafood|n.|2
+search|n./v.|2
+secondary|adj.|2
+secret|adj./n.|2
+section|n.|2
+seek|v.|2
+seem|v.|2
+seesaw|n.|2
+seldom|adv.|2
+select|v./adj.|2
+selection|n.|2
+self|n.|2
+selfish|adj.|2
+sense|n./v.|2
+sensitive|adj.|2
+separate|adj./v.|2
+servant|n.|2
+serve|v.|2
+settle|v./(n.)|2
+sex|n.|2
+shame|n./v.|2
+shark|n.|2
+sheet|n.|2
+shelf|n.|2
+shell|n.|2
+shine|v./n.|2
+shock|n./v.|2
+shoot|v./n.|2
+shopkeeper|n.|2
+shore|n.|2
+shot|n.|2
+shut|v./adj.|2
+shy|adj.|2
+sidewalk|n.|2
+silence|n./v.|2
+silent|adj.|2
+silly|adj.|2
+silver|n./adj.|2
+similar|adj.|2
+simply|adv.|2
+single|adj./n./v.|2
+skill|n.|2
+skilled|adj.|2
+skin|n.|2
+sleepy|adj.|2
+slide|n./v.|2
+slip|v./n.|2
+slipper|n.|2
+smooth|adj./v.|2
+snack|n./v.|2
+snail|n.|2
+snowy|adj.|2
+soap|n./v.|2
+soccer|n.|2
+social|adj.|2
+society|n.|2
+sock|n.|2
+soda|n.|2
+soft|adj.|2
+soil|n.|2
+solution|n.|2
+solve|v.|2
+somewhat|adv.|2
+sort|n./v.|2
+soul|n.|2
+sour|adj./n./v.|2
+source|n.|2
+southern|adj.|2
+soybean|n.|2
+speaker|n.|2
+speech|n.|2
+speed|n./v.|2
+spelling|n.|2
+spider|n.|2
+spirit|n.|2
+spoon|n.|2
+sport|n./v.|2
+spot|n./v.|2
+spread|v./n.|2
+stage|n./v.|2
+stamp|n./v.|2
+standard|adj./n.|2
+state|v./(n.)|2
+steak|n.|2
+steel|n./v.|2
+step|n./v.|2
+stick|v./n.|2
+stomachache|n.|2
+stone|n./v.|2
+storm|n./v.|2
+stranger|n.|2
+strawberry|n.|2
+stream|n./v.|2
+stress|n./v.|2
+stretch|n./v.|2
+strict|adj.|2
+strike|n./v.|2
+struggle|n./v.|2
+style|n./v.|2
+subway / underground / metro|n.|2
+succeed|v.|2
+success|n.|2
+such|adj./pron.|2
+sudden|adj./n.|2
+suggest|v.|2
+suit|n./v.|2
+suitable|adj.|2
+super|adj./adv.|2
+supper|n.|2
+supply|n./v.|2
+support|n./v.|2
+suppose|v.|2
+surf|v.|2
+surface|n./v.|2
+survival|n.|2
+survive|v.|2
+swallow|v./n.|2
+sweater|n.|2
+sweep|v.|2
+swim|v./n.|2
+swimsuit|n.|2
+swing|n./v.|2
+switch|n./v.|2
+symbol|n.|2
+system|n.|2
+tale|n.|2
+target|n./v.|2
+task|n./v.|2
+tax|n./v.|2
+teapot|n.|2
+tear|n./v.|3
+technology|n.|3
+teens|n.|3
+temperature|n.|3
+term|n./v.|3
+terrorism|n.|3
+terrorist|adj.|3
+text|n.|3
+textbook|n.|3
+therefore|adv.|3
+thief|n.|3
+thirsty|adj.|3
+thought|n.|3
+throughout|prep./adv.|3
+thunder|n./v.|3
+thus|adv.|3
+till|conj./prep.|3
+tiny|adj.|3
+tire|v./n.|3
+tissue|n.|3
+title|n./v.|3
+toast|n./v.|3
+tofu|n.|3
+tone|n.|3
+tongue|n.|3
+toothache|n.|3
+toothbrush|n.|3
+tour|n./v.|3
+toward / towards|prep.|3
+track|n./v.|3
+trade|n./v.|3
+tradition|n.|3
+traditional|adj.|3
+trap|n./v.|3
+trash|n./v.|3
+travel|n./v.|3
+treasure|n./v.|3
+trial|n.|3
+triangle|n.|3
+trick|n./v.|3
+true|adj./adv./v.|3
+trust|v./n.|3
+truth|n.|3
+tube|n.|3
+turtle|n.|3
+typhoon|n.|3
+typical|adj.|3
+ugly|adj.|3
+umbrella|n.|3
+unit|n.|3
+universe|n.|3
+university|n.|3
+unless|conj.|3
+upload|v.|3
+upon|prep.|3
+upper|adj.|3
+upset|adj./v./n.|3
+upstairs|adv./adj./n.|3
+used|adj.|3
+user|n.|3
+usual|adj.|3
+vacation|n./v.|3
+valley|n.|3
+valuable|adj.|3
+value|n./v.|3
+victory|n.|3
+view|n./v.|3
+village|n.|3
+vote|n./v.|3
+waist|n.|3
+waiter / waitress|n.|3
+wallet|n.|3
+war|n.|3
+wash|v./n.|3
+waste|n./v.|3
+watermelon|n.|3
+wealth|n.|3
+wedding|n.|3
+weekday|n.|3
+weigh|v.|3
+weight|n.|3
+western|adj./n.|3
+whale|n.|3
+whatever|adj./pron.|3
+wheel|n.|3
+whenever|conj./adv.|3
+wherever|adv./conj.|3
+whisper|n./v.|3
+whoever|pron.|3
+whole|adj./n.|3
+whom|pron.|3
+width|n.|3
+wild|adj./adv./n.|3
+willing|adj.|3
+windy|adj.|3
+wine|n.|3
+wing|n.|3
+wire|n.|3
+within|prep./adv.|3
+wolf|n.|3
+wonder|v./n.|3
+wood|n.|3
+wooden|adj.|3
+wool|n.|3
+workbook|n.|3
+worm|n./v.|3
+worse|adj./adv./n.|3
+worst|adj./adv./n.|3
+worth|adj./n.|3
+wound|n./v.|3
+yam|n.|3
+youth|n.|3
+zebra|n.|3
+aboard|prep./adv.|3
+acceptable|adj.|3
+accurate|adj.|3
+ache|n./v.|3
+achieve|v./(n.)|3
+additional|adj.|3
+admire|v.|3
+advanced|adj.|3
+advantage|n.|3
+adventure|n.|3
+advertise / ad|v./(n.)|3
+advise|v.|3
+adviser / advisor|n.|3
+afford|v.|3
+afterward / afterwards|adv.|3
+agriculture|n.|3
+airline|n.|3
+alley|n.|3
+almond|n.|3
+alphabet|n.|3
+amaze|v./(n.)|3
+ambassador|n.|3
+ambition|n.|3
+ambulance|n.|3
+angel|n.|3
+announce|v./(n.)|3
+anxious|adj.|3
+anyhow|adv.|3
+apart|adv.|3
+apologize|v.|3
+appeal|n./v.|3
+approve|v.|3
+apron|n.|3
+armed|adj.|3
+arrest|n./v.|3
+ash|n.|3
+aside|adv.|3
+assist|v.|3
+assistant|n.|3
+assume|v.|3
+athlete|n.|3
+attitude|n.|3
+attract|v.|3
+attractive|adj.|3
+audience|n.|3
+automatic|adj.|3
+automobile / auto|n.|3
+avenue|n.|3
+awake|adj./v.|3
+awaken|v.|3
+award|n./v.|3
+aware|adj.|3
+awful|adj.|3
+awkward|adj.|3
+background|n.|3
+bacon|n.|3
+bacteria|n.|3
+badly|adv.|3
+baggage|n.|3
+bait|n./v.|3
+bamboo|n.|3
+bang|n./v./adv.|3
+banker|n.|3
+bare|adj./v.|3
+barely|adv.|3
+barn|n.|3
+barrel|n.|3
+basement|n.|3
+bay|n.|3
+bead|n.|3
+beam|n./v.|3
+beast|n.|3
+beetle|n.|3
+beneath|prep.|3
+benefit|n./v.|3
+berry|n.|3
+besides|adv./prep.|3
+bet|v./n.|3
+bind|v.|3
+bitter|adj.|3
+bleed|v.|3
+bless|v.|3
+bloody|adj.|3
+blouse|n.|3
+bold|adj.|3
+bomb|n./v.|3
+bookcase|n.|3
+boot|n./v.|3
+bore|v./n.|3
+bowling|n.|3
+brake|n./v.|3
+brass|n./adj.|3
+bravery|n.|3
+breast|n.|3
+breath|n.|3
+breathe|v.|3
+breeze|n./v.|3
+brick|n.|3
+bride|n.|3
+broadcast|n./v.|3
+brunch|n.|3
+bubble|n./v.|3
+bucket|n.|3
+bud|n./v.|3
+budget|n./v.|3
+buffalo|n.|3
+buffet|n.|3
+bulb|n.|3
+bull|n.|3
+bullet|n.|3
+bump|n./v.|3
+bunch|n.|3
+bundle|n.|3
+bury|v.|3
+bush|n.|3
+buzz|n./v.|3
+cabin|n.|3
+cable|n./v.|3
+cafeteria|n.|3
+campus|n.|3
+canyon|n.|3
+capable|adj.|3
+captain|n.|3
+capture|v./n.|3
+career|n.|3
+carpenter|n.|3
+carpet|n./v.|3
+carriage|n.|3
+cart|n./v.|3
+cast|v./n.|3
+casual|adj.|3
+cattle|n.|3
+cave|n./v.|3
+champion|n.|3
+charm|n./v.|3
+chat|n./v.|3
+cheek|n.|3
+cheerful|adj.|3
+cherry|n./adj.|3
+chest|n.|3
+chill|n./v./adj.|3
+chilly|adj.|3
+chimney|n.|3
+chin|n.|3
+chip|n./v.|3
+chop|n./v.|3
+cigarette|n.|3
+cinema|n.|3
+circus|n.|3
+citizen|n.|3
+civil|adj.|3
+clay|n.|3
+cleaner|n.|3
+client|n.|3
+clinic|n.|3
+clip|n./v.|3
+closet|n.|3
+clothe|v.|3
+clown|n./v.|3
+clue|n.|3
+coach|n./v.|3
+cock|n.|3
+cocktail|n.|3
+coconut|n.|3
+collar|n.|3
+collection|n.|3
+colony|n.|3
+colorful|adj.|3
+column|n.|3
+comfort|n./v.|3
+comma|n.|3
+committee|n.|3
+communicate|v.|3
+comparison|n.|3
+compete|v.|3
+complain|v.|3
+complaint|n.|3
+concert|n.|3
+conclusion|n.|3
+cone|n.|3
+confirm|v.|3
+confuse|v.|3
+connect|v.|3
+conscious|adj.|3
+considerable|adj.|3
+constant|adj./n.|3
+continent|n.|3
+controller|n.|3
+cooker|n.|3
+costly|adj.|3
+cotton|n.|3
+cough|n./v.|3
+countable|adj.|3
+county|n.|3
+crab|n.|3
+cradle|n./v.|3
+crane|n./v.|3
+crash|n./v.|3
+crawl|v./n.|3
+creative|adj.|3
+creator|n.|3
+creature|n.|3
+credit|n./v.|3
+crew|n.|3
+cricket|n.|3
+criminal|adj./n.|3
+crispy|adj.|3
+crop|n./v.|3
+crown|n./v.|3
+cruel|adj.|3
+cupboard|n.|3
+dairy|n.|3
+dam|n./v.|3
+dare|aux./v.|3
+darling|n./adj.|3
+dash|n./v.|3
+database|n.|3
+dawn|n./v.|3
+dealer|n.|3
+decade|n.|3
+deck|n.|3
+decorate|v.|3
+decrease|v./n.|3
+deed|n.|3
+deepen|v.|3
+definition|n.|3
+democracy|n.|3
+democratic|adj.|3
+deposit|n./v.|3
+designer|n.|3
+desirable|adj.|3
+desire|n./v.|3
+dessert|n.|3
+destroy|v.|3
+detect|v.|3
+determine|v.|3
+devil|n.|3
+dim|adj./v.|3
+dime|n.|3
+dine|v.|3
+dinosaur|n.|3
+dip|v./n.|3
+dirt|n.|3
+discount|n./v.|3
+dishonest|adj.|3
+disk / disc|n.|3
+dislike|v./n.|3
+ditch|n./v.|3
+dive|n./v.|3
+dizzy|adj.|3
+dock|n./v.|3
+dolphin|n.|3
+donkey|n.|3
+dose|n./v.|3
+doubtful|adj.|3
+doughnut|n.|3
+downtown|adj./adv./n.|3
+drag|v./n.|3
+dragonfly|n.|3
+drain|v./n.|3
+dramatic|adj.|3
+drip|n./v.|3
+drown|v.|3
+drugstore|n.|3
+drunk|adj./n.|3
+dumb|adj.|3
+dump|v./n.|3
+dumpling|n.|3
+dust|n./v.|3
+eager|adj.|3
+echo|n./v.|3
+edit|v.|3
+editor|n.|3
+educate|v.|3
+educational|adj.|3
+efficient|adj.|3
+elbow|n./v.|3
+elderly|adj.|3
+elect|v./adj.|3
+election|n.|3
+electricity|n.|3
+electronic|adj.|3
+element|n.|3
+elevator|n.|3
+emergency|n.|3
+emotional|adj.|3
+emperor|n.|3
+enable|v.|3
+energetic|adj.|3
+engage|v./(n.)|3
+enjoyable|adj.|3
+entry|n.|3
+envy|n./v.|3
+erase|v.|3
+excellence|n.|3
+exchange|n./v.|3
+exhibition|n.|3
+expectation|n.|3
+experiment|n./v.|3
+explode|v.|3
+explore|v.|3
+export|n./v.|3
+expressive|adj.|3
+extreme|adj./n.|3
+fade|v.|3
+faint|adj./v./n.|3
+fairly|adv.|3
+fairy|n./adj.|3
+faith|n.|3
+fake|adj./v./n.|3
+familiar|adj.|3
+fancy|adj./n./v.|3
+fare|n.|3
+farther|adv./adj.|3
+fashionable|adj.|3
+faucet|n.|3
+fearful|adj.|3
+feather|n.|3
+fence|n.|3
+fighter|n.|3
+firework|n.|3
+fist|n./v.|3
+flame|n./v.|3
+flash|n./v.|3
+flashlight|n.|3
+flavor|n./v.|3
+flesh|n.|3
+float|v./n.|3
+flock|n./v.|3
+flood|n./v.|3
+flour|n.|3
+flute|n.|3
+foggy|adj.|3
+fold|v./n.|3
+follower|n.|3
+fond|adj.|3
+forever|adv.|3
+fortune|n.|3
+fountain|n.|3
+frank|adj.|3
+freeze|v./n.|3
+freezer|n.|3
+frequent|adj./v.|3
+fright|n.|3
+frighten|v.|3
+fuel|n./v.|3
+fund|n./v.|3
+fur|n.|3
+gallon|n.|3
+gamble|n./v.|3
+gang|n./v.|3
+gap|n.|3
+garage|n.|3
+gasoline / gas|n.|3
+geography|n.|3
+gesture|n./v.|3
+glance|n./v.|3
+global|adj.|3
+glory|n.|3
+glow|n./v.|3
+golf|n./v.|3
+gossip|n./v.|3
+governor|n.|3
+grab|v./n.|3
+graduate|n./v.|3
+grasp|v./n.|3
+grasshopper|n.|3
+grassy|adj.|3
+greedy|adj.|3
+greenhouse|n.|3
+grin|n./v.|3
+grocery|n.|3
+guidance|n.|3
+gum|n.|3
+hairdresser|n.|3
+hallway|n.|3
+hammer|n./v.|3
+handful|n.|3
+handkerchief|n.|3
+handy|adj.|3
+hanger|n.|3
+harbor|n./v.|3
+harm|n./v.|3
+harmful|adj.|3
+harvest|n./v.|3
+hasty|adj.|3
+hatch|n./v.|3
+hateful|adj.|3
+hay|n.|3
+headline|n./v.|3
+headquarters|n.|3
+heal|v.|3
+heap|n./v.|3
+heater|n.|3
+heel|n./v.|3
+hell|n.|3
+helmet|n.|3
+hesitate|v.|3
+hint|n./v.|3
+hire|v./n.|3
+historian|n.|3
+historic|adj.|3
+holder|n.|3
+hollow|adj./n./v.|3
+holy|adj.|3
+homesick|adj.|3
+hometown|n.|3
+honesty|n.|3
+honor|n./v.|3
+hopeful|adj.|3
+horn|n.|3
+horrible|adj.|3
+horror|n.|3
+hourly|adj./adv.|3
+housekeeper|n.|3
+hug|n./v.|3
+hum|v.|3
+humid|adj.|3
+humor|n.|3
+humorous|adj.|3
+hunger|n.|3
+hut|n.|3
+icy|adj.|3
+imagination|n.|3
+immediate|adj.|3
+import|n./v.|3
+impress|v.|3
+indoor|adj.|3
+indoors|adv.|3
+industrial|adj.|3
+inferior|adj./n.|3
+inform|v.|3
+information|n.|3
+injury|n.|3
+inn|n.|3
+inner|adj.|3
+innocent|adj.|3
+inspect|v.|3
+inspector|n.|3
+intelligent|adj.|3
+interrupt|v.|3
+invent|v.|3
+inventor|n.|3
+investigate|v.|3
+invitation|n.|3
+ivory|n./adj.|3
+jail|n./v.|3
+jar|n.|3
+jaw|n.|3
+jazz|n.|3
+jealous|adj.|3
+jeep|n.|3
+jelly|n.|3
+jet|n./v.|3
+jewel|n.|3
+jewelry|n.|3
+journey|n./v.|3
+joyful|adj.|3
+juicy|adj.|3
+jungle|n.|3
+junior|adj./n.|3
+junk|n./v.|3
+kangaroo|n.|3
+keyboard|n.|3
+kidney|n.|3
+kilometer|n.|3
+kindergarten|n.|3
+kingdom|n.|3
+kit|n.|3
+knight|n.|3
+knit|v./n.|3
+knot|n./v.|3
+koala|n.|3
+label|n./v.|3
+lace|n./v.|3
+ladder|n.|3
+lately|adv.|3
+laughter|n.|3
+laundry|n.|3
+lawn|n.|3
+leak|n./v.|3
+leap|n./v.|3
+learning|n.|3
+leather|n.|3
+leisure|n.|3
+lemonade|n.|3
+leopard|n.|3
+lettuce|n.|3
+liberty|n.|3
+lick|v./n.|3
+lifetime|n.|3
+lighthouse|n.|3
+lightning|n.|3
+lily|n.|3
+limb|n.|3
+litter|n./v.|3
+lively|adj.|3
+loaf|n.|3
+lobby|n.|3
+locate|v.|3
+location|n.|3
+lock|n./v.|3
+log|n./v.|3
+lollipop|n.|3
+loose|adj.|3
+lord|n.|3
+loser|n.|3
+lover|n.|3
+luggage|n.|3
+lung|n.|3
+magical|adj.|3
+magician|n.|3
+magnet|n.|3
+maid|n.|3
+majority|n.|3
+mall|n.|3
+mankind / humankind|n.|3
+marble|n.|3
+march|n./v.|3
+marker|n.|3
+marvelous|adj.|3
+mathematical|adj.|3
+mayor|n.|3
+meadow|n.|3
+meaningful|adj.|3
+meanwhile|n./adv.|3
+medal|n.|3
+medium / media|n.|3
+melon|n.|3
+melt|v.|3
+mend|v.|3
+mental|adj.|3
+merry|adj.|3
+mess|n./v.|3
+microphone / mike|n.|3
+microwave|n./v.|3
+mighty|adj.|3
+minus|prep./n./adj.|3
+miracle|n.|3
+misery|n.|3
+missile|n.|3
+missing|adj.|3
+mission|n.|3
+mist|n./v.|3
+mob|n./v.|3
+mobile|adj.|3
+moist|adj.|3
+moisture|n.|3
+monk|n.|3
+monster|n.|3
+monthly|adj./adv./n.|3
+moral|adj./n.|3
+mosquito|n.|3
+mostly|adv.|3
+motel|n.|3
+moth|n.|3
+motor|n.|3
+multiply|v.|3
+murder|n./v.|3
+muscle|n.|3
+mushroom|n./v.|3
+mystery|n.|3
+naked|adj.|3
+nap|n./v.|3
+napkin|n.|3
+native|adj./n.|3
+navy|n.|3
+neat|adj.|3
+necessity|n.|3
+necktie|n.|3
+neighborhood|n.|3
+nest|n./v.|3
+nickname|n./v.|3
+normal|adj.|3
+novelist|n.|3
+nun|n.|3
+oak|n.|3
+observe|v.|3
+occasion|n.|3
+odd|adj.|3
+omit|v.|3
+ongoing|adj.|3
+onion|n.|3
+onto|prep.|3
+operation|n.|3
+opportunity|n.|3
+opposite|adj./n./prep./adv.|3
+optimistic|adj.|3
+oral|adj./n.|3
+organic|adj.|3
+organize|v.|3
+original|adj./n.|3
+outdoor|adj.|3
+outdoors|adv.|3
+outer|adj.|3
+outline|n./v.|3
+oven|n.|3
+overseas|adv./adj.|3
+owe|v.|3
+owl|n.|3
+ownership|n.|3
+ox|n.|3
+pad|n./v.|3
+painter|n.|3
+pal|n.|3
+palace|n.|3
+palm|n.|3
+pancake|n.|3
+panic|n./v.|3
+parade|n./v.|3
+paradise|n.|3
+parcel|n./v.|3
+parrot|n./v.|3
+passage|n.|3
+passenger|n.|3
+passion|n.|3
+passport|n.|3
+pat|v./n.|3
+patience|n.|3
+pause|n./v.|3
+pave|v./(n.)|3
+pea|n.|3
+peanut|n.|3
+pearl|n.|3
+peel|v./n.|3
+penguin|n.|3
+penny|n.|3
+pepper|n.|3
+perform|v.|3
+performance|n.|3
+permission|n.|3
+permit|v./n.|3
+persuade|v.|3
+photographer|n.|3
+pigeon|n.|3
+pile|n./v.|3
+pill|n.|3
+pilot|n./v.|3
+pine|n.|3
+pineapple|n.|3
+pint|n.|3
+pit|n.|3
+pitch|n./v.|3
+pity|n./v.|3
+plastic|n./adj.|3
+playful|adj.|3
+plenty|pron./n./adv.|3
+plug|n./v.|3
+pole|n.|3
+political|adj.|3
+politician|n.|3
+politics|n.|3
+poll|n./v.|3
+pollute|v.|3
+pollution|n.|3
+porcelain|n.|3
+portion|n./v.|3
+portrait|n.|3
+poster|n.|3
+postpone|v./(n.)|3
+pottery|n.|3
+pour|v.|3
+poverty|n.|3
+powder|n./v.|3
+practical|adj.|3
+precious|adj.|3
+preparation|n.|3
+presence|n.|3
+pretend|v.|3
+prevent|v.|3
+previous|adj.|3
+probable|adj.|3
+process|n./v.|3
+producer|n.|3
+product|n.|3
+professor|n.|3
+profit|n./v.|3
+promote|v.|3
+pronounce|v.|3
+proof|n.|3
+property|n.|3
+protection|n.|3
+pub|n.|3
+pump|n./v.|3
+punch|n./v.|3
+puppet|n.|3
+pure|adj.|3
+purse|n.|3
+queer|adj.|3
+quit|v.|3
+quote|v./n.|3
+racial|adj.|3
+rag|n.|3
+rank|n./v.|3
+rate|n./v.|3
+raw|adj.|3
+ray|n.|3
+razor|n.|3
+react|v.|3
+reaction|n.|3
+reasonable|adj.|3
+receipt|n.|3
+receiver|n.|3
+recognize|v.|3
+recorder|n.|3
+rectangle|n.|3
+reduce|v.|3
+regional|adj.|3
+regret|v./n.|3
+relax|v.|3
+release|n./v.|3
+reliable|adj.|3
+relief|n.|3
+religious|adj.|3
+rely|v.|3
+remain|v.|3
+remind|v.|3
+remote|adj.|3
+replace|v./(n.)|3
+represent|v.|3
+representative|adj./n.|3
+republic|n.|3
+request|n./v.|3
+reserve|n./v.|3
+resist|v.|3
+resource|n.|3
+response|n.|3
+responsibility|n.|3
+restrict|v.|3
+reveal|v.|3
+ribbon|n.|3
+rid|adj./v.|3
+ripe|adj.|3
+risk|n./v.|3
+roar|n./v.|3
+roast|adj./n./v.|3
+rob|v.|3
+robbery|n.|3
+robe|n.|3
+rocket|n.|3
+romantic|adj./n.|3
+rot|v./n.|3
+rotten|adj.|3
+rough|adj./adv./n.|3
+roughly|adv.|3
+routine|n./adj.|3
+rug|n.|3
+rumor|n./v.|3
+rush|n./v.|3
+rust|n./v.|3
+sack|n.|3
+sake|n.|3
+salary|n.|3
+satisfactory|adj.|3
+sauce|n.|3
+saucer|n.|3
+sausage|n.|3
+saving|n.|3
+scale|n.|3
+scarce|adj.|3
+scarf|n.|3
+scary|adj.|3
+scatter|v./n.|3
+scholar|n.|3
+scholarship|n.|3
+scientific|adj.|3
+scientist|n.|3
+scissors|n.|3
+scout|n./v.|3
+scream|v./n.|3
+screw|v./n.|3
+scrub|n./v.|3
+seal|n./v.|3
+security|n.|3
+semester|n.|3
+senior|adj./n.|3
+sensible|adj.|3
+separation|n.|3
+sexual|adj.|3
+sexy|adj.|3
+shadow|n./v.|3
+shallow|adj.|3
+shampoo|n./v.|3
+shepherd|n.|3
+shiny|adj.|3
+shorten|v.|3
+shortly|adv.|3
+shovel|n./v.|3
+shrimp|n.|3
+shrink|v.|3
+sigh|n./v.|3
+signal|n./v.|3
+significant|adj.|3
+silk|n.|3
+similarity|n.|3
+sin|n./v.|3
+sincere|adj.|3
+sink|n./v.|3
+sip|v./n.|3
+situation|n.|3
+skate|v./n.|3
+ski|n./v.|3
+skillful|adj.|3
+skinny|adj.|3
+skip|v./n.|3
+slave|n./v.|3
+sleeve|n.|3
+slender|adj.|3
+slice|n./v.|3
+slippery|adj.|3
+slope|n.|3
+snap|v./n.|3
+solid|adj.|3
+someday|adv.|3
+somehow|adv.|3
+sometime|adv.|3
+sorrow|n.|3
+spaghetti|n.|3
+specific|adj.|3
+spice|n./v.|3
+spill|v./n.|3
+spin|n./v.|3
+spinach|n.|3
+spit|v./n.|3
+spite|n.|3
+splash|n./v.|3
+spoil|v.|3
+spray|n./v.|3
+spy|n./v.|3
+squeeze|v./n.|3
+squirrel|n.|3
+stable|adj.|3
+stadium|n.|3
+staff|n./v.|3
+stale|adj.|3
+stare|v./n.|3
+starve|v.|3
+statue|n.|3
+steady|adj./v./adv./n.|3
+steal|v.|3
+steam|n./v.|3
+steep|adj.|3
+sticky|adj.|3
+stiff|adj.|3
+sting|n./v.|3
+stir|v./n.|3
+stitch|n./v.|3
+stomach|n.|3
+stool|n.|3
+stormy|adj.|3
+stove|n.|3
+strategy|n.|3
+straw|n.|3
+strength|n.|3
+strip|n./v.|3
+structure|n.|3
+stubborn|adj.|3
+studio|n.|3
+stuff|n./v.|3
+substance|n.|3
+subtract|v.|3
+suburb|n.|3
+suck|v./n.|3
+suffer|v.|3
+sufficient|adj.|3
+suicide|n.|3
+sum|n./v.|3
+summary|n.|3
+summit|n.|3
+superior|adj./n.|3
+surround|v.|3
+survey|n./v.|3
+survivor|n.|3
+suspect|v./n./adj.|3
+suspicion|n.|3
+swan|n.|3
+swear|v.|3
+sweat|n./v.|3
+swell|v./n.|3
+swift|adj.|3
+sword|n.|3
+tablet|n.|3
+tag|n./v.|3
+tailor|n.|3
+talent|n.|3
+talkative|adj.|3
+tame|adj./v.|3
+tangerine|n.|3
+tank|n.|3
+tap|v./n.|3
+tasty|adj.|3
+tease|v.|3
+technical|adj.|3
+technique|n.|3
+teenage|adj.|3
+temper|n.|3
+temporary|adj.|3
+tend|v.|3
+tender|adj.|3
+tent|n.|3
+terrific|adj.|3
+territory|n.|3
+thankful|adj.|3
+theory|n.|3
+thirst|n.|3
+thread|n./v.|3
+threat|n.|3
+threaten|v.|3
+thumb|n./v.|3
+tide|n.|3
+tight|adj./adv.|3
+tighten|v.|3
+timber|n.|3
+tobacco|n.|3
+ton|n.|3
+toss|v./n.|3
+tough|adj.|3
+tourism|n.|3
+tourist|n.|3
+tow|n./v.|3
+tower|n.|3
+trace|n./v.|3
+trader|n.|3
+trail|n./v.|3
+transport|n./v.|3
+traveler|n.|3
+tray|n.|3
+trend|n.|3
+tribe|n.|3
+tricky|adj.|3
+troop|n.|3
+tropical|adj.|3
+trumpet|n.|3
+trunk|n.|3
+truthful|adj.|3
+tub|n.|3
+tug|n./v.|3
+tune|n./v.|3
+tunnel|n./v.|3
+tutor|n./v.|3
+twin|n.|3
+twist|n./v.|3
+underlying|v.|3
+underwear|n.|3
+union|n.|3
+unique|adj./n.|3
+unite|v.|3
+unity|n.|3
+urban|adj.|3
+vacant|adj.|3
+van|n.|3
+vanish|v.|3
+variety|n.|3
+various|adj.|3
+vary|v.|3
+vase|n.|3
+vehicle|n.|3
+verse|n.|3
+vest|n.|3
+victim|n.|3
+violence|n.|3
+violent|adj.|3
+violet|adj./n.|3
+visible|adj.|3
+vision|n.|3
+vitamin|n.|3
+vivid|adj.|3
+vocabulary|n.|3
+volleyball|n.|3
+volume|n.|3
+voter|n.|3
+wage|n.|3
+wagon|n.|3
+wander|v./n.|3
+warmth|n.|3
+warn|v.|3
+waterfall|n.|3
+wax|n./v.|3
+weaken|v.|3
+wealthy|adj.|3
+weapon|n.|3
+weave|v./n.|3
+web|n.|3
+wed|v.|3
+weed|n./v.|3
+weekly|adj./adv./n.|3
+weep|v.|3
+wheat|n.|3
+whip|n./v.|3
+whistle|n./v.|3
+wicked|adj.|3
+widen|v.|3
+wipe|v./n.|3
+wisdom|n.|3
+wrap|v./n.|3
+wrist|n.|3
+yearly|adj./adv.|3
+yell|v./n.|3
+yolk|n.|3
+youngster|n.|3
+zipper|n./v.|3
+zone|n./v.|3
+abandon|v.|3
+absolute|adj.|3
+absorb|v.|3
+abstract|adj.|3
+academic|adj.|3
+accent|n.|3
+acceptance|n.|3
+access|n./v.|3
+accidental|adj.|3
+accompany|v.|3
+accomplish|v./(n.)|3
+accountant|n.|3
+accuracy|n.|3
+accuse|v.|3
+acid|n./adj.|3
+acquaintance|n.|3
+acquire|v.|3
+adapt|v.|3
+addict|n./v.|3
+adequate|adj.|3
+adjust|v./(n.)|3
+admirable|adj.|3
+admiration|n.|3
+admission|n.|3
+adopt|v.|3
+agency|n.|3
+agent|n.|3
+aggressive|adj.|3
+agreeable|adj.|3
+alcohol|n.|3
+alert|adj./v./n.|3
+allowance|n.|3
+alternative|adj./n.|3
+amateur|adj./n.|3
+ambiguous|adj.|3
+ambitious|adj.|3
+amuse|v./(n.)|3
+analysis|n.|3
+analyze|v.|3
+ancestor|n.|3
+anniversary|n.|3
+annoy|v.|3
+annual|adj.|3
+anxiety|n.|3
+apology|n.|3
+apparent|adj.|3
+applicant|n.|3
+application|n.|3
+appoint|v./(n.)|3
+appreciation|n.|3
+appropriate|adj.|3
+approval|n.|3
+aquarium|n.|3
+arch|n./v.|3
+arise|v.|3
+arms|n.|3
+artificial|adj.|3
+artistic|adj.|3
+ashamed|adj.|3
+aspect|n.|3
+aspirin|n.|3
+assemble|v.|3
+assembly|n.|3
+assign|v./(n.)|3
+assistance|n.|3
+associate|adj./n./v.|3
+association|n.|3
+assurance|n.|3
+assure|v.|3
+athletic|adj.|3
+atmosphere|n.|3
+atom|n.|3
+atomic|adj.|3
+attach|v./(n.)|3
+attraction|n.|3
+audio|adj.|3
+authentic|adj.|3
+authority|n.|3
+autobiography|n.|3
+autograph|n./v.|3
+await|v.|3
+bald|adj.|4
+ballet|n.|4
+bandage|n./v.|4
+bankrupt|adj./v./n.|4
+bargain|n./v.|4
+barrier|n.|4
+basin|n.|4
+battery|n.|4
+beggar|n.|4
+behavior|n.|4
+bin|n.|4
+biography|n.|4
+biology|n.|4
+blade|n.|4
+blend|v./n.|4
+blessing|n.|4
+blink|v./n.|4
+bloom|n./v.|4
+blossom|n./v.|4
+boast|v./n.|4
+bond|n./v.|4
+bounce|v./n.|4
+bracelet|n.|4
+breed|n./v.|4
+bridegroom / groom|n.|4
+broke|adj.|4
+broom|n.|4
+brutal|adj.|4
+bulletin|n.|4
+burglar|n.|4
+cabinet|n.|4
+calculate|v.|4
+calculation|n.|4
+calorie|n.|4
+campaign|n./v.|4
+candidate|n.|4
+cane|n.|4
+canoe|n./v.|4
+capacity|n.|4
+capital|n.|4
+capitalist|n.|4
+cargo|n.|4
+carrier|n.|4
+carve|v.|4
+catalogue|n./v.|4
+category|n.|4
+cease|v./n.|4
+celebration|n.|4
+chamber|n.|4
+championship|n.|4
+characteristic|n./adj.|4
+charity|n.|4
+chemistry|n.|4
+cherish|v.|4
+chew|v./n.|4
+choke|v./n.|4
+chorus|n.|4
+circular|adj.|4
+circulate|v.|4
+circulation|n.|4
+circumstance|n.|4
+civilian|adj./n.|4
+civilization|n.|4
+clarify|v.|4
+clash|n./v.|4
+classification|n.|4
+classify|v.|4
+claw|n./v.|4
+cliff|n.|4
+clumsy|adj.|4
+coarse|adj.|4
+code|n./v.|4
+collapse|n./v.|4
+colleague|n.|4
+combination|n.|4
+comedy|n.|4
+commander|n.|4
+comment|n./v.|4
+commerce|n.|4
+commit|v.|4
+communication|n.|4
+community|n.|4
+companion|n.|4
+competition|n.|4
+competitive|adj.|4
+competitor|n.|4
+complicate|v.|4
+compose|v.|4
+composer|n.|4
+composition|n.|4
+concentrate|v.|4
+concentration|n.|4
+concept|n.|4
+concerning|prep.|4
+concrete|adj./n./v.|4
+conductor|n.|4
+conference|n.|4
+confess|v.|4
+confidence|n.|4
+confusion|n.|4
+congratulate|v.|4
+congress|n.|4
+conquer|v.|4
+conscience|n.|4
+consequence|n.|4
+consequent|adj.|4
+conservative|adj./n.|4
+consist|v.|4
+consistent|adj.|4
+constitute|v.|4
+constitution|n.|4
+construct|v.|4
+construction|n.|4
+constructive|adj.|4
+consult|v.|4
+consultant|n.|4
+consume|v.|4
+consumer|n.|4
+container|n.|4
+content|n./adj.|4
+content|v./(n.)|4
+contest|n./v.|4
+context|n.|4
+continual|adj.|4
+continuous|adj.|4
+contrary|n./adj.|4
+contrast|n./v.|4
+contribute|v.|4
+contribution|n.|4
+convenience|n.|4
+convention|n.|4
+conventional|adj.|4
+converse|v.|4
+convey|v.|4
+convince|v.|4
+cooperate|v.|4
+cooperation|n.|4
+cooperative|adj./n.|4
+cope|v.|4
+copper|n./adj.|4
+cord|n.|4
+correspond|v.|4
+costume|n.|4
+cottage|n.|4
+council|n.|4
+counter|n./v./adj./adv.|4
+courageous|adj.|4
+courtesy|n.|4
+coward|n.|4
+crack|n./v.|4
+craft|n.|4
+creation|n.|4
+creativity|n.|4
+creep|v.|4
+critic|n.|4
+critical|adj.|4
+criticism|n.|4
+criticize|v.|4
+cruelty|n.|4
+crunchy|adj.|4
+crush|n./v.|4
+cube|n./v.|4
+cue|n./v.|4
+cunning|adj./n.|4
+curiosity|n.|4
+curl|n./v.|4
+curse|n./v.|4
+curve|n./v.|4
+cushion|n./v.|4
+damp|adj./n./v.|4
+deadline|n.|4
+declare|v.|4
+decoration|n.|4
+defeat|n./v.|4
+defend|v.|4
+defense|n.|4
+defensible|adj.|4
+defensive|adj.|4
+definite|adj.|4
+delicate|adj.|4
+delight|n./v.|4
+delightful|adj.|4
+demand|n./v.|4
+demonstrate|v.|4
+demonstration|n.|4
+dense|adj.|4
+depart|v.|4
+departure|n.|4
+dependent|adj./n.|4
+depression|n.|4
+deserve|v.|4
+desperate|adj.|4
+despite|prep.|4
+destruction|n.|4
+detective|n./adj.|4
+determination|n.|4
+device|n.|4
+devise|v.|4
+devote|v.|4
+dew|n.|4
+diagram|n./v.|4
+differ|v.|4
+digest|n./v.|4
+digital|adj.|4
+dignity|n.|4
+diligence|n.|4
+diligent|adj.|4
+diploma|n.|4
+diplomat|n.|4
+disability|n.|4
+disadvantage|n./v.|4
+disappoint|v./(n.)|4
+disaster|n.|4
+discipline|n./v.|4
+discourage|v./(n.)|4
+disguise|v./n.|4
+disgust|n./v.|4
+dismiss|v.|4
+disorder|n./v.|4
+dispute|n./v.|4
+distinct|adj.|4
+distinguish|v.|4
+distinguished|adj.|4
+distribute|v.|4
+distribution|n.|4
+district|n.|4
+disturb|v.|4
+diverse|adj.|4
+diversity|n.|4
+divine|adj.|4
+divorce|n./v.|4
+dodge|v./n.|4
+dominant|adj.|4
+dominate|v.|4
+draft|n./v.|4
+dread|n./v.|4
+drift|v./n.|4
+drill|n./v.|4
+drowsy|adj.|4
+durable|adj.|4
+dusty|adj.|4
+dye|n./v.|4
+dynamic|adj.|4
+dynasty|n.|4
+earnest|adj./n.|4
+earphone|n.|4
+economic|adj.|4
+economical|adj.|4
+economics|n.|4
+economist|n.|4
+economy|n.|4
+efficiency|n.|4
+elastic|adj./n.|4
+electronics|n.|4
+elegant|adj.|4
+elementary|adj.|4
+eliminate|v.|4
+elsewhere|adv.|4
+embarrass|v./(n.)|4
+embassy|n.|4
+emerge|v.|4
+emphasis|n.|4
+empire|n.|4
+enclose|v.|4
+encounter|n./v.|4
+endanger|v.|4
+endure|v.|4
+enforce|v./(n.)|4
+engineering|n.|4
+enlarge|v./(n.)|4
+enormous|adj.|4
+ensure|v.|4
+entertain|v./(n.)|4
+enthusiasm|n.|4
+equality|n.|4
+equip|v./(n.)|4
+era|n.|4
+essential|adj./n.|4
+establish|v./(n.)|4
+estimate|n./v.|4
+ethnic|adj./n.|4
+evaluate|v.|4
+evaluation|n.|4
+eventual|adj.|4
+evidence|n./v.|4
+evident|adj.|4
+exaggerate|v.|4
+exception|n.|4
+exhaust|n./v.|4
+exhibit|n./v.|4
+expand|v.|4
+expansion|n.|4
+experimental|adj.|4
+explanation|n.|4
+explosion|n.|4
+explosive|adj./n.|4
+expose|v.|4
+exposure|n.|4
+extend|v.|4
+extent|n.|4
+facial|adj.|4
+facility|n.|4
+faithful|adj.|4
+fame|n.|4
+fantastic|adj.|4
+fantasy|n.|4
+farewell|n.|4
+fasten|v.|4
+fatal|adj.|4
+favorable|adj.|4
+fax|n./v.|4
+feast|n./v.|4
+feedback|n.|4
+ferry|n./v.|4
+fertile|adj.|4
+fetch|v./n.|4
+fiction|n.|4
+fierce|adj.|4
+finance|n./v.|4
+financial|adj.|4
+fireplace|n.|4
+flatter|v.|4
+flea|n.|4
+flee|v.|4
+flexible|adj.|4
+fluent|adj.|4
+flush|v./n.|4
+foam|n./v.|4
+forbid|v.|4
+forecast|n./v.|4
+formation|n.|4
+formula|n.|4
+fort|n.|4
+fortunate|adj.|4
+fossil|n./adj.|4
+foundation|n.|4
+founder|n.|4
+fragile|adj.|4
+frame|n./v.|4
+frequency|n.|4
+freshman|n.|4
+frost|n./v.|4
+frown|n./v.|4
+frustrate|v.|4
+frustration|n.|4
+fulfill|v./(n.)|4
+functional|adj.|4
+fundamental|adj./n.|4
+funeral|n.|4
+furious|adj.|4
+furnish|v.|4
+furthermore|adv.|4
+gallery|n.|4
+gaze|n./v.|4
+gear|n./v.|4
+gender|n.|4
+gene|n.|4
+generation|n.|4
+generosity|n.|4
+genius|n.|4
+genuine|adj.|4
+germ|n.|4
+gifted|adj.|4
+gigantic|adj.|4
+giggle|n./v.|4
+ginger|n.|4
+glimpse|n./v.|4
+globe|n.|4
+glorious|adj.|4
+goods|n.|4
+gown|n.|4
+grace|n./v.|4
+graceful|adj.|4
+gracious|adj.|4
+graduation|n.|4
+grammar|n.|4
+grammatical|adj.|4
+graph|n./v.|4
+grateful|adj.|4
+gratitude|n.|4
+grave|n./adj.|4
+greasy|adj.|4
+greeting|n.|4
+grief|n.|4
+grind|v./n.|4
+guarantee|v./n.|4
+guardian|n.|4
+guilt|n.|4
+guilty|adj.|4
+gulf|n.|4
+habitual|adj.|4
+halt|n./v.|4
+handwriting|n.|4
+hardship|n.|4
+hardware|n.|4
+harmony|n.|4
+harsh|adj.|4
+haste|n.|4
+hasten|v.|4
+hatred|n.|4
+hawk|n.|4
+helicopter|n.|4
+herd|n./v.|4
+hesitation|n.|4
+hive|n.|4
+homeland|n.|4
+honeymoon|n./v.|4
+hook|n./v.|4
+horizon|n.|4
+horrify|v.|4
+hose|n./v.|4
+household|n.|4
+housework|n.|4
+humanity|n.|4
+humidity|n.|4
+hurricane|n.|4
+hush|n./v.|4
+hydrogen|n.|4
+identical|adj.|4
+identification|n.|4
+identify|v.|4
+idiom|n.|4
+idle|adj./v.|4
+idol|n.|4
+ignorance|n.|4
+ignorant|adj.|4
+illustrate|v.|4
+illustration|n.|4
+imaginary|adj.|4
+imaginative|adj.|4
+imitate|v.|4
+imitation|n.|4
+immigrant|n.|4
+immigrate|v.|4
+immigration|n.|4
+impact|n./v.|4
+imply|v.|4
+impose|v.|4
+impression|n.|4
+incident|n.|4
+including|prep.|4
+incredible|adj.|4
+indication|n.|4
+infant|n.|4
+infection|n.|4
+inflation|n.|4
+influential|adj.|4
+informative|adj.|4
+ingredient|n.|4
+initial|adj./n./v.|4
+injure|v.|4
+innocence|n.|4
+input|n./v.|4
+insert|v./n.|4
+inspection|n.|4
+inspiration|n.|4
+inspire|v.|4
+install|v.|4
+instinct|n.|4
+instruct|v.|4
+instructor|n.|4
+insult|n./v.|4
+insurance|n.|4
+intellectual|adj./n.|4
+intelligence|n.|4
+intend|v.|4
+intense|adj.|4
+intensity|n.|4
+intensive|adj.|4
+intention|n.|4
+interact|v.|4
+interaction|n.|4
+interfere|v.|4
+intermediate|adj./n./v.|4
+interpret|v.|4
+interruption|n.|4
+intimate|adj./n.|4
+intuition|n.|4
+invade|v.|4
+invasion|n.|4
+invention|n.|4
+invest|v./(n.)|4
+investigation|n.|4
+involve|v./(n.)|4
+isolate|v.|4
+isolation|n.|4
+issue|n./v.|4
+jealousy|n.|4
+keen|adj.|4
+kettle|n.|4
+kneel|v.|4
+knob|n.|4
+labor|n./v.|4
+laboratory / lab|n.|4
+lag|n./v.|4
+landmark|n.|4
+landscape|n./v.|4
+largely|adv.|4
+launch|v./n.|4
+lawful|adj.|4
+lean|v./adj.|4
+learned|adj.|4
+lecture|n./v.|4
+lecturer|n.|4
+legend|n.|4
+leisurely|adj./adv.|4
+lengthen|v.|4
+liar|n.|4
+librarian|n.|4
+license|n./v.|4
+lifeguard|n.|4
+limitation|n.|4
+linen|n.|4
+lipstick|n.|4
+liquor|n.|4
+literary|adj.|4
+literature|n.|4
+loan|n./v.|4
+lobster|n.|4
+logic|n.|4
+logical|adj.|4
+loosen|v.|4
+lousy|adj.|4
+loyal|adj.|4
+loyalty|n.|4
+luxurious|adj.|4
+luxury|n.|4
+machinery|n.|4
+magnetic|adj.|4
+magnificent|adj.|4
+makeup|n.|4
+manual|n./adj.|4
+manufacture|n./v.|4
+manufacturer|n.|4
+marathon|n.|4
+margin|n.|4
+maturity|n.|4
+maximum|adj./n.|4
+measurable|adj.|4
+measure|n.|4
+mechanic|n.|4
+mechanical|adj.|4
+memorable|adj.|4
+memorial|adj./n.|4
+memorize|v.|4
+merchant|n.|4
+mercy|n.|4
+mere|adj.|4
+merit|n.|4
+messenger|n.|4
+messy|adj.|4
+microscope|n.|4
+mild|adj.|4
+mill|n./v.|4
+millionaire|n.|4
+miner|n.|4
+mineral|n.|4
+minimum|adj./n.|4
+minister|n.|4
+ministry|n.|4
+mischief|n.|4
+miserable|adj.|4
+misfortune|n.|4
+mislead|v.|4
+misunderstand|v.|4
+moderate|adj.|4
+modest|adj.|4
+modesty|n.|4
+monitor|n./v.|4
+monument|n.|4
+moreover|adv.|4
+motivate|v.|4
+motivation|n.|4
+mountainous|adj.|4
+muddy|adj.|4
+mule|n.|4
+multiple|adj.|4
+murderer|n.|4
+murmur|n./v.|4
+mutual|adj.|4
+mysterious|adj.|4
+namely|adv.|4
+nationality|n.|4
+needy|adj.|4
+neglect|n./v.|4
+negotiate|v.|4
+nevertheless|adv.|4
+nightmare|n.|4
+noble|adj./n.|4
+nonsense|n.|4
+nowadays|adv.|4
+nuclear|adj.|4
+numerous|adj.|4
+nursery|n.|4
+nutritious|adj.|4
+obedience|n.|4
+obedient|adj.|4
+objection|n.|4
+objective|n./adj.|4
+observation|n.|4
+obstacle|n.|4
+obtain|v.|4
+occasional|adj.|4
+occupation|n.|4
+occupy|v.|4
+offend|v.|4
+offense|n.|4
+offensive|adj.|4
+opera|n.|4
+oppose|v.|4
+option|n.|4
+orbit|n./v.|4
+orchestra|n.|4
+orientation|n.|4
+orphan|n./v.|4
+otherwise|adv.|4
+outcome|n.|4
+outstanding|adj.|4
+oval|adj./n.|4
+overcoat|n.|4
+overcome|v.|4
+overlook|v.|4
+overnight|adv./adj.|4
+overthrow|v.|4
+oxygen|n.|4
+pace|n./v.|4
+panel|n.|4
+parachute|n./v.|4
+paragraph|n.|4
+partial|adj.|4
+participation|n.|4
+partnership|n.|4
+passive|adj.|4
+pasta|n.|4
+paw|n./v.|4
+peculiar|adj.|4
+peep|n./v.|4
+peer|n./v.|4
+penalty|n.|4
+percent|n.|4
+percentage|n.|4
+perfection|n.|4
+perfume|n./v.|4
+permanent|adj.|4
+persuasion|n.|4
+persuasive|adj.|4
+pessimistic|adj.|4
+pest|n.|4
+phenomenon|n.|4
+philosopher|n.|4
+philosophical|adj.|4
+philosophy|n.|4
+photography|n.|4
+physical|adj.|4
+physician|n.|4
+physicist|n.|4
+physics|n.|4
+pickle|n.|4
+pioneer|n./v.|4
+plentiful|adj.|4
+plot|n./v.|4
+plum|n.|4
+plumber|n.|4
+poisonous|adj.|4
+polish|n./v.|4
+popularity|n.|4
+portable|adj.|4
+portray|v.|4
+possess|v.|4
+possession|n.|4
+postage|n.|4
+potential|adj./n.|4
+precise|adj.|4
+predict|v.|4
+prediction|n.|4
+pregnancy|n.|4
+pregnant|adj.|4
+presentation|n.|4
+preservation|n.|4
+preserve|v.|4
+prevention|n.|4
+prime|adj./n.|4
+primitive|adj.|4
+priority|n.|4
+privacy|n.|4
+privilege|n./v.|4
+procedure|n.|4
+proceed|v.|4
+productive|adj.|4
+profession|n.|4
+professional|adj./n.|4
+profitable|adj.|4
+prominent|adj.|4
+promising|adj.|4
+promotion|n.|4
+prompt|v./adj./n.|4
+pronunciation|n.|4
+proposal|n.|4
+prosper|v.|4
+prosperity|n.|4
+prosperous|adj.|4
+protein|n.|4
+protest|n./v.|4
+psychological|adj.|4
+psychologist|n.|4
+psychology|n.|4
+publication|n.|4
+publicity|n.|4
+publish|v.|4
+publisher|n.|4
+pursue|v.|4
+pursuit|n.|4
+quarrel|n./v.|4
+quilt|n./v.|4
+quotation|n.|4
+radar|n.|4
+rage|n./v.|4
+rainfall|n.|4
+raisin|n.|4
+realistic|adj.|4
+rebel|n./v.|4
+recall|v./n.|4
+reception|n.|4
+recipe|n.|4
+recognition|n.|4
+recovery|n.|4
+recreation|n.|4
+recycle|v.|4
+reduction|n.|4
+refer|v.|4
+reference|n.|4
+reflect|v.|4
+reflection|n.|4
+reform|n./v.|4
+refugee|n.|4
+refund|n./v.|4
+refusal|n.|4
+regarding|prep.|4
+register|v./n.|4
+registration|n.|4
+regulate|v.|4
+regulation|n.|4
+rejection|n.|4
+relaxation|n.|4
+relevant|adj.|4
+relieve|v.|4
+reluctant|adj.|4
+remark|n./v.|4
+remarkable|adj.|4
+remedy|n./v.|4
+renew|v.|4
+repetition|n.|4
+representation|n.|4
+reputation|n.|4
+rescue|n./v.|4
+research|n./v.|4
+researcher|n.|4
+resemble|v.|4
+reservation|n.|4
+resign|v.|4
+resignation|n.|4
+resistance|n.|4
+resolution|n.|4
+resolve|v./n.|4
+respectable|adj.|4
+respectful|adj.|4
+restore|v.|4
+restriction|n.|4
+retain|v.|4
+retire|v./(n.)|4
+retreat|n./v.|4
+reunion|n.|4
+revenge|n./v.|4
+revise|v.|4
+revision|n.|4
+revolution|n.|4
+revolutionary|adj./n.|4
+reward|n./v.|4
+rhyme|n./v.|4
+rhythm|n.|4
+riddle|n.|4
+robber|n.|4
+romance|n.|4
+route|n./v.|4
+ruin|v./n.|4
+rural|adj.|4
+rusty|adj.|4
+sacrifice|n./v.|4
+satellite|n.|4
+satisfaction|n.|4
+scarcely|adv.|4
+scenery|n.|4
+scold|v./n.|4
+scoop|n./v.|4
+scratch|n./v.|4
+sculpture|n./v.|4
+secure|v./adj.|4
+seize|v.|4
+settler|n.|4
+severe|adj.|4
+sew|v.|4
+shade|n./v.|4
+shady|adj.|4
+shameful|adj.|4
+shave|v./n.|4
+shelter|n./v.|4
+shift|n./v.|4
+sightseeing|n.|4
+signature|n./adj.|4
+significance|n.|4
+sincerity|n.|4
+singular|adj./n.|4
+site|n./v.|4
+sketch|n./v.|4
+skyscraper|n.|4
+slight|adj./n./v.|4
+slogan|n.|4
+socket|n.|4
+software|n.|4
+solar|adj.|4
+spade|n.|4
+spare|adj./v./n.|4
+spark|n./v.|4
+spear|n./v.|4
+species|n.|4
+spiritual|adj.|4
+splendid|adj.|4
+split|v./n.|4
+sprinkle|v./n.|4
+stab|n./v.|4
+statistic|n.|4
+status|n.|4
+stem|n./v.|4
+stereo|n.|4
+stingy|adj.|4
+stocking|n.|4
+strengthen|v.|4
+stripe|n.|4
+strive|v.|4
+stroke|n./v.|4
+submarine|n./adj.|4
+sue|v.|4
+suggestion|n.|4
+summarize|v.|4
+surgeon|n.|4
+surgery|n.|4
+surrender|v./n.|4
+surroundings|n.|4
+suspicious|adj.|4
+sway|n./v.|4
+syllable|n.|4
+sympathetic|adj.|4
+sympathy|n.|4
+systematic|adj.|4
+technician|n.|4
+technological|adj.|4
+telegraph|n./v.|4
+telescope|n.|4
+tendency|n.|4
+tense|adj./v.|4
+tension|n.|4
+terror|n.|4
+theme|n.|4
+thorough|adj.|4
+thoughtful|adj.|4
+tickle|v./n.|4
+timetable|n.|4
+timid|adj.|4
+tolerable|adj.|4
+tolerance|n.|4
+tolerant|adj.|4
+tolerate|v.|4
+tomb|n.|4
+tortoise|n.|4
+torture|n./v.|4
+tragedy|n.|4
+tragic|adj.|4
+transfer|n./v.|4
+transform|v.|4
+translate|v.|4
+translation|n.|4
+translator|n.|4
+transportation|n.|4
+tremble|v./n.|4
+tremendous|adj.|4
+tribal|adj.|4
+triumph|n./v.|4
+troublesome|adj.|4
+tumble|v./n.|4
+twig|n.|4
+universal|adj./n.|4
+urge|n./v.|4
+urgent|adj.|4
+usage|n.|4
+vacancy|n.|4
+vain|adj.|4
+vast|adj.|4
+vegetarian|n.|4
+vessel|n.|4
+violate|v.|4
+violation|n.|4
+virtue|n.|4
+virus|n.|4
+visual|adj.|4
+vital|adj.|4
+voluntary|adj.|4
+volunteer|n./v.|4
+voyage|n./v.|4
+waken|v.|4
+website|n.|4
+welfare|n.|4
+wink|n./v.|4
+wit|n.|4
+witch / wizard|n.|4
+withdraw|v.|4
+witness|n./v.|4
+workout|n.|4
+workplace|n.|4
+wreck|n./v.|4
+yawn|n./v.|4
+youthful|adj.|4
+abnormal|adj.|4
+abolish|v.|4
+abortion|n.|4
+abrupt|adj.|4
+absurd|adj.|4
+abundant|adj.|4
+abuse|n./v.|4
+accelerate|v.|4
+accessible|adj.|4
+accommodate|v.|4
+accommodation|n.|4
+accord|n./v.|4
+accounting|n.|4
+acknowledge|v./(n.)|4
+acquaint|v.|4
+acquisition|n.|4
+activist|n.|4
+acute|adj.|4
+administration|n.|4
+administrative|adj.|4
+administrator|n.|4
+adolescent|adj./n.|4
+adore|v.|4
+adverse|adj.|4
+advocate|n./v.|4
+affection|n.|4
+agenda|n.|4
+aggression|n.|4
+agony|n.|4
+agricultural|adj.|4
+aisle|n.|4
+alcoholic|adj./n.|4
+alien|adj./n.|4
+allergic|adj.|4
+allergy|n.|4
+alliance|n.|4
+allocate|v.|4
+ally|n./v.|5
+alongside|prep./adv.|5
+alter|v.|5
+alternate|adj./v./n.|5
+amend|v.|5
+ample|adj.|5
+analyst|n.|5
+anonymous|adj.|5
+anticipate|v.|5
+antique|adj./n.|5
+applause|n.|5
+appliance|n.|5
+apt|adj.|5
+architect|n.|5
+architecture|n.|5
+arena|n.|5
+arouse|v.|5
+array|n.|5
+arrogant|adj.|5
+articulate|v./adj.|5
+ass|n.|5
+assault|n./v.|5
+assert|v.|5
+assess|v./(n.)|5
+asset|n.|5
+assumption|n.|5
+astonish|v./(n.)|5
+athletics|n.|5
+attendance|n.|5
+attic|n.|5
+attorney|n.|5
+attribute|v.|5
+auction|n./v.|5
+authorize|v.|5
+autonomy|n.|5
+awe|n./v.|5
+backyard|n.|5
+ballot|n./v.|5
+ban|n./v.|5
+banner|n.|5
+barren|adj.|5
+batch|n.|5
+behalf|n.|5
+belongings|n.|5
+beloved|adj./n.|5
+beneficial|adj.|5
+betray|v.|5
+beware|v.|5
+bias|n./v.|5
+bid|n./v.|5
+biological|adj.|5
+bizarre|adj.|5
+blast|n./v.|5
+blur|n./v.|5
+blush|n./v.|5
+bodyguard|n.|5
+bolt|n./v.|5
+bonus|n.|5
+boom|n./v.|5
+boost|v./n.|5
+booth|n.|5
+boredom|n.|5
+bound|v./n.|5
+boundary|n.|5
+boxer|n.|5
+breakthrough|n.|5
+briefcase|n.|5
+bronze|n./adj.|5
+browse|v./n.|5
+bruise|n./v.|5
+bulk|n.|5
+bully|n./v.|5
+bureau|n.|5
+bureaucracy|n.|5
+burial|n.|5
+butcher|n./v.|5
+calcium|n.|5
+canal|n.|5
+canvas|n./v.|5
+capability|n.|5
+carbon|n.|5
+carnival|n.|5
+casino|n.|5
+cathedral|n.|5
+caution|n./v.|5
+cautious|adj.|5
+celebrity|n.|5
+cemetery|n.|5
+ceremony|n.|5
+certainty|n.|5
+certificate|n./v.|5
+chaos|n.|5
+chapel|n.|5
+characterize|v.|5
+chef|n.|5
+choir|n.|5
+chord|n.|5
+chore|n.|5
+chronic|adj.|5
+chubby|adj.|5
+chunk|n.|5
+circuit|n.|5
+cite|v.|5
+citizenship|n.|5
+civic|adj.|5
+clarity|n.|5
+clause|n.|5
+cling|v.|5
+clinical|adj.|5
+cluster|n./v.|5
+cocaine|n.|5
+coffin|n.|5
+cognitive|adj.|5
+coherent|adj.|5
+coincidence|n.|5
+collaboration|n.|5
+collective|adj./n.|5
+collector|n.|5
+colonial|adj./n.|5
+columnist|n.|5
+combat|n./v.|5
+comedian|n.|5
+commentary|n.|5
+commentator|n.|5
+commission|n./v.|5
+commitment|n.|5
+commodity|n.|5
+communism|n.|5
+communist|adj./n.|5
+commute|v.|5
+commuter|n.|5
+compact|adj./n./v.|5
+comparable|adj.|5
+compassion|n.|5
+compassionate|adj.|5
+compatible|adj.|5
+compel|v.|5
+compensate|v.|5
+compensation|n.|5
+competence|n.|5
+competent|adj.|5
+complexity|n.|5
+compliance|n.|5
+complication|n.|5
+compliment|n./v.|5
+comply|v.|5
+component|n./adj.|5
+compound|n./v./adj.|5
+comprehend|v.|5
+comprehension|n.|5
+comprise|v.|5
+compromise|n./v.|5
+compulsory|adj.|5
+conceal|v.|5
+concede|v.|5
+conceive|v.|5
+conception|n.|5
+condemn|v.|5
+conduct|v./n.|5
+confession|n.|5
+confidential|adj.|5
+confine|v.|5
+conform|v.|5
+confront|v.|5
+confrontation|n.|5
+consecutive|adj.|5
+consensus|n.|5
+consent|n./v.|5
+conservation|n.|5
+considerate|adj.|5
+constitutional|adj./n.|5
+constraint|n.|5
+consultation|n.|5
+consumption|n.|5
+contagious|adj.|5
+contaminate|v.|5
+contemplate|v.|5
+contemporary|adj./n.|5
+contempt|n.|5
+contend|v.|5
+continental|adj.|5
+contractor|n.|5
+contradiction|n.|5
+controversial|adj.|5
+controversy|n.|5
+conversion|n.|5
+convert|v.|5
+convict|v./n.|5
+conviction|n.|5
+coordinate|v./n./adj.|5
+copyright|n./v.|5
+core|n.|5
+corporate|adj.|5
+corporation|n.|5
+correlation|n.|5
+correspondent|n.|5
+corridor|n.|5
+corrupt|adj./v.|5
+corruption|n.|5
+counsel|n./v.|5
+counselor|n.|5
+courteous|adj.|5
+coverage|n.|5
+credibility|n.|5
+creek|n.|5
+cripple|v./n.|5
+criterion / criteria|n.|5
+crucial|adj.|5
+crude|adj.|5
+cruise|n./v.|5
+crystal|n./adj.|5
+cuisine|n.|5
+currency|n.|5
+curriculum|n.|5
+custody|n.|5
+customs|n.|5
+deadly|adj./adv.|5
+debris|n.|5
+debut|n.|5
+decay|n./v.|5
+deceive|v.|5
+decent|adj.|5
+declaration|n.|5
+decline|n./v.|5
+dedicate|v.|5
+defendant|n.|5
+deficit|n.|5
+defy|v.|5
+delegate|n./v.|5
+delegation|n.|5
+deliberate|adj./v.|5
+democrat|n.|5
+denial|n.|5
+density|n.|5
+depict|v.|5
+deploy|v.|5
+depress|v.|5
+deputy|n.|5
+derive|v.|5
+descend|v.|5
+descriptive|adj.|5
+despair|n./v.|5
+destination|n.|5
+destiny|n.|5
+destructive|adj.|5
+devotion|n.|5
+diagnose|v.|5
+diagnosis|n.|5
+dialect|n.|5
+diameter|n.|5
+diaper|n.|5
+digestion|n.|5
+dilemma|n.|5
+dimension|n.|5
+diminish|v.|5
+diplomatic|adj.|5
+directory|n.|5
+disapprove|v.|5
+disclose|v.|5
+disconnect|v.|5
+discourse|n.|5
+discriminate|v.|5
+discrimination|n.|5
+disrupt|v.|5
+dissolve|v.|5
+distinction|n.|5
+distinctive|adj.|5
+distract|v.|5
+doctrine|n.|5
+document|n./v.|5
+documentary|n./adj.|5
+domain|n.|5
+dome|n./v.|5
+donate|v.|5
+donation|n.|5
+donor|n.|5
+doorway|n.|5
+dough|n.|5
+dreadful|adj.|5
+driveway|n.|5
+drought|n.|5
+ecological|adj.|5
+ecology|n.|5
+ecosystem|n.|5
+ego|n.|5
+elaborate|adj./v.|5
+eligible|adj.|5
+eloquent|adj.|5
+embrace|v./n.|5
+emission|n.|5
+endorse|v./(n.)|5
+enterprise|n.|5
+enthusiastic|adj.|5
+entitle|v.|5
+entity|n.|5
+entrepreneur|n.|5
+envious|adj.|5
+envision|v.|5
+epidemic|n./adj.|5
+episode|n.|5
+equation|n.|5
+equity|n.|5
+equivalent|n./adj.|5
+erect|v./adj.|5
+errand|n.|5
+erupt|v.|5
+escalator|n.|5
+essence|n.|5
+estate|n.|5
+eternal|adj.|5
+ethic|n.|5
+ethical|adj.|5
+evolution|n.|5
+evolve|v.|5
+exaggeration|n.|5
+exceed|v.|5
+exceptional|adj.|5
+excessive|adj.|5
+exclaim|v.|5
+exclude|v.|5
+exclusive|adj.|5
+execute|v.|5
+execution|n.|5
+executive|n./adj.|5
+exile|n./v.|5
+exotic|adj./n.|5
+expedition|n.|5
+expertise|n.|5
+explicit|adj.|5
+exploit|v./n.|5
+exploration|n.|5
+extension|n.|5
+extensive|adj.|5
+exterior|n./adj.|5
+external|adj./n.|5
+extinct|adj.|5
+extraordinary|adj.|5
+fabric|n.|5
+fabulous|adj.|5
+facilitate|v.|5
+faculty|n.|5
+fascinate|v.|5
+fatigue|n./v.|5
+federal|adj.|5
+fiber|n.|5
+filter|n./v.|5
+fiscal|adj.|5
+fleet|n.|5
+flexibility|n.|5
+flip|v./n.|5
+fluency|n.|5
+fluid|n./adj.|5
+forge|v.|5
+format|n./v.|5
+forum|n.|5
+foster|adj./v.|5
+foul|adj./n./v./adv.|5
+fraction|n.|5
+fragment|n./v.|5
+framework|n.|5
+franchise|n.|5
+fraud|n.|5
+freight|n./v.|5
+frontier|n.|5
+galaxy|n.|5
+gasp|n./v.|5
+gathering|n.|5
+generate|v.|5
+generator|n.|5
+genetic|adj.|5
+genetics|n.|5
+genre|n.|5
+glare|n./v.|5
+gloomy|adj.|5
+gorgeous|adj.|5
+grant|n./v.|5
+graphic|adj./n.|5
+gravity|n.|5
+greed|n.|5
+grieve|v.|5
+grill|n./v.|5
+grim|adj.|5
+grip|n./v.|5
+gross|adj./v./n.|5
+guideline|n.|5
+gut|n./v.|5
+habitat|n.|5
+haul|v./n.|5
+hazard|n./v.|5
+heir|n.|5
+hence|adv.|5
+herb|n.|5
+heritage|n.|5
+highlight|v./n.|5
+hockey|n.|5
+honorable|adj.|5
+horizontal|adj./n.|5
+hormone|n.|5
+hostage|n.|5
+hostile|adj.|5
+hostility|n.|5
+housing|n.|5
+howl|n./v.|5
+hypothesis|n.|5
+icon|n.|5
+ideology|n.|5
+idiot|n.|5
+illusion|n.|5
+immense|adj.|5
+immune|adj.|5
+implement|v./n.|5
+implication|n.|5
+impulse|n.|5
+incentive|n./adj.|5
+incorporate|v.|5
+index|n./v.|5
+indifferent|adj.|5
+indigenous|adj.|5
+indispensable|adj.|5
+indulge|v.|5
+inevitable|adj.|5
+infect|v.|5
+infinite|adj.|5
+infrastructure|n.|5
+inherent|adj.|5
+inherit|v.|5
+initiate|v./adj./n.|5
+initiative|n./adj.|5
+inject|v.|5
+injection|n.|5
+inning|n.|5
+innovation|n.|5
+innovative|adj.|5
+inquiry|n.|5
+insane|adj.|5
+insight|n.|5
+installation|n.|5
+institute|n./v.|5
+institution|n.|5
+intact|adj.|5
+integrate|v.|5
+integration|n.|5
+integrity|n.|5
+intensify|v.|5
+intent|n./adj.|5
+interference|n.|5
+interior|adj./n.|5
+interpretation|n.|5
+interval|n.|5
+intervention|n.|5
+investigator|n.|5
+irony|n.|5
+journalism|n.|5
+journalist|n.|5
+judicial|adj.|5
+jug|n./v.|5
+jury|n.|5
+justify|v.|5
+juvenile|adj./n.|5
+kidnap|v.|5
+landlord|n.|5
+laser|n.|5
+lawmaker|n.|5
+lawsuit|n.|5
+layer|n./v.|5
+league|n./v.|5
+legacy|n.|5
+legendary|adj.|5
+legislation|n.|5
+legislative|adj.|5
+legitimate|adj./v.|5
+lest|conj.|5
+liability|n.|5
+likelihood|n.|5
+likewise|adv.|5
+loop|n.|5
+lounge|n./v.|5
+lump|n./v.|5
+mainstream|n.|5
+maintenance|n.|5
+mammal|n.|5
+mandate|n.|5
+manifest|v./adj.|5
+manipulate|v.|5
+mansion|n.|5
+marine|adj./n.|5
+masculine|adj./n.|5
+massage|n./v.|5
+massive|adj.|5
+masterpiece|n.|5
+mattress|n.|5
+meantime|n./adv.|5
+mechanism|n.|5
+medication|n.|5
+mentor|n.|5
+merge|v.|5
+metaphor|n.|5
+metropolitan|adj./n.|5
+midst|n./prep.|5
+migration|n.|5
+milestone|n.|5
+miniature|adj./n.|5
+minimal|adj.|5
+minimize|v.|5
+mint|n.|5
+missionary|n./adj.|5
+moan|n./v.|5
+mock|adj./v./n.|5
+mode|n.|5
+modify|v.|5
+molecule|n.|5
+monopoly|n.|5
+morality|n.|5
+mortality|n.|5
+mortgage|n.|5
+motive|n.|5
+mount|n./v.|5
+mumble|v./n.|5
+municipal|adj.|5
+muscular|adj.|5
+mustard|n.|5
+myth|n.|5
+naive|adj.|5
+narrative|n./adj.|5
+nasty|adj.|5
+negotiation|n.|5
+neutral|adj./n.|5
+nominate|v.|5
+nomination|n.|5
+nominee|n.|5
+nonprofit|adj.|5
+norm|n.|5
+noticeable|adj.|5
+notify|v.|5
+notion|n.|5
+nowhere|adv./pron.|5
+nutrient|n./adj.|5
+nutrition|n.|5
+obligation|n.|5
+obscure|adj./v.|5
+observer|n.|5
+odds|n.|5
+offering|n.|5
+olive|adj./n.|5
+operational|adj.|5
+opponent|n.|5
+opposition|n.|5
+opt|v.|5
+optimism|n.|5
+optional|adj.|5
+orchard|n.|5
+organism|n.|5
+originality|n.|5
+outfit|n./v.|5
+outlet|n.|5
+output|n./v.|5
+outsider|n.|5
+overall|adj./adv./n.|5
+overhead|adv./adj./n.|5
+oversee|v.|5
+overtake|v.|5
+overturn|v./n.|5
+overwhelm|v.|5
+parallel|adj./n./v.|5
+participant|n.|5
+particle|n.|5
+partly|adv.|5
+passionate|adj.|5
+pastry|n.|5
+patch|n./v.|5
+patent|n./adj./v.|5
+pathetic|adj.|5
+patrol|n./v.|5
+patron|n.|5
+peasant|n.|5
+pedal|n./v.|5
+pedestrian|n./adj.|5
+penetrate|v.|5
+pension|n./v.|5
+perceive|v.|5
+perception|n.|5
+performer|n.|5
+persist|v.|5
+personnel|n.|5
+perspective|n./adj.|5
+pessimism|n.|5
+petition|n.|5
+petty|adj.|5
+phase|n./v.|5
+photographic|adj.|5
+pickup|n.|5
+pier|n.|5
+pillar|n.|5
+pipeline|n.|5
+pirate|n./v.|5
+pitcher|n.|5
+placement|n.|5
+plea|n.|5
+plead|v.|5
+pledge|n./v.|5
+plunge|n./v.|5
+plural|adj./n.|5
+poetic|adj.|5
+poke|v./n.|5
+porch|n.|5
+portfolio|n.|5
+practitioner|n.|5
+precaution|n.|5
+predator|n.|5
+preference|n.|5
+prejudice|n./v.|5
+preliminary|adj./n.|5
+premature|adj.|5
+premier|adj./n.|5
+premise|n.|5
+premium|n.|5
+prescribe|v.|5
+prescription|n.|5
+presidency|n.|5
+presidential|adj.|5
+presumably|adv.|5
+presume|v.|5
+prevail|v.|5
+prey|n./v.|5
+prior|adj./adv./n.|5
+proclaim|v.|5
+productivity|n.|5
+profile|n./v.|5
+profound|adj.|5
+progressive|adj./n.|5
+prohibit|v.|5
+projection|n.|5
+prolong|v.|5
+prone|adj.|5
+propaganda|n.|5
+prophet|n.|5
+proportion|n./v.|5
+prosecution|n.|5
+prospect|n./v.|5
+province|n.|5
+provision|n.|5
+provoke|v.|5
+pulse|n./v.|5
+purchase|n./v.|5
+pyramid|n.|5
+qualify|v.|5
+quest|n.|5
+questionnaire|n.|5
+quiver|n./v.|5
+quota|n.|5
+racism|n.|5
+rack|n./v.|5
+radiation|n.|5
+radical|adj./n.|5
+ragged|adj.|5
+raid|n./v.|5
+rail|n.|5
+rally|n./v.|5
+ranch|n./v.|5
+random|adj.|5
+ratio|n.|5
+rational|adj.|5
+rattle|v./n.|5
+realism|n.|5
+realm|n.|5
+rear|adj./n.|5
+reassure|v.|5
+rebellion|n.|5
+recession|n.|5
+recipient|n./adj.|5
+recite|v.|5
+recommend|v.|5
+recommendation|n.|5
+recruit|v./n.|5
+refuge|n.|5
+regardless|adj./adv.|5
+regime|n.|5
+rehearsal|n.|5
+reinforce|v.|5
+reminder|n.|5
+removal|n.|5
+render|v.|5
+rental|n.|5
+repay|v.|5
+republican|n./adj.|5
+resemblance|n.|5
+reservoir|n.|5
+residence|n.|5
+resident|n./adj.|5
+residential|adj.|5
+resort|n./v.|5
+respondent|n.|5
+resume|v./n.|5
+retail|n./adj./adv./v.|5
+revenue|n.|5
+reverse|v./adj./n.|5
+rhetoric|n.|5
+rib|n./v.|5
+ridge|n./v.|5
+ridiculous|adj.|5
+rifle|n./v.|5
+rigid|adj.|5
+rim|n./v.|5
+riot|n./v.|5
+rip|v./n.|5
+risky|adj.|5
+ritual|n./adj.|5
+rival|adj./n./v.|5
+rod|n.|5
+sacred|adj.|5
+saddle|n./v.|5
+saint|n./v.|5
+salmon|n./adj.|5
+salon|n.|5
+sandal|n.|5
+scan|n./v.|5
+scandal|n.|5
+scar|n./v.|5
+scenario|n.|5
+scent|n./v.|5
+scheme|n./v.|5
+scope|n.|5
+scramble|v./n.|5
+scrap|n./v.|5
+script|n./v.|5
+sector|n.|5
+segment|n./v.|5
+seminar|n.|5
+senator|n.|5
+sensation|n.|5
+sensitivity|n.|5
+sensor|n.|5
+sentiment|n.|5
+sentimental|adj.|5
+sequence|n./v.|5
+series|n.|5
+server|n.|5
+session|n.|5
+setting|n.|5
+shareholder|n.|5
+shatter|v.|5
+shed|v./n.|5
+sheer|adj./adv.|5
+sheriff|n.|5
+shield|n./v.|5
+shiver|n./v.|5
+shortage|n.|5
+shove|v./n.|5
+shrug|n./v.|5
+shuttle|n./v.|5
+sibling|n.|5
+siege|n.|5
+skeleton|n.|5
+skull|n.|5
+slam|n./v.|5
+slap|n./v./adv.|5
+slavery|n.|5
+slot|n./v.|5
+smash|v./n.|5
+smog|n.|5
+snatch|v./n.|5
+sneak|v./n.|5
+sniff|v./n.|5
+soak|v./n.|5
+soar|v.|5
+sob|n./v.|5
+sober|adj./v.|5
+soften|v.|5
+sole|adj./n./v.|5
+solo|n./adv./adj.|5
+sophisticated|adj.|5
+sophomore|n.|5
+souvenir|n.|5
+sovereignty|n.|5
+sow|v.|5
+spacious|adj.|5
+sparkle|v./n.|5
+specialist|n.|5
+specialize|v.|5
+specialty|n.|5
+specify|v.|5
+specimen|n.|5
+spectacular|adj./n.|5
+spectator|n.|5
+spectrum|n.|5
+speculate|v.|5
+sphere|n.|5
+spicy|adj.|5
+spine|n.|5
+sponge|n./v.|5
+sponsor|n./v.|5
+sponsorship|n.|5
+spouse|n.|5
+squad|n.|5
+squash|n./v.|5
+squat|adj./n./v.|5
+stability|n.|5
+stack|n./v.|5
+stain|n./v.|5
+stake|n./v.|5
+stall|n./v.|5
+stance|n.|5
+startle|v.|5
+statistical|adj.|5
+steer|v./n.|5
+stereotype|n./v.|5
+stew|n./v.|5
+stimulate|v.|5
+stimulus|n.|5
+stink|n./v.|5
+stock|n.|5
+storage|n.|5
+straighten|v.|5
+straightforward|adj.|5
+strain|n./v.|5
+strand|v./n.|5
+strap|n./v.|5
+strategic|adj.|5
+striking|adj.|5
+structural|adj.|5
+stumble|v./n.|5
+sturdy|adj.|5
+submit|v.|5
+subsequent|adj.|5
+subsidy|n.|5
+substantial|adj.|5
+substitute|n./v.|5
+subtle|adj.|5
+suburban|adj.|5
+successor|n.|5
+suite|n.|5
+superb|adj.|5
+superstition|n.|5
+supervise|v.|5
+supervision|n.|5
+supervisor|n.|5
+supposedly|adv.|5
+supreme|adj.|5
+surplus|n./adj.|5
+surveillance|n.|5
+suspend|v.|5
+sustain|v.|5
+sustainable|adj.|5
+swap|v./n.|5
+symbolic|adj.|5
+symptom|n.|5
+syndrome|n.|5
+tackle|v.|5
+tactic|n.|5
+tangle|n./v.|5
+tempt|v.|5
+temptation|n.|5
+terminal|n./adj.|5
+terrify|v.|5
+testify|v.|5
+texture|n./v.|5
+theft|n.|5
+theology|n.|5
+theoretical|adj.|5
+therapist|n.|5
+therapy|n.|5
+thereby|adv.|5
+thesis|n.|5
+thigh|n.|5
+threshold|n.|5
+thrill|n./v.|5
+thriller|n.|5
+thrive|v.|5
+throne|n.|5
+thrust|v./n.|5
+tick|n./v.|5
+tile|n./v.|5
+tin|n./v.|5
+toll|n./v.|5
+torch|n./v.|5
+torment|n./v.|5
+tournament|n.|5
+toxic|adj.|5
+trait|n.|5
+traitor|n.|5
+transaction|n.|5
+transformation|n.|5
+transit|n./v.|5
+transition|n.|5
+transmission|n.|5
+transparent|adj.|5
+trauma|n.|5
+treaty|n.|5
+tribute|n.|5
+trigger|n./v.|5
+trim|v./n./adj.|5
+triple|adj./v./n.|5
+trivial|adj.|5
+trophy|n.|5
+tuition|n.|5
+tumor|n.|5
+tuna|n.|5
+ultimate|adj./n.|5
+uncover|v.|5
+undergo|v.|5
+undergraduate|n.|5
+underline|v./n.|5
+undermine|v.|5
+undertake|v.|5
+undo|v.|5
+undoubtedly|adv.|5
+unemployment|n.|5
+unfold|v.|5
+unlock|v.|5
+unprecedented|adj.|5
+update|n./v.|5
+upgrade|v./n.|5
+utility|n.|5
+utilize|v.|5
+vacuum|n./v.|5
+vague|adj.|5
+valid|adj.|5
+variable|n./adj.|5
+variation|n.|5
+vein|n.|5
+vendor|n.|5
+venture|n./v.|5
+venue|n.|5
+verbal|adj./n.|5
+verdict|n.|5
+version|n.|5
+versus|prep.|5
+vertical|adj./n.|5
+veteran|n.|5
+via|prep.|5
+viable|adj.|5
+vicious|adj.|5
+viewer|n.|5
+viewpoint|n.|5
+vinegar|n.|5
+virtual|adj.|5
+visa|n.|5
+vocal|adj./n.|5
+volcano|n.|5
+vomit|n./v.|5
+voucher|n.|5
+vow|n./v.|5
+vulnerable|adj.|5
+warehouse|n./v.|5
+warrior|n.|5
+wary|adj.|5
+weird|adj.|5
+whatsoever|adj./pron.|5
+wheelchair|n.|5
+whereabouts|n./adv.|5
+whereas|conj.|5
+whine|n./v.|5
+widespread|adj.|5
+wig|n.|5
+wilderness|n.|5
+wildlife|n.|5
+windshield|n.|5
+wither|v.|5
+witty|adj.|5
+workshop|n.|5
+worship|n./v.|6
+worthwhile|adj.|6
+worthy|adj.|6
+yacht|n./v.|6
+yield|v./n.|6
+abbreviate|v.|6
+abide|v.|6
+aboriginal|adj./n.|6
+abound|v.|6
+abstraction|n.|6
+abundance|n.|6
+academy|n.|6
+accessory|n./adj.|6
+acclaim|n./v.|6
+accordance|n.|6
+accordingly|adv.|6
+accountable|adj.|6
+accumulate|v.|6
+accumulation|n.|6
+accusation|n.|6
+accustom|v.|6
+acne|n.|6
+acre|n.|6
+adaptation|n.|6
+addiction|n.|6
+administer / administrate|v.|6
+admiral|n.|6
+adolescence|n.|6
+advisory|adj.|6
+aesthetic|adj.|6
+affectionate|adj.|6
+affiliate|n.|6
+affirm|v.|6
+airtight|adj.|6
+airway|n.|6
+algebra|n.|6
+alienate|v.|6
+align|v.|6
+allege|v.|6
+alligator|n.|6
+altitude|n.|6
+aluminum|n.|6
+ambiguity|n.|6
+amid / amidst|prep.|6
+amplify|v.|6
+analogy|n.|6
+analytical|adj.|6
+anchor|n./v.|6
+animate|v./adj.|6
+annoyance|n.|6
+anthem|n.|6
+antibiotic|n./adj.|6
+anticipation|n.|6
+antonym|n.|6
+applaud|v.|6
+applicable|adj.|6
+apprentice|n.|6
+approximate|adj./v.|6
+archaeology|n.|6
+archive|n.|6
+arithmetic|n./adj.|6
+ascend|v.|6
+aspire|v.|6
+assassinate|v.|6
+asthma|n.|6
+astray|adv./adj.|6
+astronaut|n.|6
+astronomer|n.|6
+astronomy|n.|6
+attain|v./(n.)|6
+attendant|n.|6
+audit|n.|6
+auditorium|n.|6
+avert|v.|6
+aviation|n.|6
+awesome|adj.|6
+awhile|adv.|6
+bachelor|n.|6
+backbone|n.|6
+badge|n.|6
+banquet|n./v.|6
+barbarian|adj./n.|6
+bass|n./adj.|6
+batter|n./v.|6
+beautify|v.|6
+beep|n./v.|6
+beforehand|adv.|6
+beverage|n.|6
+bilateral|adj.|6
+blaze|n./v.|6
+bleach|n./v.|6
+blond / blonde|n./adj.|6
+blot|v./n.|6
+blunt|adj./v.|6
+bodily|adj./adv.|6
+booklet|n.|6
+bosom|n.|6
+boulevard|n.|6
+boxing|n.|6
+boycott|n./v.|6
+brace|n./v.|6
+brassiere / bra|n.|6
+breadth|n.|6
+breakdown|n.|6
+breakup|n.|6
+bribe|n./v.|6
+brink|n.|6
+broaden|v.|6
+brochure|n.|6
+broil|v.|6
+brook|n.|6
+broth|n.|6
+brotherhood|n.|6
+bulky|adj.|6
+bureaucrat|n.|6
+bypass|n./v.|6
+caffeine|n.|6
+calculator|n.|6
+calligraphy|n.|6
+cape|n.|6
+capsule|n.|6
+caption|n./v.|6
+captive|adj./n.|6
+captivity|n.|6
+cardboard|n.|6
+cardinal|n./adj.|6
+carefree|adj.|6
+caretaker|n.|6
+carton|n.|6
+cashier|n.|6
+casualty|n.|6
+catastrophe|n.|6
+cater|v.|6
+caterpillar|n.|6
+cavity|n.|6
+celery|n.|6
+cellular|adj.|6
+Celsius|n.|6
+cement|n./v.|6
+census|n.|6
+ceramic|adj./n.|6
+certify|v.|6
+chairman / chairwoman|n.|6
+champagne|n.|6
+chant|n./v.|6
+charitable|adj.|6
+checkup|n.|6
+chemist|n.|6
+chestnut|n./adj.|6
+chili|n.|6
+chimpanzee|n.|6
+chirp|n./v.|6
+cholesterol|n.|6
+cigar|n.|6
+civilize|v.|6
+clam|n.|6
+clasp|v./n.|6
+clearance|n.|6
+climax|n./v.|6
+clockwise|adv./adj.|6
+clone|n./v.|6
+closure|n.|6
+coalition|n.|6
+coastline|n.|6
+collision|n.|6
+colloquial|adj.|6
+comet|n.|6
+commonplace|adj./n.|6
+commonwealth|n.|6
+communicative|adj.|6
+comparative|adj.|6
+compass|n./v.|6
+compile|v.|6
+complement|v./n.|6
+complexion|n.|6
+comprehensive|adj.|6
+compute|v.|6
+computerize|v.|6
+comrade|n.|6
+concession|n.|6
+concise|adj.|6
+condense|v.|6
+confederation|n.|6
+congressman / congresswoman|n.|6
+conquest|n.|6
+conscientious|adj.|6
+conserve|v./n.|6
+consolation|n.|6
+console|n./v.|6
+consonant|n.|6
+conspiracy|n.|6
+contention|n.|6
+contestant|n.|6
+continuity|n.|6
+contradict|v.|6
+convene|v.|6
+coral|n./adj.|6
+corpse|n.|6
+correspondence|n.|6
+cosmetic|adj.|6
+cosmetics|n.|6
+counterpart|n.|6
+coupon|n.|6
+courtyard|n.|6
+cowardly|adj.|6
+cozy|adj.|6
+crackdown|n.|6
+cracker|n.|6
+cram|v.|6
+cramp|n./v.|6
+crater|n./v.|6
+credible|adj.|6
+crocodile|n.|6
+crossing|n.|6
+crutch|n.|6
+cub|n.|6
+cucumber|n.|6
+cultivate|v.|6
+cumulative|adj.|6
+curb|n./v.|6
+curfew|n.|6
+curry|n.|6
+customary|adj.|6
+cynical|adj.|6
+dazzle|v./n.|6
+deafen|v.|6
+decisive|adj.|6
+dedication|n.|6
+deduct|v.|6
+deem|v.|6
+default|n./v.|6
+defect|n./v.|6
+defiance|n.|6
+definitive|adj.|6
+dental|adj.|6
+deplete|v.|6
+deprive|v.|6
+descent|n.|6
+despise|v.|6
+destined|adj.|6
+detach|v.|6
+detain|v.|6
+detention|n.|6
+deter|v.|6
+detergent|n.|6
+devour|v.|6
+diabetes|n.|6
+dictate|v.|6
+dictation|n.|6
+dictator|n.|6
+dictatorship|n.|6
+diesel|n.|6
+differentiate|v.|6
+diplomacy|n.|6
+directive|n.|6
+disable|v.|6
+disastrous|adj.|6
+disbelief|n.|6
+discard|v./n.|6
+discharge|n./v.|6
+disciple|n.|6
+disciplinary|adj.|6
+disclosure|n.|6
+discomfort|n./v.|6
+discreet|adj.|6
+disgrace|n./v.|6
+dismay|n./v.|6
+dispensable|adj.|6
+dispense|v.|6
+disposable|adj./n.|6
+disposal|n.|6
+dispose|v.|6
+dissent|n.|6
+distraction|n.|6
+distress|n./v.|6
+disturbance|n.|6
+diversify|v.|6
+diversion|n.|6
+divert|v.|6
+dividend|n.|6
+doom|n./v.|6
+dormitory / dorm|n.|6
+downward|adj.|6
+downward / downwards|adv.|6
+doze|v./n.|6
+drastic|adj.|6
+draught|n.|6
+dresser|n.|6
+dressing|n.|6
+dual|adj.|6
+dubious|adj.|6
+duration|n.|6
+dusk|n.|6
+dwarf|n./v.|6
+dwell|v.|6
+dwelling|n.|6
+eccentric|adj./n.|6
+eclipse|n./v.|6
+edible|adj.|6
+editorial|adj./n.|6
+electrician|n.|6
+elevate|v.|6
+emigrant|n.|6
+emigrate|v.|6
+emigration|n.|6
+encyclopedia|n.|6
+endeavor|n./v.|6
+endowment|n.|6
+endurance|n.|6
+enhance|v./(n.)|6
+enlighten|v./(n.)|6
+enrich|v./(n.)|6
+enroll|v./(n.)|6
+equalize|v.|6
+equate|v.|6
+escort|n./v.|6
+esteem|n./v.|6
+eternity|n.|6
+evacuate|v.|6
+evergreen|adj./n.|6
+evoke|v.|6
+examinee|n.|6
+examiner|n.|6
+excel|v.|6
+excerpt|n./v.|6
+excess|adj./n.|6
+exclusion|n.|6
+exempt|adj.|6
+exert|v.|6
+expenditure|n.|6
+expiration|n.|6
+expire|v.|6
+extract|n./v.|6
+extracurricular|adj.|6
+eyelash / lash|n.|6
+eyelid|n.|6
+eyesight|n.|6
+fable|n.|6
+faction|n.|6
+Fahrenheit|n.|6
+falter|v.|6
+familiarity|n.|6
+fascination|n.|6
+feasible|adj.|6
+feeble|adj.|6
+feminine|adj./n.|6
+fertility|n.|6
+fertilizer|n.|6
+fiancé / fiance|n.|6
+fin|n.|6
+finite|adj.|6
+firecracker|n.|6
+fireproof|adj.|6
+fishery|n.|6
+flake|n./v.|6
+flaw|n./v.|6
+flourish|v./n.|6
+flunk|v./n.|6
+foe|n.|6
+folklore|n.|6
+formidable|adj.|6
+formulate|v.|6
+forsake|v.|6
+forthcoming|adj.|6
+fortify|v.|6
+fowl|n.|6
+fracture|n./v.|6
+fragrance|n.|6
+fragrant|adj.|6
+frantic|adj.|6
+freak|n./v.|6
+freeway|n.|6
+friction|n.|6
+fume|v./n.|6
+fury|n.|6
+fuse|n./v.|6
+fuss|n./v.|6
+gallop|n./v.|6
+gangster|n.|6
+garment|n.|6
+gauge|n./v.|6
+gay|adj./n.|6
+geographical|adj.|6
+geometry|n.|6
+glacier|n.|6
+glamorous|adj.|6
+glamour|n.|6
+gleam|n./v.|6
+glide|v./n.|6
+glitter|n./v.|6
+gloom|n./v.|6
+goalkeeper|n.|6
+goodwill|n.|6
+gorilla|n.|6
+gospel|n.|6
+grapefruit|n.|6
+graze|v.|6
+grease|n./v.|6
+groan|n./v.|6
+growl|n./v.|6
+grumble|v./n.|6
+hacker|n.|6
+hail|n./v.|6
+hamper|v.|6
+handicap|n./v.|6
+handicraft|n.|6
+harass|v./(n.)|6
+harden|v.|6
+harmonica|n.|6
+harness|n./v.|6
+haunt|v./n.|6
+headphone|n.|6
+healthful|adj.|6
+hearty|adj.|6
+hedge|n./v.|6
+heighten|v.|6
+hemisphere|n.|6
+heroic|adj./n.|6
+heroin|n.|6
+heterosexual|adj./n.|6
+hierarchy|n.|6
+hijack|v./n.|6
+hoarse|adj.|6
+homosexual|adj./n.|6
+honorary|adj.|6
+hospitable|adj.|6
+hospitality|n.|6
+hospitalize|v.|6
+hostel|n.|6
+hover|v./n.|6
+humiliate|v.|6
+hunch|n./v.|6
+hurdle|n./v.|6
+hybrid|adj./n.|6
+hygiene|n.|6
+hypocrite|n.|6
+iceberg|n.|6
+illuminate|v.|6
+imminent|adj.|6
+imperative|adj./n.|6
+imperial|adj.|6
+implicit|adj.|6
+imposing|adj.|6
+imprison|v./(n.)|6
+incline|v./n.|6
+inclusive|adj.|6
+incur|v.|6
+indifference|n.|6
+indignant|adj.|6
+induce|v.|6
+industrialize|v.|6
+infectious|adj.|6
+infer|v.|6
+inflict|v.|6
+inhabit|v.|6
+inhabitant|n.|6
+injustice|n.|6
+inland|adj./adv./n.|6
+innumerable|adj.|6
+inquire|v.|6
+insistence|n.|6
+instinctive|adj.|6
+intake|n.|6
+intellect|n.|6
+interpreter|n.|6
+intersection|n.|6
+intervene|v.|6
+intimacy|n.|6
+intimidate|v.|6
+intonation|n.|6
+intrigue|n./v.|6
+intrude|v.|6
+intruder|n.|6
+invaluable|adj.|6
+invariably|adv.|6
+inventory|n./v.|6
+ironic|adj.|6
+irritable|adj.|6
+irritate|v.|6
+isle|n.|6
+itch|n./v.|6
+ivy|n.|6
+jade|n.|6
+janitor|n.|6
+jasmine|n.|6
+jingle|n./v.|6
+jockey|n./v.|6
+jolly|adj./adv./v./n.|6
+joyous|adj.|6
+junction|n.|6
+kin|n./adj.|6
+kindle|v.|6
+knowledgeable|adj.|6
+lad|n.|6
+landlady|n.|6
+landslide|n.|6
+latitude|n.|6
+lavish|adj.|6
+layman|n.|6
+layout|n.|6
+lease|n.|6
+legislator|n.|6
+lengthy|adj.|6
+lesbian|adj.|6
+lessen|v.|6
+lethal|adj.|6
+liable|adj.|6
+liberate|v.|6
+liberation|n.|6
+lieutenant|n.|6
+lifelong|adj.|6
+lighten|v.|6
+limp|n./v.|6
+liner|n.|6
+linger|v.|6
+lining|n.|6
+liter|n.|6
+literacy|n.|6
+literal|adj.|6
+literate|adj./n.|6
+livestock|n.|6
+lizard|n.|6
+locker|n.|6
+lodge|n./v.|6
+lofty|adj.|6
+logo|n.|6
+lonesome|adj.|6
+longevity|n.|6
+longitude|n.|6
+lotion|n.|6
+lottery|n.|6
+lotus|n.|6
+loudspeaker|n.|6
+lucrative|adj.|6
+lullaby|n.|6
+lunar|adj.|6
+lure|n./v.|6
+lush|adj.|6
+madam / ma’am|n.|6
+magnify|v.|6
+maiden|adj./n.|6
+mainland|n.|6
+majestic|adj.|6
+majesty|n.|6
+manuscript|n.|6
+maple|n.|6
+mar|v.|6
+marginal|adj.|6
+martial|adj.|6
+marvel|n./v.|6
+mastery|n.|6
+mediate|v.|6
+medieval|adj.|6
+meditate|v.|6
+meditation|n.|6
+melancholy|n./adj.|6
+mentality|n.|6
+merchandise|n./v.|6
+mermaid|n.|6
+migrant|n./adj.|6
+mimic|v./n.|6
+mingle|v.|6
+miraculous|adj.|6
+miscellaneous|adj.|6
+mischievous|adj.|6
+mistress|n.|6
+mobilize|v.|6
+modernization|n.|6
+modernize|v.|6
+momentum|n.|6
+monarch|n.|6
+monetary|adj.|6
+monotony|n.|6
+monstrous|adj.|6
+moody|adj.|6
+morale|n.|6
+mortal|adj./n.|6
+motherhood|n.|6
+motto|n.|6
+mound|n./v.|6
+mourn|v.|6
+mournful|adj.|6
+mow|v.|6
+muse|n.|6
+mustache|n.|6
+mute|adj./v./n.|6
+nag|v./n.|6
+narrate|v.|6
+narrator|n.|6
+nationalism|n.|6
+navigate|v.|6
+navigation|n.|6
+nearsighted|adj.|6
+nickel|n./v.|6
+nostril|n.|6
+notable|adj./n.|6
+notorious|adj.|6
+nourish|v./(n.)|6
+novice|n.|6
+nucleus|n.|6
+nude|adj./n.|6
+nurture|v./n.|6
+oasis|n.|6
+oath|n.|6
+oatmeal|n.|6
+oblige|v.|6
+obsess|v.|6
+obstinate|adj.|6
+occurrence|n.|6
+octopus|n.|6
+odor|n.|6
+offshore|adj.|6
+offspring|n.|6
+operative|adj.|6
+oppress|v.|6
+oppression|n.|6
+ordeal|n.|6
+orderly|adj./n.|6
+organizer|n.|6
+orient|n./v.|6
+oriental|adj./n.|6
+originate|v.|6
+ornament|n./v.|6
+orphanage|n.|6
+orthodox|adj.|6
+ounce|n.|6
+outbreak|n.|6
+outgoing|adj.|6
+outing|n.|6
+outlaw|n./v.|6
+outlook|n.|6
+outnumber|v.|6
+outrage|n./v.|6
+outrageous|adj.|6
+outright|adj./adv.|6
+outset|n.|6
+outskirts|n.|6
+outward|adj.|6
+outward / outwards|adv.|6
+overdo|v.|6
+overflow|n./v.|6
+overhear|v.|6
+overlap|n./v.|6
+overwork|n./v.|6
+oyster|n.|6
+ozone|n.|6
+packet|n.|6
+paddle|n./v.|6
+paperback|n.|6
+paradox|n.|6
+paralyze|v.|6
+parliament|n.|6
+pastime|n.|6
+patriot|n.|6
+patriotic|adj.|6
+peacock|n.|6
+pebble|n.|6
+peek|n./v.|6
+pending|adj.|6
+peninsula|n.|6
+perch|n./v.|6
+peril|n./v.|6
+perish|v.|6
+permissible|adj.|6
+persevere|v.|6
+persistence|n.|6
+persistent|adj.|6
+petrol|n.|6
+petroleum|n.|6
+pharmacist|n.|6
+pharmacy|n.|6
+pianist|n.|6
+pickpocket|n.|6
+pilgrim|n.|6
+pimple|n.|6
+pinch|n./v.|6
+plague|n.|6
+plantation|n.|6
+playwright|n.|6
+plow|n./v.|6
+pneumonia|n.|6
+polar|adj.|6
+ponder|v.|6
+pony|n.|6
+populate|v.|6
+porter|n.|6
+posture|n./v.|6
+potent|adj.|6
+poultry|n.|6
+preach|v.|6
+precede|v.|6
+precedent|n.|6
+precision|n.|6
+predecessor|n.|6
+prehistoric|adj.|6
+premiere|n.|6
+preside|v.|6
+prestige|n.|6
+preventive|adj./n.|6
+preview|n./v.|6
+priceless|adj.|6
+privatize|v.|6
+probe|n.|6
+procession|n.|6
+proficiency|n.|6
+prohibition|n.|6
+propel|v.|6
+prose|n.|6
+prosecute|v.|6
+prospective|adj.|6
+prototype|n.|6
+proverb|n.|6
+provincial|adj./n.|6
+provisional|adj.|6
+psychiatry|n.|6
+psychic|adj.|6
+psychotherapy|n.|6
+publicize|v.|6
+puff|n./v.|6
+punctual|adj.|6
+purify|v.|6
+purity|n.|6
+quake|v./n.|6
+qualification|n.|6
+radiant|adj./n.|6
+radiate|v./adj.|6
+radioactive|adj.|6
+radish|n.|6
+radius|n.|6
+rap|n.|6
+rash|n./adj.|6
+ratify|v.|6
+realization|n.|6
+reap|v.|6
+reckless|adj.|6
+reckon|v.|6
+reconcile|v.|6
+recreational|adj.|6
+redundancy|n.|6
+reef|n.|6
+referee|n./v.|6
+referendum|n.|6
+refine|v./(n.)|6
+reflective|adj.|6
+refresh|v./(n.)|6
+refreshment|n.|6
+refute|v.|6
+rehabilitate|v.|6
+rehearse|v.|6
+reign|n./v.|6
+rejoice|v.|6
+relay|n./v.|6
+relentless|adj.|6
+reliance|n.|6
+reliant|adj.|6
+relic|n.|6
+remainder|n.|6
+reminiscent|adj.|6
+renowned|adj.|6
+reproduce|v.|6
+reptile|n./adj.|6
+resent|v./(n.)|6
+reside|v.|6
+resistant|adj.|6
+respective|adj.|6
+restoration|n.|6
+restrain|v.|6
+restraint|n.|6
+retort|n./v.|6
+retrieve|v.|6
+revelation|n.|6
+revival|n.|6
+revive|v.|6
+revolt|n./v.|6
+revolve|v.|6
+rigorous|adj.|6
+ripple|n./v.|6
+rivalry|n.|6
+roam|v./n.|6
+robust|adj.|6
+rotate|v.|6
+rotation|n.|6
+royalty|n.|6
+rubbish|n.|6
+rugged|adj.|6
+ruthless|adj.|6
+salute|n./v.|6
+salvage|v.|6
+sanitation|n.|6
+savage|adj./n./v.|6
+scenic|adj.|6
+scorn|n./v.|6
+scrape|v./n.|6
+screwdriver|n.|6
+scroll|n./v.|6
+scrutiny|n.|6
+sculptor|n.|6
+seagull / gull|n.|6
+seduce|v.|6
+selective|adj.|6
+serene|adj.|6
+sergeant|n.|6
+serial|adj.|6
+sermon|n.|6
+serving|n.|6
+setback|n.|6
+shabby|adj.|6
+sharpen|v.|6
+shaver|n.|6
+shortcoming|n.|6
+shortsighted|adj.|6
+shred|n./v.|6
+shriek|n./v.|6
+shrub|n.|6
+shuffle|v.|6
+shutter|n./v.|6
+simplicity|n.|6
+simplify|v.|6
+simultaneous|adj.|6
+skeptical|adj.|6
+skim|v./n.|6
+slang|n./v.|6
+slash|v./n.|6
+slaughter|n./v.|6
+slay|v.|6
+sloppy|adj.|6
+slum|n./v.|6
+slump|n./v.|6
+sly|adj.|6
+smuggle|v.|6
+sneaker|n.|6
+sneaky|adj.|6
+sneeze|n./v.|6
+snore|v./n.|6
+sociable|adj.|6
+socialism|n.|6
+socialist|n.|6
+socialize|v.|6
+sociology|n.|6
+solemn|adj.|6
+solidarity|n.|6
+solitary|adj./n.|6
+solitude|n.|6
+soothe|v.|6
+sorrowful|adj.|6
+sovereign|adj./n.|6
+spacecraft / spaceship|n.|6
+span|n./v.|6
+sparrow|n.|6
+spectacle|n.|6
+spiral|adj./n./v.|6
+splendor|n.|6
+spokesman / spokeswoman|n.|6
+spontaneous|adj.|6
+sportsman / sportswoma n|n.|6
+sportsmanship|n.|6
+spotlight|n./v.|6
+spur|v./n.|6
+stabilize|v.|6
+stagger|v./n.|6
+staple|n./v.|6
+starvation|n.|6
+statesman|n.|6
+stationary|adj.|6
+stationery|n.|6
+stature|n.|6
+statute|n.|6
+stepchild|n.|6
+stepfather|n.|6
+stepmother|n.|6
+stimulation|n.|6
+strait|n.|6
+strangle|v.|6
+stray|adj./v./n.|6
+stride|n./v.|6
+stroll|n./v.|6
+stun|v.|6
+stutter|n./v.|6
+stylish|adj.|6
+subjective|adj./n.|6
+subordinate|adj./n./v.|6
+subscribe|v.|6
+subscription|n.|6
+subsidize|v.|6
+succession|n.|6
+successive|adj.|6
+suffocate|v.|6
+suitcase|n.|6
+summon|v.|6
+superficial|adj.|6
+superintendent|n.|6
+superiority|n.|6
+superstitious|adj.|6
+supplement|n./v.|6
+suppress|v./n.|6
+surge|n./v.|6
+surgical|adj.|6
+surname|n.|6
+surpass|v.|6
+suspense|n.|6
+suspension|n.|6
+swamp|n./v.|6
+swarm|n./v.|6
+symbolize|v.|6
+symmetry|n.|6
+sympathize|v.|6
+symphony|n.|6
+synonym|n.|6
+synthetic|adj./n.|6
+syrup|n.|6
+tan|n./adj./v.|6
+tedious|adj.|6
+telecommunications|n.|6
+teller|n.|6
+tempo|n.|6
+tenant|n./v.|6
+tentative|adj.|6
+terrace|n./v.|6
+textile|n./adj.|6
+thereafter|adv.|6
+thermometer|n.|6
+tilt|n./v.|6
+tiptoe|n./v.|6
+tiresome|adj.|6
+token|n.|6
+tornado|n.|6
+torrent|n.|6
+trademark|n.|6
+transcript|n.|6
+transmit|v.|6
+transplant|n./v.|6
+treasury|n.|6
+trek|n./v.|6
+trifle|n./v.|6
+trillion|n.|6
+tropic|n./adj.|6
+trout|n.|6
+trustee|n.|6
+tuck|v./n.|6
+turmoil|n.|6
+twilight|n.|6
+twinkle|n./v.|6
+unanimous|adj.|6
+unconditional|adj.|6
+underestimate|v./n.|6
+underneath|prep./adv./n./adj.|6
+underpass|n.|6
+underway|adv.|6
+unification|n.|6
+unify|v.|6
+unveil|v.|6
+upright|adv./adj./n.|6
+uprising|n.|6
+upward|adj.|6
+upward / upwards|adv.|6
+urgency|n.|6
+usher|v./n.|6
+utensil|n.|6
+utter|adj./v.|6
+vaccine|n.|6
+vanilla|n.|6
+vanity|n.|6
+vapor|n.|6
+veil|n./v.|6
+velvet|n./adj.|6
+versatile|adj.|6
+veterinarian / vet|n.|6
+veto|n./v.|6
+vibrate|v.|6
+vibration|n.|6
+vice|n.|6
+victor|n.|6
+vigor|n.|6
+vigorous|adj.|6
+villa|n.|6
+villain|n.|6
+vine|n.|6
+vineyard|n.|6
+violinist|n.|6
+virgin|n./adj.|6
+vitality|n.|6
+vocation|n.|6
+vocational|adj.|6
+vowel|n.|6
+wag|v./n.|6
+walnut|n.|6
+ward|n./v.|6
+wardrobe|n.|6
+warrant|n.|6
+warranty|n.|6
+waterproof|adj./v.|6
+weary|adj./v.|6
+wharf|n./v.|6
+whiskey / whisky|n.|6
+wholesale|adj./adv./n./v.|6
+wholesome|adj.|6
+widow / widower|n.|6
+withhold|v.|6
+woe|n.|6
+woodpecker|n.|6
+workforce|n.|6
+wrestle|v./n.|6
+wrinkle|n./v.|6
+yearn|v.|6
+yoga|n.|6
+yogurt|n.|6
+zoom|v./n.|6
+they|pron.|1
+you|pron.|2
+chairperson / chair / chairman / chairwoman|n.|6
+spokesperson / spokesman / spokeswoman|n.|6
+`;
+const HSG=`
+temperature|n. 溫度；氣溫；體溫|The temperature dropped at night.
+term|n. 學期；術語；期限；（複數）條款　v. 把…稱為|The spring term starts in February.
+textbook|n. 教科書|Please open your textbook to page ten.
+therefore|adv. 因此；所以|He was ill; therefore, he stayed home.
+thief|n. 小偷|The thief ran away.
+thought|n. 想法；思考；念頭|I had a strange thought.
+throughout|prep. 遍及；在整個…期間　adv. 到處；自始至終|It rained throughout the day.
+thunder|n. 雷；雷聲　v. 打雷；轟隆作響|We heard thunder in the distance.
+tiny|adj. 極小的|A tiny ant crossed the table.
+tissue|n. 面紙；（生物）組織|Pass me a tissue, please.
+title|n. 標題；書名；頭銜；冠軍頭銜　v. 給…加標題|What is the title of the book?
+tone|n. 語氣；音調；色調；氣氛|Don't use that tone with me.
+tongue|n. 舌頭；語言|He bit his tongue.
+tour|n. 旅遊；巡迴演出；參觀　v. 旅遊；巡迴|We took a tour of the museum.
+track|n. 軌道；小徑；跑道；足跡　v. 追蹤；跟蹤|The train left the track.
+trade|n. 貿易；交易；行業　v. 交易；做買賣|Taiwan depends on foreign trade.
+traditional|adj. 傳統的|She wore a traditional dress.
+travel|n. 旅行　v. 旅行；行進|Light travels faster than sound.
+treasure|n. 寶藏；珍寶　v. 珍視|The pirates hid their treasure.
+trust|v. 信任；信賴　n. 信任；信賴|I trust my best friend.
+truth|n. 真相；事實；真理|Tell me the truth.
+typical|adj. 典型的；一貫的|It was a typical Monday.
+ugly|adj. 醜的；難看的|The old building is ugly.
+unit|n. 單位；單元；部隊|A meter is a unit of length.
+universe|n. 宇宙；全世界|The universe is huge.
+university|n. 大學|She studies at a university.
+upload|v. 上傳|I uploaded the photos.
+upper|adj. 上面的；較高的|He lives on the upper floor.
+upset|adj. 心煩的；不舒服的　v. 使心煩；打翻　n. 不適；混亂|She was upset about the news.
+valuable|adj. 珍貴的；有價值的|Time is valuable.
+value|n. 價值；價值觀　v. 重視；估價|I value your advice.
+victory|n. 勝利|The team celebrated its victory.
+view|n. 景色；看法；視野　v. 觀看；認為|The view from the hill is great.
+village|n. 村莊|He grew up in a small village.
+vote|n. 投票；選票　v. 投票|Let's vote on it.
+war|n. 戰爭|The war ended in 1945.
+waste|n. 浪費；廢棄物　v. 浪費|Don't waste water.
+wealth|n. 財富；大量|He inherited great wealth.
+wedding|n. 婚禮|We went to her wedding.
+weigh|v. 秤重；重量為…；權衡|This bag weighs five kilos.
+weight|n. 重量；體重；重擔|He lost some weight.
+wild|adj. 野生的；狂野的；荒涼的　adv. 野生地　n. 野外|Wild animals live in the forest.
+willing|adj. 願意的|Are you willing to help?
+wonder|v. 想知道；感到驚奇　n. 奇蹟；驚奇|I wonder who called.
+worse|adj. 更糟的；更差的　adv. 更糟地　n. 更糟的事|His cold got worse.
+worst|adj. 最糟的　adv. 最糟地　n. 最糟的事|It was the worst day of my life.
+worth|adj. 值得…的；價值…的　n. 價值|The museum is worth a visit.
+youth|n. 青年；青春；青少年時期|He spent his youth abroad.
+advanced|adj. 先進的；高級的|She takes an advanced class.
+advantage|n. 優點；優勢；有利條件|Being tall is an advantage.
+adventure|n. 冒險；奇遇|They went on an adventure.
+advise|v. 勸告；建議；通知|I advise you to rest.
+afford|v. 負擔得起；（能）承擔|We can't afford a new car.
+agriculture|n. 農業|Agriculture is important here.
+alphabet|n. 字母表|The alphabet has 26 letters.
+anxious|adj. 焦慮的；擔心的；渴望的|She felt anxious before the test.
+apologize|v. 道歉|He apologized for being late.
+appeal|n. 吸引力；呼籲；上訴　v. 吸引；呼籲；上訴|The movie has wide appeal.
+approve|v. 贊成；批准|The board approved the plan.
+assist|v. 協助；幫助|Can I assist you?
+assistant|n. 助理；助手|She is my assistant.
+athlete|n. 運動員|The athlete trains daily.
+attract|v. 吸引；引起（注意）|Flowers attract bees.
+attractive|adj. 有吸引力的；迷人的|It's an attractive offer.
+audience|n. 觀眾；聽眾；讀者|The audience clapped.
+automatic|adj. 自動的；無意識的|The door is automatic.
+award|n. 獎；獎項　v. 頒發；授予|She won an award.
+aware|adj. 察覺到的；知道的|I'm aware of the problem.
+awful|adj. 糟透的；可怕的；非常的|The food tasted awful.
+awkward|adj. 尷尬的；笨拙的；不便的|There was an awkward silence.
+background|n. 背景；經歷；幕後|He has a strong background in math.
+captain|n. 隊長；船長；機長；上尉|The captain gave an order.
+capture|v. 捕捉；俘虜；擷取　n. 捕獲；捕捉|Police captured the thief.
+career|n. 職業；職業生涯|She has a successful career.
+champion|n. 冠軍；擁護者|He is the world champion.
+chat|n. 閒聊　v. 閒聊；聊天|We had a short chat.
+citizen|n. 公民；市民|Every citizen can vote.
+client|n. 客戶；委託人|The lawyer met her client.
+collection|n. 收藏；收集；收藏品|He has a stamp collection.
+communicate|v. 溝通；傳達|We communicate by email.
+comparison|n. 比較；對照|There is no comparison.
+compete|v. 競爭；比賽|Teams compete for the cup.
+complain|v. 抱怨；投訴|Customers complained about the noise.
+concert|n. 音樂會；演唱會|We went to a concert.
+conclusion|n. 結論；結束|What's your conclusion?
+confirm|v. 確認；證實|Please confirm your seat.
+confuse|v. 使困惑；混淆|Don't confuse the two words.
+connect|v. 連接；聯繫；轉乘|Connect the printer to the computer.
+conscious|adj. 有意識的；察覺的；刻意的|He was conscious after the fall.
+continent|n. 大陸；洲|Asia is a continent.
+creative|adj. 有創意的；創造性的|She is a creative writer.
+creature|n. 生物；動物|Sea creatures live here.
+credit|n. 信用；賒帳；功勞；學分　v. 把…歸功於；記入貸方|I paid by credit card.
+criminal|adj. 犯罪的；刑事的　n. 罪犯|The criminal was arrested.
+decade|n. 十年|It happened a decade ago.
+decorate|v. 裝飾；佈置；授勳|We decorated the tree.
+decrease|v. 減少；降低　n. 減少；降低|Sales decreased last year.
+definition|n. 定義；清晰度|Look up the definition.
+democracy|n. 民主；民主國家|Taiwan is a democracy.
+dessert|n. 甜點|I'll have ice cream for dessert.
+destroy|v. 摧毀；破壞|The fire destroyed the house.
+detect|v. 偵測；察覺|The device detects smoke.
+discount|n. 折扣　v. 打折；不重視|They gave me a discount.
+dolphin|n. 海豚|Dolphins are smart.
+dramatic|adj. 戲劇性的；劇烈的；引人注目的|A dramatic change took place.
+educate|v. 教育；培養|Schools educate children.
+election|n. 選舉|The election is in May.
+electricity|n. 電；電力|The storm cut off electricity.
+electronic|adj. 電子的|She sells electronic devices.
+element|n. 元素；要素；成分|Oxygen is an element.
+emergency|n. 緊急情況；急診|Call 119 in an emergency.
+emotional|adj. 情緒的；感情的；易動感情的|The movie was emotional.
+enable|v. 使能夠；使可能|The app enables us to chat.
+energetic|adj. 精力充沛的；充滿活力的|He is an energetic boy.
+engage|v. 使從事；吸引（注意）；使訂婚；雇用|She engaged in volunteer work.
+entry|n. 進入；入口；參賽作品；條目|No entry without a ticket.
+exchange|n. 交換；兌換；交流　v. 交換；兌換|They exchanged gifts.
+exhibition|n. 展覽；展示|We visited an art exhibition.
+experiment|n. 實驗；試驗　v. 做實驗；嘗試|The experiment failed.
+explore|v. 探索；探險；探究|They explored the cave.
+export|n. 出口；出口品　v. 出口|Taiwan exports computer chips.
+extreme|adj. 極端的；極度的　n. 極端|We had extreme heat last summer.
+fashionable|adj. 流行的；時髦的|It's a fashionable café.
+fortune|n. 財富；運氣；命運|He made a fortune.
+frequent|adj. 頻繁的；常見的　v. 常去（某地）|Frequent rain delayed us.
+geography|n. 地理；地理學|She teaches geography.
+global|adj. 全球的；整體的|Global warming is serious.
+graduate|n. 畢業生　v. 畢業|He graduated last June.
+harmful|adj. 有害的|Smoking is harmful.
+harvest|n. 收成；收穫期　v. 收割；收穫|The rice harvest was good.
+historic|adj. 歷史上重要的；有歷史意義的|It was a historic day.
+honor|n. 榮譽；尊敬；榮幸　v. 尊敬；使榮幸|It's an honor to meet you.
+horrible|adj. 可怕的；糟透的|What a horrible smell!
+humor|n. 幽默；幽默感|He has a good sense of humor.
+imagination|n. 想像力；想像|Use your imagination.
+immediate|adj. 立即的；直接的；緊鄰的|We need an immediate answer.
+import|n. 進口；進口品　v. 進口|Oil is imported from abroad.
+impress|v. 使印象深刻；使感動|Her speech impressed us.
+industrial|adj. 工業的|It's an industrial area.
+injury|n. 傷害；受傷|He had a leg injury.
+intelligent|adj. 聰明的；有智慧的|Dolphins are intelligent.
+interrupt|v. 打斷；中斷|Don't interrupt me.
+invent|v. 發明；捏造|Edison invented the light bulb.
+investigate|v. 調查；研究|Police investigated the case.
+invitation|n. 邀請；請帖|I got an invitation to the party.
+journey|n. 旅程；行程　v. 旅行|The journey took two days.
+location|n. 位置；地點；外景拍攝地|What's the location of the hotel?
+mental|adj. 心理的；精神的；腦力的|Mental health matters.
+mission|n. 任務；使命；使節團|The mission was a success.
+mobile|adj. 可移動的；行動的|A mobile library visits the village.
+moral|adj. 道德的；品行端正的　n. 寓意；（複數）品行|It is a moral issue.
+mystery|n. 謎；神祕；推理小說|The cause is still a mystery.
+native|adj. 本地的；本國的；天生的　n. 本地人|English is her native language.
+necessity|n. 必需品；必要性|Water is a necessity.
+observe|v. 觀察；遵守；說（出）|We observed the stars.
+occasion|n. 場合；時機；機會|It's a special occasion.
+operation|n. 手術；操作；運作；軍事行動|He had an operation on his knee.
+opportunity|n. 機會|Don't miss this opportunity.
+opposite|adj. 相反的；對面的　n. 相反的事物　prep. 在…對面　adv. 在對面|They sat opposite each other.
+organize|v. 組織；安排；整理|We organized a party.
+original|adj. 原本的；原創的；最初的　n. 原作；原件|This is the original photo.
+passion|n. 熱情；激情；酷愛|She has a passion for music.
+patience|n. 耐心；忍耐|Teaching needs patience.
+permission|n. 許可；准許|Ask for permission first.
+political|adj. 政治的|She joined a political party.
+pollute|v. 污染|Factories pollute rivers.
+practical|adj. 實用的；實際的|Give me some practical advice.
+prevent|v. 預防；阻止|Masks help prevent infection.
+previous|adj. 先前的；之前的|See the previous page.
+process|n. 過程；步驟；流程　v. 處理；加工|Learning is a slow process.
+product|n. 產品；成果；乘積|The new product sold well.
+professor|n. 教授|The professor gave a lecture.
+profit|n. 利潤；益處　v. 獲利；受益|The shop made a profit.
+pronounce|v. 發音；宣布|How do you pronounce this word?
+property|n. 財產；房地產；性質|It's private property.
+protection|n. 保護；防護|Wear a helmet for protection.
+react|v. 反應；回應|How did he react?
+reaction|n. 反應；回應；反作用|Her reaction surprised us.
+reasonable|adj. 合理的；適度的；公道的|The price is reasonable.
+regret|v. 後悔；遺憾　n. 後悔；遺憾|I regret saying that.
+relax|v. 放鬆；休息|Relax and breathe slowly.
+release|n. 釋放；發行；發布　v. 釋放；發行；公開|The film's release is in May.
+reliable|adj. 可靠的；可信賴的|He is a reliable friend.
+religious|adj. 宗教的；虔誠的|They are religious people.
+rely|v. 依賴；信賴|You can rely on me.
+remain|v. 保持；留下；仍然是|Please remain seated.
+remind|v. 提醒；使想起|Remind me to call her.
+replace|v. 取代；更換；歸還|Replace the old battery.
+represent|v. 代表；象徵；表現|The dove represents peace.
+request|n. 要求；請求　v. 要求；請求|He made a request.
+reserve|n. 儲備；保留；保護區　v. 預訂；保留|I reserved a table for two.
+resource|n. 資源；財力；智謀|Water is a natural resource.
+response|n. 回應；回答；反應|I got no response.
+responsibility|n. 責任；職責；義務|It's my responsibility.
+restrict|v. 限制；約束|Speed is restricted here.
+reveal|v. 揭露；透露；顯示|He revealed the secret.
+risk|n. 風險；危險　v. 冒…的風險|Don't take risks.
+routine|n. 例行公事；日常慣例　adj. 例行的；平常的|Exercise is part of my routine.
+salary|n. 薪水；薪資|He earns a good salary.
+scientific|adj. 科學的；有系統的|She did a scientific study.
+scientist|n. 科學家|The scientist made a discovery.
+security|n. 安全；保全；擔保|Airport security checked our bags.
+signal|n. 信號；暗號　v. 示意；發信號|I lost the signal.
+situation|n. 情況；處境；局勢|The situation is serious.
+specific|adj. 特定的；明確的；具體的|Please be more specific.
+strategy|n. 策略；戰略|We need a new strategy.
+strength|n. 力量；強度；優點|Honesty is his strength.
+structure|n. 結構；建築物|The bridge is a huge structure.
+suffer|v. 受苦；遭受；忍受|Many people suffer from the flu.
+sufficient|adj. 足夠的；充分的|We have sufficient food.
+summary|n. 摘要；概要|Write a short summary.
+superior|adj. 較優越的；較高級的；高傲的　n. 上司；上級|This one is superior to that one.
+survey|n. 調查；問卷；測量　v. 調查；測量；環視|A survey shows many people agree.
+survivor|n. 倖存者；生還者|There was only one survivor.
+suspect|v. 懷疑；猜想　n. 嫌疑犯　adj. 可疑的|I suspect he lied.
+talent|n. 天賦；才能；人才|She has a talent for art.
+technique|n. 技巧；技術；手法|Learn this cooking technique.
+temporary|adj. 暫時的；臨時的|It's a temporary job.
+tend|v. 傾向於；往往；照顧|Prices tend to rise in summer.
+theory|n. 理論；學說；看法|I have a theory about it.
+threat|n. 威脅；恐嚇；隱患|Pollution is a threat to health.
+tourist|n. 遊客；觀光客|Tourists love Taipei.
+trend|n. 趨勢；潮流|It's a new trend.
+tribe|n. 部落；部族|The tribe lives in the hills.
+unique|adj. 獨特的；唯一的　n. 獨一無二的事物|Every snowflake is unique.
+various|adj. 各式各樣的；不同的|We sell various items.
+vehicle|n. 車輛；交通工具；媒介|Vehicles must stop here.
+violence|n. 暴力；猛烈|Stop the violence.
+vision|n. 視力；願景；遠見；幻象|Her vision is poor.
+wisdom|n. 智慧；明智|Age brings wisdom.
+absolute|adj. 絕對的；完全的|I have absolute trust in her.
+abstract|adj. 抽象的|Love is an abstract idea.
+academic|adj. 學術的；學業的|Academic results matter.
+access|n. 進入；取用權；通道　v. 存取；進入|Students have access to the library.
+accuse|v. 指控；控告；責備|They accused him of theft.
+acquire|v. 獲得；習得；取得|He acquired a new skill.
+adjust|v. 調整；適應|Adjust the seat before driving.
+adopt|v. 採用；收養；接納|They adopted a child.
+agency|n. 機構；代辦處；經紀公司|She works for a travel agency.
+alternative|adj. 替代的；另類的　n. 選擇；替代方案|Is there an alternative?
+analysis|n. 分析；分析報告|The analysis was careful.
+analyze|v. 分析|Analyze the data.
+annual|adj. 每年的；年度的|The annual meeting is in May.
+appropriate|adj. 適當的；合適的|Wear appropriate clothes.
+artificial|adj. 人工的；人造的；假的|It's artificial light.
+atmosphere|n. 大氣；氣氛；空氣|The café has a warm atmosphere.
+authority|n. 權威；當局；職權；專家|The authorities closed the road.
+accurate|adj. 準確的；精確的|The report is accurate.
+additional|adj. 額外的；附加的|We need additional time.
+admire|v. 欽佩；讚賞；欣賞|I admire her courage.
+advertise|v. 登廣告；宣傳|The shop advertises on TV.
+amaze|v. 使驚訝；使驚奇|Her talent amazed us.
+arrest|n. 逮捕　v. 逮捕；阻止|Police made an arrest.
+awake|adj. 醒著的　v. 醒來；喚醒|I was awake all night.
+badly|adv. 嚴重地；很糟地；非常|He was badly hurt.
+baggage|n. 行李|Please collect your baggage.
+bare|adj. 赤裸的；光禿的；僅有的　v. 露出|The room had bare walls.
+barely|adv. 幾乎不；勉強|I could barely hear him.
+basement|n. 地下室|The storage is in the basement.
+beneath|prep. 在…下方；低於|The key was beneath the mat.
+besides|adv. 此外　prep. 除…之外|Besides English, she speaks French.
+bitter|adj. 苦的；痛苦的；嚴寒的|The coffee is bitter.
+bold|adj. 大膽的；醒目的；粗體的|It was a bold decision.
+brake|n. 煞車　v. 煞車|He hit the brake.
+breath|n. 呼吸；氣息|Take a deep breath.
+breathe|v. 呼吸|It's hard to breathe here.
+bubble|n. 泡泡；氣泡　v. 冒泡|The kids blew bubbles.
+budget|n. 預算　v. 編列預算|We're on a tight budget.
+campus|n. 校園|The campus is beautiful.
+casual|adj. 隨意的；非正式的；偶然的|Wear casual clothes.
+charm|n. 魅力；護身符　v. 吸引；使陶醉|The town has great charm.
+cheerful|adj. 愉快的；興高采烈的|She is a cheerful girl.
+civil|adj. 公民的；民事的；有禮貌的|He fought for civil rights.
+clinic|n. 診所|She works at a clinic.
+clue|n. 線索；提示|The police found a clue.
+coach|n. 教練　v. 訓練；指導|The coach praised the team.
+comfort|n. 舒適；安慰　v. 安慰|I need some comfort.
+complaint|n. 抱怨；投訴；疾病|He made a complaint.
+considerable|adj. 相當大的；可觀的|It cost a considerable amount.
+constant|adj. 不斷的；持續的；不變的　n. 常數|The noise was constant.
+cough|n. 咳嗽　v. 咳嗽|I have a bad cough.
+crash|n. 撞擊；崩潰；墜毀　v. 撞毀；當機|The car crashed into a tree.
+cruel|adj. 殘忍的；殘酷的|Don't be cruel to animals.
+desire|n. 渴望；慾望　v. 渴望；想要|She has a desire to travel.
+dive|n. 跳水；潛水　v. 跳水；潛水；俯衝|He dived into the pool.
+eager|adj. 渴望的；熱切的|The kids are eager to learn.
+edit|v. 編輯；剪輯；修改|I edited the video.
+editor|n. 編輯；主編|The editor checked the article.
+elderly|adj. 年長的；上了年紀的|She helps elderly people.
+elevator|n. 電梯|Take the elevator to the fifth floor.
+erase|v. 擦掉；抹去；刪除|Erase the board, please.
+explode|v. 爆炸；爆發|The bomb exploded.
+faith|n. 信心；信仰；信任|I have faith in you.
+fake|adj. 假的；偽造的　v. 偽造；假裝　n. 贗品|That bag is fake.
+flavor|n. 味道；風味　v. 給…調味|I like the strawberry flavor.
+fond|adj. 喜愛的；深情的|She is fond of cats.
+forever|adv. 永遠；老是|I'll love you forever.
+freeze|v. 結冰；凍僵；凍結　n. 凍結；嚴寒|Water freezes at zero degrees.
+frighten|v. 使驚嚇；使害怕|The noise frightened the baby.
+fuel|n. 燃料　v. 給…加燃料；助長|The car ran out of fuel.
+fund|n. 基金；資金　v. 提供資金|They raised a fund for the school.
+gap|n. 缺口；差距；空白|There is a gap in the fence.
+garage|n. 車庫；修車廠|He parked in the garage.
+gesture|n. 手勢；表示　v. 做手勢；示意|He made a friendly gesture.
+glance|n. 瞥；匆匆一看　v. 瞥一眼|She glanced at her watch.
+grab|v. 抓住；攫取；匆匆吃　n. 抓取|He grabbed my arm.
+guidance|n. 指導；引導|She gave me career guidance.
+harm|n. 傷害；損害　v. 傷害；危害|Smoking does harm to your health.
+heal|v. 治癒；痊癒|The wound healed slowly.
+hint|n. 暗示；提示；少量　v. 暗示|Give me a hint.
+hire|v. 僱用；租用　n. 租用；僱用|They hired a new teacher.
+honesty|n. 誠實；正直|Honesty is the best policy.
+hug|n. 擁抱　v. 擁抱；緊靠|She gave me a hug.
+humid|adj. 潮濕的；濕熱的|It's hot and humid today.
+inform|v. 通知；告知；告發|Please inform me of any change.
+inspect|v. 檢查；視察；檢閱|They inspected the building.
+innocent|adj. 無辜的；天真的；無害的|The man was innocent.
+jealous|adj. 嫉妒的；吃醋的|He felt jealous of his friend.
+junior|adj. 較年輕的；資淺的；低年級的　n. 晚輩；低年級生|He is a junior student.
+label|n. 標籤；商標　v. 貼標籤；把…歸類|Read the label before use.
+lately|adv. 最近；近來|I've been tired lately.
+leisure|n. 閒暇；空閒|What do you do in your leisure time?
+locate|v. 找出位置；使坐落於|Can you locate the street on the map?
+lock|n. 鎖；水閘　v. 鎖上；鎖住|Lock the door when you leave.
+majority|n. 多數；大多數|The majority voted yes.
+mall|n. 購物中心|We went to the mall.
+meanwhile|n. 其間　adv. 同時；在此期間|Meanwhile, I'll cook dinner.
+melt|v. 融化；使融化；軟化|Ice melts in the sun.
+mess|n. 混亂；髒亂　v. 弄亂；搞砸|Your room is a mess.
+microwave|n. 微波爐；微波　v. 用微波爐加熱|Heat it in the microwave.
+miracle|n. 奇蹟|It's a miracle he survived.
+missing|adj. 失蹤的；遺漏的|A boy is missing.
+mostly|adv. 大部分；通常|The audience was mostly young.
+muscle|n. 肌肉|Exercise builds muscle.
+neat|adj. 整齊的；乾淨的；極好的|His desk is always neat.
+neighborhood|n. 鄰近地區；街坊|It's a quiet neighborhood.
+nest|n. 巢；窩　v. 築巢|Birds built a nest.
+normal|adj. 正常的；普通的|The weather is normal for May.
+odd|adj. 奇怪的；奇數的；零星的|That's odd.
+optimistic|adj. 樂觀的|She is optimistic about the future.
+organic|adj. 有機的；器官的；有組織的|We buy organic vegetables.
+outdoor|adj. 戶外的|I like outdoor activities.
+outline|n. 大綱；輪廓　v. 概述；描出輪廓|Write an outline first.
+panic|n. 恐慌　v. 驚慌|Don't panic!
+passage|n. 通道；段落；經過；航程|Read the passage carefully.
+passport|n. 護照|Don't forget your passport.
+pause|n. 暫停；停頓　v. 暫停；停頓|He paused to think.
+perform|v. 表演；執行；表現|They performed a play.
+performance|n. 表演；表現；執行|Her performance was great.
+permit|v. 允許；准許　n. 許可證|Smoking is not permitted here.
+pour|v. 倒；傾注；下傾盆大雨|Pour some water into the glass.
+poverty|n. 貧窮；貧乏|Many people live in poverty.
+precious|adj. 珍貴的；寶貴的|Time is precious.
+preparation|n. 準備；預備|Preparation takes time.
+presence|n. 出席；存在；在場|I felt his presence.
+pretend|v. 假裝；裝作|She pretended to be asleep.
+probable|adj. 很可能的；有可能的|It's probable that he will win.
+proof|n. 證明；證據；校樣|I need proof.
+pure|adj. 純的；純淨的；完全的|It's pure gold.
+quit|v. 放棄；辭職；停止|He quit his job.
+quote|v. 引用；報價　n. 引文；報價|She quoted a famous poem.
+rate|n. 比率；速度；費用　v. 評價；評等|The birth rate is falling.
+raw|adj. 生的；未加工的；原始的|Don't eat raw meat.
+receipt|n. 收據；收到|Keep the receipt.
+recognize|v. 認出；認得；承認|I recognized her voice.
+relief|n. 緩解；寬慰；救濟|What a relief!
+remote|adj. 遙遠的；偏僻的；微小的|They live in a remote village.
+resist|v. 抵抗；抗拒；忍住|I can't resist chocolate.
+romantic|adj. 浪漫的；愛情的　n. 浪漫的人|It was a romantic dinner.
+rough|adj. 粗糙的；粗略的；粗暴的　adv. 粗暴地　n. 粗略|The road is rough.
+rush|n. 匆忙；急流；高峰期　v. 衝；匆忙|Don't rush me.
+sauce|n. 醬；醬汁|I like tomato sauce.
+scale|n. 規模；刻度；比例；磅秤；（魚）鱗|The map has a large scale.
+scarce|adj. 稀少的；缺乏的|Water is scarce here.
+scholar|n. 學者；獎學金得主|He is a famous scholar.
+scholarship|n. 獎學金；學問|She won a scholarship.
+semester|n. 學期|The semester ends in January.
+senior|adj. 資深的；年長的；高年級的　n. 前輩；高年級生|He is a senior manager.
+sensible|adj. 明智的；合理的；實用的|That's a sensible idea.
+shadow|n. 影子；陰影　v. 跟蹤；遮蔽|The tree cast a long shadow.
+shortly|adv. 不久；馬上；簡略地|He will be back shortly.
+shrink|v. 縮水；萎縮；減少|My sweater shrank.
+similarity|n. 相似；相似處|There is a strong similarity.
+sincere|adj. 真誠的；誠懇的|She gave a sincere apology.
+skip|v. 跳過；略過；蹦跳　n. 跳躍|Don't skip breakfast.
+slice|n. 薄片；一份　v. 切成薄片|I'd like a slice of cake.
+slope|n. 斜坡；山坡；傾斜|We skied down the slope.
+solid|adj. 固體的；堅固的；實心的；可靠的|The ice is solid.
+somehow|adv. 以某種方式；不知怎麼地|Somehow, we made it.
+stable|adj. 穩定的；穩固的|The price is stable.
+stadium|n. 體育場|The stadium holds 50,000 fans.
+staff|n. 全體員工；職員　v. 配置人員|The staff are friendly.
+stare|v. 凝視；盯著看　n. 凝視|Don't stare at people.
+steady|adj. 穩定的；平穩的　v. 使穩定　adv. 穩定地　n. 固定情人|Keep the ladder steady.
+steam|n. 蒸汽；蒸氣　v. 蒸；冒蒸汽|Steam rose from the pot.
+steep|adj. 陡峭的；急遽的；過高的|The road is steep.
+stubborn|adj. 頑固的；固執的|He is a stubborn boy.
+stuff|n. 東西；物品　v. 塞滿；填充|Pack your stuff.
+substance|n. 物質；實質；要旨|It's a harmful substance.
+surround|v. 包圍；環繞|Mountains surround the town.
+swear|v. 發誓；咒罵|I swear I'm telling the truth.
+technical|adj. 技術的；專門的|He has technical skills.
+tender|adj. 嫩的；溫柔的；疼痛的|The meat is tender.
+thankful|adj. 感謝的；感激的|I'm thankful for your help.
+threaten|v. 威脅；恐嚇；預示|They threatened to quit.
+tight|adj. 緊的；緊密的；吝嗇的　adv. 緊緊地|These shoes are too tight.
+tough|adj. 堅韌的；困難的；強硬的|It was a tough game.
+tourism|n. 觀光業；旅遊|Tourism helps the economy.
+transport|n. 運輸；交通工具　v. 運送|Public transport is cheap.
+tropical|adj. 熱帶的|Bananas grow in tropical areas.
+twin|n. 雙胞胎之一|She has a twin sister.
+union|n. 聯盟；工會；結合|He joined a labor union.
+urban|adj. 都市的|Urban life is busy.
+variety|n. 多樣性；種類；綜藝節目|The shop sells a variety of goods.
+vary|v. 變化；不同；使多樣|Prices vary from shop to shop.
+victim|n. 受害者；犧牲者|The victim was taken to hospital.
+violent|adj. 暴力的；猛烈的；激烈的|He is a violent man.
+visible|adj. 看得見的；明顯的|The stars are visible tonight.
+vitamin|n. 維他命|Oranges are rich in vitamin C.
+vivid|adj. 生動的；鮮明的；鮮豔的|She has a vivid imagination.
+vocabulary|n. 字彙；詞彙量|Reading builds your vocabulary.
+volume|n. 音量；體積；容量；冊|Turn down the volume.
+wage|n. 工資；薪資|The minimum wage went up.
+warn|v. 警告；告誡|I warned him about the danger.
+weapon|n. 武器|The police found a weapon.
+weekly|adj. 每週的　adv. 每週　n. 週刊|We have a weekly meeting.
+zone|n. 區域；地帶　v. 劃分區域|This is a no-parking zone.
+accompany|v. 陪伴；伴隨；伴奏|I'll accompany you to the station.
+accountant|n. 會計師|My aunt is an accountant.
+accuracy|n. 準確；精確度|Accuracy is important.
+acid|n. 酸　adj. 酸的|Lemons contain acid.
+admission|n. 入場；入學許可；承認|Admission is free.
+aggressive|adj. 好鬥的；積極進取的；侵略的|The dog looked aggressive.
+alert|adj. 警覺的；機警的　v. 使警覺　n. 警報|Stay alert while driving.
+ambitious|adj. 有野心的；雄心勃勃的|She is an ambitious student.
+anniversary|n. 週年紀念日|It's our wedding anniversary.
+annoy|v. 使惱怒；打擾|Loud noise annoys me.
+anxiety|n. 焦慮；憂慮；渴望|He felt anxiety before the exam.
+apology|n. 道歉；歉意|Please accept my apology.
+apparent|adj. 明顯的；表面上的|It was apparent that he was upset.
+application|n. 申請；應用；應用程式|I sent a job application.
+appoint|v. 任命；指派；約定|They appointed her as manager.
+arise|v. 出現；產生；起身|A problem arose.
+ashamed|adj. 羞愧的；慚愧的|I'm ashamed of what I did.
+assemble|v. 集合；組裝；召集|They assembled the furniture.
+assign|v. 分派；指定；歸因於|The teacher assigned homework.
+associate|adj. 副的；聯合的　n. 夥伴；同事　v. 聯想；交往|I associate summer with the beach.
+association|n. 協會；聯想；關聯|He joined a teachers' association.
+assure|v. 向…保證；使確信|I assure you it's safe.
+attach|v. 附上；繫上；使依附|Attach the file to the email.
+attraction|n. 吸引力；景點；吸引人的事物|The zoo is a popular attraction.
+authentic|adj. 真正的；可信的；道地的|We ate authentic Italian pizza.
+tear|n. 眼淚　v. 撕；扯破
+teens|n. 十幾歲；青少年時期
+terrorism|n. 恐怖主義
+terrorist|adj. 恐怖分子的；恐怖主義的
+text|n. 文字；課文；簡訊
+thus|adv. 因此；如此
+till|conj. 直到…為止　prep. 直到
+tire|v. 使疲倦；厭倦　n. 輪胎
+tofu|n. 豆腐
+toothache|n. 牙痛
+toothbrush|n. 牙刷
+toward|prep. 朝向；對於；將近
+trap|n. 陷阱；圈套　v. 困住；誘捕
+trial|n. 審判；試驗；考驗
+triangle|n. 三角形；三角鐵
+tube|n. 管子；地下鐵（英）；電視機
+upon|prep. 在…之上；一…就
+upstairs|adv. 在樓上　adj. 樓上的　n. 樓上
+used|adj. 習慣的；二手的
+user|n. 使用者
+usual|adj. 通常的；平常的
+valley|n. 山谷；流域
+waist|n. 腰；腰部
+weekday|n. 平日；工作日
+western|adj. 西方的；西部的　n. 西部片
+whatever|adj. 任何…的　pron. 無論什麼
+wheel|n. 輪子；方向盤
+whenever|conj. 每當；無論何時　adv. 究竟何時
+wherever|adv. 究竟在哪裡　conj. 無論哪裡
+whisper|n. 耳語；低語　v. 低聲說；私語
+whoever|pron. 無論誰；不管是誰
+whole|adj. 全部的；完整的　n. 整體
+whom|pron. 誰（who 的受格）
+width|n. 寬度
+wine|n. 葡萄酒
+wing|n. 翅膀；機翼；側廳
+wire|n. 電線；鐵絲；電報
+within|prep. 在…之內　adv. 在內部
+wolf|n. 狼
+wood|n. 木頭；樹林
+wooden|adj. 木製的
+wool|n. 羊毛；毛線
+worm|n. 蟲；蚯蚓　v. 蠕動前進
+wound|n. 傷口；創傷　v. 使受傷
+yam|n. 山藥；番薯
+aboard|prep. 在（船、車、飛機）上　adv. 上船；上車
+acceptable|adj. 可接受的；令人滿意的
+ache|n. 疼痛　v. 疼痛；渴望
+adviser|n. 顧問；導師
+afterward|adv. 之後；後來
+airline|n. 航空公司
+alley|n. 巷子；小徑
+almond|n. 杏仁
+ambassador|n. 大使；使節
+ambulance|n. 救護車
+angel|n. 天使；善良的人
+anyhow|adv. 無論如何；隨便地
+apart|adv. 分開；相隔；除外
+apron|n. 圍裙
+armed|adj. 武裝的
+ash|n. 灰；灰燼；梣樹
+aside|adv. 在旁邊；撇開
+automobile|n. 汽車
+avenue|n. 大道；林蔭大道；途徑
+awaken|v. 喚醒；喚起；醒來
+bacon|n. 培根
+bacteria|n. 細菌（bacterium 的複數）
+bait|n. 餌；誘餌　v. 裝餌；誘惑
+bamboo|n. 竹子
+bang|n. 砰聲；猛擊　v. 猛敲；砰地關上　adv. 砰地
+banker|n. 銀行家
+barn|n. 穀倉；牲口棚
+barrel|n. 桶；槍管
+bay|n. 海灣
+bead|n. 珠子；水珠
+beam|n. 光束；橫梁；笑容　v. 發光；微笑
+beast|n. 野獸；殘暴的人
+beetle|n. 甲蟲
+berry|n. 漿果；莓
+bet|v. 打賭；斷定　n. 賭注
+bind|v. 綁；束縛；裝訂
+bleed|v. 流血；出血
+bless|v. 祝福；保佑
+bloody|adj. 血腥的；流血的；該死的
+blouse|n. 女襯衫
+bomb|n. 炸彈　v. 轟炸；投擲炸彈
+bookcase|n. 書櫃
+boot|n. 靴子；（汽車）行李廂　v. 踢；啟動（電腦）
+bore|v. 使厭煩；鑽孔　n. 令人厭煩的人事物
+bowling|n. 保齡球
+brass|n. 黃銅；銅管樂器　adj. 黃銅製的
+bravery|n. 勇敢；勇氣
+breast|n. 胸部；乳房
+breeze|n. 微風　v. 輕鬆地走
+brick|n. 磚塊
+bride|n. 新娘
+broadcast|n. 廣播；節目　v. 廣播；播送
+brunch|n. 早午餐
+bucket|n. 水桶
+bud|n. 芽；花蕾　v. 發芽
+buffalo|n. 水牛；野牛
+buffet|n. 自助餐；餐具櫃
+bulb|n. 燈泡；球根
+bull|n. 公牛
+bullet|n. 子彈
+bump|n. 腫塊；碰撞　v. 碰撞；顛簸
+bunch|n. 一串；一束；一群
+bundle|n. 一捆；一包
+bury|v. 埋葬；掩埋；埋頭
+bush|n. 灌木；叢林
+buzz|n. 嗡嗡聲　v. 發出嗡嗡聲
+cabin|n. 小屋；船艙；機艙
+cable|n. 電纜；纜繩　v. 打電報
+cafeteria|n. 自助餐廳；學校餐廳
+canyon|n. 峽谷
+carpenter|n. 木匠
+carpet|n. 地毯　v. 鋪地毯
+carriage|n. 馬車；客車廂；運費
+cart|n. 手推車；馬車　v. 用車運送
+cast|v. 投擲；選角；鑄造　n. 演員陣容；石膏模
+cattle|n. 牛；牲畜
+cave|n. 洞穴　v. 塌陷
+cheek|n. 臉頰；厚臉皮
+cherry|n. 櫻桃　adj. 櫻桃色的
+chest|n. 胸部；大箱子
+chill|n. 寒意；著涼　v. 冷凍；使冷　adj. 寒冷的；冷靜的
+chilly|adj. 寒冷的；冷淡的
+chimney|n. 煙囪
+chin|n. 下巴
+chip|n. 薯片；晶片；碎片　v. 削下；缺角
+chop|n. 帶骨肉排；砍　v. 砍；切碎
+cigarette|n. 香菸
+cinema|n. 電影院；電影
+circus|n. 馬戲團
+clay|n. 黏土
+cleaner|n. 清潔工；清潔劑
+clip|n. 夾子；影片片段　v. 夾住；剪下
+closet|n. 衣櫃；壁櫥
+clothe|v. 給…穿衣
+clown|n. 小丑　v. 扮小丑；胡鬧
+cock|n. 公雞；雄鳥
+cocktail|n. 雞尾酒
+coconut|n. 椰子
+collar|n. 衣領；項圈
+colony|n. 殖民地；群落
+colorful|adj. 多彩的；生動的
+column|n. 圓柱；專欄；縱列
+comma|n. 逗號
+committee|n. 委員會
+cone|n. 圓錐體；甜筒
+controller|n. 控制器；管理員；主計長
+cooker|n. 炊具；烹調器
+costly|adj. 昂貴的；代價高的
+cotton|n. 棉花；棉布
+countable|adj. 可數的
+county|n. 郡；縣
+crab|n. 螃蟹
+cradle|n. 搖籃；發源地　v. 輕搖；抱在懷中
+crane|n. 起重機；鶴　v. 伸長（脖子）
+crawl|v. 爬行；緩慢前進　n. 爬行；自由式
+creator|n. 創造者；作者
+crew|n. 全體工作人員；船員；一組人
+cricket|n. 蟋蟀；板球
+crispy|adj. 酥脆的
+crop|n. 農作物；一批　v. 剪短；收割
+crown|n. 王冠；頭頂　v. 給…加冕
+cupboard|n. 櫥櫃；碗櫃
+dairy|n. 乳製品；乳品店
+dam|n. 水壩　v. 築壩
+dare|aux. 敢　v. 敢；挑戰
+darling|n. 親愛的人　adj. 親愛的；可愛的
+dash|n. 衝刺；破折號；少量　v. 猛衝；衝撞
+database|n. 資料庫
+dawn|n. 黎明；開端　v. 破曉；開始明白
+dealer|n. 商人；經銷商；發牌者
+deck|n. 甲板；一副牌
+deed|n. 行為；功績；契約
+deepen|v. 加深；深化
+democratic|adj. 民主的；民主政體的
+deposit|n. 存款；押金；沉積物　v. 存放；沉積
+designer|n. 設計師
+desirable|adj. 令人嚮往的；值得擁有的
+devil|n. 魔鬼；惡魔
+dim|adj. 昏暗的；模糊的　v. 變暗；使暗淡
+dime|n. 十分錢硬幣
+dine|v. 用餐；進餐
+dinosaur|n. 恐龍
+dip|v. 浸；蘸；下降　n. 浸；下降；沾醬
+dirt|n. 污垢；泥土
+dishonest|adj. 不誠實的
+disk|n. 磁碟；圓盤
+dislike|v. 不喜歡　n. 厭惡
+ditch|n. 水溝；壕溝　v. 拋棄；挖溝
+dizzy|adj. 頭暈的；眼花的
+dock|n. 碼頭；船塢　v. 靠岸
+donkey|n. 驢子
+dose|n. 劑量；一劑　v. 給藥
+doubtful|adj. 懷疑的；不確定的
+doughnut|n. 甜甜圈
+downtown|adj. 市中心的　adv. 往市中心　n. 市中心
+drag|v. 拖；拉；拖延　n. 拖；累贅
+dragonfly|n. 蜻蜓
+drain|v. 排掉；耗盡　n. 排水管；消耗
+drip|n. 滴水；滴落聲　v. 滴下
+drown|v. 淹死；溺水；淹沒
+drugstore|n. 藥局；藥妝店
+drunk|adj. 喝醉的　n. 醉漢
+dumb|adj. 啞的；愚笨的
+dump|v. 傾倒；丟棄　n. 垃圾場
+dust|n. 灰塵；塵土　v. 撣灰塵
+echo|n. 回聲；回音　v. 發出回聲；附和
+educational|adj. 教育的；有教育意義的
+elbow|n. 手肘　v. 用肘推
+elect|v. 選舉；選擇　adj. 當選的
+emperor|n. 皇帝
+enjoyable|adj. 愉快的；有趣的
+envy|n. 羨慕；嫉妒　v. 羨慕；嫉妒
+excellence|n. 優秀；卓越
+expectation|n. 期望；預期
+expressive|adj. 富有表情的；表達的
+fade|v. 褪色；逐漸消失
+faint|adj. 微弱的；暈眩的　v. 昏倒　n. 昏厥
+fairly|adv. 相當地；公平地
+fairy|n. 仙女；精靈　adj. 仙女的
+fancy|adj. 精緻的；花俏的　n. 幻想；喜好　v. 想像；喜歡
+fare|n. 車資；票價
+farther|adv. 更遠地　adj. 更遠的
+faucet|n. 水龍頭
+fearful|adj. 害怕的；可怕的
+feather|n. 羽毛
+fence|n. 籬笆；柵欄
+fighter|n. 戰士；戰鬥機；拳擊手
+firework|n. 煙火
+fist|n. 拳頭　v. 握拳
+flame|n. 火焰；火舌　v. 燃燒
+flash|n. 閃光；一瞬間　v. 閃爍；閃現
+flashlight|n. 手電筒
+flesh|n. 肉；果肉；肉體
+float|v. 漂浮；飄　n. 浮標；花車
+flock|n. 一群（鳥、羊）　v. 聚集；成群結隊
+flood|n. 洪水；大量　v. 淹沒；氾濫
+flour|n. 麵粉
+foggy|adj. 多霧的；模糊的
+fold|v. 摺疊；交疊　n. 摺痕
+follower|n. 追隨者；信徒；粉絲
+fountain|n. 噴泉；泉源
+frank|adj. 坦白的；直率的
+freezer|n. 冰櫃；冷凍庫
+fright|n. 驚嚇；恐懼
+fur|n. 毛皮；皮草
+gallon|n. 加侖
+gamble|n. 賭博；冒險　v. 賭博；冒險
+gang|n. 幫派；一夥人　v. 結夥
+glory|n. 榮耀；光榮；壯麗
+glow|n. 光亮；容光煥發　v. 發光；發熱
+golf|n. 高爾夫球　v. 打高爾夫球
+gossip|n. 閒話；八卦　v. 說閒話
+governor|n. 州長；總督；理事
+grasp|v. 抓緊；理解　n. 緊握；理解力
+grasshopper|n. 蚱蜢
+grassy|adj. 長滿草的
+greedy|adj. 貪心的；貪吃的
+greenhouse|n. 溫室
+grin|n. 露齒笑　v. 露齒而笑
+grocery|n. 雜貨店；（複數）食品雜貨
+gum|n. 口香糖；牙齦；樹膠
+hairdresser|n. 美髮師；理髮師
+hallway|n. 走廊；玄關
+hammer|n. 鐵鎚　v. 錘打；敲擊
+handful|n. 一把；少量
+handkerchief|n. 手帕
+handy|adj. 便利的；手巧的
+hanger|n. 衣架
+harbor|n. 港口；避難所　v. 庇護；懷有
+hasty|adj. 倉促的；草率的
+hatch|n. 艙口　v. 孵化；孕育
+hateful|adj. 可恨的；令人討厭的
+hay|n. 乾草
+headline|n. 標題；頭條新聞　v. 給…加標題
+headquarters|n. 總部；司令部
+heap|n. 堆；大量　v. 堆積
+heater|n. 暖氣機；加熱器
+heel|n. 腳跟；鞋跟　v. 釘鞋跟
+hell|n. 地獄；苦境
+helmet|n. 安全帽；頭盔
+historian|n. 歷史學家
+holder|n. 持有人；支架；容器
+hollow|adj. 空心的；空洞的　n. 洞；山谷　v. 挖空
+holy|adj. 神聖的
+homesick|adj. 想家的；思鄉的
+hometown|n. 家鄉
+hopeful|adj. 抱有希望的；有前途的
+horn|n. 角；喇叭；號角
+horror|n. 恐怖；驚駭
+hourly|adj. 每小時的　adv. 每小時地
+housekeeper|n. 管家；家庭主婦
+hum|v. 哼唱；嗡嗡作響
+humorous|adj. 幽默的；詼諧的
+hunger|n. 飢餓；渴望
+hut|n. 小屋；棚屋
+icy|adj. 冰冷的；結冰的；冷淡的
+indoor|adj. 室內的
+indoors|adv. 在室內；往室內
+inferior|adj. 較差的；次等的　n. 下屬
+inn|n. 小旅館；客棧
+inner|adj. 內部的；內心的
+inspector|n. 檢查員；督察
+inventor|n. 發明家
+ivory|n. 象牙　adj. 象牙色的
+jail|n. 監獄　v. 監禁
+jar|n. 罐子；廣口瓶
+jaw|n. 下巴；顎
+jazz|n. 爵士樂
+jeep|n. 吉普車
+jelly|n. 果凍；果醬
+jet|n. 噴射機；噴射　v. 噴出；搭噴射機旅行
+jewel|n. 寶石；珠寶
+jewelry|n. 珠寶；首飾
+joyful|adj. 歡樂的；高興的
+juicy|adj. 多汁的；有趣的
+jungle|n. 叢林；密林
+junk|n. 廢物；垃圾　v. 丟棄
+keyboard|n. 鍵盤
+kidney|n. 腎臟
+kilometer|n. 公里
+kindergarten|n. 幼稚園
+kingdom|n. 王國；領域
+kit|n. 成套工具；用具包
+knight|n. 騎士；爵士
+knit|v. 編織；皺眉　n. 針織品
+knot|n. 結；節　v. 打結
+lace|n. 蕾絲；鞋帶　v. 繫鞋帶
+ladder|n. 梯子
+laughter|n. 笑聲；笑
+laundry|n. 洗衣店；待洗衣物
+lawn|n. 草坪
+leak|n. 漏洞；漏出　v. 漏；洩漏
+leap|n. 跳躍；躍進　v. 跳；躍
+learning|n. 學習；學問
+leather|n. 皮革
+lemonade|n. 檸檬汁；檸檬水
+leopard|n. 豹
+liberty|n. 自由；自由權
+lick|v. 舔　n. 舔
+lifetime|n. 一生；終身
+lighthouse|n. 燈塔
+lightning|n. 閃電
+lily|n. 百合
+limb|n. 肢體；大樹枝
+litter|n. 垃圾；一窩（幼獸）　v. 亂丟垃圾
+lively|adj. 活潑的；生動的
+loaf|n. 一條麵包
+lobby|n. 大廳；休息室；遊說團體
+log|n. 原木；日誌　v. 記錄；砍伐
+lollipop|n. 棒棒糖
+loose|adj. 鬆的；寬鬆的；自由的
+lord|n. 君主；上帝；勳爵
+loser|n. 失敗者；輸家
+lover|n. 愛人；愛好者
+luggage|n. 行李
+lung|n. 肺
+magical|adj. 魔法的；神奇的
+magician|n. 魔術師；魔法師
+magnet|n. 磁鐵；有吸引力的人事物
+maid|n. 女僕；少女
+mankind|n. 人類
+marble|n. 大理石；彈珠
+marvelous|adj. 了不起的；令人驚嘆的
+mathematical|adj. 數學的；精確的
+mayor|n. 市長
+meadow|n. 草地；牧場
+meaningful|adj. 有意義的；意味深長的
+medal|n. 獎牌；勳章
+melon|n. 甜瓜；瓜
+mend|v. 修補；改善
+merry|adj. 歡樂的；愉快的
+microphone|n. 麥克風
+mighty|adj. 強大的；巨大的
+minus|prep. 減；少了　n. 減號；缺點　adj. 負的
+misery|n. 痛苦；悲慘
+missile|n. 飛彈；投射物
+mist|n. 薄霧　v. 起霧；模糊
+mob|n. 暴民；群眾　v. 圍攻
+moist|adj. 潮濕的；濕潤的
+moisture|n. 濕氣；水分
+monk|n. 僧侶；修道士
+monster|n. 怪物；巨大的東西
+monthly|adj. 每月的　adv. 每月　n. 月刊
+mosquito|n. 蚊子
+motel|n. 汽車旅館
+moth|n. 蛾
+motor|n. 馬達；發動機
+multiply|v. 乘；繁殖；增加
+murder|n. 謀殺　v. 謀殺
+mushroom|n. 蘑菇　v. 迅速成長
+naked|adj. 裸體的；無遮蔽的
+nap|n. 小睡　v. 打盹
+napkin|n. 餐巾
+navy|n. 海軍；海軍藍
+necktie|n. 領帶
+nickname|n. 綽號　v. 給…取綽號
+novelist|n. 小說家
+nun|n. 修女
+oak|n. 橡樹；橡木
+omit|v. 省略；遺漏
+ongoing|adj. 進行中的；持續的
+onion|n. 洋蔥
+onto|prep. 到…上面
+oral|adj. 口頭的；口腔的　n. 口試
+outdoors|adv. 在戶外；往戶外
+outer|adj. 外面的；外部的
+oven|n. 烤箱
+overseas|adv. 在海外　adj. 海外的
+owe|v. 欠；應歸功於
+owl|n. 貓頭鷹
+ownership|n. 所有權
+pad|n. 護墊；便條紙；肉墊　v. 填塞；墊
+painter|n. 畫家；油漆工
+pal|n. 夥伴；朋友
+palace|n. 宮殿；豪華大廈
+`;
+const gm=new Map(HSG.trim().split('\n').map(l=>l.split('|')).map(a=>[a[0].toLowerCase(),a]));
+const PM2={'n.':'n','v.':'v','adj.':'a','adv.':'d','prep.':'p','conj.':'c','pron.':'r','art.':'r','aux.':'x'};
+const exm=new Map();KB.filter(k=>k.s==='evoc').forEach(k=>exm.set(k.t.toLowerCase(),k));
+const FIX=`
+abandon|v. 放棄；拋棄；遺棄
+absorb|v. 吸收；使專注；承受
+accomplish|v. 完成；達成；實現
+adapt|v. 適應；改編；調整
+adequate|adj. 足夠的；適當的；勝任的
+affordable|adj. 負擔得起的；價格合理的
+ambition|n. 抱負；野心；雄心
+anticipate|v. 預期；期待；預料
+appreciate|v. 感激；欣賞；了解；增值
+aspect|n. 方面；層面；外觀
+assume|v. 假定；承擔；呈現
+attitude|n. 態度；看法；姿態
+available|adj. 可用的；有空的；買得到的
+benefit|n. 益處；好處；福利　v. 對…有益；得益
+capable|adj. 有能力的；能幹的；有…可能的
+campaign|n. 活動；競選；戰役　v. 從事活動；競選
+challenge|n. 挑戰；難題　v. 質疑；向…挑戰
+circumstance|n. 情況；環境；境遇
+commit|v. 承諾；犯（罪）；委託；使致力於
+community|n. 社區；群體；社群
+concentrate|v. 專心；集中；濃縮
+confident|adj. 有信心的；確信的；自信的
+conserve|v. 保育；節約；保存　n. 蜜餞；果醬
+contribute|v. 貢獻；捐助；促成；投稿
+cooperate|v. 合作；配合
+decline|n. 衰退；下降　v. 下降；衰退；婉拒
+demand|n. 需求；要求　v. 要求；需要
+depend|v. 依賴；取決於；信賴
+determine|v. 決定；查明；下決心；影響
+distinguish|v. 區別；辨認；使顯著|It's hard to distinguish the twins.
+diverse|adj. 多元的；不同的；各式各樣的
+efficient|adj. 有效率的；效能高的；能幹的
+eliminate|v. 消除；排除；淘汰
+emerge|v. 浮現；出現；（真相）顯露
+emphasize|v. 強調；著重；使突出
+encounter|n. 邂逅；遭遇　v. 遭遇；偶然遇到
+enhance|v. 提升；增強；加強
+essential|adj. 必要的；本質的　n. 必需品；要素
+establish|v. 建立；確立；設立
+estimate|n. 估計；估價　v. 估計；評價
+evidence|n. 證據；跡象　v. 顯示；證明
+expand|v. 擴大；擴展；詳述
+expose|v. 暴露；揭發；使接觸
+fundamental|adj. 基本的；根本的　n. 基本原則
+generate|v. 產生；引起；發電
+hesitate|v. 猶豫；躊躇；不願
+identify|v. 辨識；認同；確認身分
+impact|n. 衝擊；影響　v. 對…產生影響；撞擊
+implement|v. 實施；執行　n. 工具；器具
+inevitable|adj. 無可避免的；必然的
+influence|n. 影響；影響力　v. 影響；左右
+innovation|n. 創新；新發明；革新
+invest|v. 投資；投入（時間、精力）
+maintain|v. 維持；保養；主張；供養
+obtain|v. 獲得；取得
+overcome|v. 克服；戰勝；壓倒
+perceive|v. 察覺；理解；認為
+persuade|v. 說服；勸服
+phenomenon|n. 現象（複數 phenomena）；奇蹟
+potential|adj. 潛在的；可能的　n. 潛力；可能性
+priority|n. 優先事項；優先權
+promote|v. 促進；晉升；推銷
+reluctant|adj. 不情願的；勉強的
+resolve|v. 解決；下決心　n. 決心；決議
+significant|adj. 重要的；顯著的；有意義的
+sustain|v. 維持；支撐；遭受
+tendency|n. 傾向；趨勢
+vulnerable|adj. 易受傷害的；脆弱的；易受攻擊的
+steal|v. 偷；竊取（steal–stole–stolen）
+accept|v. 接受；接納；承認
+achieve|v. 達成；獲得；完成
+allow|v. 允許；准許；容許
+announce|v. 宣布；宣告；播報
+arrange|v. 安排；整理；改編
+attend|v. 參加；出席；照料
+avoid|v. 避免；躲避
+compare|v. 比較；比擬
+continue|v. 繼續；持續
+describe|v. 描述；形容
+develop|v. 發展；開發；養成；沖洗（底片）
+discover|v. 發現；發覺
+discuss|v. 討論；商議
+explain|v. 解釋；說明；辯解
+improve|v. 改善；進步
+include|v. 包括；包含
+offer|v. 提供；出價　n. 提議；出價
+protect|v. 保護；防護
+provide|v. 提供；供應；規定
+receive|v. 收到；接待；受到
+reduce|v. 減少；降低；縮減
+suggest|v. 建議；暗示；顯示
+ability|n. 能力；才能
+accident|n. 意外；事故；偶然
+advice|n. 勸告；建議（不可數）
+area|n. 地區；面積；領域
+culture|n. 文化；文明；修養
+education|n. 教育；教育學；訓練
+environment|n. 環境；周遭
+event|n. 事件；活動；比賽項目
+exam|n. 考試
+information|n. 資訊；情報；詢問處（不可數）
+member|n. 成員；會員
+message|n. 訊息；口信；要旨
+nature|n. 大自然；本質；天性
+opinion|n. 意見；看法；評價
+pollution|n. 污染；污染物
+reason|n. 理由；原因；理性　v. 推論；說理
+safety|n. 安全；安全性
+skill|n. 技能；技巧；熟練
+technology|n. 科技；技術；工藝
+tradition|n. 傳統；慣例
+ancient|adj. 古老的；古代的；年代久遠的
+certain|adj. 確定的；某種的　pron. 某些（人或事物）|Certain of them were late.
+clever|adj. 聰明的；機靈的；巧妙的
+familiar|adj. 熟悉的；常見的；不拘禮節的
+necessary|adj. 必要的；必然的
+nervous|adj. 緊張的；神經的；膽怯的
+actually|adv. 實際上；事實上；竟然
+instead|adv. 反而；作為替代
+probably|adv. 可能；大概
+recently|adv. 最近；近來
+although|conj. 雖然；儘管；然而
+unless|conj. 除非；如果不
+`;
+FIX.trim().split('\n').forEach(l=>{const a=l.split('|'),k=exm.get(a[0].toLowerCase());if(k){k.d=a[1];if(a[2])k.x=a[2]}});
+window.HSX=[];
+HSALL.trim().split('\n').forEach((l,i)=>{const [w,p,lv]=l.split('|'),a=w.split(' / ').map(x=>x.toLowerCase());let k=null;for(const x of a){if(exm.has(x)){k=exm.get(x);break}}
+ const pp=PM2[(p.match(/^[a-z]+\./)||[''])[0]]||'n',nt='大考中心高中英文參考詞彙表 第 '+lv+' 級';
+ if(k){k.hl=+lv;if(!k.n1200&&k.stg==='國中'){delete k.stg;delete k.gd}return}
+ const g=gm.get(a[0]);
+ if(g)KB.push({id:'evoc'+(8000+i),s:'evoc',t:w,d:g[1],x:g[2]||nt,nt:g[2]?0:1,hl:+lv,pos:pp});
+ else HSX.push({id:'hsx'+i,s:'evoc',t:w,d:'',x:nt,ng:1,hl:+lv,pos:pp})});
 })();
 </script>
 <script>
 /* ===== 英文單字：詞性 → 單元 → 單字列表（依年級顯示）===== */
 (function(){
-let VO={hm:0,hx:0,f:'all',lv:'all'};try{Object.assign(VO,JSON.parse(LS.getItem('vopt')||'{}'))}catch(e){}
+let VO={hm:0,hx:0,f:'all',lv:'all',hsx:0};try{Object.assign(VO,JSON.parse(LS.getItem('vopt')||'{}'))}catch(e){}
 const VS={pos:null,unit:null};let cur=[];
 const POS={n:['🏷️','名詞'],v:['🏃','動詞'],a:['🎨','形容詞'],d:['⏩','副詞'],p:['📍','介系詞'],c:['🔗','連接詞'],r:['👤','代名詞與限定詞'],m:['🔢','數詞'],q:['❓','疑問詞'],x:['🛠️','助動詞'],i:['👋','招呼與感嘆']};
 const LV=['全部','國小','國中','高中'],lvOf=k=>k.stg||'高中';
@@ -3733,12 +10762,12 @@ const ini=t=>((t.replace(/[^A-Za-z]/g,'')[0])||'#').toUpperCase();
 const chunks=L=>{const A=L.slice().sort((x,y)=>x.t.toLowerCase().localeCompare(y.t.toLowerCase()));if(A.length<=50)return[A];const n=Math.ceil(A.length/45),z=Math.ceil(A.length/n),o=[];for(let i=0;i<A.length;i+=z)o.push(A.slice(i,i+z));return o};
 const lab=c=>{const a=ini(c[0].t),b=ini(c[c.length-1].t);return a===b?a:a+'–'+b};
 function row(k){const m=st.m.includes(k.id),r=st.r.includes(k.id);
- return `<div class="vrow${m?' vok':''}${r?' vbad':''}" id="it_${k.id}"><div class="vw"><b>${esc(k.t)}</b><span class="vlv">${lvOf(k)}</span><button class="vsp" title="發音" onclick="vsay('${q(k.t)}')">🔊</button></div><div class="vmean${VO.hm?' hid':''}" onclick="this.classList.toggle('hid')">${esc(k.d)}</div><div class="vs"><button class="${m?'m':''}" title="標記熟練" onclick="tog('${k.id}','m')">${m?'✅':'☑'}</button><button class="${r?'r':''}" title="標記不熟" onclick="tog('${k.id}','r')">${r?'❌':'✖'}</button></div>${VO.hx||!k.x?'':k.nt?`<div class="vx">${esc(k.x)}</div>`:`<div class="vx">${esc(k.x)}<button class="vsp" title="朗讀例句" onclick="vsay('${q(k.x)}')">🔊</button></div>`}</div>`}
+ return `<div class="vrow${m?' vok':''}${r?' vbad':''}" id="it_${k.id}"><div class="vw"><b>${esc(k.t)}</b><span class="vlv">${lvOf(k)}${k.hl?' L'+k.hl:''}</span><button class="vsp" title="發音" onclick="vsay('${q(k.t)}')">🔊</button></div>${k.ng?'<div class="vng">（尚未加入中文詞義）</div><div class="vs"></div>':`<div class="vmean${VO.hm?' hid':''}" onclick="this.classList.toggle('hid')">${esc(k.d)}</div><div class="vs"><button class="${m?'m':''}" title="標記熟練" onclick="tog('${k.id}','m')">${m?'✅':'☑'}</button><button class="${r?'r':''}" title="標記不熟" onclick="tog('${k.id}','r')">${r?'❌':'✖'}</button></div>`}${VO.hx||!k.x?'':k.nt?`<div class="vx">${esc(k.x)}</div>`:`<div class="vx">${esc(k.x)}<button class="vsp" title="朗讀例句" onclick="vsay('${q(k.x)}')">🔊</button></div>`}</div>`}
 const btn=(a,t,on)=>`<button class="btn alt${on?' vtgl':''}" onclick="${a}">${t}</button>`;
 window.vocabHub=function(U){
- const L=U.items.filter(k=>VO.lv==='all'||lvOf(k)===VO.lv),byP={};L.forEach(k=>{(byP[k.pos||'n']=byP[k.pos||'n']||[]).push(k)});
+ const ex=VO.hsx&&(typeof PFC==='undefined'||!PFC||PFC.stage==='高中')?HSX:[],L=U.items.concat(ex).filter(k=>VO.lv==='all'||lvOf(k)===VO.lv),byP={};L.forEach(k=>{(byP[k.pos||'n']=byP[k.pos||'n']||[]).push(k)});
  if(VS.pos&&!byP[VS.pos]){VS.pos=null;VS.unit=null}
- const chips=`<div class="vbar">${LV.map(l=>btn(`vlv('${l}')`,l,(VO.lv==='all'?'全部':VO.lv)===l)).join('')}<span class="muted">${typeof PFC!=='undefined'&&PFC?'已依你的學習設定顯示適合的字':'可選年級篩選；在「設定」填學習階段後會自動只顯示適合的字'}</span></div>`;
+ const chips=`<div class="vbar">${LV.map(l=>btn(`vlv('${l}')`,l,(VO.lv==='all'?'全部':VO.lv)===l)).join('')}${btn("vset('hsx')",'含未加詞義的字（'+HSX.length+'）',VO.hsx)}<span class="muted">${typeof PFC!=='undefined'&&PFC?'已依你的學習設定顯示適合的字':'可選年級篩選；在「設定」填學習階段後會自動只顯示適合的字'}</span></div>`;
  if(!VS.pos){const ks=Object.keys(POS).filter(c=>byP[c]);cur=[];
   return chips+(ks.length?`<div class="portal u">${ks.map(c=>`<div onclick="vpos('${c}')"><i>${POS[c][0]}</i>${POS[c][1]}<small>${byP[c].length} 字　熟 ${prog(byP[c])}</small></div>`).join('')}</div>`:'<div class="muted" style="padding:14px">這個年級範圍沒有單字。</div>')}
  const cs=chunks(byP[VS.pos]),nm=POS[VS.pos][1];
