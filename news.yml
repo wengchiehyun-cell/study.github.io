@@ -1,0 +1,36 @@
+name: Update news headlines
+
+on:
+  schedule:
+    - cron: '*/30 * * * *'   # 約每 30 分鐘一次（GitHub 排程可能延遲幾分鐘）
+  workflow_dispatch:          # 可在 Actions 頁面手動執行
+
+permissions:
+  contents: write
+
+concurrency:
+  group: news
+  cancel-in-progress: true
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Fetch headlines from RSS
+        run: node scripts/fetch-news.mjs
+      - name: Commit if changed
+        run: |
+          git config user.name "news-bot"
+          git config user.email "news-bot@users.noreply.github.com"
+          git add news.json
+          if git diff --cached --quiet; then
+            echo "no change"
+          else
+            git commit -m "chore: update news headlines"
+            git pull --rebase origin "${GITHUB_REF_NAME}" || true
+            git push
+          fi
