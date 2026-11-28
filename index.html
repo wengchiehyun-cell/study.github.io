@@ -209,7 +209,7 @@ summary{color:#38bdf8;cursor:pointer;font-size:.85rem;font-weight:bold}
 <div class="card" id="jCard" style="border-color:#f59e0b;padding:8px 12px;margin:8px 0"><div style="display:flex;gap:8px;align-items:center;font-size:.85rem"><span>🤣</span><span id="jQ" style="flex:1;min-width:0"></span><button class="btn alt" id="jB" style="padding:2px 10px;font-size:.78rem;flex:none" onclick="jShow()">看答案</button></div><div id="jA" class="muted" style="font-size:.85rem;margin-top:4px;display:none"></div><span id="jS" style="display:none"></span></div>
 <div class="portal">
 <div onclick="go('quiz')"><i>🧠</i>測驗閃卡</div>
-<div onclick="go('chat')"><i>💬</i>討論社群</div><div onclick="go('cal')"><i>📅</i>學習日曆</div></div>
+<div onclick="go('chat')"><i>💬</i>討論社群</div><div onclick="go('cal')"><i>📅</i>學習日曆</div><div onclick="go('shop')"><i>🛒</i>金幣商店</div></div>
 <div style="display:flex;justify-content:space-between;align-items:center;margin:14px 0 6px;gap:8px;flex-wrap:wrap"><b style="color:#f59e0b;font-size:1rem">📚 我的課表</b><span class="muted" id="myCourseCnt"></span></div>
 <div id="subjPortal"></div>
 <div class="muted" style="text-align:center;margin-top:8px">想超前學習或回頭複習？可隨時打開左上角「☰ 選單 › 🎓 選課大廳」加退選課程</div></div>
@@ -232,7 +232,7 @@ summary{color:#38bdf8;cursor:pointer;font-size:.85rem;font-weight:bold}
 <div class="card"><h3 id="selT"></h3><div id="selL"></div>
 <div class="cfg" style="margin:8px 0 0"><input class="in" id="logIn" style="flex:1" placeholder="輸入學習心得…"><button class="btn" onclick="addLog()">➕ 打卡</button></div></div></div>
 
-<div class="view" id="v-chat"><div class="card"><div class="tabs"><button class="tab on" id="ct1" onclick="chatTab('pub')">💬 公開大廳</button><button class="tab" id="ct2" onclick="chatTab('bot')">🛟 線上客服</button><button class="tab" id="ct4" onclick="chatTab('fb')">📝 意見回饋</button><button class="tab" id="ct3" onclick="chatTab('adm')" style="display:none">🛡️ 管理</button></div>
+<div class="view" id="v-chat"><div class="card"><div class="tabs"><button class="tab on" id="ct1" onclick="chatTab('pub')">💬 公開大廳</button><button class="tab" id="ct2" onclick="chatTab('bot')">🛟 線上客服</button><button class="tab" id="ct4" onclick="chatTab('fb')">📝 意見回饋</button><button class="tab" id="ct3" onclick="chatTab('adm')" style="display:none">🛡️ 管理</button><button class="tab" onclick="guide()">🧭 使用導覽</button></div>
 <div class="box" id="gBan" style="border-color:#38bdf8;display:none">目前為訪客瀏覽模式，想一起討論嗎？ <button class="btn" style="padding:3px 10px;margin-left:6px" onclick="logoutNow('l')">登入 / 註冊</button></div>
 <div class="box" id="annBox" style="display:none"></div>
 <div class="muted" id="pubNote"></div>
@@ -244,34 +244,50 @@ summary{color:#38bdf8;cursor:pointer;font-size:.85rem;font-weight:bold}
 
 <div class="view" id="v-map" style="max-width:none;padding:10px"><div class="cfg" style="margin:0 0 8px"><button class="btn alt" onclick="go('subj','hist')">← 歷史主頁</button></div><div id="map"></div></div>
 <div class="view" id="v-dev"></div>
-<div class="view" id="v-set"><div class="card" style="margin-bottom:14px"><h3 style="margin:0">⚙️ 個人設定與備份</h3><div class="muted" style="margin-top:4px">修改外觀、首頁冷笑話、暱稱頭像、學習設定與匯出備份；完成後直接點選上方選單切換頁面。</div></div><div class="card"><div class="setWrap">
-<div class="setSec" style="border-top:0;margin-top:0;padding-top:0"><div class="muted">🎨 外觀與閱讀（只套用在這台裝置）</div>
-<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:8px">字體大小：<b id="fsV">100%</b><button class="btn alt" onclick="uiFs(-5)">A−</button><button class="btn alt" onclick="uiFs(5)">A＋</button><button class="btn alt" onclick="uiFs(0)">重設</button></div>
-<input type="range" id="fsR" min="80" max="160" step="5" value="100" oninput="uiFs(+this.value,true)" style="width:100%;margin-top:6px">
-<select class="in" id="ffS" onchange="uiFf(this.value)" style="width:100%;margin-top:6px"><option value="default">字體：系統預設</option><option value="sans">黑體（無襯線）</option><option value="serif">明體（宋體，適合閱讀古文）</option><option value="kai">楷體</option><option value="round">圓體</option></select>
-<div class="muted" style="font-size:.8rem;margin-top:4px">字體依你的裝置有安裝的字型而定；裝置沒有時會自動改用相近的字體。</div>
-<div class="box" id="uiPrev" style="margin-top:8px">預覽：臨渴掘井，不如未雨綢繆。The quick brown fox jumps over 12345。</div></div>
-<div class="setSec"><div class="muted">🏠 首頁</div><label class="muted" style="display:block;margin-top:6px"><input type="checkbox" id="chkJoke" checked onchange="uiJoke(this.checked)"> 在首頁顯示每日冷笑話</label><select class="in" id="jokeSubjS" onchange="uiJokeSubj(this.value)" style="width:100%;margin-top:6px"><option value="auto">冷笑話科目：自動（依目前選修課程）</option><option value="all">全部科目</option><option value="數學">📐 數學</option><option value="國文">📖 國文</option><option value="英文">🔤 英文</option><option value="歷史">📜 歷史</option><option value="地理">🌍 地理</option><option value="公民">⚖️ 公民</option><option value="學習">📚 學習日常</option></select></div>
-<div class="setSec"><div class="muted">🌏 社會科顯示方式</div><select class="in" id="socS" onchange="uiSoc(this.value)" style="width:100%;margin-top:6px"><option value="auto">自動（國小：三科分開；其他：三科合併）</option><option value="merge">三科合併：社會主頁面（總覽、跨科主題）</option><option value="sep">三科分開：歷史、地理、公民各自的入口</option></select><div class="muted" style="font-size:.8rem;margin-top:4px">測驗的「社會三科綜合」範圍在兩種方式下都會保留。</div></div>
-<div class="setSec"><div class="muted" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px"><span>👤 暱稱與頭像（預設 3 款免費，其餘可用金幣解鎖）</span><span style="color:#fbbf24;font-weight:bold">🪙 目前金幣：<b id="setCoins">0</b></span></div>
-<div class="muted" style="font-size:.76rem;margin:4px 0 8px">💡 賺幣方式：每日登入 +15、測驗答對 +3（完賽 +10）、閃卡 +2（完輪 +5）、日曆打卡 +10、生日當天 +100</div>
-<input class="in" id="setNick" style="width:100%;margin-bottom:8px" placeholder="暱稱"><div class="av" id="savs"></div>
-<button class="btn" style="width:100%;margin:8px 0" onclick="saveProfile()">儲存暱稱與頭像</button></div>
-<div id="pfBox" style="border-top:1px solid #334155;margin-top:10px;padding-top:10px"><div class="muted">🎓 學習設定（選擇出生年月日會精準計算至月與日，並自動帶入程度，你仍可自行修改）</div>
-<div style="display:flex;gap:8px;align-items:center;margin-top:6px;flex-wrap:wrap"><label class="muted" style="font-size:.82rem;white-space:nowrap">出生年月日：</label><input class="in" id="sbd" type="date" onchange="bdayAuto('s')" style="flex:1;min-width:160px"><input type="hidden" id="sa"></div><div class="muted" id="sAgeTxt" style="font-size:.8rem;margin-top:4px"></div>
-<select class="in" id="ss" onchange="pfSync('s')" style="width:100%;margin-top:6px"><option value="">學習階段</option><option>國小</option><option>國中</option><option>高中</option><option>大學</option><option value="不分類">不分類（顯示全部）</option></select>
-<select class="in" id="sgd" style="width:100%;margin-top:6px;display:none"></select>
-<select class="in" id="sg" style="width:100%;margin-top:6px;display:none"><option value="">請選擇類組</option><option value="一類">第一類組（文法商）</option><option value="二類">第二類組（理工）</option><option value="三類">第三類組（醫農生）</option><option value="未分組">尚未分組（高一）</option></select>
-<label class="muted" id="suL" style="display:block;margin-top:6px"><input type="checkbox" id="su"> 使用該年級的知識點（高中會依類組顯示選修內容）</label>
-<label class="muted" id="svL" style="display:block;margin-top:6px"><input type="checkbox" id="sv"> 同時顯示前一階段的基礎（國中含國小、高中含國中，複習用）</label>
-<button class="btn" style="width:100%;margin:8px 0" onclick="savePf()">儲存學習設定</button></div>
-<div id="pwBox" style="border-top:1px solid #334155;margin-top:10px;padding-top:10px"><div class="muted">🔑 修改密碼</div>
-<input class="in" id="pwO" type="password" autocomplete="current-password" placeholder="目前密碼" style="width:100%;margin-top:6px">
-<input class="in" id="pwN" type="password" autocomplete="new-password" placeholder="新密碼（至少 8 個字元）" style="width:100%;margin-top:6px">
-<input class="in" id="pwN2" type="password" autocomplete="new-password" placeholder="再輸入一次新密碼" style="width:100%;margin-top:6px">
-<button class="btn" style="width:100%;margin:8px 0" onclick="changePw()">更新密碼</button></div>
-<label class="muted"><input type="checkbox" id="chkChat" checked onchange="st.hideChat=!this.checked;save();renderChat()"> 顯示討論區訊息</label><br><label class="muted"><input type="checkbox" id="chkLog" checked onchange="setLogOpt(this.checked)"> 允許記錄我的使用動作（登入、瀏覽、學習操作，協助改善網站）</label>
-<div class="cfg" style="margin-top:10px"><button class="btn" onclick="exportData()">📥 匯出備份</button><button class="btn blue" onclick="$('imp').click()">📤 匯入備份</button></div><div class="muted" id="setMsg" style="margin-top:6px"></div>
+<div class="view" id="v-shop"></div>
+<div class="view" id="v-set">
+<div class="card" style="margin-bottom:12px"><h3 style="margin:0">⚙️ 個人設定與備份</h3><div class="muted" style="margin-top:4px">依上方分類調整設定；完成後直接點選上方選單切換頁面。</div></div>
+<div class="tabs" id="setTabs">
+  <button class="tab on" data-st="ui" onclick="setTab('ui')">🎨 外觀與首頁</button>
+  <button class="tab" data-st="acc" onclick="setTab('acc')">👤 帳號與頭像</button>
+  <button class="tab" data-st="pf" onclick="setTab('pf')">🎓 學習設定</button>
+  <button class="tab" data-st="sec" onclick="setTab('sec')">🔐 安全與備份</button>
+</div>
+<div class="card"><div class="setWrap">
+<div class="setPane" data-sp="ui">
+  <div class="setSec" style="border-top:0;margin-top:0;padding-top:0"><div class="muted">🎨 外觀與閱讀（只套用在這台裝置）</div>
+  <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:8px">字體大小：<b id="fsV">100%</b><button class="btn alt" onclick="uiFs(-5)">A−</button><button class="btn alt" onclick="uiFs(5)">A＋</button><button class="btn alt" onclick="uiFs(0)">重設</button></div>
+  <input type="range" id="fsR" min="80" max="160" step="5" value="100" oninput="uiFs(+this.value,true)" style="width:100%;margin-top:6px">
+  <select class="in" id="ffS" onchange="uiFf(this.value)" style="width:100%;margin-top:6px"><option value="default">字體：系統預設</option><option value="sans">黑體（無襯線）</option><option value="serif">明體（宋體，適合閱讀古文）</option><option value="kai">楷體</option><option value="round">圓體</option></select>
+  <div class="muted" style="font-size:.8rem;margin-top:4px">字體依你的裝置有安裝的字型而定；裝置沒有時會自動改用相近的字體。</div>
+  <div class="box" id="uiPrev" style="margin-top:8px">預覽：臨渴掘井，不如未雨綢繆。The quick brown fox jumps over 12345。</div></div>
+  <div class="setSec"><div class="muted">🏠 首頁冷笑話</div><label class="muted" style="display:block;margin-top:6px"><input type="checkbox" id="chkJoke" checked onchange="uiJoke(this.checked)"> 在首頁顯示每日冷笑話</label><select class="in" id="jokeSubjS" onchange="uiJokeSubj(this.value)" style="width:100%;margin-top:6px"><option value="auto">冷笑話科目：自動（依目前選修課程）</option><option value="all">全部科目</option><option value="數學">📐 數學</option><option value="國文">📖 國文</option><option value="英文">🔤 英文</option><option value="歷史">📜 歷史</option><option value="地理">🌍 地理</option><option value="公民">⚖️ 公民</option><option value="學習">📚 學習日常</option></select></div>
+</div>
+<div class="setPane" data-sp="acc" style="display:none">
+  <div class="setSec" style="border-top:0;margin-top:0;padding-top:0"><div class="muted" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px"><span>👤 暱稱與已擁有頭像</span><button class="btn blue" style="padding:4px 10px;font-size:.78rem" onclick="go('shop')">🛒 前往商店解鎖更多頭像</button></div>
+  <input class="in" id="setNick" style="width:100%;margin:8px 0" placeholder="暱稱"><div class="av" id="savs"></div>
+  <button class="btn" style="width:100%;margin:8px 0" onclick="saveProfile()">儲存暱稱與頭像</button></div>
+</div>
+<div class="setPane" data-sp="pf" style="display:none">
+  <div id="pfBox" style="margin-top:0;padding-top:0"><div class="muted">🎓 學習設定（選擇出生年月日會精準計算至月與日，並自動帶入程度，你仍可自行修改）</div>
+  <div style="display:flex;gap:8px;align-items:center;margin-top:6px;flex-wrap:wrap"><label class="muted" style="font-size:.82rem;white-space:nowrap">出生年月日：</label><input class="in" id="sbd" type="date" onchange="bdayAuto('s')" style="flex:1;min-width:160px"><input type="hidden" id="sa"></div><div class="muted" id="sAgeTxt" style="font-size:.8rem;margin-top:4px"></div>
+  <select class="in" id="ss" onchange="pfSync('s')" style="width:100%;margin-top:6px"><option value="">學習階段</option><option>國小</option><option>國中</option><option>高中</option><option>大學</option><option value="不分類">不分類（顯示全部）</option></select>
+  <select class="in" id="sgd" style="width:100%;margin-top:6px;display:none"></select>
+  <select class="in" id="sg" style="width:100%;margin-top:6px;display:none"><option value="">請選擇類組</option><option value="一類">第一類組（文法商）</option><option value="二類">第二類組（理工）</option><option value="三類">第三類組（醫農生）</option><option value="未分組">尚未分組（高一）</option></select>
+  <label class="muted" id="suL" style="display:block;margin-top:6px"><input type="checkbox" id="su"> 使用該年級的知識點（高中會依類組顯示選修內容）</label>
+  <label class="muted" id="svL" style="display:block;margin-top:6px"><input type="checkbox" id="sv"> 同時顯示前一階段的基礎（國中含國小、高中含國中，複習用）</label>
+  <button class="btn" style="width:100%;margin:8px 0" onclick="savePf()">儲存學習設定</button></div>
+</div>
+<div class="setPane" data-sp="sec" style="display:none">
+  <div id="pwBox" style="margin-top:0;padding-top:0"><div class="muted">🔑 修改密碼</div>
+  <input class="in" id="pwO" type="password" autocomplete="current-password" placeholder="目前密碼" style="width:100%;margin-top:6px">
+  <input class="in" id="pwN" type="password" autocomplete="new-password" placeholder="新密碼（至少 8 個字元）" style="width:100%;margin-top:6px">
+  <input class="in" id="pwN2" type="password" autocomplete="new-password" placeholder="再輸入一次新密碼" style="width:100%;margin-top:6px">
+  <button class="btn" style="width:100%;margin:8px 0" onclick="changePw()">更新密碼</button></div>
+  <div class="setSec"><label class="muted"><input type="checkbox" id="chkChat" checked onchange="st.hideChat=!this.checked;save();renderChat()"> 顯示討論區訊息</label><br><label class="muted"><input type="checkbox" id="chkLog" checked onchange="setLogOpt(this.checked)"> 允許記錄我的使用動作（登入、瀏覽、學習操作，協助改善網站）</label></div>
+  <div class="cfg" style="margin-top:10px"><button class="btn" onclick="exportData()">📥 匯出備份</button><button class="btn blue" onclick="$('imp').click()">📤 匯入備份</button></div>
+</div>
+<div class="muted" id="setMsg" style="margin-top:8px"></div>
 <input type="file" id="imp" accept=".json" style="display:none" onchange="importData(event)"></div></div></div>
 <div class="view" id="v-time"><div class="card"><h3>⏳ 跨時空年代對照軸</h3><div class="cfg" style="margin:8px 0 0"><button class="btn alt" onclick="go('subj','hist')">← 歷史主頁</button></div><div class="cfg" id="tlChips" style="margin:8px 0 0"></div></div><div id="tlArea"></div></div>
 </div></div>
@@ -279,8 +295,8 @@ summary{color:#38bdf8;cursor:pointer;font-size:.85rem;font-weight:bold}
 <div id="tourHL"></div><div id="tourTip"><div class="muted" id="tourStep"></div><div id="tourTxt" style="margin:6px 0 10px;line-height:1.6"></div><div class="cfg" style="margin:0;justify-content:flex-end"><button class="btn alt" onclick="tourEnd()">結束導覽</button><button class="btn blue" id="tourNext" onclick="tourNext()">下一步</button></div></div>
 <div class="toast" id="toast"></div>
 <div id="sideBg" onclick="side()"></div>
-<div id="side"><div class="mi" onclick="side()" style="text-align:right">✕ 關閉選單</div><div class="mi" onclick="go('home');side()">🏠 主控制台</div><div class="mi" onclick="go('course');side()" style="border-color:#f59e0b;color:#fbbf24">🎓 選課大廳</div><div class="mi" onclick="guide();side()">🧭 使用導覽</div><div class="mi" id="devMi" style="display:none" onclick="go('dev');side()">🛠️ 開發者後台</div>
-<details id="sideCourses" style="margin:0 0 6px;padding:0;background:#1e293b;border:1px solid #334155;border-radius:6px"><summary style="padding:10px 14px;color:#f8fafc;font-size:.85rem;list-style:none;display:flex;justify-content:space-between;align-items:center;cursor:pointer"><span>📚 我的課程</span><span id="sideCourseCnt" class="muted" style="font-size:.75rem">▾</span></summary><div id="sideSubj" style="padding:4px 8px 8px;border-top:1px solid #334155;max-height:42vh;overflow-y:auto"></div></details>
+<div id="side"><div class="mi" onclick="side()" style="text-align:right">✕ 關閉選單</div><div class="mi" onclick="go('home');side()">🏠 主控制台</div><div class="mi" onclick="go('course');side()" style="border-color:#f59e0b;color:#fbbf24">🎓 選課大廳</div><div class="mi" onclick="go('shop');side()">🛒 商店</div><div class="mi" id="devMi" style="display:none" onclick="go('dev');side()">🛠️ 開發者後台</div>
+<details id="sideCourses" style="margin:0 0 6px;padding:0;background:#1e293b;border:1px solid #334155;border-radius:6px"><summary style="padding:10px 14px;color:#f8fafc;font-size:.85rem;list-style:none;display:flex;justify-content:space-between;align-items:center;cursor:pointer"><span>📚 我的課程</span><span id="sideCourseCnt" class="muted" style="font-size:.75rem">▾</span></summary><div id="sideSubj" style="padding:4px 8px 8px;border-top:1px solid #334155"></div></details>
 <div class="mi" onclick="go('quiz');side()">🧠 測驗閃卡</div>
 <div class="mi" onclick="go('cal');side()">📅 學習日曆</div><div class="mi" onclick="go('chat');side()">💬 討論社群</div>
 <div class="mi" onclick="openSet();side()">⚙️ 個人設定與備份</div></div>
@@ -338,6 +354,7 @@ function ensureCoins(){
   if(typeof st.coins!=='number'||isNaN(st.coins))st.coins=0;
   if(!Array.isArray(st.unlockedAv))st.unlockedAv=FREE_AV.slice();
   FREE_AV.forEach(a=>{if(!st.unlockedAv.includes(a))st.unlockedAv.push(a)});
+  if(typeof isDev==='function'&&isDev())AV.forEach(a=>{if(!st.unlockedAv.includes(a))st.unlockedAv.push(a)});
   if(user&&user.avatar&&AV.includes(user.avatar)&&!st.unlockedAv.includes(user.avatar))st.unlockedAv.push(user.avatar);
   if(!st.coinLog||typeof st.coinLog!=='object')st.coinLog={};
 }
@@ -1166,42 +1183,78 @@ const pubChats=()=>JSON.parse(LS.getItem('pub_chat')||'[]');
 
 /* ===== 登入 ===== */
 const users=()=>{try{return Object.assign(Object.create(null),JSON.parse(LS.getItem('users')||'{}'))}catch(e){return Object.create(null)}};
+function setTab(k){
+  document.querySelectorAll('#setTabs .tab').forEach(b=>b.classList.toggle('on',b.dataset.st===k));
+  document.querySelectorAll('#v-set .setPane').forEach(p=>p.style.display=p.dataset.sp===k?'block':'none');
+  if(k==='acc')avGrid('savs');
+}
 function avGrid(id){
   const g=$(id);if(!g)return;
   g.innerHTML='';
   const isReg=(id==='ravs');
   if(!isReg)ensureCoins();
-  const list=isReg?AV_DATA.slice(0,3):AV_DATA;
+  const list=isReg?AV_DATA.slice(0,3):AV_DATA.filter(item=>item.c===0||(st.unlockedAv&&st.unlockedAv.includes(item.id)));
   list.forEach(item=>{
-    const unlocked=isReg||item.c===0||(st.unlockedAv&&st.unlockedAv.includes(item.id));
     const d=document.createElement('div');
-    d.className='av-item'+(item.id===selAv?' on':'')+(unlocked?'':' lk');
+    d.className='av-item'+(item.id===selAv?' on':'');
     d.setAttribute('role','button');d.setAttribute('tabindex','0');
-    d.innerHTML=`${avHtml(item.id,42)}<div class="av-nm">${esc(item.n)}</div><div class="av-pr">${unlocked?(item.id===selAv?'✓ 使用中':'已擁有'):`🔒 🪙 ${item.c}`}</div>`;
-    d.onclick=()=>{
-      if(!unlocked){
-        if(user&&user.guest){showErr('訪客無法解鎖頭像，請先免費註冊！');return}
-        if(st.coins<item.c){showErr(`金幣不足！解鎖「${item.n}」需要 ${item.c} 金幣，目前還差 ${item.c-st.coins} 枚。`);return}
-        if(d.dataset.cfm!=='1'){
-          d.dataset.cfm='1';
-          d.querySelector('.av-pr').textContent=`確定花 ${item.c} 🪙？`;
-          setTimeout(()=>{if(d.dataset.cfm==='1'){d.dataset.cfm='';const p=d.querySelector('.av-pr');if(p)p.textContent=`🔒 🪙 ${item.c}`}},3000);
-          return;
-        }
-        st.coins-=item.c;
-        st.unlockedAv.push(item.id);
-        selAv=item.id;
-        save();renderCoins();
-        showErr(`🎉 已解鎖「${item.n}」頭像！記得按下方「儲存暱稱與頭像」套用。`);
-        avGrid(id);
-        return;
-      }
-      selAv=item.id;
-      avGrid(id);
-    };
+    d.innerHTML=`${avHtml(item.id,42)}<div class="av-nm">${esc(item.n)}</div><div class="av-pr">${item.id===selAv?'✓ 使用中':'已擁有'}</div>`;
+    d.onclick=()=>{selAv=item.id;avGrid(id)};
     g.appendChild(d);
   });
   if(!isReg)renderCoins();
+}
+function renderShop(){
+  const V=$('v-shop');if(!V)return;
+  ensureCoins();
+  const dev=typeof isDev==='function'&&isDev();
+  const paid=AV_DATA.filter(x=>x.c>0);
+  const cards=paid.map(item=>{
+    const owned=dev||(st.unlockedAv&&st.unlockedAv.includes(item.id));
+    const using=user&&user.avatar===item.id;
+    const btn=using
+      ? `<span class="btn alt" style="padding:4px 12px;font-size:.78rem;background:#064e3b;color:#6ee7b7;border:1px solid #10b981;cursor:default">✓ 使用中</span>`
+      : owned
+        ? `<button class="btn blue" style="padding:4px 12px;font-size:.78rem" onclick="shopEquip('${item.id}')">套用頭像</button>`
+        : `<button class="btn" style="padding:4px 12px;font-size:.78rem" onclick="shopBuy('${item.id}',this)">🔒 🪙 ${item.c} 解鎖</button>`;
+    return `<div class="ccard" style="cursor:default;padding:12px;gap:8px;align-items:center;text-align:center;${owned?'border-color:#10b98155':''}">
+      ${avHtml(item.id,56)}
+      <div class="ccard-ti" style="font-size:.95rem">${esc(item.n)}</div>
+      <div class="muted" style="font-size:.76rem">${owned?(dev?'開發者全解鎖':'已擁有'):`需要 ${item.c} 金幣`}</div>
+      <div style="margin-top:2px">${btn}</div>
+    </div>`;
+  }).join('');
+  V.innerHTML=`<div class="card" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px">
+    <div><h3 style="margin:0">🛒 金幣商店</h3><div class="muted" style="margin-top:4px">使用學習賺取的金幣解鎖專屬頭像（每日登入 +15、答對 +3、測驗完賽 +10、閃卡 +2、打卡 +10、生日 +100）</div></div>
+    <div style="font-size:1.1rem;font-weight:bold;color:#fbbf24">🪙 目前金幣：${st.coins}</div>
+  </div>
+  <div class="cgrid" style="grid-template-columns:repeat(auto-fill,minmax(175px,1fr))">${cards}</div>`;
+}
+function shopBuy(id,btn){
+  if(user&&user.guest){showErr('訪客無法購買頭像，請先免費註冊！');return}
+  ensureCoins();
+  const item=AV_DATA.find(x=>x.id===id);if(!item)return;
+  if(st.coins<item.c){showErr(`金幣不足！解鎖「${item.n}」需要 ${item.c} 金幣，還差 ${item.c-st.coins} 枚。`);return}
+  if(btn.dataset.cfm!=='1'){
+    btn.dataset.cfm='1';btn.textContent=`確定花 ${item.c} 🪙？`;
+    setTimeout(()=>{if(btn.dataset.cfm==='1'){btn.dataset.cfm='';btn.textContent=`🔒 🪙 ${item.c} 解鎖`}},3000);
+    return;
+  }
+  st.coins-=item.c;
+  if(!st.unlockedAv.includes(id))st.unlockedAv.push(id);
+  save();renderCoins();
+  showErr(`🎉 已解鎖「${item.n}」頭像！`);
+  renderShop();
+}
+function shopEquip(id){
+  if(!user||user.guest){showErr('訪客無法更換頭像');return}
+  ensureCoins();
+  if(!st.unlockedAv.includes(id))return;
+  selAv=id;user.avatar=id;
+  LS.setItem('sess',JSON.stringify(user));
+  const all=users();if(all[user.name]){all[user.name].av=id;LS.setItem('users',JSON.stringify(all))}
+  renderWho();renderShop();
+  showErr('✅ 已套用新頭像！');
 }
 function authTab(t){$('fl').style.display=t=='l'?'flex':'none';$('fr').style.display=t=='r'?'flex':'none';$('tl').classList.toggle('on',t=='l');$('tr').classList.toggle('on',t=='r')}
 const RESERVED=['guest','admin','system'],RESERVED_NICK=['客服','系統','管理員','admin','system'];
@@ -1252,7 +1305,7 @@ function logout(){const b=$('loBtn');
  if(!loT){b.textContent='確定登出？';loT=setTimeout(()=>{loT=0;b.textContent='登出'},3000);return}/* 兩段式確認：不依賴 confirm()，內嵌/預覽環境也能用 */
  clearTimeout(loT);loT=0;b.textContent='登出';
  try{chatStop();tourEnd()}catch(e){}
- LS.removeItem('sess');SS.removeItem('adm');SS.removeItem('devret');adm='';user=null;
+ if(user)SS.removeItem('em_tip_seen_'+user.name);LS.removeItem('sess');SS.removeItem('adm');SS.removeItem('devret');adm='';user=null;
  st={m:[],r:[],cal:{},chat:[],hideChat:false,box:{}};cy=undefined;mCat=null;mId=null;cMsgs=[];cTh=[];
  if($('side').classList.contains('on'))side();
  ['mGuide','mTxt','mUse'].forEach(i=>$(i).classList.remove('on'));regPend=null;
@@ -1263,9 +1316,9 @@ function logout(){const b=$('loBtn');
 /* ===== 導覽 ===== */
 let mapObj=null;
 function go(v,arg){
- ['home','course','subj','study','quiz','cal','chat','map','time','dev','set'].forEach(x=>{const e=$('v-'+x);if(e)e.style.display=x===v?'block':'none'});
+ ['home','course','subj','study','quiz','cal','chat','map','time','dev','set','shop'].forEach(x=>{const e=$('v-'+x);if(e)e.style.display=x===v?'block':'none'});
  if(v==='home'){renderJoke();if(typeof buildSubjMenus==='function')buildSubjMenus();stats()}if(v==='course'&&typeof renderCourseHall==='function')renderCourseHall();if(v==='study')renderStudy(arg);if(v==='subj')renderSubj(arg);if(v==='quiz')quizInit();
- if(v==='cal')renderCal();if(v!=='chat')chatStop();if(v==='chat')chatTab('pub');if(v==='time')renderTime();if(v==='dev')renderDev();if(v==='map')initMap();
+ if(v==='cal')renderCal();if(v!=='chat')chatStop();if(v==='chat')chatTab('pub');if(v==='time')renderTime();if(v==='dev')renderDev();if(v==='shop')renderShop();if(v==='map')initMap();
 }
 function side(){const on=$('side').classList.toggle('on');$('sideBg').style.display=on?'block':'none'}
 function guide(){$('mGuide').classList.add('on')}
@@ -2794,6 +2847,36 @@ async function dvLoad(){DV.e='';const r=await sb.rpc('admin_stats');if(r.error){
  DV.v=v.error?{err:v.error.message}:{rows:v.data};
  const sp=await sb.from('support_msgs').select('id,user_id,nick,body,from_admin').order('id',{ascending:false}).limit(400);DV.sp=sp.error?{err:sp.error.message}:{rows:sp.data.reverse()};
  DV.ts=Date.now();if(DV.tab==='ac')await dvLoadAct();else dvDraw()}
+window.dvSendCoins=async function(){
+  const M=t=>{if($('dvCoinMsg'))$('dvCoinMsg').textContent=t};
+  if(!isDev())return M('❌ 無開發者權限');
+  const u=($('dvCoinU')?$('dvCoinU').value.trim():''), n=Math.floor(+($('dvCoinN')?$('dvCoinN').value:0));
+  if(!u)return M('請輸入使用者帳號');
+  if(!(n>0&&n<=100000))return M('請輸入 1–100000 之間的金幣數量');
+  let okLocal=false, okCloud=false;
+  if(user&&user.name===u){
+    ensureCoins();st.coins+=n;save();renderCoins();okLocal=true;
+  }else{
+    try{
+      const raw=LS.getItem('p_'+u);
+      if(raw){const obj=JSON.parse(raw);obj.coins=(typeof obj.coins==='number'?obj.coins:0)+n;LS.setItem('p_'+u,JSON.stringify(obj));okLocal=true}
+    }catch(e){}
+  }
+  if(typeof sb!=='undefined'&&sb){
+    try{
+      const pr=await sb.from('profiles').select('id').eq('username',u).maybeSingle();
+      if(pr.data&&pr.data.id){
+        const pg=await sb.from('progress').select('data').eq('user_id',pr.data.id).maybeSingle();
+        const dt=(pg.data&&pg.data.data&&typeof pg.data.data==='object')?Object.assign({},pg.data.data):{};
+        dt.coins=(typeof dt.coins==='number'?dt.coins:0)+n;
+        const up=await sb.from('progress').upsert({user_id:pr.data.id,data:dt});
+        if(!up.error)okCloud=true;
+      }
+    }catch(e){}
+  }
+  if(okCloud||okLocal)M(`✅ 已發送 ${n} 金幣給「${u}」（${[okCloud?'雲端已更新':'',okLocal?'本機已更新':''].filter(Boolean).join('、')}）`);
+  else M(`⚠️ 找不到帳號「${u}」或雲端權限不足（若為其他裝置的雲端帳號，請確認 Supabase RLS 允許 admin 更新 progress）`);
+};
 window.dvSet=(k,v)=>{DV[k]=v;if(k==='tab'&&v==='ac'){DV.af.user=null;dvLoadAct()}else dvDraw()};
 window.dvAuto=on=>{DV.auto=on;clearInterval(DV.t);if(on)DV.t=setInterval(()=>{const e=$('v-dev');if(!document.hidden&&e&&e.offsetParent)dvLoad()},30000);dvDraw()};
 window.dvResend=()=>{cloudVisit('visit');setTimeout(dvDraw,1200)};
@@ -2802,10 +2885,26 @@ function dvUsers(){const d=DV.d,q=DV.q.trim().toLowerCase();
  return `<div class="muted" style="margin:6px 0">符合 ${L.length} / ${d.users.length} 位（僅列最近 100 位）</div>`+(L.map(u=>{const k=encodeURIComponent(u.username).replace(/'/g,'%27'),b=(a,x)=>`<button class="btn alt" style="padding:2px 8px;font-size:.78rem" onclick="admUser('${k}','${a}')">${x}</button>`;
  return `<div class="box"><b>${esc(u.nick)}</b>${u.is_admin?' 👑':''}${u.banned?' 🚫已停權':u.muted?' 🔇已禁言':''} <span class="muted">${esc(u.username)}・${esc(u.stage||'未填')}${u.grade?' '+esc(u.grade)+' 年級':''}・${esc(String(u.created_at).slice(0,10))}</span>${u.is_admin?'':`<div class="cfg" style="margin:4px 0">${b(u.muted?'unmute':'mute',u.muted?'解除禁言':'禁言')}${b(u.banned?'unban':'ban',u.banned?'解除停權':'停權')}${b('kick','刪除帳號')}</div>`}</div>`}).join('')||'<div class="muted">沒有符合的使用者</div>')}
 window.DV=DV;window.dvUsers=dvUsers;
-function dvDraw(){const V=$('v-dev');if(!V||!isDev())return;const d=DV.d,spN=DV.sp&&DV.sp.rows?dvSupConvs().waiting:0,tabs=[['ov','📊 總覽'],['sp','🛟 客服'+(spN?`（${spN} 待回）`:'')],['ac','🧭 動作紀錄'],['tr','📈 每日人數'],['fb','⭐ 回饋'+(d?`（${d.feedback.length}）`:'')],['us','👥 使用者'],['dg','🩺 檢查'+(DV.e||visLog.some(x=>!x.ok)?' ⚠️':'')]];
+function dvDraw(){const V=$('v-dev');if(!V||!isDev())return;const d=DV.d,spN=DV.sp&&DV.sp.rows?dvSupConvs().waiting:0,tabs=[['ov','📊 總覽'],['sp','🛟 客服'+(spN?`（${spN} 待回）`:'')],['ac','🧭 動作紀錄'],['tr','📈 每日人數'],['fb','⭐ 回饋'+(d?`（${d.feedback.length}）`:'')],['us','👥 使用者'],['cn','🪙 發送金幣'],['dg','🩺 檢查'+(DV.e||visLog.some(x=>!x.ok)?' ⚠️':'')]];
  const chip=(k,v,l,cur)=>`<button class="chip${cur===v?' on':''}" onclick="dvSet('${k}','${v}')">${l}</button>`,kp=(n,l,c,s)=>`<div class="box" style="flex:1;min-width:110px;text-align:center;border-color:${c}"><div style="font-size:1.5rem;font-weight:bold;color:${c}">${n}</div><div class="muted">${l}</div>${s?`<div class="muted" style="font-size:.75rem">${s}</div>`:''}</div>`,st5=n=>'★'.repeat(n)+'☆'.repeat(5-n);
  let h=`<div class="card"><div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap"><h3 style="margin:0">🛠️ 開發者後台</h3><span class="muted">${DV.ts?'更新於 '+dvT(DV.ts):''}</span></div><div class="cfg" style="margin:8px 0 0"><button class="btn" onclick="renderDev()">🔄 立即更新</button><button class="btn alt" onclick="dvAuto(${!DV.auto})">${DV.auto?'⏸ 停止自動更新':'▶ 每 30 秒自動更新'}</button></div></div><div class="tabs">${tabs.map(x=>`<button class="tab${DV.tab===x[0]?' on':''}" onclick="dvSet('tab','${x[0]}')">${x[1]}</button>`).join('')}</div>`;
- if(DV.tab!=='dg'&&DV.tab!=='sp'&&DV.tab!=='ac'&&!d){V.innerHTML=h+`<div class="card">🔴 讀取失敗：${esc(DV.e)}<div class="muted">請到「🩺 診斷」查看原因。</div></div>`;return}
+ if(DV.tab!=='dg'&&DV.tab!=='sp'&&DV.tab!=='ac'&&DV.tab!=='cn'&&!d){V.innerHTML=h+`<div class="card">🔴 讀取失敗：${esc(DV.e)}<div class="muted">請到「🩺 診斷」查看原因。</div></div>`;return}
+ if(DV.tab==='cn'){
+  const localUs=Object.keys(users());
+  const cloudUs=(d&&Array.isArray(d.users))?d.users.map(u=>u.username).filter(Boolean):[];
+  const allUs=[...new Set([...cloudUs,...localUs])];
+  V.innerHTML=h+`<div class="card"><h3>🪙 發送金幣給使用者</h3>
+    <div class="muted" style="margin-bottom:10px">輸入帳號（或從清單選擇）與金幣數量，即可隨時發送。</div>
+    <div class="cfg" style="margin:0 0 8px">
+      <input class="in" id="dvCoinU" list="dvCoinList" placeholder="輸入使用者帳號" style="flex:1;min-width:160px">
+      <datalist id="dvCoinList">${allUs.map(u=>`<option value="${esc(u)}">`).join('')}</datalist>
+      <input class="in" id="dvCoinN" type="number" min="1" max="100000" value="100" style="width:110px" placeholder="數量">
+      <button class="btn" onclick="dvSendCoins()">🪙 立即發送</button>
+    </div>
+    <div class="muted" id="dvCoinMsg" style="min-height:1.4em"></div>
+  </div>`;
+  return;
+ }
  if(DV.tab==='ov'){const dl=d.daily,td=dl.length?dl[dl.length-1].n:0,yd=dl.length>1?dl[dl.length-2].n:0,df=td-yd,tot=d.stages.reduce((a,x)=>a+x.n,0)||1,low=d.feedback.filter(f=>f.rating<=2).length,mu=d.users.filter(u=>u.muted).length,bn=d.users.filter(u=>u.banned).length;
   h+=`<div class="card"><h3>全站使用者總覽</h3><div class="box" style="border-color:#f59e0b;line-height:1.8">📌 一句話看懂：目前共 <b>${d.registered+d.guests}</b> 位使用者（註冊 ${d.registered}、訪客 ${d.guests}）。今天有 <b>${td}</b> 人來過，${df>0?'比昨天多 '+df+' 人':df<0?'比昨天少 '+(-df)+' 人':'和昨天一樣'}。</div><div style="display:flex;gap:8px;flex-wrap:wrap">${kp(d.registered+d.guests,'使用者總人數','#f59e0b','註冊 ＋ 訪客')}${kp(d.registered,'註冊人數','#34d399','有建立帳號')}${kp(d.guests,'免註冊（訪客）','#38bdf8','不註冊、直接試用')}${kp(td,'今日瀏覽人數','#a78bfa',(df>=0?'▲ ':'▼ ')+Math.abs(df)+' 比昨日')}${kp(d.visitors,'累計瀏覽人數','#818cf8','歷史上來過的不同裝置')}${kp(d.avg==null?'—':d.avg,'平均滿意度','#f472b6','滿分 5 分')}</div></div>
   <div class="card"><h3>需要留意</h3><div class="box">低分回饋（★2 以下）：<b>${low}</b> 則${low?'　<a style="cursor:pointer;color:#f59e0b" onclick="DV.fr=\'low\';dvSet(\'tab\',\'fb\')">查看 →</a>':''}</div><div class="box">禁言中：<b>${mu}</b>　停權中：<b>${bn}</b>（最近 100 位內）</div></div>
@@ -3381,17 +3480,17 @@ window.renderCourseHall=function(){
       const list=courseItems(s,g,false);
       const m=list.filter(k=>st.m.includes(k.id)).length;
       const cntTxt=(s==='eng'&&!window.vocabReady&&list.length<50)?'單字載入中…':(s==='math'?(m?`已熟練 ${m}`:'點擊加選'):`共 ${list.length} 條${m?`・已熟練 ${m}`:''}`);
-      return `<div class="ccard" style="${on?'border-color:#10b981;background:#0f2922':''}" onclick="toggleCourse('${s}','${g}',true)">
-        <div class="ccard-hd">
-          <div class="ccard-ic">${ic}</div>
+      return `<div class="ccard" style="cursor:default;padding:10px 12px;gap:5px;${on?'border-color:#10b981;background:#0f2922':''}">
+        <div class="ccard-hd" style="gap:8px">
+          <div class="ccard-ic" style="width:34px;height:34px;font-size:1.25rem">${ic}</div>
           <div style="flex:1;min-width:0">
-            <div class="ccard-ti">${lb}<span class="ccard-tag">${b}</span></div>
-            <div class="muted" style="font-size:.76rem">${cntTxt}</div>
+            <div class="ccard-ti" style="font-size:.94rem">${lb}<span class="ccard-tag">${b}</span></div>
+            <div class="muted" style="font-size:.73rem">${cntTxt}</div>
           </div>
         </div>
-        <ul style="margin:2px 0 0 16px;padding:0;color:#94a3b8;font-size:.78rem;line-height:1.55;flex:1">${(COURSE_POINTS[s+':'+g]||[SUBJ_DESC[s]||'']).map(pt=>`<li>${esc(pt)}</li>`).join('')}</ul>
-        <div style="display:flex;justify-content:flex-end;margin-top:4px">
-          <span class="btn${on?' alt':''}" style="padding:4px 12px;font-size:.8rem;${on?'background:#064e3b;color:#6ee7b7;border:1px solid #10b981':''}">${on?'✓ 已選（點此退選）':'＋ 加選'}</span>
+        <ul style="margin:1px 0 0 16px;padding:0;color:#94a3b8;font-size:.75rem;line-height:1.38;flex:1">${(COURSE_POINTS[s+':'+g]||[SUBJ_DESC[s]||'']).map(pt=>`<li>${esc(pt)}</li>`).join('')}</ul>
+        <div style="display:flex;justify-content:flex-end;margin-top:2px">
+          <button type="button" class="btn${on?' alt':''}" style="padding:3px 11px;font-size:.78rem;${on?'background:#064e3b;color:#6ee7b7;border:1px solid #10b981':''}" onclick="toggleCourse('${s}','${g}',true)">${on?'✓ 已選（退選）':'＋ 加選'}</button>
         </div>
       </div>`;
     }).join('');
@@ -3680,7 +3779,7 @@ window.refreshCourseUI=function(){
 /* ===== UX、心理激勵、Email 提醒與無障礙強化 ===== */
 window.logoutNow=function(tab){
   try{chatStop();tourEnd()}catch(e){}
-  LS.removeItem('sess');SS.removeItem('adm');SS.removeItem('devret');adm='';user=null;
+  if(user)SS.removeItem('em_tip_seen_'+user.name);LS.removeItem('sess');SS.removeItem('adm');SS.removeItem('devret');adm='';user=null;
   st={m:[],r:[],cal:{},chat:[],hideChat:false,box:{}};cy=undefined;mCat=null;mId=null;cMsgs=[];cTh=[];
   if($('side').classList.contains('on'))side();
   ['mGuide','mTxt','mUse'].forEach(i=>$(i).classList.remove('on'));regPend=null;
@@ -3719,8 +3818,14 @@ window.stats=function(){
   }
   const eb=$('emTipBox');
   if(eb){
-    const showTip=user&&!user.guest&&!LS.getItem('hide_em_tip')&&!LS.getItem('em_bound_'+user.name);
-    eb.innerHTML=showTip?`<div class="card" style="border-color:#38bdf8;padding:10px 14px;margin:8px 0;display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap"><span class="muted" style="font-size:.82rem;color:#e2e8f0">📧 建議綁定 Email（只用來找回忘記的密碼），也可定期在設定匯出備份。</span><span><button class="btn blue" style="padding:3px 10px;font-size:.78rem" onclick="openSet()">前往設定</button> <button class="btn alt" style="padding:3px 8px;font-size:.78rem" onclick="LS.setItem('hide_em_tip','1');stats()">知道了</button></span></div>`:'';
+    const kSess=user?'em_tip_seen_'+user.name:'';
+    const showTip=user&&!user.guest&&!LS.getItem('hide_em_tip')&&!LS.getItem('em_bound_'+user.name)&&!SS.getItem(kSess);
+    if(showTip){
+      SS.setItem(kSess,'1');
+      eb.innerHTML=`<div class="card" style="border-color:#38bdf8;padding:10px 14px;margin:8px 0;display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap"><span class="muted" style="font-size:.82rem;color:#e2e8f0">📧 建議綁定 Email（只用來找回忘記的密碼），也可定期在設定匯出備份。</span><span><button class="btn blue" style="padding:3px 10px;font-size:.78rem" onclick="openSet();setTab('sec')">前往設定</button> <button class="btn alt" style="padding:3px 8px;font-size:.78rem" onclick="$('emTipBox').innerHTML=''">知道了</button></span></div>`;
+    }else if(!user||user.guest||LS.getItem('hide_em_tip')||LS.getItem('em_bound_'+user.name)){
+      eb.innerHTML='';
+    }
   }
 };
 
