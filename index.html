@@ -2336,8 +2336,8 @@ A('civ',[
 <script>
 /* ===== 英文單字：改由 GitHub 資料集載入（https://github.com/wengchiehyun-cell/english-vocab）=====
    資料來源網址只要改這一行；結尾要有 /。固定版本請用 @1.0.0。 */
-window.VOCAB_BASE='https://cdn.jsdelivr.net/gh/wengchiehyun-cell/english-vocab@1/data/';
-(function(){
+window.VOCAB_BASE='./english-vocab/data/';
+ (function(){
 const CN='english-vocab-v1';
 const note=e=>e.moe1200_no!=null?'教育部基本 1,200 字表第 '+e.moe1200_no+' 字':'大考中心高中英文參考詞彙表 第 '+e.ceec_level+' 級';
 function toK(e){const k={id:e.id,s:'evoc',t:e.word,d:e.definition_zh,x:e.example!=null?e.example:note(e),pos:e.pos};
