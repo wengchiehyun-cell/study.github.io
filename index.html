@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="zh-TW"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>108課綱跨學科學習系統</title>
+<title>傻T學習網</title>
 <meta name="description" content="108課綱國小、國中、高中跨學科學習：數學、國文、英文、歷史、地理、公民的知識點、測驗、記憶閃卡與學習日曆。">
 <meta name="theme-color" content="#0f172a">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🎓%3C/text%3E%3C/svg%3E">
@@ -31,7 +31,7 @@ nav{background:#1e293b;border-bottom:1px solid #334155;padding:10px 16px;display
 nav b{color:#f59e0b;cursor:pointer}
 .badge{background:#0f172a;border:1px solid #334155;border-radius:20px;padding:5px 12px;font-size:.82rem;color:#f59e0b}
 .views{flex:1;overflow:hidden;position:relative}
-.view{display:none;height:100%;overflow-y:auto;padding:18px 16px 60px;max-width:1000px;margin:0 auto}
+.view{display:none;height:100%;overflow-y:auto;padding:18px clamp(14px,2.2vw,32px) 60px;width:100%;max-width:none;margin:0}
 .portal{display:flex;gap:24px;justify-content:center;flex-wrap:wrap;margin:20px 0}
 .portal div{text-align:center;cursor:pointer;font-weight:bold}
 .portal i{display:flex;width:90px;height:90px;border-radius:50%;background:#1e293b;border:2px solid #f59e0b;font-size:2.3rem;justify-content:center;align-items:center;font-style:normal;margin-bottom:6px;transition:.2s}
@@ -90,12 +90,12 @@ summary{color:#38bdf8;cursor:pointer;font-size:.85rem;font-weight:bold}
 .portal.u{gap:14px 10px;margin:8px 0 14px}.portal.u div{width:108px;font-size:.82rem;line-height:1.35}.portal.u i{width:72px;height:72px;font-size:1.8rem;margin:0 auto 6px}.portal.u small{display:block;font-weight:normal;color:#94a3b8;font-size:.72rem}
 .an{border-bottom:1px dashed #f59e0b;cursor:pointer}.an:hover,.an.on{background:#f59e0b;color:#0f172a}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}.portal div:hover i{transform:none}}
-.yr{padding:8px 0;border-bottom:1px solid #334155}.yo{font-family:'Noto Serif TC',serif;line-height:1.9}.yt{color:#94a3b8;font-size:.92rem;line-height:1.7;margin-top:2px}#mTxt .yr{max-width:1100px;margin:0 auto}
+.yr{padding:8px 0;border-bottom:1px solid #334155}.yo{font-family:'Noto Serif TC',serif;line-height:1.9}.yt{color:#94a3b8;font-size:.92rem;line-height:1.7;margin-top:2px}#mTxt .yr{max-width:none;margin:0}
 .rd{color:#ff6b6b!important;font-weight:bold}.rt{text-decoration:underline wavy #38bdf8;text-underline-offset:4px;cursor:pointer}.an.rd{background:rgba(239,68,68,.12)}
-#mSet{padding:0;align-items:stretch;background:#0f172a}#mSet .mc{max-width:none!important;width:100%;height:100%;max-height:none;border-radius:0;border:0;padding:0 max(16px,4vw) 60px}#setHd{position:sticky;top:0;z-index:6;background:#0f172a;margin:0 calc(-1*max(16px,4vw)) 14px;padding:12px max(16px,4vw);border-bottom:1px solid #334155;display:flex;justify-content:space-between;align-items:center;gap:8px}.setWrap{max-width:720px;margin:0 auto}.setSec{border-top:1px solid #334155;margin-top:14px;padding-top:12px}#mTxt{padding:0;align-items:stretch;background:#0f172a}#mTxt .mc{max-width:none!important;width:100%;height:100%;max-height:none;border-radius:0;border:0;padding:0 max(16px,4vw) 60px}#mTxt #txB{font-size:1.2rem!important;line-height:2.2!important;max-width:1100px;margin:0 auto}#txHd{position:sticky;top:0;z-index:6;background:#0f172a;margin:0 calc(-1*max(16px,4vw)) 14px;padding:12px max(16px,4vw) 10px;border-bottom:1px solid #334155;box-shadow:0 6px 10px -6px #000a}
-.txr{display:flex;justify-content:space-between;align-items:center;gap:8px 14px;flex-wrap:wrap;max-width:1100px;margin:0 auto}.txr h3{margin:0;color:#f59e0b;font-size:1.15rem}
+#mSet{padding:0;align-items:stretch;background:#0f172a}#mSet .mc{max-width:none!important;width:100%;height:100%;max-height:none;border-radius:0;border:0;padding:0 max(16px,4vw) 60px}#setHd{position:sticky;top:0;z-index:6;background:#0f172a;margin:0 calc(-1*max(16px,4vw)) 14px;padding:12px max(16px,4vw);border-bottom:1px solid #334155;display:flex;justify-content:space-between;align-items:center;gap:8px}.setWrap{max-width:none;width:100%;margin:0}.setSec{border-top:1px solid #334155;margin-top:14px;padding-top:12px}#mTxt{padding:0;align-items:stretch;background:#0f172a}#mTxt .mc{max-width:none!important;width:100%;height:100%;max-height:none;border-radius:0;border:0;padding:0 max(16px,4vw) 60px}#mTxt #txB{font-size:1.2rem!important;line-height:2.2!important;max-width:none;margin:0}#txHd{position:sticky;top:0;z-index:6;background:#0f172a;margin:0 calc(-1*max(16px,4vw)) 14px;padding:12px max(16px,4vw) 10px;border-bottom:1px solid #334155;box-shadow:0 6px 10px -6px #000a}
+.txr{display:flex;justify-content:space-between;align-items:center;gap:8px 14px;flex-wrap:wrap;max-width:none;margin:0}.txr h3{margin:0;color:#f59e0b;font-size:1.15rem}
 .txb{display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-left:auto;justify-content:flex-end}
-#txHd #glBar{max-width:1100px;margin:8px auto 0;max-height:26vh;overflow-y:auto}
+#txHd #glBar{max-width:none;margin:8px 0 0;max-height:26vh;overflow-y:auto}
 .tgb.on{background:#f59e0b!important;color:#0f172a!important}
 .stm{display:inline-flex;gap:6px}.stm button{background:#0f172a;border:1px solid #334155;color:#cbd5e1;padding:4px 10px;border-radius:4px;font-size:.75rem;cursor:pointer}.stm .m{background:#064e3b;color:#34d399;border-color:#10b981}.stm .r{background:#7f1d1d;color:#fecaca;border-color:#ef4444}
 .rt.on{background:rgba(56,189,248,.25)}.rd.on{background:rgba(239,68,68,.35)}
@@ -107,7 +107,7 @@ summary{color:#38bdf8;cursor:pointer;font-size:.85rem;font-weight:bold}
 .kwc{display:inline-block;background:#334155;color:#e2e8f0;border-radius:999px;padding:2px 10px;margin:0 6px 6px 0;font-size:.8rem}.hex{margin-top:10px;padding:8px 12px;border:1px dashed #64748b;border-radius:8px;font-size:.9rem;line-height:1.8;word-break:break-all}.sheet a,.hex a{color:#38bdf8}
 .mrow{display:flex;align-items:center;gap:4px 16px;flex-wrap:wrap}.mrow .mn{flex:0 1 auto}.mrow .mfm{margin-left:auto;text-align:right;color:#94a3b8;font-size:.95rem;min-width:0;max-width:100%;overflow-wrap:anywhere}
 .mhd{display:flex;align-items:baseline;gap:4px 28px;flex-wrap:wrap;margin-bottom:4px}.mhd .mbig{margin-left:auto;text-align:right;padding:4px 0;white-space:pre-line;font-size:1.25rem;line-height:2}.sheet .proof{white-space:pre-line}
-.tbl{border-collapse:collapse;width:100%;text-align:center;font-size:1.05rem}.tbl th,.tbl td{border:1px solid #334155;padding:6px 8px}.tbl th{background:#0f172a;color:#f59e0b;font-size:.9rem}.tbl .must td{background:rgba(245,158,11,.10)}#mTxt details{max-width:1100px;margin:12px auto 0}
+.tbl{border-collapse:collapse;width:100%;text-align:center;font-size:1.05rem}.tbl th,.tbl td{border:1px solid #334155;padding:6px 8px}.tbl th{background:#0f172a;color:#f59e0b;font-size:.9rem}.tbl .must td{background:rgba(245,158,11,.10)}#mTxt details{max-width:none;margin:12px 0 0}
 .vbar{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:4px 0 8px;position:sticky;top:0;background:#0f172a;padding:8px 0;z-index:5}.vtgl{outline:2px solid #f59e0b}
 .vrow{display:grid;grid-template-columns:minmax(130px,.9fr) 1.2fr auto;gap:2px 12px;align-items:center;padding:8px 10px;border-bottom:1px solid #1e293b}.vrow.vok{background:#052e1b}.vrow.vbad{background:#2a1215}
 .vng{color:#64748b;font-size:.85rem}.vlv{font-size:.68rem;color:#94a3b8;border:1px solid #334155;border-radius:6px;padding:0 5px;margin-left:6px}.vw b{font-size:1.1rem;color:#f59e0b}.vmean{font-size:1rem;color:#e2e8f0}.vmean.hid{filter:blur(7px);cursor:pointer;user-select:none}.vx{grid-column:1/-1;color:#94a3b8;font-size:.9rem}
@@ -163,7 +163,7 @@ summary{color:#38bdf8;cursor:pointer;font-size:.85rem;font-weight:bold}
 </style></head><body><noscript><p style="padding:24px;color:#f8fafc">此網站需要啟用 JavaScript 才能使用。</p></noscript>
 
 <div id="auth"><div class="card ac"><div style="text-align:right"><button class="btn alt langBtn2" onclick="setLang()" style="padding:4px 10px">🌐 EN</button></div>
-<h2>108課綱跨學科學習系統</h2>
+<h2>傻T學習網</h2>
 <button class="btn" style="padding:11px 14px;font-size:.95rem" onclick="guest()">🚀 先試試看（不用註冊）</button>
 <div class="muted" style="text-align:center;font-size:.78rem">想跨裝置保存進度再登入或註冊即可</div>
 <div class="tabs"><button class="tab on" id="tl" onclick="authTab('l')">登入</button><button class="tab" id="tr" onclick="authTab('r')">註冊</button></div>
@@ -171,7 +171,7 @@ summary{color:#38bdf8;cursor:pointer;font-size:.85rem;font-weight:bold}
 <input class="in" id="lu" placeholder="帳號（或已綁定的 Email）" autocomplete="username" required><input class="in" id="lp" type="password" placeholder="密碼" autocomplete="current-password" required><button class="btn">登入</button><a href="#" id="fpl" style="display:none;text-align:center;font-size:.82rem;margin-top:8px">忘記密碼？</a></form>
 <form id="fr" onsubmit="doReg(event)" style="display:none;flex-direction:column;gap:8px">
 <input class="in" id="ru" placeholder="帳號（2–20 字：中英文、數字、_ . -）" autocomplete="username" maxlength="20" required><input class="in" id="rn" placeholder="暱稱（最多 12 字）" maxlength="12" required><input class="in" id="re" type="email" placeholder="Email（選填，僅用來找回密碼）" autocomplete="email"><div class="av" id="ravs"></div>
-<div class="muted" style="font-size:.8rem">🎓 學習設定（之後可在個人設定修改）</div><div style="display:flex;gap:8px"><input class="in" id="ra" type="number" min="5" max="99" placeholder="年齡" style="width:92px"><select class="in" id="rs" onchange="pfSync('r')" style="flex:1"><option value="">學習階段</option><option>國小</option><option>國中</option><option>高中</option><option>大學</option><option value="不分類">不分類（顯示全部）</option></select></div><select class="in" id="rgd" style="display:none"></select><select class="in" id="rg" style="display:none"><option value="">請選擇類組</option><option value="一類">第一類組（文法商）</option><option value="二類">第二類組（理工）</option><option value="三類">第三類組（醫農生）</option><option value="未分組">尚未分組（高一）</option></select>
+<div class="muted" style="font-size:.8rem">🎓 學習設定（填寫出生年月日將自動計算年齡與程度，仍可自行修改）</div><div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><label class="muted" style="font-size:.8rem;white-space:nowrap">出生年月日：</label><input class="in" id="rbd" type="date" onchange="bdayAuto('r')" style="flex:1;min-width:150px"><input type="hidden" id="ra"></div><div class="muted" id="rAgeTxt" style="font-size:.78rem"></div><select class="in" id="rs" onchange="pfSync('r')" style="width:100%"><option value="">學習階段（選填生日將自動帶入）</option><option>國小</option><option>國中</option><option>高中</option><option>大學</option><option value="不分類">不分類（顯示全部）</option></select><select class="in" id="rgd" style="display:none"></select><select class="in" id="rg" style="display:none"><option value="">請選擇類組</option><option value="一類">第一類組（文法商）</option><option value="二類">第二類組（理工）</option><option value="三類">第三類組（醫農生）</option><option value="未分組">尚未分組（高一）</option></select>
 <input class="in" id="rp" type="password" placeholder="密碼（至少 8 個字元）" autocomplete="new-password" required><input class="in" id="rp2" type="password" placeholder="再輸入一次密碼" autocomplete="new-password" required><label class="muted" style="display:flex;gap:8px;align-items:flex-start;font-size:.78rem;line-height:1.5"><input type="checkbox" id="rc" required style="margin-top:3px"><span>我了解本站會儲存帳號、暱稱、學習階段／年級與學習進度，以及基本的使用紀錄（登入、瀏覽頁面、學習操作），僅用於提供學習功能、改善服務與客服處理，不會出售給第三方。未滿 18 歲請在家長或監護人同意下使用；可隨時在「個人設定」匯出資料或刪除帳號。</span></label><button class="btn">完成註冊</button></form>
 <div class="muted" style="text-align:center;font-size:.75rem">此為「本機帳號」：資料只存在這台裝置的瀏覽器，用來區分學習紀錄。密碼以雜湊方式儲存，但此帳號不具防護效果，請勿使用常用密碼。</div>
 <div class="muted" id="authMsg" style="text-align:center"></div>
@@ -179,12 +179,12 @@ summary{color:#38bdf8;cursor:pointer;font-size:.85rem;font-weight:bold}
 
 <div id="app">
 <div id="storeWarn" style="display:none;background:#7f1d1d;color:#fff;padding:6px 12px;font-size:.82rem;text-align:center">⚠️ 此瀏覽器無法儲存資料（可能是無痕模式或內嵌瀏覽器）。關閉頁面後進度會消失，請記得到「個人設定」匯出備份。</div>
-<nav><div style="display:flex;gap:10px;align-items:center"><button class="btn alt" onclick="side()">☰ 選單</button><b onclick="go('home')">📜 108課綱學習門戶</b><button class="btn alt" id="langBtn" onclick="setLang()" style="padding:4px 10px">🌐 EN</button></div>
+<nav><div style="display:flex;gap:10px;align-items:center"><button class="btn alt" onclick="side()">☰ 選單</button><b onclick="go('home')">📜 傻T學習網</b><button class="btn alt" id="langBtn" onclick="setLang()" style="padding:4px 10px">🌐 EN</button></div>
 <div class="badge"><button class="btn" id="devBk" style="display:none;padding:2px 8px" onclick="devBack()">↩ 返回開發者</button> <span id="who"></span> <button class="btn" id="loBtn" style="padding:2px 8px;background:#ef4444;color:#fff" onclick="logout()">登出</button></div></nav>
 <div class="views">
 
 <div class="view" id="v-home">
-<div class="card" style="text-align:center"><h2 style="margin-bottom:6px">歡迎來到 <span style="color:#f59e0b">跨學科學習門戶</span></h2>
+<div class="card" style="text-align:center"><h2 style="margin-bottom:6px">歡迎來到 <span style="color:#f59e0b">傻T學習網</span></h2>
 <div class="muted" id="homeSub">已選課程　共 <b id="kbN" style="color:#f59e0b"></b> 個知識點</div>
 <div class="muted" style="margin-top:6px">已掌握 <b id="sM" style="color:#34d399">0</b>　今日建議 <b id="sD" style="color:#38bdf8">0</b> 張（共 <b id="sR" style="color:#cbd5e1">0</b> 張待複習）<span id="sDoneTag"></span></div>
 <div class="muted" style="margin-top:4px" id="sWeek"></div></div>
@@ -215,11 +215,12 @@ summary{color:#38bdf8;cursor:pointer;font-size:.85rem;font-weight:bold}
 <div class="card"><h3 id="selT"></h3><div id="selL"></div>
 <div class="cfg" style="margin:8px 0 0"><input class="in" id="logIn" style="flex:1" placeholder="輸入學習心得…"><button class="btn" onclick="addLog()">➕ 打卡</button></div></div></div>
 
-<div class="view" id="v-chat"><div class="card"><div class="tabs"><button class="tab on" id="ct1" onclick="chatTab('pub')">💬 公開大廳</button><button class="tab" id="ct2" onclick="chatTab('bot')">🛟 線上客服</button><button class="tab" id="ct3" onclick="chatTab('adm')" style="display:none">🛡️ 管理</button></div>
+<div class="view" id="v-chat"><div class="card"><div class="tabs"><button class="tab on" id="ct1" onclick="chatTab('pub')">💬 公開大廳</button><button class="tab" id="ct2" onclick="chatTab('bot')">🛟 線上客服</button><button class="tab" id="ct4" onclick="chatTab('fb')">📝 意見回饋</button><button class="tab" id="ct3" onclick="chatTab('adm')" style="display:none">🛡️ 管理</button></div>
 <div class="box" id="gBan" style="border-color:#38bdf8;display:none">目前為訪客瀏覽模式，想一起討論嗎？ <button class="btn" style="padding:3px 10px;margin-left:6px" onclick="logoutNow('l')">登入 / 註冊</button></div>
 <div class="box" id="annBox" style="display:none"></div>
 <div class="muted" id="pubNote"></div>
 <div id="admBox" style="display:none"></div>
+<div id="fbBox" style="display:none"><div class="muted">整體滿意度</div><div id="fbStars" style="font-size:1.7rem;color:#f59e0b;cursor:pointer;margin:4px 0"></div><select class="in" id="fbCat" style="width:100%;margin:8px 0"><option>功能建議</option><option>內容錯誤</option><option>介面問題</option><option>其他</option></select><textarea class="in" id="fbTx" maxlength="500" rows="5" style="width:100%" placeholder="請描述你的想法或遇到的問題（最多 500 字）"></textarea><div class="muted" id="fbMsg" style="margin:6px 0;min-height:1.2em"></div><div class="cfg" style="margin:0"><button class="btn" onclick="fbSend()">送出</button></div></div>
 <div id="chatMain"><div class="chatbox" id="chatBox"></div>
 <div class="cfg" style="margin:0"><input class="in" id="chIn" style="flex:1" maxlength="200" placeholder="輸入訊息…" onkeydown="if(event.key=='Enter')sendChat()"><button class="btn" onclick="sendChat()">發送</button></div>
 <div class="muted" style="font-size:.76rem;margin-top:6px">📌 社群守則：友善交流學習問題，請勿張貼電話、Email、網址或個人隱私。</div></div></div></div>
@@ -236,7 +237,7 @@ summary{color:#38bdf8;cursor:pointer;font-size:.85rem;font-weight:bold}
 <div class="muted" style="margin:8px 0">📚 我的課程</div><div id="sideSubj"></div>
 <div class="mi" onclick="go('quiz');side()">🧠 測驗閃卡</div>
 <div class="mi" onclick="go('cal');side()">📅 學習日曆</div><div class="mi" onclick="go('chat');side()">💬 討論社群</div>
-<div class="mi" onclick="fbOpen();side()">📝 意見回饋</div><div class="mi" onclick="openSet();side()">⚙️ 個人設定與備份</div></div>
+<div class="mi" onclick="openSet();side()">⚙️ 個人設定與備份</div></div>
 
 <div class="modal" role="dialog" aria-modal="true" id="mGuide"><div class="mc"><h3 style="color:#f59e0b;margin-bottom:10px">👋 使用導覽</h3>
 <div class="box">• 六個科目：數學、國文、英文、歷史、地理、公民，各有主頁、進度與單元<br>• 每個知識點可標記熟練／不熟，並依間隔複習安排「今日到期」<br>• 測驗可自選科目、題型與題數（含單選、多選與填空），也能新增多組混合<br><span id="guideStore">• 資料僅存在本機瀏覽器，請定期備份</span></div>
@@ -251,7 +252,6 @@ summary{color:#38bdf8;cursor:pointer;font-size:.85rem;font-weight:bold}
 <details style="margin-top:12px"><summary id="txS"></summary><div id="txL"></div></details>
 <details id="txYd" open style="margin-top:12px"><summary id="txYs" style="cursor:pointer"></summary><div id="txY"></div></details></div></div>
 
-<div class="modal" role="dialog" aria-modal="true" id="mFb"><div class="mc"><h3 style="color:#f59e0b;margin-bottom:10px">📝 意見回饋</h3><div class="muted">整體滿意度</div><div id="fbStars" style="font-size:1.7rem;color:#f59e0b;cursor:pointer;margin:4px 0"></div><select class="in" id="fbCat" style="width:100%;margin:8px 0"><option>功能建議</option><option>內容錯誤</option><option>介面問題</option><option>其他</option></select><textarea class="in" id="fbTx" maxlength="500" rows="5" style="width:100%" placeholder="請描述你的想法或遇到的問題（最多 500 字）"></textarea><div class="muted" id="fbMsg" style="margin:6px 0;min-height:1.2em"></div><div class="cfg" style="margin:0"><button class="btn" onclick="fbSend()">送出</button><button class="btn alt" onclick="$('mFb').classList.remove('on')">關閉</button></div></div></div>
 <div class="modal" role="dialog" aria-modal="true" id="mUse"><div class="mc"><h3 style="color:#f59e0b;margin-bottom:8px">🎓 確認學習設定</h3><div id="useSum" style="margin-bottom:8px;font-weight:bold"></div><div class="muted" style="margin-bottom:10px">要使用「該年級」的知識點來建立這個帳號嗎？選「是」會依年級與類組顯示適合的內容；選「否」則顯示全部知識點。之後都可以在「個人設定」修改。</div><div class="cfg" style="margin:0"><button class="btn" onclick="finishReg(true)">是，使用該年級知識點</button><button class="btn blue" onclick="finishReg(false)">否，顯示全部</button><button class="btn alt" onclick="$('mUse').classList.remove('on')">返回修改</button></div></div></div>
 <div class="modal" role="dialog" aria-modal="true" id="mSet"><div class="mc"><div id="setHd"><b style="color:#f59e0b;font-size:1.15rem">⚙️ 個人設定與備份</b><button class="btn alt" onclick="closeSet()">✕ 關閉</button></div><div class="setWrap">
 <div class="setSec" style="border-top:0;margin-top:0;padding-top:0"><div class="muted">🎨 外觀與閱讀（只套用在這台裝置）</div>
@@ -260,13 +260,13 @@ summary{color:#38bdf8;cursor:pointer;font-size:.85rem;font-weight:bold}
 <select class="in" id="ffS" onchange="uiFf(this.value)" style="width:100%;margin-top:6px"><option value="default">字體：系統預設</option><option value="sans">黑體（無襯線）</option><option value="serif">明體（宋體，適合閱讀古文）</option><option value="kai">楷體</option><option value="round">圓體</option></select>
 <div class="muted" style="font-size:.8rem;margin-top:4px">字體依你的裝置有安裝的字型而定；裝置沒有時會自動改用相近的字體。</div>
 <div class="box" id="uiPrev" style="margin-top:8px">預覽：臨渴掘井，不如未雨綢繆。The quick brown fox jumps over 12345。</div></div>
-<div class="setSec"><div class="muted">🏠 首頁</div><label class="muted" style="display:block;margin-top:6px"><input type="checkbox" id="chkJoke" checked onchange="uiJoke(this.checked)"> 在首頁顯示每日冷笑話</label></div>
+<div class="setSec"><div class="muted">🏠 首頁</div><label class="muted" style="display:block;margin-top:6px"><input type="checkbox" id="chkJoke" checked onchange="uiJoke(this.checked)"> 在首頁顯示每日冷笑話</label><select class="in" id="jokeSubjS" onchange="uiJokeSubj(this.value)" style="width:100%;margin-top:6px"><option value="auto">冷笑話科目：自動（依目前選修課程）</option><option value="all">全部科目</option><option value="數學">📐 數學</option><option value="國文">📖 國文</option><option value="英文">🔤 英文</option><option value="歷史">📜 歷史</option><option value="地理">🌍 地理</option><option value="公民">⚖️ 公民</option><option value="學習">📚 學習日常</option></select></div>
 <div class="setSec"><div class="muted">🌏 社會科顯示方式</div><select class="in" id="socS" onchange="uiSoc(this.value)" style="width:100%;margin-top:6px"><option value="auto">自動（國小：三科分開；其他：三科合併）</option><option value="merge">三科合併：社會主頁面（總覽、跨科主題）</option><option value="sep">三科分開：歷史、地理、公民各自的入口</option></select><div class="muted" style="font-size:.8rem;margin-top:4px">測驗的「社會三科綜合」範圍在兩種方式下都會保留。</div></div>
 <div class="setSec"><div class="muted">👤 暱稱與頭像</div>
 <input class="in" id="setNick" style="width:100%;margin-bottom:8px" placeholder="暱稱"><div class="av" id="savs"></div>
 <button class="btn" style="width:100%;margin:8px 0" onclick="saveProfile()">儲存暱稱與頭像</button></div>
-<div id="pfBox" style="border-top:1px solid #334155;margin-top:10px;padding-top:10px"><div class="muted">🎓 學習設定</div>
-<input class="in" id="sa" type="number" min="5" max="99" placeholder="年齡" style="width:100%;margin-top:6px">
+<div id="pfBox" style="border-top:1px solid #334155;margin-top:10px;padding-top:10px"><div class="muted">🎓 學習設定（選擇出生年月日會精準計算至月與日，並自動帶入程度，你仍可自行修改）</div>
+<div style="display:flex;gap:8px;align-items:center;margin-top:6px;flex-wrap:wrap"><label class="muted" style="font-size:.82rem;white-space:nowrap">出生年月日：</label><input class="in" id="sbd" type="date" onchange="bdayAuto('s')" style="flex:1;min-width:160px"><input type="hidden" id="sa"></div><div class="muted" id="sAgeTxt" style="font-size:.8rem;margin-top:4px"></div>
 <select class="in" id="ss" onchange="pfSync('s')" style="width:100%;margin-top:6px"><option value="">學習階段</option><option>國小</option><option>國中</option><option>高中</option><option>大學</option><option value="不分類">不分類（顯示全部）</option></select>
 <select class="in" id="sgd" style="width:100%;margin-top:6px;display:none"></select>
 <select class="in" id="sg" style="width:100%;margin-top:6px;display:none"><option value="">請選擇類組</option><option value="一類">第一類組（文法商）</option><option value="二類">第二類組（理工）</option><option value="三類">第三類組（醫農生）</option><option value="未分組">尚未分組（高一）</option></select>
@@ -295,7 +295,7 @@ window.addEventListener('error',e=>showErr('發生錯誤：'+e.message));
 window.addEventListener('unhandledrejection',e=>showErr('發生錯誤：'+((e.reason&&e.reason.message)||e.reason)));
 const $=id=>document.getElementById(id),esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const AV=['👑','📜','⚔️','⛵','🎓','🛡️','🧭','🏛️','🕵️','🧙‍♂️','🦁','🦉'];let selAv=AV[0];
-const SUBJ={math:'📐 數學',chi:'📖 國文',eng:'🔤 英文',hist:'📜 歷史',geo:'🌍 地理',civ:'⚖️ 公民',soc:'🌏 社會'};
+const SUBJ={math:'📐 數學',chi:'📖 國文',eng:'🔤 英文',hist:'📜 歷史',geo:'🌍 地理',civ:'⚖️ 公民',soc:'🌏 社會全科'};
 const SUBJ_DESC={math:'依課綱章節整理定理、定義與性質（附證明）',chi:'課文選文（附全文與字詞注釋）、字音字形對比、成語',eng:'文法與用法、易混字、國小／國中／高中分級單字（附例句）、閱讀與寫作策略',hist:'臺灣史、中國史與世界史，依分期整合，附年代軸與歷史地圖',soc:'歷史、地理、公民三科整合：三科進度、跨科主題、公民時事與歷屆試題',geo:'自然與人文地理、GIS 與區域發展',civ:'經濟、憲法與法律、政治與公民素養'};
 const SUB_NAME={math:'數學',chi:'國文',eng:'英文',evoc:'英文',geo:'地理',civ:'公民',tw:'臺灣史',cn:'中國史',world:'世界史',east:'東亞史',mex:'數學例題',chz:'國文',chx:'國文',chy:'國文'};
 const JOKES=[["數學", "為什麼 π 老是被大家討厭？", "因為他是無理數，總是無理取鬧，還沒完沒了（無限不循環）。"], ["數學", "兩個悲觀的人在一起，為什麼反而變樂觀？", "因為負負得正。"], ["數學", "為什麼微積分老師最愛看跨年倒數？", "因為他對「導數」（倒數）特別有感覺。"], ["數學", "為什麼極限去補習也考不到滿分？", "因為他只會一直「趨近」，永遠到不了。"], ["數學", "y 為什麼總是跟著 x？", "因為 y 是 x 的函數，沒有你，我就沒有自己。"], ["數學", "質數為什麼總是單身？", "因為除了自己和 1，沒有人能「整除」他。"], ["數學", "最浪漫的數學式是什麼？", "1 + 1 = 1，因為我們合而為一。"], ["數學", "為什麼老師不准用 0 當分母？", "因為被 0 除，連計算機都會崩潰，何況是你。"], ["數學", "為什麼圓形最愛考試？", "因為不管怎麼考，他都能得到「圓」滿的結果。"], ["數學", "為什麼 x 總是被大家找？", "因為每個人都想「求」他。"], ["國文", "蘇軾為什麼能寫詩又會做菜？", "因為他既懂「詩」，也懂「食」，東坡肉就是證明。"], ["國文", "陶淵明為什麼只上三天班就辭職？", "因為薪水只有五斗米，連腰都不夠折。"], ["國文", "「己、已、巳」三兄弟為什麼常被認錯？", "因為他們長得只差一點點，連老師都要看第二眼。"], ["國文", "李白為什麼不怕缺錢？", "因為他說「千金散盡還復來」，原來是在幫提款機寫廣告。"], ["國文", "為什麼諸葛亮出門都不帶傘？", "因為他連「借東風」都借得到，天氣預報根本不用看。"], ["國文", "為什麼作文最後一句都寫「總而言之」？", "因為前面寫太多，連作者自己都忘了重點。"], ["歷史", "為什麼歷史課本這麼重？", "因為每一頁都有「重」點。"], ["歷史", "為什麼鄭成功從來不怕失敗？", "因為他的名字已經先「成功」了。"], ["歷史", "秦始皇為什麼最不怕當老闆？", "因為他連度量衡都統一了，績效標準超清楚。"], ["歷史", "為什麼歷史課特別容易睡著？", "因為每個年代都已經是「過去式」。"], ["歷史", "拿破崙的牌為什麼打不贏？", "因為他最後那張牌，叫滑鐵盧。"], ["歷史", "為什麼古代的信都寫得很短？", "因為快遞用的是馬，字寫太多會超重。"], ["地理", "為什麼火山常常發脾氣？", "因為壓力太大，爆發前都會「岩」重警告。"], ["地理", "等高線為什麼最會畫重點？", "因為越密的地方越陡，一看就知道哪裡最「費力」。"], ["地理", "為什麼板塊總是在吵架？", "因為談不攏就「錯開」，再不行就「擠」在一起。"], ["地理", "為什麼赤道的天氣總是那麼熱情？", "因為太陽每天都直接「正面」告白。"], ["地理", "颱風為什麼都有名字？", "因為每次都喊「那個很大的風」，記者會講到沒氣。"], ["地理", "為什麼臺灣的天氣預報常說「局部地區有雨」？", "因為雨很害羞，只敢下在一個地方。"], ["公民", "我選擇睡覺而不讀書，機會成本是什麼？", "是考試的分數。反過來選讀書，機會成本是黑眼圈。"], ["公民", "為什麼通貨膨脹最會減肥？", "因為它能讓你的錢越來越「薄」。"], ["公民", "為什麼政府和媽媽很像？", "因為都在管你，還說是為你好。"], ["公民", "為什麼供給和需求總是吵不完？", "因為要價格出面調停，雙方各退一步，才叫「均衡」。"], ["英文", "What is the longest word in English?", "Smiles——因為兩個 s 中間隔了一英里（mile）。"], ["英文", "哪一個英文字母最愛喝茶？", "T，因為 T 唸起來就是 tea。"], ["英文", "Why is 6 afraid of 7?", "Because 7 ate 9.（7 8 9，ate 唸起來像 eight）"], ["英文", "為什麼字母 I 永遠大寫？", "因為他非常有自信。"], ["英文", "Why was the math book sad?", "Because it had too many problems."], ["學習", "為什麼考試前一天的時間特別快？", "因為壓力越大，時鐘轉得越快（至少感覺是）。"], ["學習", "為什麼書包總是那麼重？", "因為裡面裝滿了理想，和沒寫完的功課。"], ["學習", "為什麼學生都愛在考前整理房間？", "因為整理房間比複習更有成就感。"]];
@@ -1131,7 +1131,7 @@ function logout(){const b=$('loBtn');
  LS.removeItem('sess');SS.removeItem('adm');SS.removeItem('devret');adm='';user=null;
  st={m:[],r:[],cal:{},chat:[],hideChat:false,box:{}};cy=undefined;mCat=null;mId=null;cMsgs=[];cTh=[];
  if($('side').classList.contains('on'))side();
- ['mGuide','mSet','mTxt','mFb','mUse'].forEach(i=>$(i).classList.remove('on'));regPend=null;
+ ['mGuide','mSet','mTxt','mUse'].forEach(i=>$(i).classList.remove('on'));regPend=null;
  $('ct3').textContent='🛡️ 管理';
  $('app').style.display='none';$('auth').style.display='flex';$('authMsg').textContent='';
  ['lu','lp','ru','rn','rp','rp2'].forEach(i=>$(i).value='');authTab('l')}
@@ -1148,7 +1148,21 @@ function guide(){$('mGuide').classList.add('on')}
 function stats(){const ids=new Set(KB.map(k=>k.id));$('sM').textContent=st.m.filter(x=>ids.has(x)).length;$('sR').textContent=st.r.filter(x=>ids.has(x)).length;$('sD').textContent=KB.filter(k=>{const b=st.box[k.id];return b?b.due<=today():st.r.includes(k.id)}).length;$('kbN').textContent=KB.length}
 
 /* ===== 冷笑話 ===== */
-function renderJoke(){const c=$('jCard');if(!c)return;let off=false;try{off=LS.getItem('ui_joke')==='0'}catch(e){}c.style.display=off?'none':'';if(off)return;const d=new Date(),n=Math.floor((Date.UTC(d.getFullYear(),d.getMonth(),d.getDate()))/864e5);ji=n%JOKES.length;const j=JOKES[ji];
+function renderJoke(){const c=$('jCard');if(!c)return;let off=false,pref='auto';try{off=LS.getItem('ui_joke')==='0';pref=LS.getItem('ui_joke_subj')||'auto'}catch(e){}c.style.display=off?'none':'';if(off)return;
+ let pool=JOKES;
+ if(pref==='auto'){
+  const cs=(st&&Array.isArray(st.courses)&&st.courses.length)?st.courses:[];
+  if(cs.length){
+   const cats=new Set();
+   cs.forEach(ck=>{const s=ck.split(':')[0];if(s==='math')cats.add('數學');else if(s==='chi')cats.add('國文');else if(s==='eng')cats.add('英文');else if(s==='hist')cats.add('歷史');else if(s==='geo')cats.add('地理');else if(s==='civ')cats.add('公民');else if(s==='soc'){cats.add('歷史');cats.add('地理');cats.add('公民')}});
+   const f=JOKES.filter(j=>cats.has(j[0]));
+   if(f.length)pool=f;
+  }
+ }else if(pref!=='all'){
+  const f=JOKES.filter(j=>j[0]===pref);
+  if(f.length)pool=f;
+ }
+ const d=new Date(),n=Math.floor((Date.UTC(d.getFullYear(),d.getMonth(),d.getDate()))/864e5);ji=n%pool.length;const j=pool[ji];
  $('jQ').textContent='['+j[0]+'] '+j[1];$('jA').textContent='💡 '+j[2];$('jA').style.display='none';$('jB').style.display=''}
 function jShow(){$('jA').style.display='block';$('jB').style.display='none'}
 
@@ -1445,16 +1459,64 @@ function gradeBar(){const st0=PFC?PFC.stage:(mLv==='E'?'國小':mLv==='JH'?'國�
  return `<div class="lvbar" style="margin:6px 0">年級：${[['all','全部'],...Array.from({length:mx},(_,i)=>[base+i+1,GOPT[st0][i]])].map(x=>`<a class="${mGr===x[0]?'on':''}" onclick="mGrSet(${typeof x[0]==='string'?"'all'":x[0]})">${x[1]}</a>`).join('')}</div>`}
 /* ===== 學習設定：年齡／學習階段／類組 ===== */
 let PFC=null,PFS='',regPend=null;
-const pfTxt=u=>u&&u.pf?`${u.pf.age} 歲・${gradeLbl(u.pf.stage,u.pf.grade)}${u.pf.grp?'・'+({'一類':'第一類組','二類':'第二類組','三類':'第三類組','未分組':'尚未分組'})[u.pf.grp]:''}${u.pf.use===true?'・使用該年級知識點':u.pf.use===false?'・顯示全部知識點':''}`:'未填學習設定';
+function calcBday(bstr){
+ if(!bstr||!/^\d{4}-\d{2}-\d{2}$/.test(bstr))return null;
+ const [by,bm,bd]=bstr.split('-').map(Number);
+ const now=new Date(),ny=now.getFullYear(),nm=now.getMonth()+1,nd=now.getDate();
+ let y=ny-by,m=nm-bm,d=nd-bd;
+ if(d<0){m-=1;d+=new Date(ny,nm-1,0).getDate()}
+ if(m<0){y-=1;m+=12}
+ if(y<5||y>99)return {err:'出生年月日換算之年齡須介於 5–99 歲之間'};
+ const sy=nm>=8?ny:ny-1;
+ const cohort=(bm<9||(bm===9&&bd===1))?by:by+1;
+ const sa=sy-cohort;
+ let stage='不分類',grade=0;
+ if(sa<=6){stage='國小';grade=1}
+ else if(sa<=11){stage='國小';grade=sa-5}
+ else if(sa<=14){stage='國中';grade=sa-11}
+ else if(sa<=17){stage='高中';grade=sa-14}
+ else if(sa<=22){stage='大學';grade=0}
+ else{stage='不分類';grade=0}
+ return {y,m,d,age:y,stage,grade,text:`${y} 歲 ${m} 個月 ${d} 天`};
+}
+function bdayAuto(p){
+ const bEl=$(p+'bd'),aEl=$(p+'a'),tEl=$(p+'AgeTxt');
+ if(!bEl)return;
+ const res=calcBday(bEl.value);
+ if(!res){if(tEl)tEl.textContent='';return}
+ if(res.err){if(tEl)tEl.innerHTML=`<span style="color:#f87171">⚠️ ${res.err}</span>`;if(aEl)aEl.value='';return}
+ if(aEl)aEl.value=res.age;
+ $(p+'s').value=res.stage;
+ pfSync(p);
+ if(res.grade)$(p+'gd').value=String(res.grade);
+ if(res.stage==='高中'&&res.grade===1&&!$(p+'g').value)$(p+'g').value='未分組';
+ if(tEl)tEl.innerHTML=`🎂 精準年齡：<b style="color:#38bdf8">${res.text}</b>　自動推算程度：<b style="color:#34d399">${gradeLbl(res.stage,res.grade)}</b>（仍可自行更改）`;
+}
+const pfAgeStr=f=>{if(!f)return '';if(f.bday){const r=calcBday(f.bday);if(r&&!r.err)return r.text}return f.age?`${f.age} 歲`:''};
+const pfTxt=u=>u&&u.pf?`${pfAgeStr(u.pf)}・${gradeLbl(u.pf.stage,u.pf.grade)}${u.pf.grp?'・'+({'一類':'第一類組','二類':'第二類組','三類':'第三類組','未分組':'尚未分組'})[u.pf.grp]:''}${u.pf.use===true?'・使用該年級知識點':u.pf.use===false?'・顯示全部知識點':''}`:'未填學習設定';
 function pfSync(p){const sv=$(p+'s').value,gd=$(p+'gd'),cur=gd.value;$(p+'g').style.display=sv==='高中'?'block':'none';gd.style.display=['國小','國中','高中'].includes(sv)?'block':'none';if(p==='s'){['suL','svL'].forEach(i=>{const e=$(i);if(e)e.style.display=(!sv||['國小','國中','高中'].includes(sv))?'block':'none'})}gd.innerHTML='<option value="">請選擇年級</option>'+(GOPT[sv]||[]).map((t,i)=>`<option value="${i+1}">${t}</option>`).join('');if(cur&&(GOPT[sv]||[])[cur-1])gd.value=cur}
-function pfRead(p){const a=Math.floor(+$(p+'a').value),st0=$(p+'s').value,g=$(p+'g').value;
- if(!(a>=5&&a<=99))return '請輸入 5–99 歲的年齡';if(!st0)return '請選擇學習階段（國小／國中／高中／大學／不分類）';if(['大學','不分類'].includes(st0))return {age:a,stage:st0,grade:0,grp:''};if(!+$(p+'gd').value)return '請選擇年級';if(st0==='高中'&&!g)return '高中請選擇類組';
- return {age:a,stage:st0,grade:+$(p+'gd').value,grp:st0==='高中'?g:''}}
+function pfRead(p){
+ const bstr=$(p+'bd')?$(p+'bd').value.trim():'';
+ let a=Math.floor(+$(p+'a').value);
+ if(bstr){
+  const res=calcBday(bstr);
+  if(!res||res.err)return (res&&res.err)||'請選擇正確的出生年月日';
+  a=res.age;
+ }else if(!(a>=5&&a<=99)){
+  return '請選擇出生年月日（年齡須介於 5–99 歲）';
+ }
+ const st0=$(p+'s').value,g=$(p+'g').value;
+ if(!st0)return '請選擇學習階段（國小／國中／高中／大學／不分類）';
+ if(['大學','不分類'].includes(st0))return {age:a,bday:bstr||'',stage:st0,grade:0,grp:''};
+ if(!+$(p+'gd').value)return '請選擇年級';
+ if(st0==='高中'&&!g)return '高中請選擇類組';
+ return {age:a,bday:bstr||'',stage:st0,grade:+$(p+'gd').value,grp:st0==='高中'?g:''};
+}
 /* 高中類組：一類（文法商）不顯示選修數學甲；二類、三類不顯示選修數學乙 */
 function prefOK(k){if(!PFC||!PFC.use)return true;if(k.s==='math'||k.s==='mex'){const KS=k.stg||'高中';if(KS==='高中'&&PFC.stage==='高中'){const l=k.lv;return !(l==='J'&&PFC.grp==='一類')&&!(l==='Y'&&(PFC.grp==='二類'||PFC.grp==='三類'))}return true}return true}
 function savePf(){const M=t=>{$('setMsg').textContent=t};if(user.guest)return M('訪客無法儲存，請先註冊登入。');const pf=pfRead('s');if(typeof pf==='string')return M(pf);
  const all=users(),a=all[user.name];if(!a)return M('找不到帳號資料');a.pf=Object.assign({},a.pf||{},pf,{use:['大學','不分類'].includes(pf.stage)?false:$('su').checked,prev:['大學','不分類'].includes(pf.stage)?false:$('sv').checked,ts:(a.pf&&a.pf.ts)||Date.now(),upd:Date.now()});LS.setItem('users',JSON.stringify(all));
- PFC=a.pf.use?a.pf:null;PFS=a.pf.stage||'';mLv='all';mGr='all';mUc='all';mCat=null;mId=null;M('✅ 已儲存學習設定'+(PFC&&PFC.stage!=='高中'?'（目前只有數學提供國小／國中知識點，其他科目先顯示全部內容）':''))}
+ PFC=a.pf.use?a.pf:null;PFS=a.pf.stage||'';mLv='all';mGr='all';mUc='all';mCat=null;mId=null;M('✅ 已儲存學習設定')}
 /* ===== 國小／國中數學（stg：學習階段；lv：E＝國小、JH＝國中）===== */
 const JR_RAW=[[4001,"國小","整數與四則運算","定義","四則運算的順序","先乘除、後加減；有括號先算括號；同級由左到右","算式裡有括號先算括號，接著先算乘法與除法，最後才算加法與減法。同一級的運算由左往右算。例：3 + 4×2 = 3 + 8 = 11，不是 14。",4],[4002,"國小","整數與四則運算","性質","加法交換律與結合律","a + b = b + a；(a + b) + c = a + (b + c)","加法可以調換順序，也可以先算任意兩個數，結果不變。常用來湊成整十、整百：27 + 38 + 13 = (27 + 13) + 38 = 78。",3],[4003,"國小","整數與四則運算","定理","乘法分配律","a × (b + c) = a × b + a × c","把括號內的和拆開，各自乘 a 再相加；反過來也成立，可以「提出公因數」：25×17 + 25×3 = 25×(17 + 3) = 500。",5],[4004,"國小","整數與四則運算","定義","因數與倍數","a ÷ b 餘 0 ⟹ b 是 a 的因數，a 是 b 的倍數","12 的因數有 1、2、3、4、6、12；3 的倍數有 3、6、9、12…。一個數的因數個數有限，倍數有無限多個。",5],[4005,"國小","整數與四則運算","性質","整除的判別法","2：個位為偶數；5：個位為 0 或 5；3：各位數字和是 3 的倍數；9：各位數字和是 9 的倍數；4：末兩位是 4 的倍數","不必做除法就能判斷整除。例：738 的各位數字和 7+3+8 = 18，是 9 的倍數，所以 738 能被 9 整除。",5],[4006,"國小","整數與四則運算","定義","質數與合成數","質數：恰有 2 個因數（1 與自己）；合成數：因數多於 2 個；1 既不是質數也不是合成數","質數有 2、3、5、7、11、13…。2 是唯一的偶質數。判斷質數時，只需試除到不超過它的平方根的質數。",6],[4007,"國小","整數與四則運算","定理","最大公因數與最小公倍數","a × b = GCD(a, b) × LCM(a, b)","用短除法或質因數分解求最大公因數 GCD 與最小公倍數 LCM。兩數的乘積等於 GCD 乘 LCM，例：12×18 = 216 = 6×36。",5],[4008,"國小","分數與小數","定義","分數的意義","a/b：把「1」平分成 b 份，取其中 a 份；a/b = a ÷ b","分母表示平分的份數，分子表示取幾份。分子比分母小是真分數；分子大於或等於分母是假分數，可化成帶分數。",3],[4009,"國小","分數與小數","性質","擴分與約分","a/b = (a×k)/(b×k) = (a÷k)/(b÷k)（k ≠ 0）","分子、分母同乘或同除以一個不為 0 的數，分數的大小不變。約到分子分母只剩公因數 1，稱為最簡分數。",4],[4010,"國小","分數與小數","定理","分數的比較（通分）","a/b 與 c/d 比較：比 a×d 與 b×c","異分母分數先通分成同分母再比分子；也可交叉相乘比較。",4],[4011,"國小","分數與小數","定理","分數的加減","a/c ± b/c = (a ± b)/c；異分母先通分","同分母只加減分子，分母不變。異分母要先通分到公分母（通常取最小公倍數）。",5],[4012,"國小","分數與小數","定理","分數的乘法","(a/b) × (c/d) = (a × c)/(b × d)","分子乘分子、分母乘分母；先約分再乘比較省力。",5],[4013,"國小","分數與小數","定理","分數的除法","(a/b) ÷ (c/d) = (a/b) × (d/c)","除以一個分數，等於乘以它的倒數。",6],[4014,"國小","分數與小數","性質","小數與分數互換","0.1 = 1/10；0.01 = 1/100；0.375 = 375/1000","小數的第 n 位對應分母 10ⁿ。化成分數後再約分；分數化小數用分子 ÷ 分母。",5],[4015,"國小","分數與小數","性質","小數的乘法與位移","乘以 10、100、1000：小數點向右移 1、2、3 位；除以 10、100、1000：向左移","小數乘法先當整數乘，再依兩數小數位數的總和決定積的小數點位置。",5],[4016,"國小","比與百分率","定義","比與比值","a : b 的比值 = a ÷ b = a/b","比的前項與後項同乘或同除以非 0 的數，比值不變。化簡成互質的整數比稱為最簡整數比。",6],[4017,"國小","比與百分率","定理","比例式","a : b = c : d ⟺ a × d = b × c","比例式中「內項乘積 = 外項乘積」，可以用來求未知數。",6],[4018,"國小","比與百分率","定理","距離、速率與時間","距離 = 速率 × 時間；速率 = 距離 ÷ 時間","注意單位要一致：速率是每小時幾公里，時間就用小時。",6],[4019,"國小","比與百分率","定理","百分率與折扣","百分率 = 部分 ÷ 全部 × 100%；售價 = 原價 × 折數/10","打 7 折就是原價的 70%，也就是乘以 0.7。",6],[4020,"國小","比與百分率","定理","比例尺","比例尺 = 圖上長度 : 實際長度","比例尺 1 : 50000 表示圖上 1 公分代表實際 50000 公分。",6],[4021,"國小","圖形與測量","定理","長方形與正方形","長方形：面積 = 長 × 寬，周長 = 2 × (長 + 寬)；正方形：面積 = 邊長²","面積用平方單位，周長用長度單位。",3],[4022,"國小","圖形與測量","定理","平行四邊形與三角形的面積","平行四邊形：底 × 高；三角形：底 × 高 ÷ 2","高是底邊到對邊（或對頂點）的垂直距離，不是斜邊的長。三角形是同底同高平行四邊形的一半。",5],[4023,"國小","圖形與測量","定理","梯形的面積","梯形面積 = (上底 + 下底) × 高 ÷ 2","把兩個一樣的梯形拼成平行四邊形，底變成上底加下底，面積再除以 2。",5],[4024,"國小","圖形與測量","定理","圓周長與圓面積","周長 = 2πr = πd；面積 = πr²","π（圓周率）約等於 3.14。r 是半徑，d 是直徑。",6],[4025,"國小","圖形與測量","性質","三角形與四邊形的內角和","三角形內角和 = 180°；四邊形內角和 = 360°","任何三角形的三個內角相加都是 180°，四邊形可以切成兩個三角形，所以是 360°。",4],[4026,"國小","圖形與測量","定理","長方體與正方體的體積","長方體：長 × 寬 × 高；正方體：邊長³","體積用立方單位。1 公升 = 1000 立方公分。",5],[4028,"國小","資料與統計","定理","平均數","平均數 = 總和 ÷ 個數","平均數表示把各數「勻平」後每一份的大小。",5],[4029,"國小","資料與統計","性質","長條圖與圓形圖","圓形圖：圓心角 = 360° × 百分率","長條圖比較各項大小；圓形圖表示各部分占全體的比例，所有圓心角加起來是 360°。",6],[4101,"國中","數與式","定義","絕對值","|a| = a（a ≥ 0）；|a| = −a（a < 0）","絕對值表示數線上這個數到原點的距離，所以永遠不小於 0。",7],[4102,"國中","數與式","性質","正負數的運算","同號相乘除為正，異號相乘除為負；減去一個數 = 加上它的相反數","計算時先決定符號，再算絕對值。括號前是負號時，括號內每一項都要變號。",7],[4103,"國中","數與式","定理","指數律（整數指數）","aᵐ × aⁿ = aᵐ⁺ⁿ；aᵐ ÷ aⁿ = aᵐ⁻ⁿ；(aᵐ)ⁿ = aᵐⁿ；(ab)ⁿ = aⁿbⁿ","同底數相乘指數相加、相除指數相減，次方的次方指數相乘。",8],[4104,"國中","數與式","定義","科學記號","N = a × 10ⁿ（1 ≤ a < 10，n 為整數）","用來表示很大或很小的數。小數點向左移 n 位，指數是正的 n；向右移，指數是負的。",8],[4106,"國中","數與式","定理","十字交乘因式分解","x² + (p + q)x + pq = (x + p)(x + q)","找兩個數，乘積是常數項、和是一次項係數。",8],[4107,"國中","數與式","定理","根式的運算","√(ab) = √a·√b；√(a/b) = √a/√b；√(a²) = |a|（a、b > 0）","化簡根式時，把根號內拆出完全平方數。",8],[4108,"國中","方程式與不等式","性質","等量公理與一元一次方程式","等式兩邊同加、同減、同乘、同除（不為 0）同一個數，等式仍成立","解方程式就是用等量公理一步步把 x 單獨留下，移項時要變號。",7],[4109,"國中","方程式與不等式","定理","二元一次聯立方程式","x = (c₁b₂ − c₂b₁)/(a₁b₂ − a₂b₁)；y = (a₁c₂ − a₂c₁)/(a₁b₂ − a₂b₁)","一般用代入消去法或加減消去法解題；此式是消去法的通式（分母不為 0 時有唯一解）。",8],[4110,"國中","方程式與不等式","性質","一元一次不等式","兩邊同乘或同除以負數時，不等號要反向","除了乘除負數要變號外，其餘步驟和解方程式相同。",8],[4111,"國中","方程式與不等式","定理","一元二次方程式的公式解","x = [−b ± √(b² − 4ac)] / (2a)","ax² + bx + c = 0（a ≠ 0）。可由配方法推導。",9],[4112,"國中","方程式與不等式","性質","判別式與根的個數","D = b² − 4ac：D > 0 兩相異實根；D = 0 重根；D < 0 無實根","只看 D 的正負，就能判斷根的情形而不必真的解方程式。",9],[4113,"國中","方程式與不等式","定理","根與係數的關係","α + β = −b/a；αβ = c/a","α、β 是 ax² + bx + c = 0 的兩根。",9],[4114,"國中","方程式與不等式","定理","配方法","x² + bx = (x + b/2)² − (b/2)²","把二次式配成完全平方，是解二次方程式與求頂點的基本技巧。",9],[4115,"國中","函數與坐標","定理","兩點距離公式","d = √[(x₂ − x₁)² + (y₂ − y₁)²]","由畢氏定理得到：水平差與鉛直差是兩股，距離是斜邊。",8],[4116,"國中","函數與坐標","定理","中點公式","M = ((x₁ + x₂)/2，(y₁ + y₂)/2)","中點的坐標是兩端點坐標的平均。",8],[4117,"國中","函數與坐標","定理","斜率與一次函數","m = (y₂ − y₁)/(x₂ − x₁)；y = mx + b","m 是斜率（每右移 1 單位上升的量），b 是 y 截距。m > 0 圖形向右上，m < 0 向右下。",8],[4118,"國中","函數與坐標","定理","二次函數的頂點","y = ax² + bx + c 的頂點為 (−b/2a，(4ac − b²)/4a)","a > 0 開口向上，頂點是最低點；a < 0 開口向下，頂點是最高點。",9],[4119,"國中","平面幾何","性質","三角形的內角與外角","內角和 = 180°；外角 = 兩個不相鄰內角的和","三角形的外角等於它不相鄰的兩個內角之和，三個外角（各取一個）的和是 360°。",8],[4120,"國中","平面幾何","定理","多邊形的內角和與外角和","n 邊形內角和 = (n − 2) × 180°；外角和 = 360°","n 邊形可由一個頂點切成 n − 2 個三角形。正 n 邊形每個外角 = 360°/n。",8],[4121,"國中","平面幾何","性質","三角形的全等性質","SSS、SAS、ASA、AAS、RHS","只要符合其中一個條件，兩個三角形就全等，對應邊與對應角都相等。（SSA 不能保證全等。）",8],[4122,"國中","平面幾何","定理","相似三角形","△ABC ∼ △DEF ⟹ AB/DE = BC/EF = CA/FD；面積比 = (邊長比)²","AA 相似：兩組對應角相等就相似。相似圖形的周長比等於邊長比，面積比等於邊長比的平方。",9],[4123,"國中","平面幾何","定理","畢氏定理","a² + b² = c²（c 為直角三角形的斜邊）","逆定理也成立：三邊滿足 a² + b² = c²，則為直角三角形。常見：3-4-5、5-12-13。",8],[4124,"國中","平面幾何","定理","平行線截比例線段","DE ∥ BC ⟹ AD/AB = AE/AC = DE/BC","在 △ABC 中，D 在 AB 上、E 在 AC 上，若 DE 平行 BC，則 △ADE ∼ △ABC。",9],[4125,"國中","平面幾何","定理","圓周角與圓心角","圓周角 = 圓心角 ÷ 2（同弧）","同弧所對的圓周角都相等；直徑所對的圓周角是 90°。",9],[4126,"國中","平面幾何","性質","圓的切線性質","切線 ⟂ 過切點的半徑；圓外一點到圓的兩切線段等長","常用來作輔助線：連圓心與切點得到直角。",9],[4127,"國中","平面幾何","性質","三角形的重心、外心、內心","重心：三中線交點，分每條中線為 2 : 1；外心：三中垂線交點；內心：三角平分線交點","重心把中線從頂點算起分成 2 : 1；外心到三頂點等距；內心到三邊等距。",9],[4128,"國中","平面幾何","定理","弧長與扇形面積","弧長 = 2πr × (θ/360)；扇形面積 = πr² × (θ/360)","θ 是圓心角（度）。扇形面積與弧長都占圓整體的 θ/360。",9],[4129,"國中","平面幾何","定理","柱體、錐體與球的體積","柱：V = 底面積 × 高；錐：V = (1/3) × 底面積 × 高；球：V = (4/3)πr³，表面積 S = 4πr²","同底同高的錐體體積是柱體的三分之一。",9],[4130,"國中","機率與統計","定義","平均數、中位數與眾數","平均數 = 總和 ÷ 個數；中位數：由小到大排列後居中的數；眾數：出現次數最多的數","資料個數是偶數時，中位數取中間兩數的平均。",7],[4131,"國中","機率與統計","定義","四分位數與盒狀圖","Q₁：下半部資料的中位數；Q₂：中位數；Q₃：上半部資料的中位數；IQR = Q₃ − Q₁","盒狀圖用最小值、Q₁、Q₂、Q₃、最大值五個數來呈現資料分布。",8],[4132,"國中","機率與統計","定理","乘法原理與加法原理","完成一件事需 m 個步驟，各有 n₁、n₂、…、nₘ 種方法 ⟹ 共 n₁ × n₂ × … × nₘ 種","分步驟用乘法；分情形（互斥）用加法。",9],[4133,"國中","機率與統計","定理","排列與組合","P(n, k) = n!/(n − k)!；C(n, k) = n!/(k!(n − k)!)","排列在意順序，組合不在意順序。C(n, k) = P(n, k) ÷ k!。",9],[4134,"國中","機率與統計","定理","機率的基本性質","P(A) = n(A)/n(S)；0 ≤ P(A) ≤ 1；P(A′) = 1 − P(A)","各結果出現機會均等時，機率 = 符合條件的情形數 ÷ 全部情形數。",9],[4135,"國中","三角比與數列","定義","銳角的三角比","sinθ = 對邊/斜邊；cosθ = 鄰邊/斜邊；tanθ = 對邊/鄰邊","在直角三角形中，三角比只與角的大小有關，與三角形大小無關。",9],[4136,"國中","三角比與數列","性質","特殊角的三角比","sin30° = 1/2；cos60° = 1/2；tan45° = 1；sin45° = cos45° = √2/2；sin60° = cos30° = √3/2","由 30-60-90 與 45-45-90 直角三角形的邊長比 1 : √3 : 2、1 : 1 : √2 得到。",9],[4137,"國中","三角比與數列","定理","等差數列","aₙ = a₁ + (n − 1)d；Sₙ = n(a₁ + aₙ)/2","d 是公差。前 n 項和等於「首項加末項」乘項數再除以 2。",8],[4138,"國中","三角比與數列","定理","等比數列","aₙ = a₁ · rⁿ⁻¹","r 是公比，相鄰兩項的比都是 r。",9],[4030,"國小","整數與四則運算","性質","加法與減法的互逆關係","a + b = c ⟺ c − b = a ⟺ c − a = b","知道「總數」和其中一部分，就用減法求另一部分；驗算減法時用加法。",2],[4031,"國小","整數與四則運算","定義","位值（個位、十位、百位）","326 = 3 × 100 + 2 × 10 + 6 × 1","同一個數字放在不同位置，代表的大小不同：個位是幾個一、十位是幾個十、百位是幾個一百。",2],[4032,"國小","整數與四則運算","性質","數的大小比較","位數多的數較大；位數相同時，由最高位開始依序比較","先比位數，再從最高位比到個位。",1],[4033,"國小","整數與四則運算","定理","乘法的意義","a × b = b × a","乘法是把相同的數連加：3 × 4 = 3 + 3 + 3 + 3；交換順序，積不變。九九乘法表就是這些結果。",2],[4034,"國小","整數與四則運算","性質","加減法直式（進位與退位）","個位滿 10 進 1 到十位；個位不夠減，向十位借 1 當 10","直式計算要對齊位數，從個位算起。",2],[4035,"國小","整數與四則運算","定理","除法與餘數","a = b × q + r（0 ≤ r < b）","被除數 = 除數 × 商 + 餘數，餘數一定比除數小。",3],[4036,"國小","整數與四則運算","性質","奇數與偶數","偶 + 偶 = 偶；奇 + 奇 = 偶；奇 + 偶 = 奇；偶數的個位是 0、2、4、6、8","不用算出結果就能判斷奇偶。",2],[4037,"國小","整數與四則運算","性質","四捨五入與估算","取到某一位：看它的下一位，≥ 5 進位，< 5 捨去","估算可以快速檢查答案是否合理。",4],[4038,"國小","整數與四則運算","性質","錢幣與找錢","找回的錢 = 付出的錢 − 應付的錢","先算應付多少，再用付出的錢去減。",1],[4039,"國小","整數與四則運算","性質","10 的合成與分解","10 = 1 + 9 = 2 + 8 = 3 + 7 = 4 + 6 = 5 + 5","熟記「湊 10」是 20 以內進位加法與退位減法的基礎。",1],[4040,"國小","整數與四則運算","定理","質因數分解","n = p₁ᵃ × p₂ᵇ × …（p₁、p₂ 為質數）","把合成數寫成質數的連乘積，是求 GCD、LCM 與因數個數的基礎。",6],[4041,"國小","整數與四則運算","性質","簡單的方程式","等式兩邊同加、同減、同乘、同除（不為 0）同一個數，等式仍成立","用符號 x 表示未知數，再用等量關係一步步求出。",6],[4042,"國小","分數與小數","定義","單位分數與分數的大小","1/b 稱為單位分數；分母相同，分子愈大，分數愈大","a/b 就是 a 個 1/b。",3],[4043,"國小","分數與小數","定義","小數的認識（十分位、百分位）","0.1 = 1/10；0.01 = 1/100；0.1 的 10 倍是 1","小數點右邊第一位是十分位，第二位是百分位。",3],[4044,"國小","分數與小數","性質","帶分數與假分數互換","a 又 b/c = (a × c + b)/c","整數部分乘分母再加分子，分母不變；反過來用除法求商與餘數。",4],[4045,"國小","圖形與測量","性質","時間的換算","1 日 = 24 小時；1 小時 = 60 分；1 分 = 60 秒","時間的進位不是 10 而是 60 或 24，計算時要特別小心。",3],[4046,"國小","圖形與測量","性質","長度的單位（公分、公尺）","1 公尺 = 100 公分；1 公里 = 1000 公尺；1 公分 = 10 公釐","換算時，大單位換小單位要乘，小單位換大單位要除。",2],[4047,"國小","圖形與測量","性質","面積單位的換算","1 平方公尺 = 10000 平方公分","1 公尺 = 100 公分，所以 1 平方公尺 = 100 × 100 平方公分。",4],[4048,"國小","圖形與測量","性質","柱體的體積","柱體體積 = 底面積 × 高","不論是角柱或圓柱，只要上下底面形狀一樣大，體積都是底面積乘高。",6],[4049,"國小","圖形與測量","性質","扇形的面積","扇形面積 = 圓面積 × (圓心角 ÷ 360)","圓心角是 90° 就是圓的 1/4，是 180° 就是 1/2。",6],[4050,"國小","比與百分率","定理","正比關係","y = k × x（k 為固定值）","兩個量一個變成幾倍，另一個也變成幾倍，這兩個量成正比；k 是比例常數。",6],[4139,"國中","數與式","定理","質因數分解與因數個數","n = p₁ᵃ × p₂ᵇ × …；正因數個數 = (a + 1)(b + 1)…","把 n 分解成質因數的乘積，每個質因數的次方加 1 後相乘，就是正因數的個數。",7],[4140,"國中","函數與坐標","性質","正比與反比","正比：y = kx；反比：xy = k（k 為常數）","正比的圖形是通過原點的直線；反比的圖形是雙曲線。",7],[4141,"國中","函數與坐標","性質","直角坐標平面與象限","第一象限 (+, +)；第二象限 (−, +)；第三象限 (−, −)；第四象限 (+, −)","x 軸與 y 軸上的點不屬於任何象限。",7],[4142,"國中","平面幾何","性質","平行線的性質","L ∥ M：同位角相等、內錯角相等、同側內角互補（和為 180°）","反過來，如果同位角（或內錯角）相等，就能推出兩直線平行。",7],[4143,"國中","平面幾何","性質","等腰三角形的性質","AB = AC ⟺ ∠B = ∠C；頂角平分線垂直平分底邊","等腰三角形的兩底角相等，頂角平分線、底邊上的中線與高三線合一。",8],[4144,"國中","平面幾何","性質","平行四邊形的性質","對邊平行且相等；對角相等；鄰角互補；對角線互相平分","四邊形只要符合其中一組判別條件（例如兩組對邊分別相等），就是平行四邊形。",8],[4145,"國中","平面幾何","性質","三角形的邊角關係","任意兩邊和大於第三邊；任意兩邊差小於第三邊；大邊對大角","用來判斷三邊長能不能構成三角形。",8],[4146,"國中","數與式","定理","提公因式與平方差因式分解","ax + ay = a(x + y)；a² − b² = (a + b)(a − b)","因式分解先提公因式，再看能否用乘法公式或十字交乘。",8],[4147,"國中","平面幾何","性質","菱形與箏形的面積","菱形面積 = 兩對角線乘積 ÷ 2","對角線互相垂直的四邊形（菱形、箏形）都適用。",8],[4148,"國中","平面幾何","性質","圓內接四邊形","圓內接四邊形的對角互補（和為 180°）","四邊形的四個頂點都在同一個圓上，就稱為圓內接四邊形。",9],[4149,"國中","方程式與不等式","性質","一元一次方程式的應用","設未知數 → 列方程式 → 解方程式 → 檢驗是否合題意","應用題的關鍵是找出題目中的「等量關係」。",7],[4150,"國中","函數與坐標","性質","二元一次方程式的圖形","ax + by = c 的圖形是一條直線；聯立方程式的解就是兩直線的交點","兩條直線的交點坐標同時滿足兩個方程式。",8],[4151,"國中","機率與統計","性質","次數分配表與直方圖","組距 = 組上限 − 組下限；各組次數的總和 = 資料總數；相對次數 = 次數 ÷ 總數","直方圖的每個長條寬度是組距、高度是次數。",8],[4152, "國小", "整數與四則運算", "性質", "20 以內的加法與減法", "加數 + 加數 = 和；被減數 − 減數 = 差", "加法是把數合起來，減法是拿走或比較差多少。可用「湊 10」幫忙：8 + 5 = 8 + 2 + 3 = 10 + 3 = 13。減法可用加法檢查：13 − 5 = 8，因為 8 + 5 = 13。", 1],
 [4153, "國小", "長度與測量", "定義", "長度的直接比較", "比長短時，起點要對齊；超出的比較長", "比較兩條線段時，要先把一端對齊，再看另一端。不能只看中間，也不能只憑「看起來」判斷；對齊後超出的那一條比較長。", 1],
@@ -2140,12 +2202,15 @@ async function ident(){const j=await api('/join',{method:'POST',body:{nick:user.
 const mh=(s,t,me,id)=>`<div class="msg ${me?'me':''}"><small>${esc(s)}${adm&&id?` <a style="cursor:pointer" onclick="admDel(${+id})">🗑</a>`:''}</small>${esc(t)}</div>`;
 function chatStop(){clearInterval(cTimer);cTimer=0}
 function chatTab(m){cMode=m;cSig='';chatStop();
- ['pub','bot','adm'].forEach((x,i)=>$('ct'+(i+1)).classList.toggle('on',m==x));
+ ['pub','bot','adm','fb'].forEach((x,i)=>{const e=$('ct'+(i+1));if(e)e.classList.toggle('on',m==x)});
  $('ct3').style.display=CHAT_API?'':'none';
  $('gBan').style.display=user.guest&&m=='pub'?'block':'none';
- $('admBox').style.display=m=='adm'?'block':'none';$('chatMain').style.display=m=='adm'?'none':'block';
+ $('admBox').style.display=m=='adm'?'block':'none';
+ if($('fbBox'))$('fbBox').style.display=m=='fb'?'block':'none';
+ $('chatMain').style.display=(m=='adm'||m=='fb')?'none':'block';
  $('annBox').style.display=m=='pub'&&$('annBox').textContent?'block':'none';
- const pn=$('pubNote');pn.style.display=m=='adm'?'none':'block';
+ const pn=$('pubNote');pn.style.display=(m=='adm'||m=='fb')?'none':'block';
+ if(m=='fb'){fbR=0;$('fbTx').value='';$('fbMsg').textContent='';fbStars();return}
  pn.textContent=m=='pub'?(CHAT_API?'公開大廳：所有使用者都看得到，請友善發言。':'此大廳的訊息只存在這台裝置的瀏覽器，不會傳給其他人。'):(srv()?'客服信件只有你與管理員看得到，管理員回覆後會顯示在這裡。':'尚未連線客服，目前為自動回覆。');
  if(m=='adm')renderAdm();else renderChat();
  if(CHAT_API){poll();cTimer=setInterval(poll,5000)}}
@@ -2209,7 +2274,7 @@ function renderTime(){const C={tw:'#34d399',cn:'#f87171',east:'#f87171',world:'#
  $('tlArea').innerHTML=`<div class="muted" style="margin:6px 0">共 ${L.length} 條，點選事件可開啟詳解</div>`+L.map(k=>`<div class="tl" style="border-left:3px solid ${C[k.s]};cursor:pointer" onclick="histGo('${k.id}')"><b style="color:#f59e0b">${esc(k.ys||k.y)}</b>　<span class="muted">${SUB_NAME[k.s]}</span><br><b>${esc(k.t)}</b><br>${mt(k,k.d)}</div>`).join('')}
 
 /* ===== 設定與備份 ===== */
-function openSet(){selAv=user.avatar;$('setNick').value=user.nickname;$('setNick').disabled=!!user.guest;$('setMsg').textContent=user.guest?'訪客模式：暱稱與頭像無法儲存，仍可備份學習紀錄。修改密碼請先註冊登入。':'';$('chkChat').checked=!st.hideChat;avGrid('savs');{const a=user.guest?null:users()[user.name],f=(a&&a.pf)||{};$('sa').value=f.age||'';$('ss').value=f.stage||'';$('sg').value=f.grp||'';$('su').checked=!!f.use;$('sv').checked=!!f.prev;pfSync('s');$('sgd').value=f.grade||'';['sa','ss','sg','su','sv'].forEach(i=>$(i).disabled=!!user.guest);$('pfBox').style.display=user.guest?'none':'block'}['pwO','pwN','pwN2'].forEach(i=>$(i).value='');$('pwBox').style.display='block';['pwO','pwN','pwN2'].forEach(i=>$(i).disabled=!!user.guest);if(window.uiInit)uiInit();$('mSet').classList.add('on')}
+function openSet(){selAv=user.avatar;$('setNick').value=user.nickname;$('setNick').disabled=!!user.guest;$('setMsg').textContent=user.guest?'訪客模式：暱稱與頭像無法儲存，仍可備份學習紀錄。修改密碼請先註冊登入。':'';$('chkChat').checked=!st.hideChat;avGrid('savs');{const a=user.guest?null:users()[user.name],f=(a&&a.pf)||{};$('sa').value=f.age||'';if($('sbd'))$('sbd').value=f.bday||'';if($('sAgeTxt')){if(f.bday){const r=calcBday(f.bday);$('sAgeTxt').innerHTML=(r&&!r.err)?`🎂 精準年齡：<b style="color:#38bdf8">${r.text}</b>（重新選擇生日會自動更新程度，仍可手動調整）`:''}else if(f.age){$('sAgeTxt').textContent=`目前紀錄年齡：${f.age} 歲（選擇出生年月日可精準計算至月與日並自動推算程度）`}else{$('sAgeTxt').textContent=''}}$('ss').value=f.stage||'';$('sg').value=f.grp||'';$('su').checked=!!f.use;$('sv').checked=!!f.prev;pfSync('s');$('sgd').value=f.grade||'';['sa','sbd','ss','sgd','sg','su','sv'].forEach(i=>{if($(i))$(i).disabled=!!user.guest});$('pfBox').style.display=user.guest?'none':'block'}['pwO','pwN','pwN2'].forEach(i=>$(i).value='');$('pwBox').style.display='block';['pwO','pwN','pwN2'].forEach(i=>$(i).disabled=!!user.guest);if(window.uiInit)uiInit();$('mSet').classList.add('on')}
 function closeSet(){$('mSet').classList.remove('on')}
 async function changePw(){const M=t=>{$('setMsg').textContent=t};
  if(user.guest)return M('訪客沒有密碼，請先註冊登入。');
@@ -2267,9 +2332,9 @@ const tsD=t=>{const d=new Date(t);return fmt(d.getFullYear(),d.getMonth(),d.getD
 function trackGuest(){try{if(SS.getItem('gs'))return;SS.setItem('gs','1');const v=JSON.parse(LS.getItem('vis')||'null')||{t:0,d:{},v:{}},d=today();v.g=v.g||{};v.g[d]=(v.g[d]||0)+1;v.gt=(v.gt||0)+1;LS.setItem('vis',JSON.stringify(v))}catch(e){}}
 const fbAll=()=>{try{const a=JSON.parse(LS.getItem('feedback')||'[]');return Array.isArray(a)?a:[]}catch(e){return[]}};
 function fbStars(){$('fbStars').innerHTML=[1,2,3,4,5].map(i=>`<span onclick="fbR=${i};fbStars()">${i<=fbR?'★':'☆'}</span>`).join('')}
-function fbOpen(){fbR=0;$('fbTx').value='';$('fbMsg').textContent='';fbStars();$('mFb').classList.add('on')}
+function fbOpen(){go('chat');chatTab('fb')}
 function fbSend(){const t=$('fbTx').value.trim();if(!fbR){$('fbMsg').textContent='請先選擇滿意度星數';return}if(t.length<2){$('fbMsg').textContent='請輸入回饋內容';return}
- const a=fbAll();a.push({id:Date.now(),u:user.name,n:user.nickname,g:!!user.guest,r:fbR,c:$('fbCat').value,t:t.slice(0,500),ts:Date.now(),done:0});LS.setItem('feedback',JSON.stringify(a.slice(-500)));$('fbMsg').textContent='✅ 已送出，謝謝你的回饋！';setTimeout(()=>$('mFb').classList.remove('on'),900)}
+ const a=fbAll();a.push({id:Date.now(),u:user.name,n:user.nickname,g:!!user.guest,r:fbR,c:$('fbCat').value,t:t.slice(0,500),ts:Date.now(),done:0});LS.setItem('feedback',JSON.stringify(a.slice(-500)));$('fbMsg').textContent='✅ 已送出，謝謝你的回饋！';setTimeout(()=>{fbR=0;$('fbTx').value='';fbStars()},900)}
 function barSvg(L,S){const W=320,H=110,n=L.length,bw=W/n,k=S.length,mx=Math.max(1,...S.flatMap(s=>s.v));
  return `<svg viewBox="0 0 ${W} ${H+18}" style="width:100%;height:auto"><line x1="0" x2="${W}" y1="${H}" y2="${H}" stroke="#334155"/>`+L.map((l,i)=>S.map((s,j)=>{const h=Math.round(s.v[i]/mx*(H-12)),w=(bw-4)/k,x=i*bw+2+j*w;return `<rect x="${x}" y="${H-h}" width="${w}" height="${h}" rx="2" fill="${s.c}"/>`+(s.v[i]?`<text x="${x+w/2}" y="${H-h-2}" font-size="8" fill="#cbd5e1" text-anchor="middle">${s.v[i]}</text>`:'')}).join('')+`<text x="${i*bw+bw/2}" y="${H+12}" font-size="8" fill="#94a3b8" text-anchor="middle">${esc(l)}</text>`).join('')+'</svg>'}
 function donutSvg(P){const t=P.reduce((a,p)=>a+p.v,0),R=40,C=2*Math.PI*R;let o=0;
@@ -2306,7 +2371,7 @@ buildSubjMenus();
 const KBSEL='.mi,.portal>div,.fold,.row,.cd,.fc,#jA,.an,.rt';
 function kbify(){document.querySelectorAll(KBSEL).forEach(e=>{if(!e.hasAttribute('tabindex')){e.setAttribute('tabindex','0');e.setAttribute('role','button')}})}
 document.addEventListener('keydown',e=>{
- if(e.key==='Escape'){if(tourI>=0){tourEnd();return}if($('side').classList.contains('on'))side();['mGuide','mSet','mTxt','mFb','mUse'].forEach(i=>$(i).classList.remove('on'));regPend=null;return}
+ if(e.key==='Escape'){if(tourI>=0){tourEnd();return}if($('side').classList.contains('on'))side();['mGuide','mSet','mTxt','mUse'].forEach(i=>$(i).classList.remove('on'));regPend=null;return}
  if((e.key==='Enter'||e.key===' ')&&e.target.matches&&e.target.matches(KBSEL)){e.preventDefault();e.target.click()}});
 new MutationObserver(()=>{if(kbify.t)return;kbify.t=setTimeout(()=>{kbify.t=0;kbify()},50)}).observe(document.body,{childList:true,subtree:true});
 kbify();
@@ -2524,7 +2589,7 @@ window.changePw=async function(){const M=t=>{$('setMsg').textContent=t};if(user.
  const u=await sb.auth.updateUser({password:n});if(u.error)return M('更新失敗：'+u.error.message);['pwO','pwN','pwN2'].forEach(i=>$(i).value='');M('✅ 密碼已更新')};
 window.fbSend=async function(){const t=$('fbTx').value.trim();if(!fbR){$('fbMsg').textContent='請先選擇滿意度星數';return}if(t.length<2){$('fbMsg').textContent='請輸入回饋內容';return}
  const {error}=await sb.from('feedback').insert({user_id:await uid(),rating:fbR,cat:$('fbCat').value,text:t.slice(0,500)});
- $('fbMsg').textContent=error?'送出失敗，請稍後再試':'✅ 已送出，謝謝你的回饋！';if(!error)setTimeout(()=>$('mFb').classList.remove('on'),900)};
+ $('fbMsg').textContent=error?'送出失敗，請稍後再試':'✅ 已送出，謝謝你的回饋！';if(!error)setTimeout(()=>{fbR=0;$('fbTx').value='';fbStars()},900)};
 (function(){const mc=document.querySelector('#mSet .mc');if(!mc)return;const b=document.createElement('button');b.className='btn alt';b.style.cssText='margin-top:10px;color:#fecaca';b.textContent='🗑️ 刪除帳號與雲端資料';let arm=0;
  b.onclick=async()=>{if(user.guest)return;if(!arm){arm=1;b.textContent='再按一次確認刪除（無法復原）';setTimeout(()=>{arm=0;b.textContent='🗑️ 刪除帳號與雲端資料'},4000);return}
   const r=await sb.rpc('delete_me');if(r.error){$('setMsg').textContent='刪除失敗：'+r.error.message;return}
@@ -2688,7 +2753,7 @@ const _rs=window.renderSubj;window.renderSubj=function(s){_rs(s);const v=$('v-su
 document.addEventListener('keydown',e=>{const m=$('mTxt');if(!m||!m.classList.contains('on')||/^(INPUT|TEXTAREA|SELECT)$/.test((document.activeElement||{}).tagName))return;if(e.key==='ArrowLeft')txGo(-1);else if(e.key==='ArrowRight')txGo(1)});
 })();
 (function(){
-const D={"此網站需要啟用 JavaScript 才能使用。": "This site requires JavaScript.", "108課綱跨學科學習系統": "108 Curriculum Cross-Subject Learning System", "登入": "Log in", "註冊": "Sign up", "忘記密碼？": "Forgot password?", "學習設定（之後可在個人設定修改）": "Study settings (changeable later in Settings)", "學習階段": "Level", "國小": "Elementary", "國中": "Junior high", "高中": "Senior high", "請選擇類組": "Choose a track", "第一類組（文法商）": "Track 1 (Humanities & Business)", "第二類組（理工）": "Track 2 (Science & Engineering)", "第三類組（醫農生）": "Track 3 (Medicine & Life Sciences)", "尚未分組（高一）": "Not yet grouped (Grade 10)", "我了解本站會儲存帳號、暱稱、學習階段／年級與學習進度，以及基本的使用紀錄（登入、瀏覽頁面、學習操作），僅用於提供學習功能、改善服務與客服處理，不會出售給第三方。未滿 18 歲請在家長或監護人同意下使用；可隨時在「個人設定」匯出資料或刪除帳號。": "I understand this site stores my account, nickname, study level/grade, progress and basic usage records (log-ins, pages viewed, study actions), only to provide learning features, improve the service and handle support, and never sells them to third parties. Users under 18 should have parental consent. You can export your data or delete your account anytime in Settings.", "完成註冊": "Create account", "訪客模式（免註冊）": "Guest mode (no sign-up)", "此瀏覽器無法儲存資料（可能是無痕模式或內嵌瀏覽器）。關閉頁面後進度會消失，請記得到「個人設定」匯出備份。": "This browser can't save data (private mode or in-app browser?). Progress will be lost when you close the page; export a backup in Settings.", "選單": "Menu", "108課綱學習門戶": "108 Curriculum Learning Portal", "返回開發者": "Back to developer", "登出": "Log out", "歡迎來到": "Welcome to", "跨學科學習門戶": "Cross-Subject Learning Portal", "數學 · 國文 · 英文 · 歷史 · 地理 · 公民　共": "Math · Chinese · History · Geography · Civics — ", "個知識點": " knowledge points", "已掌握": "Mastered", "待複習": "To review", "今日到期": "Due today", "今日冷笑話（一天一則）": "Daily joke (one a day)", "測驗閃卡": "Quiz & flashcards", "討論社群": "Community", "學習日曆": "Study calendar", "各科主頁": "Subjects", "點選上方任一科目進入該科主頁；歷史科主頁內含歷史地圖與年代軸": "Tap a subject above to open its page. The History page includes a map and a timeline.", "高頻考點與大考中心官方試題": "High-frequency topics & official CEEC papers", "官方試題請至財團法人大學入學考試中心下載，本站僅整理高頻考點。": "Download official papers from the College Entrance Examination Center (CEEC). This site only summarizes high-frequency topics.", "高頻考點對應": "Related topics", "官方網站": "Official site", "跨學科測驗與記憶閃卡": "Cross-subject quiz & memory flashcards", "題目由各科知識庫自動生成。新手直接按「快速開始」；想自訂範圍、題型、題數或混合多科，展開「進階」即可。": "Questions are generated from the knowledge base. New here? Just tap “Quick start”. Expand “Advanced” to customize scope, types, count, or mix subjects.", "記憶閃卡": "Flashcards", "模擬測驗": "Mock quiz", "日": "Sun", "一": "Mon", "二": "Tue", "三": "Wed", "四": "Thu", "五": "Fri", "六": "Sat", "打卡": "Check in", "公開大廳": "Public lobby", "線上客服": "Support", "管理": "Admin", "訪客模式僅供瀏覽，請登入後發言。": "Guest mode is read-only. Log in to post.", "發送": "Send", "歷史主頁": "History home", "跨時空年代對照軸": "Cross-region timeline", "結束導覽": "End tour", "下一步": "Next", "關閉選單": "Close menu", "主控制台": "Dashboard", "使用導覽": "Guided tour", "開發者後台": "Developer console", "各科複習": "Subject review", "意見回饋": "Feedback", "個人設定與備份": "Settings & backup", "六個科目：數學、國文、英文、歷史、地理、公民，各有主頁、進度與單元": "Six subjects: Math, Chinese, English, History, Geography, Civics — each with a page, progress and units", "每個知識點可標記熟練／不熟，並依間隔複習安排「今日到期」": "Mark each item as mastered or weak; spaced repetition schedules “Due today”", "測驗可自選科目、題型與題數（含單選、多選與填空），也能新增多組混合": "Quizzes let you pick subject, type and count (single, multiple choice, fill-in) and mix several sets", "資料僅存在本機瀏覽器，請定期備份": "Data lives in this browser; please back up regularly", "互動導覽會帶你實際操作一遍（會真的標記一個知識點、做一次閃卡，之後可自行取消）。": "The interactive tour walks you through it (it will really mark one item and run one flashcard; you can undo later).", "帶我實際操作一遍": "Walk me through it", "略過，我自己看": "Skip, I'll explore", "只看紅筆": "Red-pen only", "只看修辭": "Rhetoric only", "關閉": "Close", "整體滿意度": "Overall satisfaction", "功能建議": "Feature request", "內容錯誤": "Content error", "介面問題": "UI issue", "其他": "Other", "送出": "Submit", "確認學習設定": "Confirm study settings", "要使用「該年級」的知識點來建立這個帳號嗎？選「是」會依年級與類組顯示適合的內容；選「否」則顯示全部知識點。之後都可以在「個人設定」修改。": "Use your grade's content for this account? “Yes” shows content for your grade and track; “No” shows everything. You can change this later in Settings.", "是，使用該年級知識點": "Yes, use my grade's content", "否，顯示全部": "No, show everything", "返回修改": "Go back", "儲存暱稱與頭像": "Save nickname & avatar", "學習設定": "Study settings", "使用該年級的知識點（高中會依類組顯示選修內容）": "Use my grade's content (senior high shows electives by track)", "同時顯示前一階段的基礎（國中含國小、高中含國中，複習用）": "Also show the previous level's basics (for review)", "儲存學習設定": "Save study settings", "修改密碼": "Change password", "更新密碼": "Update password", "顯示討論區訊息": "Show community messages", "🌏 社會科顯示方式": "🌏 Social studies layout", "自動（國小：三科分開；其他：三科合併）": "Auto (elementary: separate; others: combined)", "三科合併：社會主頁面（總覽、跨科主題）": "Combined: one Social Studies page (overview, themes)", "三科分開：歷史、地理、公民各自的入口": "Separate: History, Geography and Civics each", "測驗的「社會三科綜合」範圍在兩種方式下都會保留。": "The “Social Studies combined” quiz scope is kept in both layouts.", "🌏 社會": "🌏 Social Studies", "🌏 總覽": "🌏 Overview", "🧩 跨科主題": "🧩 Cross-subject themes", "三科主頁": "Subject pages", "📰 公民時事": "📰 Civics in the news", "↻ 重新整理": "↻ Refresh", "全部來源": "All sources", "📝 歷屆試題與高頻考點": "Past exams & high-frequency topics", "高頻考點：": "High-frequency topics: ", "外觀與閱讀（只套用在這台裝置）": "Appearance & reading (this device only)", "字體大小：": "Font size: ", "重設": "Reset", "在首頁顯示每日冷笑話": "Show the daily joke on the home page", "看答案": "Answer", "暱稱與頭像": "Nickname & avatar", "首頁": "Home", "✕ 關閉": "✕ Close", "離散數學": "Discrete Mathematics", "結構": "Structure", "空間": "Space", "應用數學": "Applied Mathematics", "變化": "Change", "基礎與哲學": "Foundations & Philosophy", "大學": "University", "不分類（顯示全部）": "No level (show all)", "在「個人設定」更改": "Change in Settings", "📚 目前顯示：": "📚 Showing: ", "數與量": "Number & Quantity", "空間與形狀": "Space & Shape", "坐標幾何": "Coordinate Geometry", "關係": "Relations", "代數": "Algebra", "函數": "Functions", "資料與不確定性": "Data & Uncertainty", "允許記錄我的使用動作（登入、瀏覽、學習操作，協助改善網站）": "Allow recording my usage activity (log-ins, pages, study actions) to help improve the site", "匯出備份": "Export backup", "匯入備份": "Import backup", "快速開始": "Quick start", "：點一下就開始翻閃卡": ": one tap to start flashcards", "：點一下就開始測驗": ": one tap to start the quiz", "數學": "Math", "英文": "English", "課文選文": "Reading selections", "國文": "Chinese", "歷史": "History", "地理": "Geography", "公民": "Civics", "全科混合": "All subjects", "自訂範圍、題型與題數（進階，可混合多組）": "Customize scope, types & count (advanced, mix sets)", "自訂範圍與題數（進階，可混合多組）": "Customize scope & count (advanced, mix sets)", "範圍": "Scope", "題型": "Type", "題數": "Count", "新增一組混合出題": "Add a mixed set", "全部單元": "All units", "學科": "Subjects", "複習": "Review", "僅不熟知識點": "Weak items only", "今日到期（間隔複習）": "Due today (spaced review)", "◀ 上一篇": "◀ Previous", "下一篇 ▶": "Next ▶", "練習國文": "Practice Chinese", "繼續上次閱讀：": "Continue reading: ", "接著讀": "Resume", "再輸入一次新密碼": "Re-enter new password", "輸入學習心得…": "Write your study notes…", "密碼（至少 8 個字元）": "Password (min 8 chars)", "輸入訊息…": "Type a message…", "年齡": "Age", "帳號（或已綁定的 Email）": "Username (or linked email)", "搜尋全部知識點（標題或內容）": "Search all knowledge points", "帳號（2–20 字：中英文、數字、_ . -）": "Username (2–20 chars: letters, digits, _ . -)", "新密碼（至少 8 個字元）": "New password (min 8 chars)", "再輸入一次密碼": "Re-enter password", "暱稱": "Nickname", "請描述你的想法或遇到的問題（最多 500 字）": "Describe your idea or problem (max 500 chars)", "目前密碼": "Current password", "暱稱（最多 12 字）": "Nickname (max 12 chars)", "密碼": "Password"},R=[[/^▶ 開始（共 (\d+) 題）$/,'▶ Start ($1 questions)'],[/^第 (\d+) 組$/,'Set $1'],[/^⏰ 今日複習（(\d+)）$/,'⏰ Due today ($1)'],[/^❌ 不熟的（(\d+)）$/,'❌ Weak items ($1)'],[/^🎲 全科 (\d+) 題$/,'🎲 All subjects, $1 Qs'],[/^目前設定：(.*)$/,'Current: $1'],[/^題型：綜合（自動搭配）$/,'Types: mixed (auto)'],[/^題型：已選 (\d+) 種$/,'Types: $1 selected'],[/^第 (\d+) \/ (\d+) 篇$/,'$1 / $2']];
+const D={"此網站需要啟用 JavaScript 才能使用。": "This site requires JavaScript.", "108課綱跨學科學習系統": "108 Curriculum Cross-Subject Learning System", "登入": "Log in", "註冊": "Sign up", "忘記密碼？": "Forgot password?", "學習設定（之後可在個人設定修改）": "Study settings (changeable later in Settings)", "學習階段": "Level", "國小": "Elementary", "國中": "Junior high", "高中": "Senior high", "請選擇類組": "Choose a track", "第一類組（文法商）": "Track 1 (Humanities & Business)", "第二類組（理工）": "Track 2 (Science & Engineering)", "第三類組（醫農生）": "Track 3 (Medicine & Life Sciences)", "尚未分組（高一）": "Not yet grouped (Grade 10)", "我了解本站會儲存帳號、暱稱、學習階段／年級與學習進度，以及基本的使用紀錄（登入、瀏覽頁面、學習操作），僅用於提供學習功能、改善服務與客服處理，不會出售給第三方。未滿 18 歲請在家長或監護人同意下使用；可隨時在「個人設定」匯出資料或刪除帳號。": "I understand this site stores my account, nickname, study level/grade, progress and basic usage records (log-ins, pages viewed, study actions), only to provide learning features, improve the service and handle support, and never sells them to third parties. Users under 18 should have parental consent. You can export your data or delete your account anytime in Settings.", "完成註冊": "Create account", "訪客模式（免註冊）": "Guest mode (no sign-up)", "此瀏覽器無法儲存資料（可能是無痕模式或內嵌瀏覽器）。關閉頁面後進度會消失，請記得到「個人設定」匯出備份。": "This browser can't save data (private mode or in-app browser?). Progress will be lost when you close the page; export a backup in Settings.", "選單": "Menu", "傻T學習網": "ShaT Learning", "108課綱學習門戶": "ShaT Learning", "返回開發者": "Back to developer", "登出": "Log out", "歡迎來到": "Welcome to", "跨學科學習門戶": "Cross-Subject Learning Portal", "數學 · 國文 · 英文 · 歷史 · 地理 · 公民　共": "Math · Chinese · History · Geography · Civics — ", "個知識點": " knowledge points", "已掌握": "Mastered", "待複習": "To review", "今日到期": "Due today", "今日冷笑話（一天一則）": "Daily joke (one a day)", "測驗閃卡": "Quiz & flashcards", "討論社群": "Community", "學習日曆": "Study calendar", "各科主頁": "Subjects", "點選上方任一科目進入該科主頁；歷史科主頁內含歷史地圖與年代軸": "Tap a subject above to open its page. The History page includes a map and a timeline.", "高頻考點與大考中心官方試題": "High-frequency topics & official CEEC papers", "官方試題請至財團法人大學入學考試中心下載，本站僅整理高頻考點。": "Download official papers from the College Entrance Examination Center (CEEC). This site only summarizes high-frequency topics.", "高頻考點對應": "Related topics", "官方網站": "Official site", "跨學科測驗與記憶閃卡": "Cross-subject quiz & memory flashcards", "題目由各科知識庫自動生成。新手直接按「快速開始」；想自訂範圍、題型、題數或混合多科，展開「進階」即可。": "Questions are generated from the knowledge base. New here? Just tap “Quick start”. Expand “Advanced” to customize scope, types, count, or mix subjects.", "記憶閃卡": "Flashcards", "模擬測驗": "Mock quiz", "日": "Sun", "一": "Mon", "二": "Tue", "三": "Wed", "四": "Thu", "五": "Fri", "六": "Sat", "打卡": "Check in", "公開大廳": "Public lobby", "線上客服": "Support", "管理": "Admin", "訪客模式僅供瀏覽，請登入後發言。": "Guest mode is read-only. Log in to post.", "發送": "Send", "歷史主頁": "History home", "跨時空年代對照軸": "Cross-region timeline", "結束導覽": "End tour", "下一步": "Next", "關閉選單": "Close menu", "主控制台": "Dashboard", "使用導覽": "Guided tour", "開發者後台": "Developer console", "各科複習": "Subject review", "意見回饋": "Feedback", "個人設定與備份": "Settings & backup", "六個科目：數學、國文、英文、歷史、地理、公民，各有主頁、進度與單元": "Six subjects: Math, Chinese, English, History, Geography, Civics — each with a page, progress and units", "每個知識點可標記熟練／不熟，並依間隔複習安排「今日到期」": "Mark each item as mastered or weak; spaced repetition schedules “Due today”", "測驗可自選科目、題型與題數（含單選、多選與填空），也能新增多組混合": "Quizzes let you pick subject, type and count (single, multiple choice, fill-in) and mix several sets", "資料僅存在本機瀏覽器，請定期備份": "Data lives in this browser; please back up regularly", "互動導覽會帶你實際操作一遍（會真的標記一個知識點、做一次閃卡，之後可自行取消）。": "The interactive tour walks you through it (it will really mark one item and run one flashcard; you can undo later).", "帶我實際操作一遍": "Walk me through it", "略過，我自己看": "Skip, I'll explore", "只看紅筆": "Red-pen only", "只看修辭": "Rhetoric only", "關閉": "Close", "整體滿意度": "Overall satisfaction", "功能建議": "Feature request", "內容錯誤": "Content error", "介面問題": "UI issue", "其他": "Other", "送出": "Submit", "確認學習設定": "Confirm study settings", "要使用「該年級」的知識點來建立這個帳號嗎？選「是」會依年級與類組顯示適合的內容；選「否」則顯示全部知識點。之後都可以在「個人設定」修改。": "Use your grade's content for this account? “Yes” shows content for your grade and track; “No” shows everything. You can change this later in Settings.", "是，使用該年級知識點": "Yes, use my grade's content", "否，顯示全部": "No, show everything", "返回修改": "Go back", "儲存暱稱與頭像": "Save nickname & avatar", "學習設定": "Study settings", "使用該年級的知識點（高中會依類組顯示選修內容）": "Use my grade's content (senior high shows electives by track)", "同時顯示前一階段的基礎（國中含國小、高中含國中，複習用）": "Also show the previous level's basics (for review)", "儲存學習設定": "Save study settings", "修改密碼": "Change password", "更新密碼": "Update password", "顯示討論區訊息": "Show community messages", "🌏 社會科顯示方式": "🌏 Social studies layout", "自動（國小：三科分開；其他：三科合併）": "Auto (elementary: separate; others: combined)", "三科合併：社會主頁面（總覽、跨科主題）": "Combined: one Social Studies page (overview, themes)", "三科分開：歷史、地理、公民各自的入口": "Separate: History, Geography and Civics each", "測驗的「社會三科綜合」範圍在兩種方式下都會保留。": "The “Social Studies combined” quiz scope is kept in both layouts.", "🌏 社會": "🌏 Social Studies", "🌏 總覽": "🌏 Overview", "🧩 跨科主題": "🧩 Cross-subject themes", "三科主頁": "Subject pages", "📰 公民時事": "📰 Civics in the news", "↻ 重新整理": "↻ Refresh", "全部來源": "All sources", "📝 歷屆試題與高頻考點": "Past exams & high-frequency topics", "高頻考點：": "High-frequency topics: ", "外觀與閱讀（只套用在這台裝置）": "Appearance & reading (this device only)", "字體大小：": "Font size: ", "重設": "Reset", "在首頁顯示每日冷笑話": "Show the daily joke on the home page", "看答案": "Answer", "暱稱與頭像": "Nickname & avatar", "首頁": "Home", "✕ 關閉": "✕ Close", "離散數學": "Discrete Mathematics", "結構": "Structure", "空間": "Space", "應用數學": "Applied Mathematics", "變化": "Change", "基礎與哲學": "Foundations & Philosophy", "大學": "University", "不分類（顯示全部）": "No level (show all)", "在「個人設定」更改": "Change in Settings", "📚 目前顯示：": "📚 Showing: ", "數與量": "Number & Quantity", "空間與形狀": "Space & Shape", "坐標幾何": "Coordinate Geometry", "關係": "Relations", "代數": "Algebra", "函數": "Functions", "資料與不確定性": "Data & Uncertainty", "允許記錄我的使用動作（登入、瀏覽、學習操作，協助改善網站）": "Allow recording my usage activity (log-ins, pages, study actions) to help improve the site", "匯出備份": "Export backup", "匯入備份": "Import backup", "快速開始": "Quick start", "：點一下就開始翻閃卡": ": one tap to start flashcards", "：點一下就開始測驗": ": one tap to start the quiz", "數學": "Math", "英文": "English", "課文選文": "Reading selections", "國文": "Chinese", "歷史": "History", "地理": "Geography", "公民": "Civics", "全科混合": "All subjects", "自訂範圍、題型與題數（進階，可混合多組）": "Customize scope, types & count (advanced, mix sets)", "自訂範圍與題數（進階，可混合多組）": "Customize scope & count (advanced, mix sets)", "範圍": "Scope", "題型": "Type", "題數": "Count", "新增一組混合出題": "Add a mixed set", "全部單元": "All units", "學科": "Subjects", "複習": "Review", "僅不熟知識點": "Weak items only", "今日到期（間隔複習）": "Due today (spaced review)", "◀ 上一篇": "◀ Previous", "下一篇 ▶": "Next ▶", "練習國文": "Practice Chinese", "繼續上次閱讀：": "Continue reading: ", "接著讀": "Resume", "再輸入一次新密碼": "Re-enter new password", "輸入學習心得…": "Write your study notes…", "密碼（至少 8 個字元）": "Password (min 8 chars)", "輸入訊息…": "Type a message…", "年齡": "Age", "帳號（或已綁定的 Email）": "Username (or linked email)", "搜尋全部知識點（標題或內容）": "Search all knowledge points", "帳號（2–20 字：中英文、數字、_ . -）": "Username (2–20 chars: letters, digits, _ . -)", "新密碼（至少 8 個字元）": "New password (min 8 chars)", "再輸入一次密碼": "Re-enter password", "暱稱": "Nickname", "請描述你的想法或遇到的問題（最多 500 字）": "Describe your idea or problem (max 500 chars)", "目前密碼": "Current password", "暱稱（最多 12 字）": "Nickname (max 12 chars)", "密碼": "Password"},R=[[/^▶ 開始（共 (\d+) 題）$/,'▶ Start ($1 questions)'],[/^第 (\d+) 組$/,'Set $1'],[/^⏰ 今日複習（(\d+)）$/,'⏰ Due today ($1)'],[/^❌ 不熟的（(\d+)）$/,'❌ Weak items ($1)'],[/^🎲 全科 (\d+) 題$/,'🎲 All subjects, $1 Qs'],[/^目前設定：(.*)$/,'Current: $1'],[/^題型：綜合（自動搭配）$/,'Types: mixed (auto)'],[/^題型：已選 (\d+) 種$/,'Types: $1 selected'],[/^第 (\d+) \/ (\d+) 篇$/,'$1 / $2']];
 let lang=LS.getItem('lang')==='en'?'en':'zh';const ATTR=['placeholder','title','aria-label'],SK='script,style,textarea,#txB,#txL,#txY,#chatBox,#v-dev',hz=s=>/[\u4e00-\u9fff]/.test(s);
 function tr(s){const t=s.trim(),i=s.indexOf(t),lead=s.slice(0,i),tail=s.slice(i+t.length);let o=D[t];if(o==null)for(const[r,v]of R)if(r.test(t)){o=t.replace(r,v);break}
  if(o==null){const m=t.match(/^([^\u4e00-\u9fffA-Za-z0-9]+)(.+)$/);if(m&&D[m[2]]!=null)o=m[1]+D[m[2]]}return o==null?s:lead+o+tail}
@@ -2795,8 +2860,9 @@ function apply(){const fs=clamp(+get('fs')||100);document.documentElement.style.
 window.uiFs=(v,abs)=>{const cur=clamp(+get('fs')||100);put('fs',v===0?100:abs?clamp(v):clamp(cur+v));apply()};
 window.uiFf=v=>{put('ff',v==='default'?'':v);apply()};
 window.uiJoke=on=>{put('joke',on?'1':'0');if(typeof renderJoke==='function')renderJoke()};
+window.uiJokeSubj=v=>{put('joke_subj',v||'auto');if(typeof renderJoke==='function')renderJoke()};
 window.uiSoc=v=>{put('soc',v||'auto');if(typeof buildSubjMenus==='function')buildSubjMenus();try{const e=document.getElementById('v-subj');if(e&&e.style.display==='block'&&typeof renderSubj==='function')renderSubj(curSubj)}catch(x){}};
-window.uiInit=()=>{apply();const q=document.getElementById('socS');if(q)q.value=get('soc')||'auto';const s=document.getElementById('ffS');if(s)s.value=get('ff')||'default';const j=document.getElementById('chkJoke');if(j)j.checked=get('joke')!=='0'};
+window.uiInit=()=>{apply();const q=document.getElementById('socS');if(q)q.value=get('soc')||'auto';const s=document.getElementById('ffS');if(s)s.value=get('ff')||'default';const j=document.getElementById('chkJoke');if(j)j.checked=get('joke')!=='0';const js=document.getElementById('jokeSubjS');if(js)js.value=get('joke_subj')||'auto'};
 apply();
 })();
 </script>
@@ -2834,12 +2900,13 @@ setInterval(()=>{if(!document.hidden&&document.getElementById('newsCard')&&Date.
 <script>
 /* ===== 選課系統（科目 × 學習階段）與統一各科主頁骨架 ===== */
 (function(){
-const SUBJS=['math','chi','eng','hist','geo','civ'];
+const SUBJS=['math','chi','eng','soc','hist','geo','civ'];
 const STAGES=['國小','國中','高中','大學'];
 const AVAIL={
   math:['國小','國中','高中','大學'],
   chi:['高中'],
   eng:['國小','國中','高中'],
+  soc:['國中','高中'],
   hist:['國小','國中','高中'],
   geo:['高中'],
   civ:['高中']
@@ -2850,8 +2917,8 @@ const OPEN_SET=new Set(ALL_OPEN);
 
 const PRESETS=[
   {n:'國小基礎',c:['math:國小','eng:國小','hist:國小']},
-  {n:'國中會考',c:['math:國中','eng:國中','hist:國中']},
-  {n:'高中學測（全科）',c:['math:高中','chi:高中','eng:高中','hist:高中','geo:高中','civ:高中']},
+  {n:'國中會考',c:['math:國中','eng:國中','soc:國中']},
+  {n:'高中學測（全科）',c:['math:高中','chi:高中','eng:高中','soc:高中']},
   {n:'高中英數衝刺',c:['math:高中','eng:高中']},
   {n:'大學先修',c:['math:高中','math:大學','eng:高中']},
   {n:'全部開放課程',c:ALL_OPEN.slice()},
@@ -2871,8 +2938,8 @@ window.sanitizeCourses=function(arr){
 
 window.defaultCourses=function(stg){
   if(stg==='國小')return ['math:國小','eng:國小','hist:國小'];
-  if(stg==='國中')return ['math:國中','eng:國中','hist:國中'];
-  if(stg==='高中')return ['math:高中','chi:高中','eng:高中','hist:高中','geo:高中','civ:高中'];
+  if(stg==='國中')return ['math:國中','eng:國中','soc:國中'];
+  if(stg==='高中')return ['math:高中','chi:高中','eng:高中','soc:高中'];
   if(stg==='大學')return ['math:大學'];
   return ALL_OPEN.slice();
 };
@@ -2897,6 +2964,7 @@ function itemSubj(k){
 }
 
 function itemInStage(k,s,stg){
+  if(s==='soc')return itemInStage(k,'hist',stg)||itemInStage(k,'geo',stg)||itemInStage(k,'civ',stg);
   if(itemSubj(k)!==s)return false;
   if(s==='math'){
     const ks=k.stg||(k.lv==='E'?'國小':k.lv==='JH'?'國中':k.lv==='U'?'大學':'高中');
@@ -2925,8 +2993,8 @@ window.inMyCourses=function(k){
   const s=itemSubj(k);
   if(!AVAIL[s])return false;
   return st.courses.some(ck=>{
-    const i=ck.indexOf(':');
-    return ck.slice(0,i)===s&&itemInStage(k,s,ck.slice(i+1));
+    const i=ck.indexOf(':'),cs=ck.slice(0,i),cg=ck.slice(i+1);
+    return (cs===s&&itemInStage(k,s,cg))||(cs==='soc'&&['hist','geo','civ'].includes(s)&&itemInStage(k,'soc',cg));
   });
 };
 
@@ -3094,13 +3162,17 @@ window.buildSubjMenus=function(){
   }).join('');
 
   const socEnrolled=['hist','geo','civ'].filter(s=>enrolledStages(s).length>0).length;
-  const socShortcut=socEnrolled>=2?`<div class="card" style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;padding:12px 14px;margin-top:4px;border-color:#38bdf8"><span><b>🌏 社會科跨科總覽</b> <span class="muted">（跨科主題・即時時事・歷屆試題）</span></span><button class="btn blue" onclick="go('subj','soc')">進入總覽</button></div>`:'';
+  const socShortcut=(socEnrolled>=2&&!enrolledStages('soc').length)?`<div class="card" style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;padding:12px 14px;margin-top:4px;border-color:#38bdf8"><span><b>🌏 社會科跨科總覽</b> <span class="muted">（跨科主題・即時時事・歷屆試題）</span></span><button class="btn blue" onclick="go('subj','soc')">進入總覽</button></div>`:'';
 
   p.innerHTML=`<div class="cgrid">${cards}</div>${socShortcut}`;
   stats();
 };
 
-/* ===== 選課大廳（#v-course）===== */
+/* ===== 選課大廳（#v-course）：依國小／國中／高中／大學分類，不顯示籌備中 ===== */
+let hallTab='全部';
+window.setHallTab=function(t){hallTab=t;renderCourseHall()};
+const STG_IC={'國小':'🌱','國中':'📘','高中':'🎓','大學':'🏛️'};
+
 window.renderCourseHall=function(){
   ensureCourses();
   const c=$('v-course');if(!c)return;
@@ -3108,29 +3180,38 @@ window.renderCourseHall=function(){
   const userStg=(typeof PFS!=='undefined'&&PFS)?PFS:'';
 
   const presetsHtml=PRESETS.map((p,i)=>`<button class="chip" onclick="applyPreset(${i})">${esc(p.n)}</button>`).join('');
+  const activeStages=STAGES.filter(g=>SUBJS.some(s=>AVAIL[s].includes(g)));
+  const tabsHtml=['全部',...activeStages].map(t=>`<button class="tab${hallTab===t?' on':''}" onclick="setHallTab('${t}')">${t==='全部'?'全部階段':STG_IC[t]+' '+t}</button>`).join('');
 
-  const rowsHtml=SUBJS.map(s=>{
-    const [ic,nm]=SUBJ[s].split(' ');
-    const btns=STAGES.map(g=>{
-      const avail=AVAIL[s].includes(g);
-      if(!avail){
-        return `<button class="cbtn soon" onclick="toggleCourse('${s}','${g}',true)"><b>${g}</b><small>🔒 籌備中</small></button>`;
-      }
+  const showStages=hallTab==='全部'?activeStages:[hallTab];
+  const sectionsHtml=showStages.map(g=>{
+    const openSubjs=SUBJS.filter(s=>AVAIL[s].includes(g));
+    if(!openSubjs.length)return '';
+    const rec=userStg===g?'<span class="cbadge" style="margin-left:8px;font-size:.78rem">⭐ 適合你的階段</span>':'';
+    const cards=openSubjs.map(s=>{
+      const [ic,nm]=SUBJ[s].split(' ');
       const on=st.courses.includes(s+':'+g);
       const list=courseItems(s,g,false);
       const m=list.filter(k=>st.m.includes(k.id)).length;
-      const rec=userStg===g;
-      const cntTxt=(s==='eng'&&!window.vocabReady&&list.length<50)?'載入中':`${list.length} 條${m?`・熟 ${m}`:''}`;
-      return `<button class="cbtn${on?' on':''}" onclick="toggleCourse('${s}','${g}',true)">
-        ${rec?'<span class="cbadge">⭐ 推薦</span>':''}
-        <b>${on?'✓ ':'＋ '}${g}</b>
-        <small>${cntTxt}</small>
-      </button>`;
+      const cntTxt=(s==='eng'&&!window.vocabReady&&list.length<50)?'單字載入中…':`共 ${list.length} 條${m?`・已熟練 ${m}`:''}`;
+      return `<div class="ccard" style="${on?'border-color:#10b981;background:#0f2922':''}" onclick="toggleCourse('${s}','${g}',true)">
+        <div class="ccard-hd">
+          <div class="ccard-ic">${ic}</div>
+          <div style="flex:1;min-width:0">
+            <div class="ccard-ti">${nm}<span class="ccard-tag">${g}</span></div>
+            <div class="muted" style="font-size:.76rem">${cntTxt}</div>
+          </div>
+        </div>
+        <div class="muted" style="font-size:.78rem;line-height:1.5;flex:1">${esc(SUBJ_DESC[s]||'')}</div>
+        <div style="display:flex;justify-content:flex-end;margin-top:4px">
+          <span class="btn${on?' alt':''}" style="padding:4px 12px;font-size:.8rem;${on?'background:#064e3b;color:#6ee7b7;border:1px solid #10b981':''}">${on?'✓ 已選（點此退選）':'＋ 加選'}</span>
+        </div>
+      </div>`;
     }).join('');
-    return `<div class="ch-row">
-      <div class="ch-info"><h4>${ic} ${nm}</h4><div class="muted">${esc(SUBJ_DESC[s]||'')}</div></div>
-      <div class="ch-btns">${btns}</div>
-    </div>`;
+    return `<div style="margin:14px 0 6px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px">
+      <h4 style="color:#f59e0b;font-size:1.02rem;margin:0">${STG_IC[g]} ${g}課程 <span class="muted" style="font-weight:normal">（${openSubjs.length} 門）</span>${rec}</h4>
+    </div>
+    <div class="cgrid">${cards}</div>`;
   }).join('');
 
   c.innerHTML=`
@@ -3139,10 +3220,11 @@ window.renderCourseHall=function(){
         <h3 style="margin:0">🎓 選課大廳</h3>
         <button class="btn alt" onclick="go('home')">← 返回我的課表</button>
       </div>
-      <div class="muted" style="margin-top:6px;line-height:1.6">自由加選或退選各科學習階段——想<b>超前學習</b>或<b>回頭複習</b>都可以直接加選！退選不會刪除原本記錄的熟練度與間隔複習進度。尚無內容的階段會標示為「籌備中」。</div>
+      <div class="muted" style="margin-top:6px;line-height:1.6">自由加選或退選各階段課程——想<b>超前學習</b>或<b>回頭複習</b>都可以直接加選！退選不會刪除原本記錄的熟練度與間隔複習進度。</div>
       <div style="margin-top:10px"><div class="muted" style="margin-bottom:6px">⚡ 一鍵套用推薦課表：</div><div class="qchips">${presetsHtml}</div></div>
     </div>
-    <div class="ch-mat">${rowsHtml}</div>
+    <div class="tabs">${tabsHtml}</div>
+    <div style="margin-bottom:80px">${sectionsHtml}</div>
     <div class="cfoot">
       <div>目前已選 <b style="color:#f59e0b">${st.courses.length}</b> 門課（共 <b style="color:#38bdf8">${totalItems}</b> 個知識點）</div>
       <button class="btn" onclick="go('home')">✓ 完成選課，前往我的課表</button>
@@ -3177,9 +3259,7 @@ window.subjUnits=function(s){
 /* ===== 統一各科主頁骨架（四階段列＋直式摺疊主題清單＋保留各科專屬工具）===== */
 function stageBarHtml(s,stg){
   const en=enrolledStages(s);
-  const btns=STAGES.map(g=>{
-    const avail=AVAIL[s].includes(g);
-    if(!avail)return `<button class="sbtn soon" onclick="setSubjStage('${s}','${g}')">${g} 🔒 籌備中</button>`;
+  const btns=STAGES.filter(g=>AVAIL[s].includes(g)).map(g=>{
     const isOn=g===stg,isEn=en.includes(g);
     return `<button class="sbtn${isOn?' on':''}${isEn?' enr':''}" onclick="setSubjStage('${s}','${g}')">${isEn?'✓ ':''}${g}</button>`;
   }).join('');
@@ -3207,10 +3287,42 @@ window.renderSubj=function(s){
   curSubj=s;
   const v=$('v-subj');if(!v)return;
   if(s==='soc'){
-    v.innerHTML=socHub();
-    if(typeof newsCard==='function'){const h=v.firstElementChild;if(h)h.insertAdjacentHTML('afterend',newsCard());if(typeof newsInit==='function')newsInit()}
-    if(typeof examCard==='function')v.insertAdjacentHTML('beforeend',examCard('soc'));
-    v.insertAdjacentHTML('afterbegin',socTabs('soc'));
+    const stg=getSubjStage('soc');
+    const all=courseItems('soc',stg,false);
+    const m=all.filter(k=>st.m.includes(k.id)).length;
+    const r=all.filter(k=>st.r.includes(k.id)).length;
+    const bar=(a,b)=>`<div style="height:8px;background:#0f172a;border-radius:4px;overflow:hidden;border:1px solid #334155"><div style="width:${b?Math.round(a*100/b):0}%;height:100%;background:#34d399"></div></div>`;
+    let h=socTabs('soc')+stageBarHtml('soc',stg);
+    h+=`<div class="card">
+      <h3><span>${SUBJ.soc}・${stg}</span></h3>
+      <div class="muted">${stg==='國中'?'整合國中社會學習內容（目前收錄國中歷史；國中地理與公民持續擴充中，亦可切至高中預習）':esc(SUBJ_DESC.soc)}</div>
+      <div style="margin:10px 0">${bar(m,all.length)}</div>
+      <div class="muted">共 ${all.length} 個知識點　已熟練 <b style="color:#34d399">${m}</b>　待複習 <b style="color:#f87171">${r}</b></div>
+      <div class="cfg" style="margin:12px 0 0">
+        <button class="btn blue" onclick="subjQuiz(1,'soc')">🗂️ 本階段閃卡</button>
+        <button class="btn blue" onclick="subjQuiz(2,'soc')">📝 本階段綜合測驗</button>
+        <button class="btn alt" onclick="go('map')">🗺️ 歷史數位地圖</button>
+        <button class="btn alt" onclick="go('time')">⏳ 跨時空年代軸</button>
+      </div>
+    </div>`;
+    if(typeof newsCard==='function')h+=newsCard();
+    const subRows=[['hist','📜','歷史'],['geo','🌍','地理'],['civ','⚖️','公民']].map(([cs,ic,nm])=>{
+      const hasStg=AVAIL[cs].includes(stg),useStg=hasStg?stg:AVAIL[cs][AVAIL[cs].length-1];
+      const items=courseItems(cs,useStg,false),done=items.filter(k=>st.m.includes(k.id)).length,pct=items.length?Math.round(done*100/items.length):0;
+      const subTxt=hasStg?`${useStg}・${SUBJ_DESC[cs]}`:`${stg}內容籌備中（點此可預習${useStg}內容）`;
+      return `<div class="ufold" onclick="openCourse('${cs}','${useStg}')">
+        <div class="ufold-l"><span class="ufold-ic">${ic}</span><div style="min-width:0"><div style="font-weight:bold;color:#f8fafc">${nm}${hasStg?'':' <span class="lv">預習'+useStg+'</span>'}</div><div class="muted" style="font-size:.78rem;margin-top:2px">${esc(subTxt)}</div></div></div>
+        <div class="ufold-r"><div>${items.length} 條・熟 ${done}</div><div class="cprog" style="width:76px;margin-top:4px;margin-left:auto"><div style="width:${pct}%"></div></div></div>
+      </div>`;
+    }).join('');
+    h+=`<div class="ugroup">三科分科入口</div><div class="folders">${subRows}</div>`;
+    // Keep cross-subject themes from socHub
+    const tmp=document.createElement('div');tmp.innerHTML=socHub();
+    const thCard=[...tmp.children].find(el=>el.textContent.includes('跨科主題'));
+    if(thCard)h+=thCard.outerHTML;
+    if(typeof examCard==='function')h+=examCard('soc');
+    v.innerHTML=h;
+    if(typeof newsInit==='function')newsInit();
     return;
   }
   const stg=getSubjStage(s);
@@ -3332,7 +3444,11 @@ window.renderQCfg=function(){
 
 window.subjQuiz=function(n,d){
   const s=d||curSubj;
-  if(s==='soc'){go('quiz');qRows=[{d:'soc',u:'',ts:['mix'],n:10}];quizTab(n);startQuiz();return}
+  if(s==='soc'){
+    const stg=getSubjStage('soc');
+    const ids=courseItems('soc',stg,false).filter(k=>k.lv!=='S').map(k=>k.id);
+    go('quiz');qRows=[{d:'soc',u:'',ts:['mix'],n:10,ids}];quizTab(n);startQuiz();return;
+  }
   const base=s==='mex'?'math':s;
   const stg=AVAIL[base]?getSubjStage(base):'高中';
   const ids=KB.filter(k=>(s==='mex'?k.s==='mex':k.s!=='mex')&&itemInStage(k,base,stg)&&k.lv!=='S'&&prefOK(k)).map(k=>k.id);
@@ -3391,7 +3507,7 @@ window.logoutNow=function(tab){
   LS.removeItem('sess');SS.removeItem('adm');SS.removeItem('devret');adm='';user=null;
   st={m:[],r:[],cal:{},chat:[],hideChat:false,box:{}};cy=undefined;mCat=null;mId=null;cMsgs=[];cTh=[];
   if($('side').classList.contains('on'))side();
-  ['mGuide','mSet','mTxt','mFb','mUse'].forEach(i=>$(i).classList.remove('on'));regPend=null;
+  ['mGuide','mSet','mTxt','mUse'].forEach(i=>$(i).classList.remove('on'));regPend=null;
   $('app').style.display='none';$('auth').style.display='flex';$('authMsg').textContent='';
   authTab(tab==='r'?'r':'l');
 };
@@ -3436,7 +3552,7 @@ window.stats=function(){
 try{
   if(typeof user!=='undefined'&&user&&['國小','國中'].includes(PFS)&&!LS.getItem('seen_stg_ok_'+PFS)){
     LS.setItem('seen_stg_ok_'+PFS,'1');
-    setTimeout(()=>showErr(`✨ 已依你的設定帶入${PFS}課程（數學、英文單字、歷史），其他科目籌備中，隨時可到選課大廳調整。`),700);
+    setTimeout(()=>showErr(`✨ 已依你的設定帶入${PFS}課程（數學、英文單字、${PFS==='國中'?'社會全科':'歷史'}），其他科目籌備中，隨時可到選課大廳調整。`),700);
   }
 }catch(e){}
 
