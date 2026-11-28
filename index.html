@@ -164,14 +164,15 @@ summary{color:#38bdf8;cursor:pointer;font-size:.85rem;font-weight:bold}
 
 <div id="auth"><div class="card ac"><div style="text-align:right"><button class="btn alt langBtn2" onclick="setLang()" style="padding:4px 10px">🌐 EN</button></div>
 <h2>108課綱跨學科學習系統</h2>
+<button class="btn" style="padding:11px 14px;font-size:.95rem" onclick="guest()">🚀 先試試看（不用註冊）</button>
+<div class="muted" style="text-align:center;font-size:.78rem">想跨裝置保存進度再登入或註冊即可</div>
 <div class="tabs"><button class="tab on" id="tl" onclick="authTab('l')">登入</button><button class="tab" id="tr" onclick="authTab('r')">註冊</button></div>
 <form id="fl" onsubmit="doLogin(event)" style="display:flex;flex-direction:column;gap:8px">
 <input class="in" id="lu" placeholder="帳號（或已綁定的 Email）" autocomplete="username" required><input class="in" id="lp" type="password" placeholder="密碼" autocomplete="current-password" required><button class="btn">登入</button><a href="#" id="fpl" style="display:none;text-align:center;font-size:.82rem;margin-top:8px">忘記密碼？</a></form>
 <form id="fr" onsubmit="doReg(event)" style="display:none;flex-direction:column;gap:8px">
-<input class="in" id="ru" placeholder="帳號（2–20 字：中英文、數字、_ . -）" autocomplete="username" maxlength="20" required><input class="in" id="rn" placeholder="暱稱（最多 12 字）" maxlength="12" required><div class="av" id="ravs"></div>
+<input class="in" id="ru" placeholder="帳號（2–20 字：中英文、數字、_ . -）" autocomplete="username" maxlength="20" required><input class="in" id="rn" placeholder="暱稱（最多 12 字）" maxlength="12" required><input class="in" id="re" type="email" placeholder="Email（選填，僅用來找回密碼）" autocomplete="email"><div class="av" id="ravs"></div>
 <div class="muted" style="font-size:.8rem">🎓 學習設定（之後可在個人設定修改）</div><div style="display:flex;gap:8px"><input class="in" id="ra" type="number" min="5" max="99" placeholder="年齡" style="width:92px"><select class="in" id="rs" onchange="pfSync('r')" style="flex:1"><option value="">學習階段</option><option>國小</option><option>國中</option><option>高中</option><option>大學</option><option value="不分類">不分類（顯示全部）</option></select></div><select class="in" id="rgd" style="display:none"></select><select class="in" id="rg" style="display:none"><option value="">請選擇類組</option><option value="一類">第一類組（文法商）</option><option value="二類">第二類組（理工）</option><option value="三類">第三類組（醫農生）</option><option value="未分組">尚未分組（高一）</option></select>
 <input class="in" id="rp" type="password" placeholder="密碼（至少 8 個字元）" autocomplete="new-password" required><input class="in" id="rp2" type="password" placeholder="再輸入一次密碼" autocomplete="new-password" required><label class="muted" style="display:flex;gap:8px;align-items:flex-start;font-size:.78rem;line-height:1.5"><input type="checkbox" id="rc" required style="margin-top:3px"><span>我了解本站會儲存帳號、暱稱、學習階段／年級與學習進度，以及基本的使用紀錄（登入、瀏覽頁面、學習操作），僅用於提供學習功能、改善服務與客服處理，不會出售給第三方。未滿 18 歲請在家長或監護人同意下使用；可隨時在「個人設定」匯出資料或刪除帳號。</span></label><button class="btn">完成註冊</button></form>
-<button class="btn alt" onclick="guest()">👀 訪客模式（免註冊）</button>
 <div class="muted" style="text-align:center;font-size:.75rem">此為「本機帳號」：資料只存在這台裝置的瀏覽器，用來區分學習紀錄。密碼以雜湊方式儲存，但此帳號不具防護效果，請勿使用常用密碼。</div>
 <div class="muted" id="authMsg" style="text-align:center"></div>
 </div></div>
@@ -185,7 +186,9 @@ summary{color:#38bdf8;cursor:pointer;font-size:.85rem;font-weight:bold}
 <div class="view" id="v-home">
 <div class="card" style="text-align:center"><h2 style="margin-bottom:6px">歡迎來到 <span style="color:#f59e0b">跨學科學習門戶</span></h2>
 <div class="muted" id="homeSub">已選課程　共 <b id="kbN" style="color:#f59e0b"></b> 個知識點</div>
-<div class="muted" style="margin-top:6px">已掌握 <b id="sM" style="color:#34d399">0</b>　待複習 <b id="sR" style="color:#f87171">0</b>　今日到期 <b id="sD" style="color:#38bdf8">0</b></div></div>
+<div class="muted" style="margin-top:6px">已掌握 <b id="sM" style="color:#34d399">0</b>　今日建議 <b id="sD" style="color:#38bdf8">0</b> 張（共 <b id="sR" style="color:#cbd5e1">0</b> 張待複習）<span id="sDoneTag"></span></div>
+<div class="muted" style="margin-top:4px" id="sWeek"></div></div>
+<div id="emTipBox"></div>
 <div class="card" id="jCard" style="border-color:#f59e0b;padding:8px 12px;margin:8px 0"><div style="display:flex;gap:8px;align-items:center;font-size:.85rem"><span>🤣</span><span id="jQ" style="flex:1;min-width:0"></span><button class="btn alt" id="jB" style="padding:2px 10px;font-size:.78rem;flex:none" onclick="jShow()">看答案</button></div><div id="jA" class="muted" style="font-size:.85rem;margin-top:4px;display:none"></div><span id="jS" style="display:none"></span></div>
 <div class="portal">
 <div onclick="go('quiz')"><i>🧠</i>測驗閃卡</div>
@@ -213,12 +216,13 @@ summary{color:#38bdf8;cursor:pointer;font-size:.85rem;font-weight:bold}
 <div class="cfg" style="margin:8px 0 0"><input class="in" id="logIn" style="flex:1" placeholder="輸入學習心得…"><button class="btn" onclick="addLog()">➕ 打卡</button></div></div></div>
 
 <div class="view" id="v-chat"><div class="card"><div class="tabs"><button class="tab on" id="ct1" onclick="chatTab('pub')">💬 公開大廳</button><button class="tab" id="ct2" onclick="chatTab('bot')">🛟 線上客服</button><button class="tab" id="ct3" onclick="chatTab('adm')" style="display:none">🛡️ 管理</button></div>
-<div class="muted" id="gBan" style="color:#f87171;display:none">訪客模式僅供瀏覽，請登入後發言。</div>
+<div class="box" id="gBan" style="border-color:#38bdf8;display:none">目前為訪客瀏覽模式，想一起討論嗎？ <button class="btn" style="padding:3px 10px;margin-left:6px" onclick="logoutNow('l')">登入 / 註冊</button></div>
 <div class="box" id="annBox" style="display:none"></div>
 <div class="muted" id="pubNote"></div>
 <div id="admBox" style="display:none"></div>
 <div id="chatMain"><div class="chatbox" id="chatBox"></div>
-<div class="cfg" style="margin:0"><input class="in" id="chIn" style="flex:1" maxlength="200" placeholder="輸入訊息…" onkeydown="if(event.key=='Enter')sendChat()"><button class="btn" onclick="sendChat()">發送</button></div></div></div></div>
+<div class="cfg" style="margin:0"><input class="in" id="chIn" style="flex:1" maxlength="200" placeholder="輸入訊息…" onkeydown="if(event.key=='Enter')sendChat()"><button class="btn" onclick="sendChat()">發送</button></div>
+<div class="muted" style="font-size:.76rem;margin-top:6px">📌 社群守則：友善交流學習問題，請勿張貼電話、Email、網址或個人隱私。</div></div></div></div>
 
 <div class="view" id="v-map" style="max-width:none;padding:10px"><div class="cfg" style="margin:0 0 8px"><button class="btn alt" onclick="go('subj','hist')">← 歷史主頁</button></div><div id="map"></div></div>
 <div class="view" id="v-dev"></div>
@@ -1099,7 +1103,7 @@ async function doReg(e){e.preventDefault();const M=t=>{$('authMsg').textContent=
  if(p!==$('rp2').value)return M('兩次輸入的密碼不一致');
  if(!$('rc').checked)return M('請先勾選同意個資使用說明');
  const pf=pfRead('r');if(typeof pf==='string')return M(pf);
- regPend={u,n,p,pf};if(['大學','不分類'].includes(pf.stage))return finishReg(false);$('useSum').textContent=pfTxt({pf});$('mUse').classList.add('on')}
+ regPend={u,n,p,pf,em:($('re')?$('re').value.trim():'')};if(['大學','不分類'].includes(pf.stage))return finishReg(false);$('useSum').textContent=pfTxt({pf});$('mUse').classList.add('on')}
 async function finishReg(use){const r=regPend;if(!r)return;regPend=null;$('mUse').classList.remove('on');const all=users();
  if(!SB_URL&&Object.keys(all).some(x=>x.toLowerCase()===r.u.toLowerCase()))return $('authMsg').textContent='此帳號已存在，請直接登入';
  const salt=newSalt(),h=await hashPw(r.p,salt);
@@ -1936,21 +1940,23 @@ function getPool(){const used=new Set(),out=[];qT={};
   shuffle(qItems(r)).filter(k=>!used.has(k.id)).slice(0,r.n).forEach(k=>{used.add(k.id);out.push(k);
    const c=ts.filter(t=>QT[t].can(k));qT[k.id]=qMode==2&&c.length?c[Math.random()*c.length|0]:'mix'})});
  return shuffle(out)}
-function startQuiz(){pool=getPool();qi=0;score=0;
- if(!pool.length){$('qArea').innerHTML='<div class="card">目前沒有符合的知識點（今日到期或標記「不熟」的題目會出現在這裡）。</div>';return}
+let wrongPool=[];
+function startQuiz(){pool=getPool();qi=0;score=0;wrongPool=[];
+ if(!pool.length){$('qArea').innerHTML='<div class="card"><div style="margin-bottom:10px">目前沒有符合的知識點（今日到期或標記「不熟」的題目會出現在這裡）。</div><div class="cfg" style="margin:0"><button class="btn" onclick="qQuick(\'ALL\',10)">🎲 試試全科 10 題</button><button class="btn alt" onclick="go(\'course\')">🎓 前往選課大廳</button></div></div>';return}
  qMode==1?showFC():showQ()}
+function retryWrong(){if(!wrongPool.length)return;pool=shuffle(wrongPool.slice());qi=0;score=0;wrongPool=[];showQ()}
 function showFC(){
- if(qi>=pool.length){$('qArea').innerHTML='<div class="card">🎉 閃卡複習完成！</div>';return}
+ if(qi>=pool.length){const gPrompt=user&&user.guest?'<div class="box" style="margin-top:10px;border-color:#f59e0b">想保存這次的學習進度嗎？ <button class="btn" style="padding:3px 10px;margin-left:6px" onclick="logoutNow(\'r\')">免費註冊</button></div>':'';$('qArea').innerHTML='<div class="card"><h3>✨ 閃卡複習完成！</h3><div class="muted">做得好，間隔複習已為你排好下次複習時間。</div>'+gPrompt+'</div>';return}
  const k=pool[qi];
  $('qArea').innerHTML=`<div class="muted" style="text-align:center;margin-bottom:6px">${qi+1} / ${pool.length}　${SUB_NAME[k.s]}</div>
  <div class="fc" id="fc" onclick="this.classList.toggle('flip')"><div class="fci"><div class="f">${k.s==='mex'?mt(k,k.d):esc(k.t)}<div class="muted">點擊翻面</div></div>
  <div class="b">${k.s==='mex'?`<div class="box" style="border-color:#34d399"><b>答案：</b>${mt(k,k.a)}</div><div class="box" style="white-space:pre-line">${mt(k,k.x)}</div>`:`<div class="box">${mt(k,k.d)}</div><div class="box" style="border-color:#f59e0b">${mt(k,k.x)}</div>`}</div></div></div>
- <div class="cfg" style="justify-content:center"><button class="btn alt" onclick="rate(0)">還不熟（明天再看）</button><button class="btn" onclick="rate(1)">記得（拉長間隔）</button></div>`}
-function rate(ok){const k=pool[qi];srs(k.id,ok);if(ok)log('完成閃卡：'+k.t);save();qi++;showFC()}
+ <div class="cfg" style="justify-content:center"><button class="btn alt" onclick="rate(0)">還不熟（退回一箱）</button><button class="btn alt" style="border-color:#38bdf8;color:#38bdf8" onclick="rate(0.5)">差點記得（明天再看）</button><button class="btn" onclick="rate(1)">記得（拉長間隔）</button></div>`}
+function rate(ok){const k=pool[qi];srs(k.id,ok);if(ok>=0.5)log('完成閃卡：'+k.t);save();qi++;showFC()}
 const INTV=[1,2,4,8,16];
-function srs(id,ok){const cur=st.box[id];if(ok&&cur&&cur.due>today())return;/* 未到複習日就答對：不加箱，避免同日重複作答灌水 */const b=(cur||{b:1}).b,nb=ok?Math.min(5,b+1):1,d=new Date();d.setDate(d.getDate()+INTV[nb-1]);
+function srs(id,ok){const cur=st.box[id];if(ok===1&&cur&&cur.due>today())return;/* 未到複習日就答對：不加箱，避免同日重複作答灌水 */const b=(cur||{b:1}).b,nb=ok===1?Math.min(5,b+1):ok===0.5?b:Math.max(1,b-1),d=new Date();d.setDate(d.getDate()+(ok===0.5?1:INTV[nb-1]));
  st.box[id]={b:nb,due:fmt(d.getFullYear(),d.getMonth(),d.getDate())};
- if(ok){if(nb>=3){if(!st.m.includes(id))st.m.push(id);st.r=st.r.filter(x=>x!==id)}}
+ if(ok===1){if(nb>=3){if(!st.m.includes(id))st.m.push(id);st.r=st.r.filter(x=>x!==id)}}
  else{if(!st.r.includes(id))st.r.push(id);st.m=st.m.filter(x=>x!==id)}}
 const leak=k=>{const t=k.t.replace(/[《》「」（）()\s]/g,'');for(let i=0;i+3<=t.length;i++)if(k.d.includes(t.slice(i,i+3)))return true;return false};
 /* ===== 題型登錄表：dom＝適用科目，can＝這個知識點能不能出此題型，make＝產生題目 ===== */
@@ -2064,11 +2070,20 @@ function fillChk(q,v){
  const n=nz(v);return n!==''&&[q.ans,...(q.alt||[])].some(x=>nz(x)===n)}
 const qBase=k=>k.s==='mex'?`<b>答案：${mt(k,k.a)}</b><br><span style="white-space:pre-line">${mt(k,k.x)}</span><br>`:`<b>正解：${esc(k.t)}${k.ys?'（'+esc(k.ys)+'）':(k.y?'（'+k.y+' 年）':'')}</b><br>${mt(k,k.d)}<br>${mt(k,k.x)}<br>`;
 function showQ(){
-  if(qi>=pool.length){$('qArea').innerHTML=`<div class="card"><h3>🏆 測驗完成</h3>得分：${score} / ${pool.length}</div>`;log(`完成模擬測驗：${score}/${pool.length}`);return}
+  if(qi>=pool.length){
+   const pct=pool.length?Math.round(score*100/pool.length):0;
+   const title=pct>=80?'🏆 表現很棒！':pct>=50?'👍 不錯喔，繼續保持！':'🌱 剛起步沒關係，多練幾次就會熟！';
+   let prev=null;try{prev=JSON.parse(LS.getItem('last_q_res')||'null')}catch(e){}
+   const diff=(prev&&prev.n===pool.length&&score>prev.s)?`<div class="muted" style="color:#34d399;margin-top:4px">📈 比上次進步 ${score-prev.s} 題！</div>`:'';
+   try{LS.setItem('last_q_res',JSON.stringify({s:score,n:pool.length}))}catch(e){}
+   const retryBtn=wrongPool.length?`<button class="btn" onclick="retryWrong()">🔁 把答錯的 ${wrongPool.length} 題再測一次</button>`:'';
+   const gPrompt=user&&user.guest?`<div class="box" style="margin-top:10px;border-color:#f59e0b">想保存這次的學習進度嗎？ <button class="btn" style="padding:3px 10px;margin-left:6px" onclick="logoutNow('r')">免費註冊</button></div>`:'';
+   $('qArea').innerHTML=`<div class="card"><h3>${title}</h3><div>得分：<b>${score} / ${pool.length}</b>（${pct}%）</div>${diff}<div class="cfg" style="margin:12px 0 0">${retryBtn}<button class="btn alt" onclick="startQuiz()">再測一回</button></div>${gPrompt}</div>`;
+   log(`完成模擬測驗：${score}/${pool.length}`);return}
   const k=pool[qi],q=mkQ(k,qT[k.id]),kind=q.kind||'single';
   $('qArea').innerHTML=`<div class="card"><div class="muted">題目 ${qi+1} / ${pool.length}　${SUB_NAME[k.s]}<span class="qtag">${QK[kind]}</span></div><div style="font-weight:bold;margin:10px 0;line-height:1.6">${q.stem}</div>${kind==='multi'?'<div class="muted" style="margin:-4px 0 8px">（多選：可選一個以上，全部選對才得分）</div>':''}<div id="opts"></div><div id="act"></div><div id="exp" class="box" style="display:none;border-color:#f59e0b"></div></div>`;
   let done=false;
-  const reveal=(ok,pre)=>{done=true;if(ok)score++;srs(k.id,ok);save();const e=$('exp');e.style.display='block';e.innerHTML=(pre||'')+qBase(k)+`<button class="btn" style="margin-top:8px" onclick="qi++;showQ()">下一題 ➔</button>`};
+  const reveal=(ok,pre)=>{done=true;if(ok)score++;else if(!wrongPool.includes(k))wrongPool.push(k);srs(k.id,ok?1:0);save();const e=$('exp');e.style.display='block';const head=pre||(ok?'<b style="color:#34d399">✅ 答對了</b><br>':'<b style="color:#fbbf24">📝 這題先記下來，下次會再出現</b><br>');e.innerHTML=head+qBase(k)+`<button class="btn" style="margin-top:8px" onclick="qi++;showQ()">下一題 ➔</button>`};
   if(kind==='single'){
    q.opts.forEach((o,i)=>{const b=document.createElement('button');b.className='opt';b.innerHTML=LAB[i]+'. '+o.h;
     b.onclick=()=>{if(done)return;b.classList.add(o.ok?'ok':'no');[...$('opts').children].forEach((c,j)=>{if(q.opts[j].ok)c.classList.add('ok')});reveal(o.ok)};
@@ -2091,7 +2106,7 @@ function showQ(){
   row.className='cfg';row.style.margin='8px 0 0';ok1.className='btn';ok1.textContent='送出';sk.className='btn alt';sk.textContent='我不知道';
   const fin=skip=>{if(done)return;const v=inp.value;if(!skip&&!v.trim()){inp.focus();return}
    const ok=!skip&&fillChk(q,v);inp.disabled=true;inp.classList.add(ok?'ok':'no');row.remove();
-   reveal(ok,`<b>${ok?'✅ 答對了':(skip?'已跳過':'❌ 答錯了')}</b>${ok||skip?'':'　你的答案：'+(esc(v)||'（空白）')}<br>正確答案：<b>${q.ansH}</b><br>${q.note?q.note+'<br>':''}`)};
+   reveal(ok,`<b>${ok?'✅ 答對了':(skip?'已跳過':'📝 這題先記下來，下次會再出現')}</b>${ok||skip?'':'　你的答案：'+(esc(v)||'（空白）')}<br>正確答案：<b>${q.ansH}</b><br>${q.note?q.note+'<br>':''}`)};
   ok1.onclick=()=>fin(false);sk.onclick=()=>fin(true);
   inp.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.isComposing&&e.keyCode!==229){e.preventDefault();fin(false)}});
   row.append(ok1,sk);$('act').append(inp,row);setTimeout(()=>inp.focus(),0)}
@@ -2435,6 +2450,7 @@ function row(k){const m=st.m.includes(k.id),r=st.r.includes(k.id);
  return `<div class="vrow${m?' vok':''}${r?' vbad':''}" id="it_${k.id}"><div class="vw"><b>${esc(k.t)}</b><span class="vlv">${lvOf(k)}${k.hl?' L'+k.hl:''}</span><button class="vsp" title="發音" onclick="vsay('${q(k.t)}')">🔊</button></div>${k.ng?'<div class="vng">（尚未加入中文詞義）</div><div class="vs"></div>':`<div class="vmean${VO.hm?' hid':''}" onclick="this.classList.toggle('hid')">${esc(k.d)}</div><div class="vs"><button class="${m?'m':''}" title="標記熟練" onclick="tog('${k.id}','m')">${m?'✅':'☑'}</button><button class="${r?'r':''}" title="標記不熟" onclick="tog('${k.id}','r')">${r?'❌':'✖'}</button></div>`}${VO.hx||!k.x?'':k.nt?`<div class="vx">${esc(k.x)}</div>`:`<div class="vx">${esc(k.x)}<button class="vsp" title="朗讀例句" onclick="vsay('${q(k.x)}')">🔊</button></div>`}</div>`}
 const btn=(a,t,on)=>`<button class="btn alt${on?' vtgl':''}" onclick="${a}">${t}</button>`;
 window.vocabHub=function(U){
+ if(!window.vocabReady)return '<div class="muted" style="padding:14px">'+(window.vocabError?'單字資料暫時載入失敗，請檢查網路。<button class="btn" style="margin-left:8px" onclick="loadVocab()">重試</button>':'單字載入中…')+'</div>';
  const ex=VO.hsx&&(VO.lv==='all'||VO.lv==='高中')?HSX:[],L=U.items.concat(ex).filter(k=>VO.lv==='all'||lvOf(k)===VO.lv),byP={};L.forEach(k=>{(byP[k.pos||'n']=byP[k.pos||'n']||[]).push(k)});
  if(VS.pos&&!byP[VS.pos]){VS.pos=null;VS.unit=null}
  const chips=`<div class="vbar">${LV.map(l=>btn(`vlv('${l}')`,l,(VO.lv==='all'?'全部':VO.lv)===l)).join('')}${btn("vset('hsx')",'含未加詞義的字（'+HSX.length+'）',VO.hsx)}<span class="muted">${typeof PFC!=='undefined'&&PFC?'已依你的學習設定顯示適合的字':'可選年級篩選；在「設定」填學習階段後會自動只顯示適合的字'}</span></div>`;
@@ -3367,6 +3383,77 @@ window.refreshCourseUI=function(){
     stats();
   }catch(e){}
 };
+
+
+/* ===== UX、心理激勵、Email 提醒與無障礙強化 ===== */
+window.logoutNow=function(tab){
+  try{chatStop();tourEnd()}catch(e){}
+  LS.removeItem('sess');SS.removeItem('adm');SS.removeItem('devret');adm='';user=null;
+  st={m:[],r:[],cal:{},chat:[],hideChat:false,box:{}};cy=undefined;mCat=null;mId=null;cMsgs=[];cTh=[];
+  if($('side').classList.contains('on'))side();
+  ['mGuide','mSet','mTxt','mFb','mUse'].forEach(i=>$(i).classList.remove('on'));regPend=null;
+  $('app').style.display='none';$('auth').style.display='flex';$('authMsg').textContent='';
+  authTab(tab==='r'?'r':'l');
+};
+
+function weekStudyDays(){
+  const now=new Date(),dow=(now.getDay()+6)%7; // 0=Mon..6=Sun
+  let cnt=0;
+  for(let i=0;i<=dow;i++){
+    const d=new Date(now.getFullYear(),now.getMonth(),now.getDate()-i);
+    const k=fmt(d.getFullYear(),d.getMonth(),d.getDate());
+    if(Array.isArray(st.cal[k])&&st.cal[k].length)cnt++;
+  }
+  return cnt;
+}
+
+const _statsCourse=window.stats;
+window.stats=function(){
+  _statsCourse();
+  const items=myCourseItems();
+  const due=items.filter(k=>{const b=st.box[k.id];return b?b.due<=today():st.r.includes(k.id)}).length;
+  const sug=Math.min(20,due);
+  if($('sD'))$('sD').textContent=sug;
+  const todayLogs=Array.isArray(st.cal[today()])?st.cal[today()].length:0;
+  const dt=$('sDoneTag');
+  if(dt){
+    if(todayLogs>0&&(due===0||todayLogs>=20))dt.innerHTML='　<b style="color:#34d399">✨ 今天完成了！</b>';
+    else dt.textContent='';
+  }
+  const wk=$('sWeek');
+  if(wk){
+    const wd=weekStudyDays();
+    wk.textContent=wd?`📅 本週已學習 ${wd} 天`:'📅 本週還沒開始，做張閃卡就計入今天！';
+  }
+  const eb=$('emTipBox');
+  if(eb){
+    const showTip=user&&!user.guest&&!LS.getItem('hide_em_tip')&&!LS.getItem('em_bound_'+user.name);
+    eb.innerHTML=showTip?`<div class="card" style="border-color:#38bdf8;padding:10px 14px;margin:8px 0;display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap"><span class="muted" style="font-size:.82rem;color:#e2e8f0">📧 建議綁定 Email（只用來找回忘記的密碼），也可定期在設定匯出備份。</span><span><button class="btn blue" style="padding:3px 10px;font-size:.78rem" onclick="openSet()">前往設定</button> <button class="btn alt" style="padding:3px 8px;font-size:.78rem" onclick="LS.setItem('hide_em_tip','1');stats()">知道了</button></span></div>`:'';
+  }
+};
+
+/* 國小／國中首次進入的正向一次性提示 */
+try{
+  if(typeof user!=='undefined'&&user&&['國小','國中'].includes(PFS)&&!LS.getItem('seen_stg_ok_'+PFS)){
+    LS.setItem('seen_stg_ok_'+PFS,'1');
+    setTimeout(()=>showErr(`✨ 已依你的設定帶入${PFS}課程（數學、英文單字、歷史），其他科目籌備中，隨時可到選課大廳調整。`),700);
+  }
+}catch(e){}
+
+/* 無障礙：為所有互動式 div/span 補上鍵盤焦點與 Enter/Space 支援 */
+function a11yEnhance(root){
+  (root||document).querySelectorAll('div[onclick],span[onclick]').forEach(el=>{
+    if(!el.hasAttribute('role'))el.setAttribute('role','button');
+    if(!el.hasAttribute('tabindex'))el.setAttribute('tabindex','0');
+  });
+}
+a11yEnhance(document);
+document.addEventListener('keydown',e=>{
+  if((e.key==='Enter'||e.key===' ')&&e.target&&/^(DIV|SPAN)$/.test(e.target.tagName)&&e.target.getAttribute('role')==='button'){
+    e.preventDefault();e.target.click();
+  }
+});
+try{new MutationObserver(ms=>ms.forEach(m=>m.addedNodes.forEach(n=>{if(n.nodeType===1)a11yEnhance(n)}))).observe(document.body,{childList:true,subtree:true})}catch(e){}
 
 /* ===== 初始登入／已存在 Session 時自動刷新課表 ===== */
 try{
