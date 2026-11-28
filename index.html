@@ -114,6 +114,52 @@ summary{color:#38bdf8;cursor:pointer;font-size:.85rem;font-weight:bold}
 .vsp{background:none;border:0;cursor:pointer;font-size:1rem;padding:0 4px}.nosp .vsp{display:none}
 .vs button{background:#0f172a;border:1px solid #334155;border-radius:8px;color:#cbd5e1;cursor:pointer;padding:3px 9px;margin-left:4px}.vs button.m{border-color:#34d399;color:#34d399}.vs button.r{border-color:#f87171;color:#f87171}
 @media(max-width:560px){.vrow{grid-template-columns:1fr auto}}
+
+/* ===== 選課系統與統一各科主頁樣式 ===== */
+.cgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(255px,1fr));gap:12px;margin:10px 0}
+.ccard{background:#1e293b;border:1px solid #334155;border-radius:10px;padding:14px;cursor:pointer;transition:.18s;display:flex;flex-direction:column;gap:8px;position:relative}
+.ccard:hover{border-color:#f59e0b;transform:translateY(-1px)}
+.ccard-hd{display:flex;align-items:center;gap:10px}
+.ccard-ic{font-size:1.55rem;width:42px;height:42px;border-radius:10px;background:#0f172a;border:1px solid #334155;display:flex;align-items:center;justify-content:center;flex:none}
+.ccard-ti{font-weight:bold;color:#f8fafc;font-size:1rem;line-height:1.3}
+.ccard-tag{display:inline-block;font-size:.72rem;padding:1px 8px;border-radius:999px;background:#0f172a;border:1px solid #475569;color:#38bdf8;margin-left:6px;vertical-align:middle}
+.cprog{height:7px;background:#0f172a;border-radius:999px;overflow:hidden;border:1px solid #334155}
+.cprog>div{height:100%;background:linear-gradient(90deg,#10b981,#34d399);transition:width .25s}
+.ccard-ft{display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:.78rem;color:#94a3b8}
+.cdrop{background:transparent;border:1px solid #475569;color:#94a3b8;border-radius:6px;padding:2px 8px;font-size:.72rem;cursor:pointer}
+.cdrop:hover{border-color:#ef4444;color:#fca5a5}
+.cdrop.cfm{background:#7f1d1d;border-color:#ef4444;color:#fff}
+.ch-mat{display:flex;flex-direction:column;gap:10px;margin:12px 0 80px}
+.ch-row{background:#1e293b;border:1px solid #334155;border-radius:10px;padding:14px;display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between}
+.ch-info{flex:1 1 220px;min-width:200px}
+.ch-info h4{color:#f59e0b;font-size:1rem;margin-bottom:4px}
+.ch-btns{display:grid;grid-template-columns:repeat(4,minmax(88px,1fr));gap:8px;flex:1 1 380px}
+@media(max-width:640px){.ch-btns{grid-template-columns:repeat(2,1fr)}}
+.cbtn{background:#0f172a;border:1px solid #475569;color:#e2e8f0;border-radius:8px;padding:8px 6px;cursor:pointer;text-align:center;display:flex;flex-direction:column;align-items:center;gap:2px;transition:.15s;position:relative}
+.cbtn:hover{border-color:#f59e0b}
+.cbtn b{font-size:.88rem}
+.cbtn small{font-size:.7rem;color:#94a3b8}
+.cbtn.on{background:#064e3b;border-color:#10b981;color:#ecfdf5}
+.cbtn.on small{color:#6ee7b7}
+.cbtn.soon{background:#0b1220;border:1px dashed #334155;color:#64748b;cursor:pointer}
+.cbtn.soon:hover{border-color:#475569}
+.cbtn.soon small{color:#64748b}
+.cbadge{font-size:.66rem;color:#fbbf24;font-weight:bold}
+.cfoot{position:sticky;bottom:10px;z-index:10;background:#1e293b;border:1px solid #f59e0b;border-radius:10px;padding:10px 14px;display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;box-shadow:0 8px 24px rgba(0,0,0,.45)}
+.sbar{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:0 0 12px;padding:8px 10px;background:#1e293b;border:1px solid #334155;border-radius:10px}
+.sbtn{background:#0f172a;border:1px solid #475569;color:#cbd5e1;padding:5px 12px;border-radius:999px;cursor:pointer;font-size:.82rem;font-weight:bold;transition:.15s}
+.sbtn:hover{border-color:#f59e0b}
+.sbtn.on{background:#f59e0b;border-color:#f59e0b;color:#0f172a}
+.sbtn.enr:not(.on){border-color:#10b981;color:#6ee7b7}
+.sbtn.soon{opacity:.5;border-style:dashed;color:#94a3b8}
+.ugroup{color:#94a3b8;font-size:.82rem;margin:14px 0 6px;font-weight:bold}
+.ufold{cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:12px;background:none;border:0;border-bottom:1px solid #334155;padding:13px 6px;text-align:left;transition:.15s}
+.ufold:hover{background:#1e293b}
+.ufold-l{display:flex;align-items:center;gap:10px;min-width:0;flex:1}
+.ufold-ic{font-size:1.25rem;width:32px;text-align:center;flex:none}
+.ufold-r{text-align:right;flex:none;font-size:.8rem;color:#94a3b8}
+.ssearch{display:flex;gap:8px;align-items:center;margin-bottom:10px;flex-wrap:wrap}
+.ssearch input{flex:1;min-width:180px}
 </style></head><body><noscript><p style="padding:24px;color:#f8fafc">此網站需要啟用 JavaScript 才能使用。</p></noscript>
 
 <div id="auth"><div class="card ac"><div style="text-align:right"><button class="btn alt langBtn2" onclick="setLang()" style="padding:4px 10px">🌐 EN</button></div>
@@ -138,19 +184,20 @@ summary{color:#38bdf8;cursor:pointer;font-size:.85rem;font-weight:bold}
 
 <div class="view" id="v-home">
 <div class="card" style="text-align:center"><h2 style="margin-bottom:6px">歡迎來到 <span style="color:#f59e0b">跨學科學習門戶</span></h2>
-<div class="muted">數學 · 國文 · 英文 · 歷史 · 地理 · 公民　共 <b id="kbN" style="color:#f59e0b"></b> 個知識點</div>
+<div class="muted" id="homeSub">已選課程　共 <b id="kbN" style="color:#f59e0b"></b> 個知識點</div>
 <div class="muted" style="margin-top:6px">已掌握 <b id="sM" style="color:#34d399">0</b>　待複習 <b id="sR" style="color:#f87171">0</b>　今日到期 <b id="sD" style="color:#38bdf8">0</b></div></div>
 <div class="card" id="jCard" style="border-color:#f59e0b;padding:8px 12px;margin:8px 0"><div style="display:flex;gap:8px;align-items:center;font-size:.85rem"><span>🤣</span><span id="jQ" style="flex:1;min-width:0"></span><button class="btn alt" id="jB" style="padding:2px 10px;font-size:.78rem;flex:none" onclick="jShow()">看答案</button></div><div id="jA" class="muted" style="font-size:.85rem;margin-top:4px;display:none"></div><span id="jS" style="display:none"></span></div>
 <div class="portal">
 <div onclick="go('quiz')"><i>🧠</i>測驗閃卡</div>
 <div onclick="go('chat')"><i>💬</i>討論社群</div><div onclick="go('cal')"><i>📅</i>學習日曆</div></div>
-<div class="muted" style="text-align:center;margin-top:14px">各科主頁</div>
-<div class="portal" id="subjPortal"></div>
-<div class="muted" style="text-align:center">點選上方任一科目進入該科主頁；歷史科主頁內含歷史地圖與年代軸</div></div>
+<div style="display:flex;justify-content:space-between;align-items:center;margin:14px 0 6px;gap:8px;flex-wrap:wrap"><b style="color:#f59e0b;font-size:1rem">📚 我的課表</b><span class="muted" id="myCourseCnt"></span></div>
+<div id="subjPortal"></div>
+<div class="muted" style="text-align:center;margin-top:8px">想超前學習或回頭複習？可隨時打開左上角「☰ 選單 › 🎓 選課大廳」加退選課程</div></div>
 
+<div class="view" id="v-course"></div>
 <div class="view" id="v-subj"></div>
 <div class="view" id="v-study"><div class="card"><h3 id="stTitle"></h3><div class="muted" id="stSub"></div></div>
-<input class="in" id="stSearch" style="width:100%;margin-bottom:10px" placeholder="🔍 搜尋全部知識點（標題或內容）" oninput="doSearch(this.value)">
+<div class="ssearch"><input class="in" id="stSearch" placeholder="🔍 搜尋知識點（標題或內容）" oninput="doSearch(this.value)"><button class="btn alt" id="stScopeBtn" onclick="toggleSearchScope()">範圍：僅我的課程</button></div>
 <div class="tabs" id="stTabs"></div><div id="stList"></div></div>
 
 <div class="view" id="v-quiz"><div class="card"><h3>跨學科測驗與記憶閃卡</h3><div class="muted">題目由各科知識庫自動生成。新手直接按「快速開始」；想自訂範圍、題型、題數或混合多科，展開「進階」即可。</div></div>
@@ -181,8 +228,8 @@ summary{color:#38bdf8;cursor:pointer;font-size:.85rem;font-weight:bold}
 <div id="tourHL"></div><div id="tourTip"><div class="muted" id="tourStep"></div><div id="tourTxt" style="margin:6px 0 10px;line-height:1.6"></div><div class="cfg" style="margin:0;justify-content:flex-end"><button class="btn alt" onclick="tourEnd()">結束導覽</button><button class="btn blue" id="tourNext" onclick="tourNext()">下一步</button></div></div>
 <div class="toast" id="toast"></div>
 <div id="sideBg" onclick="side()"></div>
-<div id="side"><div class="mi" onclick="side()" style="text-align:right">✕ 關閉選單</div><div class="mi" onclick="go('home');side()">🏠 主控制台</div><div class="mi" onclick="guide();side()">🧭 使用導覽</div><div class="mi" id="devMi" style="display:none" onclick="go('dev');side()">🛠️ 開發者後台</div>
-<div class="muted" style="margin:8px 0">📚 各科複習</div><div id="sideSubj"></div>
+<div id="side"><div class="mi" onclick="side()" style="text-align:right">✕ 關閉選單</div><div class="mi" onclick="go('home');side()">🏠 主控制台</div><div class="mi" onclick="go('course');side()" style="border-color:#f59e0b;color:#fbbf24">🎓 選課大廳</div><div class="mi" onclick="guide();side()">🧭 使用導覽</div><div class="mi" id="devMi" style="display:none" onclick="go('dev');side()">🛠️ 開發者後台</div>
+<div class="muted" style="margin:8px 0">📚 我的課程</div><div id="sideSubj"></div>
 <div class="mi" onclick="go('quiz');side()">🧠 測驗閃卡</div>
 <div class="mi" onclick="go('cal');side()">📅 學習日曆</div><div class="mi" onclick="go('chat');side()">💬 討論社群</div>
 <div class="mi" onclick="fbOpen();side()">📝 意見回饋</div><div class="mi" onclick="openSet();side()">⚙️ 個人設定與備份</div></div>
@@ -1022,7 +1069,7 @@ const fmt=(y,m,d)=>`${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'
 const key=()=>'p_'+user.name;
 function save(){LS.setItem(key(),JSON.stringify(st));stats()}
 function load(){try{st=Object.assign({m:[],r:[],cal:{},chat:[],hideChat:false,box:{}},JSON.parse(LS.getItem(key())||'{}'))}catch(e){}
- if(!Array.isArray(st.m))st.m=[];if(!Array.isArray(st.r))st.r=[];if(!st.cal||typeof st.cal!=='object')st.cal={};if(!Array.isArray(st.chat))st.chat=[];if(!st.box||typeof st.box!=='object'||Array.isArray(st.box))st.box={};migMerged();migHist()}
+ if(!Array.isArray(st.m))st.m=[];if(!Array.isArray(st.r))st.r=[];if(!st.cal||typeof st.cal!=='object')st.cal={};if(!Array.isArray(st.chat))st.chat=[];if(!st.box||typeof st.box!=='object'||Array.isArray(st.box))st.box={};if(typeof ensureCourses==='function')ensureCourses();migMerged();migHist()}
 const pubChats=()=>JSON.parse(LS.getItem('pub_chat')||'[]');
 
 /* ===== 登入 ===== */
@@ -1069,7 +1116,7 @@ async function doLogin(e){e.preventDefault();const M=t=>{$('authMsg').textConten
  if(!ok)return M('帳號或密碼錯誤');
  enter({name:u,nickname:a.nick,avatar:a.av,guest:false})}
 function guest(){trackGuest();enter({name:'GUEST',nickname:'訪客體驗',avatar:'👀',guest:true})}
-function enter(u){user=u;try{const a0=users()[u.name];PFC=a0&&a0.pf&&a0.pf.use?a0.pf:null;PFS=a0&&a0.pf?(a0.pf.stage||''):'';if(PFC){mLv='all';mGr='all';if(PFC.stage!=='高中')setTimeout(()=>showErr('目前只有「數學」提供國小／國中知識點，其他科目暫時顯示全部內容，之後新增時會依你的設定套用。'),900)}if(a0&&!a0.pf&&!a0.pfSkip&&!u.guest&&!DEV_USERS.includes(u.name)&&!SS.getItem('devret')){a0.pfSkip=1;const al=users();al[u.name].pfSkip=1;LS.setItem('users',JSON.stringify(al));setTimeout(()=>{openSet();$('setMsg').textContent='👋 請補填年齡與年級，系統會依此調整知識點；也可先關閉，之後在這裡設定。'},500)}}catch(e){PFC=null}try{$('devBk').style.display=SS.getItem('devret')?'inline-block':'none';if(!u.guest&&!SS.getItem('devret')){const a=users();if(a[u.name]){a[u.name].last=Date.now();LS.setItem('users',JSON.stringify(a))}}}catch(e){}setTimeout(()=>{$('devMi').style.display=isDev()?'block':'none'},0);LS.setItem('sess',JSON.stringify(u));load();
+function enter(u){user=u;try{const a0=users()[u.name];PFC=a0&&a0.pf&&a0.pf.use?a0.pf:null;PFS=a0&&a0.pf?(a0.pf.stage||''):'';if(PFC){mLv='all';mGr='all'}if(a0&&!a0.pf&&!a0.pfSkip&&!u.guest&&!DEV_USERS.includes(u.name)&&!SS.getItem('devret')){a0.pfSkip=1;const al=users();al[u.name].pfSkip=1;LS.setItem('users',JSON.stringify(al));setTimeout(()=>{openSet();$('setMsg').textContent='👋 請補填年齡與年級，系統會依此調整知識點；也可先關閉，之後在這裡設定。'},500)}}catch(e){PFC=null}try{$('devBk').style.display=SS.getItem('devret')?'inline-block':'none';if(!u.guest&&!SS.getItem('devret')){const a=users();if(a[u.name]){a[u.name].last=Date.now();LS.setItem('users',JSON.stringify(a))}}}catch(e){}setTimeout(()=>{$('devMi').style.display=isDev()?'block':'none'},0);LS.setItem('sess',JSON.stringify(u));load();
  $('auth').style.display='none';$('app').style.display='flex';$('storeWarn').style.display=LS.ok?'none':'block';$('who').textContent=`${u.avatar} ${u.nickname}`;
  stats();go('home');if(!LS.getItem('seen_guide')){guide();LS.setItem('seen_guide',1)}}
 let loT=0;
@@ -1088,8 +1135,8 @@ function logout(){const b=$('loBtn');
 /* ===== 導覽 ===== */
 let mapObj=null;
 function go(v,arg){
- ['home','subj','study','quiz','cal','chat','map','time','dev'].forEach(x=>{const e=$('v-'+x);if(e)e.style.display=x===v?'block':'none'});
- if(v==='home')renderJoke();if(v==='study')renderStudy(arg);if(v==='subj')renderSubj(arg);if(v==='quiz')quizInit();
+ ['home','course','subj','study','quiz','cal','chat','map','time','dev'].forEach(x=>{const e=$('v-'+x);if(e)e.style.display=x===v?'block':'none'});
+ if(v==='home'){renderJoke();if(typeof buildSubjMenus==='function')buildSubjMenus();stats()}if(v==='course'&&typeof renderCourseHall==='function')renderCourseHall();if(v==='study')renderStudy(arg);if(v==='subj')renderSubj(arg);if(v==='quiz')quizInit();
  if(v==='cal')renderCal();if(v!=='chat')chatStop();if(v==='chat')chatTab('pub');if(v==='time')renderTime();if(v==='dev')renderDev();if(v==='map')initMap();
 }
 function side(){const on=$('side').classList.toggle('on');$('sideBg').style.display=on?'block':'none'}
@@ -1400,7 +1447,7 @@ function pfRead(p){const a=Math.floor(+$(p+'a').value),st0=$(p+'s').value,g=$(p+
  if(!(a>=5&&a<=99))return '請輸入 5–99 歲的年齡';if(!st0)return '請選擇學習階段（國小／國中／高中／大學／不分類）';if(['大學','不分類'].includes(st0))return {age:a,stage:st0,grade:0,grp:''};if(!+$(p+'gd').value)return '請選擇年級';if(st0==='高中'&&!g)return '高中請選擇類組';
  return {age:a,stage:st0,grade:+$(p+'gd').value,grp:st0==='高中'?g:''}}
 /* 高中類組：一類（文法商）不顯示選修數學甲；二類、三類不顯示選修數學乙 */
-function prefOK(k){if(k.stg==='大學')return !PFC||mLv==='U';if(!PFC||(k.s!=='math'&&k.s!=='mex'&&k.s!=='evoc'))return true;const KS=k.stg||'高中',PV={'國中':'國小','高中':'國中'}[PFC.stage];if(KS!==PFC.stage&&!(PFC.prev&&KS===PV))return false;if(KS!==PFC.stage)return true;if(PFC.stage!=='高中'){if(PFC.grade&&k.gd&&k.gd>(PFC.stage==='國小'?PFC.grade:6+PFC.grade))return false;return true}const l=k.lv;return !(l==='J'&&PFC.grp==='一類')&&!(l==='Y'&&(PFC.grp==='二類'||PFC.grp==='三類'))}
+function prefOK(k){if(!PFC||!PFC.use)return true;if(k.s==='math'||k.s==='mex'){const KS=k.stg||'高中';if(KS==='高中'&&PFC.stage==='高中'){const l=k.lv;return !(l==='J'&&PFC.grp==='一類')&&!(l==='Y'&&(PFC.grp==='二類'||PFC.grp==='三類'))}return true}return true}
 function savePf(){const M=t=>{$('setMsg').textContent=t};if(user.guest)return M('訪客無法儲存，請先註冊登入。');const pf=pfRead('s');if(typeof pf==='string')return M(pf);
  const all=users(),a=all[user.name];if(!a)return M('找不到帳號資料');a.pf=Object.assign({},a.pf||{},pf,{use:['大學','不分類'].includes(pf.stage)?false:$('su').checked,prev:['大學','不分類'].includes(pf.stage)?false:$('sv').checked,ts:(a.pf&&a.pf.ts)||Date.now(),upd:Date.now()});LS.setItem('users',JSON.stringify(all));
  PFC=a.pf.use?a.pf:null;PFS=a.pf.stage||'';mLv='all';mGr='all';mUc='all';mCat=null;mId=null;M('✅ 已儲存學習設定'+(PFC&&PFC.stage!=='高中'?'（目前只有數學提供國小／國中知識點，其他科目先顯示全部內容）':''))}
@@ -1629,7 +1676,7 @@ let mCat=null,mId=null,mLv='all',mTab='t';
 function mOpen(i){curSubj='math';mCat=i;mId=null;mTab='t';go('study')}
 function mTabSet(t){mTab=t;mId=null;renderStudy()}
 function mItem(id){mId=id;renderStudy()}
-function mBack(n){if(n===0)mCat=null;mId=null;renderStudy()}
+function mBack(n){if(n===0){mCat=null;mId=null;go('subj','math');return}mId=null;renderStudy()}
 const DISP=[19,20,21,22,23,24,25,26,27,28,29,0,18,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,30,31,32,33,34];
 const CATLEV={'對數與指數':'AB','指數與指數函數':'AB','代數與方程式':'AB','不等式':'AB','數列與級數':'AB','排列組合與二項式':'AB','機率與統計':'AB','三角函數':'?','三角函數與解三角形':'?','向量':'AB','平面幾何':'?','解析幾何':'AB','空間向量與平面':'A','圓錐曲線':'?','複數與多項式':'?','矩陣與線性方程':'A','線性規劃':'?','數論':'?','微積分':'J'};
 const MLEV={};
@@ -1676,7 +1723,7 @@ function lvBars(){const top=PFC?(PFC.stage==='高中'?[['all','全部'],['H','�
 const T7=[['數與量','數的概念與計量。','🔢'],['空間與形狀','幾何圖形與空間概念。','🔷'],['坐標幾何','幾何與代數坐標的結合。','📍'],['關係','國小階段專用的規律與對應關係。','🔗'],['代數','國、高中發展的代數運算與方程式。','➗'],['函數','國、高中發展的函數概念。','📈'],['資料與不確定性','統計、機率與數據解讀。','🎲']];
 const T3=[['離散數學','研究可數、不連續的對象：整數、數列、計數與圖。','🔢'],['結構','研究數系與運算的規則：代數、多項式、矩陣與線性代數。','🧩'],['空間','研究形狀、位置與坐標：幾何、向量、圓錐曲線與三角。','🔷'],['應用數學','把數學用在資料與現實問題：機率、統計、規劃與計量。','🛠️'],['變化','研究函數與連續變化：函數、指數對數、極限與微積分。','📈'],['基礎與哲學','研究數學本身的根基：邏輯、集合、證明、公理化與數學哲學。','🏛️']];
 const T7AREA={'數與量':0,'關係':0,'代數':0,'空間與形狀':1,'坐標幾何':1,'函數':2,'資料與不確定性':2};
-const mMode=()=>['國小','國中','高中'].includes(PFS)?7:3;
+const mMode=()=>{const stg=typeof getSubjStage==='function'?getSubjStage('math'):PFS;return stg==='大學'?3:(['國小','國中','高中'].includes(stg)?7:3)};
 const mThemes=()=>mMode()===7?T7:T3;
 let _mid=null;
 function t7(k){let b=k;if(k.s==='mex'){if(!_mid){_mid=new Map();KB.forEach(x=>{if(x.s==='math')_mid.set(x.id,x)})}b=_mid.get(k.fid||(k.fids||[])[0])||k}
@@ -2177,7 +2224,7 @@ async function importData(e){const f=e.target.files[0];if(!f)return;
  const r=new FileReader();r.onload=()=>{try{
   const d=JSON.parse(r.result),ids=new Set(KB.map(k=>k.id));
   if(!d||!Array.isArray(d.m)||!Array.isArray(d.r)||!d.cal||typeof d.cal!=='object'||!Object.keys(d.cal).every(k=>/^\d{4}-\d{2}-\d{2}$/.test(k))&&Object.values(d.cal).every(v=>Array.isArray(v)&&v.length<=200&&v.every(x=>typeof x==='string'&&x.length<=200)))throw 0;
-  st.m=d.m.filter(x=>ids.has(x));st.r=d.r.filter(x=>ids.has(x)&&!st.m.includes(x));st.cal=d.cal;const bx={};if(d.box&&typeof d.box==='object')Object.keys(d.box).forEach(i=>{const v=d.box[i];if(ids.has(i)&&v&&Number.isInteger(v.b)&&v.b>=1&&v.b<=5&&/^\d{4}-\d{2}-\d{2}$/.test(v.due))bx[i]={b:v.b,due:v.due}});st.box=bx;save();alert('匯入成功！');go('home')
+  st.m=d.m.filter(x=>ids.has(x));st.r=d.r.filter(x=>ids.has(x)&&!st.m.includes(x));st.cal=d.cal;const bx={};if(d.box&&typeof d.box==='object')Object.keys(d.box).forEach(i=>{const v=d.box[i];if(ids.has(i)&&v&&Number.isInteger(v.b)&&v.b>=1&&v.b<=5&&/^\d{4}-\d{2}-\d{2}$/.test(v.due))bx[i]={b:v.b,due:v.due}});st.box=bx;if(Array.isArray(d.courses)&&typeof sanitizeCourses==='function'){st.courses=sanitizeCourses(d.courses);st.coursesTs=Number(d.coursesTs)||Date.now()}save();if(typeof buildSubjMenus==='function')buildSubjMenus();alert('匯入成功！');go('home')
  }catch(x){alert('檔案格式錯誤')}e.target.value=''};r.readAsText(f)}
 
 /* ===== 開發者後台 ===== */
@@ -2337,7 +2384,7 @@ A('civ',[
 /* ===== 英文單字：改由 GitHub 資料集載入（https://github.com/wengchiehyun-cell/english-vocab）=====
    資料來源網址只要改這一行；結尾要有 /。固定版本請用 @1.0.0。 */
 window.VOCAB_BASE='./english-vocab/data/';
- (function(){
+(function(){
 const CN='english-vocab-v1';
 const note=e=>e.moe1200_no!=null?'教育部基本 1,200 字表第 '+e.moe1200_no+' 字':'大考中心高中英文參考詞彙表 第 '+e.ceec_level+' 級';
 function toK(e){const k={id:e.id,s:'evoc',t:e.word,d:e.definition_zh,x:e.example!=null?e.example:note(e),pos:e.pos};
@@ -2364,6 +2411,7 @@ window.loadVocab=async function(){
   window.vocabReady=true;window.vocabError='';
  }catch(err){window.vocabError=String(err&&err.message||err);console.warn('單字資料載入失敗',err)}
  try{stats()}catch(e){}
+ if(typeof refreshCourseUI==='function'){try{refreshCourseUI()}catch(e){}}
  const v=document.getElementById('v-study');
  if(v&&v.offsetParent!==null&&typeof renderStudy==='function'){try{renderStudy()}catch(e){}}
 };
@@ -2387,7 +2435,7 @@ function row(k){const m=st.m.includes(k.id),r=st.r.includes(k.id);
  return `<div class="vrow${m?' vok':''}${r?' vbad':''}" id="it_${k.id}"><div class="vw"><b>${esc(k.t)}</b><span class="vlv">${lvOf(k)}${k.hl?' L'+k.hl:''}</span><button class="vsp" title="發音" onclick="vsay('${q(k.t)}')">🔊</button></div>${k.ng?'<div class="vng">（尚未加入中文詞義）</div><div class="vs"></div>':`<div class="vmean${VO.hm?' hid':''}" onclick="this.classList.toggle('hid')">${esc(k.d)}</div><div class="vs"><button class="${m?'m':''}" title="標記熟練" onclick="tog('${k.id}','m')">${m?'✅':'☑'}</button><button class="${r?'r':''}" title="標記不熟" onclick="tog('${k.id}','r')">${r?'❌':'✖'}</button></div>`}${VO.hx||!k.x?'':k.nt?`<div class="vx">${esc(k.x)}</div>`:`<div class="vx">${esc(k.x)}<button class="vsp" title="朗讀例句" onclick="vsay('${q(k.x)}')">🔊</button></div>`}</div>`}
 const btn=(a,t,on)=>`<button class="btn alt${on?' vtgl':''}" onclick="${a}">${t}</button>`;
 window.vocabHub=function(U){
- const ex=VO.hsx&&(typeof PFC==='undefined'||!PFC||PFC.stage==='高中')?HSX:[],L=U.items.concat(ex).filter(k=>VO.lv==='all'||lvOf(k)===VO.lv),byP={};L.forEach(k=>{(byP[k.pos||'n']=byP[k.pos||'n']||[]).push(k)});
+ const ex=VO.hsx&&(VO.lv==='all'||VO.lv==='高中')?HSX:[],L=U.items.concat(ex).filter(k=>VO.lv==='all'||lvOf(k)===VO.lv),byP={};L.forEach(k=>{(byP[k.pos||'n']=byP[k.pos||'n']||[]).push(k)});
  if(VS.pos&&!byP[VS.pos]){VS.pos=null;VS.unit=null}
  const chips=`<div class="vbar">${LV.map(l=>btn(`vlv('${l}')`,l,(VO.lv==='all'?'全部':VO.lv)===l)).join('')}${btn("vset('hsx')",'含未加詞義的字（'+HSX.length+'）',VO.hsx)}<span class="muted">${typeof PFC!=='undefined'&&PFC?'已依你的學習設定顯示適合的字':'可選年級篩選；在「設定」填學習階段後會自動只顯示適合的字'}</span></div>`;
  if(!VS.pos){const ks=Object.keys(POS).filter(c=>byP[c]);cur=[];
@@ -2403,7 +2451,8 @@ window.vunit=i=>{VS.unit=i;redraw();$('v-study').scrollTop=0};
 window.vstep=d=>{VS.unit=(VS.unit||0)+d;redraw();$('v-study').scrollTop=0};
 window.vback=()=>{if(VS.unit!==null)VS.unit=null;else VS.pos=null;redraw();$('v-study').scrollTop=0};
 window.vsGet=()=>({pos:VS.pos,unit:VS.unit});window.vsSet=o=>{VS.pos=o.pos;VS.unit=o.unit};
-window.vlv=l=>{VO.lv=l==='全部'?'all':l;VS.unit=null;sv();redraw()};
+window.vlv=l=>{VO.lv=l==='全部'?'all':l;VS.unit=null;sv();if(l!=='全部'&&typeof setSubjStage==='function')setSubjStage('eng',l,true);redraw()};
+window.vsetLv=l=>{VO.lv=l==='全部'?'all':l;VS.pos=null;VS.unit=null;sv()};
 window.vset=k=>{VO[k]=VO[k]?0:1;sv();redraw()};
 window.vflt=()=>{VO.f={all:'weak',weak:'new',new:'all'}[VO.f];sv();redraw()};
 window.vsay=t=>{try{const u=new SpeechSynthesisUtterance(decodeURIComponent(t));u.lang='en-US';u.rate=.9;speechSynthesis.cancel();speechSynthesis.speak(u)}catch(e){}};
@@ -2434,6 +2483,7 @@ async function openSession(p){mirror(p);enter({name:p.username,nickname:p.nick,a
   M.m=[...new Set([...A(R.m),...A(L.m)])];M.r=[...new Set([...A(R.r),...A(L.r)])].filter(x=>!M.m.includes(x));
   M.cal=Object.assign({},R.cal);Object.keys(L.cal||{}).forEach(d=>{M.cal[d]=[...new Set([...A(M.cal[d]),...A(L.cal[d])])]});
   M.box=Object.assign({},R.box);Object.keys(L.box||{}).forEach(i=>{const a=M.box[i],b=L.box[i];if(!a||(b&&b.due>a.due))M.box[i]=b});
+  if(Array.isArray(R.courses)||Array.isArray(L.courses)){const rt=Number(R.coursesTs)||0,lt=Number(L.coursesTs)||0;M.courses=(Array.isArray(R.courses)&&(!Array.isArray(L.courses)||rt>=lt))?R.courses:L.courses;M.coursesTs=Math.max(rt,lt)||Date.now()}
   LS.setItem(key(),JSON.stringify(Object.assign({},R,L,M)));load();stats();go('home');push()}else push()}
 window.finishReg=async function(use){const r=regPend;if(!r)return;regPend=null;$('mUse').classList.remove('on');
  const {data,error}=await sb.auth.signUp({email:await em(r.u),password:r.p,options:{data:{username:r.u,nick:r.n,av:selAv}}});
@@ -2763,6 +2813,565 @@ window.newsSet=(k,v)=>{ST[k]=v;ST.n=12;draw()};
 window.newsMore=()=>{ST.n+=12;draw()};
 window.newsClick=a=>{try{if(typeof logAct==='function')logAct('news_click',(a.dataset.s||'')+'・'+(CN[a.dataset.c]||''))}catch(e){}};
 setInterval(()=>{if(!document.hidden&&document.getElementById('newsCard')&&Date.now()-ST.t>6e5)load()},60000);
+})();
+</script>
+<script>
+/* ===== 選課系統（科目 × 學習階段）與統一各科主頁骨架 ===== */
+(function(){
+const SUBJS=['math','chi','eng','hist','geo','civ'];
+const STAGES=['國小','國中','高中','大學'];
+const AVAIL={
+  math:['國小','國中','高中','大學'],
+  chi:['高中'],
+  eng:['國小','國中','高中'],
+  hist:['國小','國中','高中'],
+  geo:['高中'],
+  civ:['高中']
+};
+const ALL_OPEN=[];
+SUBJS.forEach(s=>AVAIL[s].forEach(g=>ALL_OPEN.push(s+':'+g)));
+const OPEN_SET=new Set(ALL_OPEN);
+
+const PRESETS=[
+  {n:'國小基礎',c:['math:國小','eng:國小','hist:國小']},
+  {n:'國中會考',c:['math:國中','eng:國中','hist:國中']},
+  {n:'高中學測（全科）',c:['math:高中','chi:高中','eng:高中','hist:高中','geo:高中','civ:高中']},
+  {n:'高中英數衝刺',c:['math:高中','eng:高中']},
+  {n:'大學先修',c:['math:高中','math:大學','eng:高中']},
+  {n:'全部開放課程',c:ALL_OPEN.slice()},
+  {n:'清空課表',c:[]}
+];
+
+window.curStage={};
+window.qAll=false;
+window.sAll=false;
+
+window.sanitizeCourses=function(arr){
+  if(!Array.isArray(arr))return [];
+  const seen=new Set(),out=[];
+  arr.forEach(x=>{if(typeof x==='string'&&OPEN_SET.has(x)&&!seen.has(x)){seen.add(x);out.push(x)}});
+  return out;
+};
+
+window.defaultCourses=function(stg){
+  if(stg==='國小')return ['math:國小','eng:國小','hist:國小'];
+  if(stg==='國中')return ['math:國中','eng:國中','hist:國中'];
+  if(stg==='高中')return ['math:高中','chi:高中','eng:高中','hist:高中','geo:高中','civ:高中'];
+  if(stg==='大學')return ['math:大學'];
+  return ALL_OPEN.slice();
+};
+
+window.ensureCourses=function(){
+  if(!Array.isArray(st.courses)){
+    st.courses=defaultCourses(typeof PFS!=='undefined'?PFS:'');
+    if(!st.coursesTs)st.coursesTs=Date.now();
+  }else{
+    st.courses=sanitizeCourses(st.courses);
+  }
+};
+
+function itemSubj(k){
+  if(k.s==='math'||k.s==='mex')return 'math';
+  if(k.s==='chi'||k.s==='chz'||k.s==='chx'||k.s==='chy')return 'chi';
+  if(k.s==='eng'||k.s==='evoc')return 'eng';
+  if(k.s==='tw'||k.s==='cn'||k.s==='world'||k.s==='east')return 'hist';
+  if(k.s==='geo')return 'geo';
+  if(k.s==='civ')return 'civ';
+  return k.s;
+}
+
+function itemInStage(k,s,stg){
+  if(itemSubj(k)!==s)return false;
+  if(s==='math'){
+    const ks=k.stg||(k.lv==='E'?'國小':k.lv==='JH'?'國中':k.lv==='U'?'大學':'高中');
+    return ks===stg;
+  }
+  if(s==='chi'||s==='geo'||s==='civ')return stg==='高中';
+  if(s==='eng'){
+    if(k.s==='eng')return stg==='高中';
+    const ks=k.stg||'高中';
+    return ks===stg;
+  }
+  if(s==='hist'){
+    if(k.bk)return String(k.bk).includes(stg);
+    return stg==='高中';
+  }
+  return false;
+}
+
+window.courseItems=function(s,stg,withMex){
+  return KB.filter(k=>(withMex||k.s!=='mex')&&itemInStage(k,s,stg)&&prefOK(k));
+};
+
+window.inMyCourses=function(k){
+  ensureCourses();
+  if(!st.courses.length)return false;
+  const s=itemSubj(k);
+  if(!AVAIL[s])return false;
+  return st.courses.some(ck=>{
+    const i=ck.indexOf(':');
+    return ck.slice(0,i)===s&&itemInStage(k,s,ck.slice(i+1));
+  });
+};
+
+function myCourseItems(){
+  ensureCourses();
+  if(!st.courses.length)return [];
+  return KB.filter(k=>inMyCourses(k)&&prefOK(k));
+}
+
+function enrolledStages(s){
+  ensureCourses();
+  return STAGES.filter(g=>st.courses.includes(s+':'+g));
+}
+
+window.getSubjStage=function(s){
+  if(!AVAIL[s])return '高中';
+  const cur=curStage[s];
+  if(cur&&AVAIL[s].includes(cur))return cur;
+  const en=enrolledStages(s);
+  if(en.length){
+    if(typeof PFS!=='undefined'&&en.includes(PFS))return curStage[s]=PFS;
+    return curStage[s]=en[0];
+  }
+  if(typeof PFS!=='undefined'&&AVAIL[s].includes(PFS))return curStage[s]=PFS;
+  return curStage[s]=AVAIL[s][AVAIL[s].length-1];
+};
+
+function syncStageSideEffects(s,stg){
+  if(s==='math'){
+    const map={'國小':'E','國中':'JH','高中':'H','大學':'U'};
+    mLv=map[stg]||'H';mGr='all';mUc='all';mCat=null;mId=null;
+  }
+  if(s==='eng'&&typeof vsetLv==='function')vsetLv(stg);
+}
+
+window.setSubjStage=function(s,stg,noRedraw){
+  if(!AVAIL[s]||!AVAIL[s].includes(stg)){
+    showErr(`「${SUBJ[s].split(' ')[1]}・${stg}」課程正在籌備中，敬請期待！`);
+    return;
+  }
+  curStage[s]=stg;
+  syncStageSideEffects(s,stg);
+  if(!noRedraw){
+    if($('v-subj').style.display==='block')renderSubj(s);
+    else if($('v-study').style.display==='block')renderStudy();
+  }
+};
+
+window.openCourse=function(s,stg){
+  if(!AVAIL[s]||!AVAIL[s].includes(stg)){
+    showErr(`「${SUBJ[s].split(' ')[1]}・${stg}」課程正在籌備中，敬請期待！`);
+    return;
+  }
+  curStage[s]=stg;
+  syncStageSideEffects(s,stg);
+  go('subj',s);
+};
+
+window.toggleCourse=function(s,stg,fromHall){
+  if(!AVAIL[s]||!AVAIL[s].includes(stg)){
+    showErr(`「${SUBJ[s].split(' ')[1]}・${stg}」課程正在籌備中，敬請期待！`);
+    return;
+  }
+  ensureCourses();
+  const ck=s+':'+stg,idx=st.courses.indexOf(ck);
+  if(idx>=0){
+    st.courses.splice(idx,1);
+    showErr(`已退選「${SUBJ[s].split(' ')[1]}・${stg}」（原有學習進度已保留）`);
+  }else{
+    st.courses.push(ck);
+    showErr(`✅ 已加選「${SUBJ[s].split(' ')[1]}・${stg}」`);
+  }
+  st.coursesTs=Date.now();
+  save();
+  buildSubjMenus();
+  if(fromHall&&$('v-course').style.display==='block')renderCourseHall();
+  else if($('v-subj').style.display==='block')renderSubj(curSubj);
+};
+
+window.applyPreset=function(idx){
+  const p=PRESETS[idx];if(!p)return;
+  st.courses=sanitizeCourses(p.c);
+  st.coursesTs=Date.now();
+  save();
+  buildSubjMenus();
+  renderCourseHall();
+  showErr(p.c.length?`✅ 已套用「${p.n}」（共 ${p.c.length} 門課）`:'已清空課表，可自由重新加選');
+};
+
+let dropConfirmKey='',dropTimer=0;
+window.homeDrop=function(ev,s,stg){
+  ev.stopPropagation();
+  const ck=s+':'+stg;
+  if(dropConfirmKey!==ck){
+    dropConfirmKey=ck;
+    clearTimeout(dropTimer);
+    dropTimer=setTimeout(()=>{dropConfirmKey='';if($('v-home').style.display==='block')buildSubjMenus()},3000);
+    buildSubjMenus();
+    return;
+  }
+  clearTimeout(dropTimer);dropConfirmKey='';
+  toggleCourse(s,stg,false);
+};
+
+/* ===== 覆寫首頁統計：僅統計已選課程 ===== */
+window.stats=function(){
+  const items=myCourseItems(),ids=new Set(items.map(k=>k.id));
+  const m=st.m.filter(x=>ids.has(x)).length,r=st.r.filter(x=>ids.has(x)).length;
+  const d=items.filter(k=>{const b=st.box[k.id];return b?b.due<=today():st.r.includes(k.id)}).length;
+  if($('sM'))$('sM').textContent=m;
+  if($('sR'))$('sR').textContent=r;
+  if($('sD'))$('sD').textContent=d;
+  if($('kbN'))$('kbN').textContent=items.length;
+  const sub=$('homeSub');
+  if(sub){
+    const n=st.courses.length;
+    sub.innerHTML=n?`已選 <b style="color:#38bdf8">${n}</b> 門課　共 <b id="kbN" style="color:#f59e0b">${items.length}</b> 個知識點`:`尚未選課　共 <b id="kbN" style="color:#f59e0b">0</b> 個知識點`;
+  }
+  const cnt=$('myCourseCnt');
+  if(cnt)cnt.textContent=st.courses.length?`共 ${st.courses.length} 門課`:'尚未選課';
+};
+
+/* ===== 覆寫首頁「我的課表」與側邊欄「我的課程」===== */
+window.buildSubjMenus=function(){
+  ensureCourses();
+  const p=$('subjPortal'),sd=$('sideSubj');
+  const ordered=[];
+  SUBJS.forEach(s=>STAGES.forEach(g=>{if(st.courses.includes(s+':'+g))ordered.push([s,g])}));
+
+  if(sd){
+    sd.innerHTML=ordered.length
+      ? ordered.map(([s,g])=>`<div class="mi" onclick="openCourse('${s}','${g}');side()">${SUBJ[s]} <span style="float:right;font-size:.75rem;color:#38bdf8">${g}</span></div>`).join('')
+      : `<div class="muted" style="padding:6px 4px;font-size:.8rem">尚未選課，請點上方「🎓 選課大廳」</div>`;
+  }
+  if(!p)return;
+  if(!ordered.length){
+    p.innerHTML=`<div class="card" style="text-align:center;padding:24px 16px;border-style:dashed"><div style="font-size:2rem;margin-bottom:8px">🎓</div><div style="font-weight:bold;margin-bottom:6px">你的課表目前是空的</div><div class="muted" style="margin-bottom:14px">到「選課大廳」挑選想上的科目與學習階段，隨時可超前學習或回頭複習。</div><button class="btn" onclick="go('course')">前往選課大廳</button></div>`;
+    stats();return;
+  }
+
+  let cards=ordered.map(([s,g])=>{
+    const list=courseItems(s,g,false),tot=list.length;
+    const m=list.filter(k=>st.m.includes(k.id)).length;
+    const r=list.filter(k=>st.r.includes(k.id)).length;
+    const due=list.filter(k=>{const b=st.box[k.id];return b?b.due<=today():st.r.includes(k.id)}).length;
+    const pct=tot?Math.round(m*100/tot):0;
+    const [ic,nm]=SUBJ[s].split(' ');
+    const ck=s+':'+g,cfm=dropConfirmKey===ck;
+    const loading=(s==='eng'&&!window.vocabReady&&tot<50);
+    return `<div class="ccard" onclick="openCourse('${s}','${g}')">
+      <div class="ccard-hd">
+        <div class="ccard-ic">${ic}</div>
+        <div style="flex:1;min-width:0">
+          <div class="ccard-ti">${nm}<span class="ccard-tag">${g}</span></div>
+          <div class="muted" style="font-size:.76rem">${loading?'單字載入中…':`共 ${tot} 條・熟練 ${pct}%`}</div>
+        </div>
+        <button class="cdrop${cfm?' cfm':''}" onclick="homeDrop(event,'${s}','${g}')">${cfm?'確定退選？':'退選'}</button>
+      </div>
+      <div class="cprog"><div style="width:${pct}%"></div></div>
+      <div class="ccard-ft">
+        <span>✅ ${m}　❌ ${r}${due?`　⏰ ${due}`:''}</span>
+        <span style="color:#f59e0b;font-weight:bold">上課 →</span>
+      </div>
+    </div>`;
+  }).join('');
+
+  const socEnrolled=['hist','geo','civ'].filter(s=>enrolledStages(s).length>0).length;
+  const socShortcut=socEnrolled>=2?`<div class="card" style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;padding:12px 14px;margin-top:4px;border-color:#38bdf8"><span><b>🌏 社會科跨科總覽</b> <span class="muted">（跨科主題・即時時事・歷屆試題）</span></span><button class="btn blue" onclick="go('subj','soc')">進入總覽</button></div>`:'';
+
+  p.innerHTML=`<div class="cgrid">${cards}</div>${socShortcut}`;
+  stats();
+};
+
+/* ===== 選課大廳（#v-course）===== */
+window.renderCourseHall=function(){
+  ensureCourses();
+  const c=$('v-course');if(!c)return;
+  const totalItems=myCourseItems().length;
+  const userStg=(typeof PFS!=='undefined'&&PFS)?PFS:'';
+
+  const presetsHtml=PRESETS.map((p,i)=>`<button class="chip" onclick="applyPreset(${i})">${esc(p.n)}</button>`).join('');
+
+  const rowsHtml=SUBJS.map(s=>{
+    const [ic,nm]=SUBJ[s].split(' ');
+    const btns=STAGES.map(g=>{
+      const avail=AVAIL[s].includes(g);
+      if(!avail){
+        return `<button class="cbtn soon" onclick="toggleCourse('${s}','${g}',true)"><b>${g}</b><small>🔒 籌備中</small></button>`;
+      }
+      const on=st.courses.includes(s+':'+g);
+      const list=courseItems(s,g,false);
+      const m=list.filter(k=>st.m.includes(k.id)).length;
+      const rec=userStg===g;
+      const cntTxt=(s==='eng'&&!window.vocabReady&&list.length<50)?'載入中':`${list.length} 條${m?`・熟 ${m}`:''}`;
+      return `<button class="cbtn${on?' on':''}" onclick="toggleCourse('${s}','${g}',true)">
+        ${rec?'<span class="cbadge">⭐ 推薦</span>':''}
+        <b>${on?'✓ ':'＋ '}${g}</b>
+        <small>${cntTxt}</small>
+      </button>`;
+    }).join('');
+    return `<div class="ch-row">
+      <div class="ch-info"><h4>${ic} ${nm}</h4><div class="muted">${esc(SUBJ_DESC[s]||'')}</div></div>
+      <div class="ch-btns">${btns}</div>
+    </div>`;
+  }).join('');
+
+  c.innerHTML=`
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap">
+        <h3 style="margin:0">🎓 選課大廳</h3>
+        <button class="btn alt" onclick="go('home')">← 返回我的課表</button>
+      </div>
+      <div class="muted" style="margin-top:6px;line-height:1.6">自由加選或退選各科學習階段——想<b>超前學習</b>或<b>回頭複習</b>都可以直接加選！退選不會刪除原本記錄的熟練度與間隔複習進度。尚無內容的階段會標示為「籌備中」。</div>
+      <div style="margin-top:10px"><div class="muted" style="margin-bottom:6px">⚡ 一鍵套用推薦課表：</div><div class="qchips">${presetsHtml}</div></div>
+    </div>
+    <div class="ch-mat">${rowsHtml}</div>
+    <div class="cfoot">
+      <div>目前已選 <b style="color:#f59e0b">${st.courses.length}</b> 門課（共 <b style="color:#38bdf8">${totalItems}</b> 個知識點）</div>
+      <button class="btn" onclick="go('home')">✓ 完成選課，前往我的課表</button>
+    </div>`;
+};
+
+/* ===== 覆寫 subjUnits：英文與歷史依目前階段過濾 ===== */
+const _origSubjUnits=window.subjUnits;
+window.subjUnits=function(s){
+  if(s==='eng'){
+    const stg=getSubjStage('eng');
+    const U=[];
+    if(stg==='高中')U.push({g:'核心課程',ic:'📘',name:'文法與用法',sub:'時態、子句、假設語氣、易混字與閱讀寫作',items:KB.filter(k=>k.s==='eng')});
+    U.push({g:'核心課程',ic:'🔤',name:`${stg}單字`,sub:stg==='高中'?'大考中心詞彙表（含詞性分類、發音與遮罩背誦）':'教育部基本 1,200 字彙（附詞性、發音與例句）',vocab:1,items:KB.filter(k=>k.s==='evoc'&&itemInStage(k,'eng',stg))});
+    U.forEach((u,i)=>{u.act=`uGo('eng',${i})`});
+    return U;
+  }
+  if(s==='hist'){
+    const stg=getSubjStage('hist');
+    const inS=k=>itemInStage(k,'hist',stg);
+    const ei=['🏺','⛵','🚂','🛰️'];
+    const U=[]
+      .concat(ERAS.map((e,i)=>({g:'依時代（整合臺灣、中國、世界）',ic:ei[i],name:e[0],sub:e[1],items:hist().filter(k=>inS(k)&&e[2](k.y))})).filter(u=>u.items.length))
+      .concat([['tw','臺灣史','🏝️'],['cn','中國史','🏯'],['world','世界史','🌍']].map(r=>({g:'依區域',ic:r[2],name:r[1],items:KB.filter(k=>k.s===r[0]&&inS(k))})).filter(u=>u.items.length))
+      .concat(HP_UNITS().map(u=>Object.assign({},u,{items:u.items.filter(inS)})).filter(u=>u.items.length));
+    U.forEach((u,i)=>{if(!u.act)u.act=`uGo('hist',${i})`});
+    return U;
+  }
+  return _origSubjUnits(s);
+};
+
+/* ===== 統一各科主頁骨架（四階段列＋直式摺疊主題清單＋保留各科專屬工具）===== */
+function stageBarHtml(s,stg){
+  const en=enrolledStages(s);
+  const btns=STAGES.map(g=>{
+    const avail=AVAIL[s].includes(g);
+    if(!avail)return `<button class="sbtn soon" onclick="setSubjStage('${s}','${g}')">${g} 🔒 籌備中</button>`;
+    const isOn=g===stg,isEn=en.includes(g);
+    return `<button class="sbtn${isOn?' on':''}${isEn?' enr':''}" onclick="setSubjStage('${s}','${g}')">${isEn?'✓ ':''}${g}</button>`;
+  }).join('');
+  const notEnr=!en.includes(stg);
+  const banner=notEnr?`<div class="box" style="border-color:#f59e0b;display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:10px"><span>👀 目前正在預覽未選修的「<b>${SUBJ[s].split(' ')[1]}・${stg}</b>」</span><button class="btn" style="padding:4px 12px" onclick="toggleCourse('${s}','${stg}',false)">＋ 加選此課程</button></div>`:'';
+  return `<div class="sbar"><span class="muted" style="font-size:.8rem;margin-right:4px">學習階段：</span>${btns}</div>${banner}`;
+}
+
+function mathSubBarHtml(stg){
+  const a=(arr,on,fn)=>arr.map(x=>`<a class="${on(x[0])?'on':''}" onclick="${fn}('${x[0]}')">${x[1]}</a>`).join('');
+  if(stg==='高中'){
+    return `<div class="lvbar" style="margin:6px 0 10px">高中細分：${a([['H','全部高中'],['A','數學A'],['B','數學B'],['J','選修甲'],['Y','選修乙'],['S','補充']],v=>v===mLv,'mSetLv')}</div>`;
+  }
+  if(stg==='大學'){
+    return `<div class="lvbar" style="margin:6px 0 10px">大學領域：${a([['all','全部'],...UCATS.map(c=>[c,c.replace('大學・','')])],v=>v===mUc,'mSetUc')}</div>`;
+  }
+  if(stg==='國小'||stg==='國中'){
+    const base=stg==='國小'?0:6,n=stg==='國小'?6:3;
+    return `<div class="lvbar" style="margin:6px 0 10px">年級：${[['all','全部'],...Array.from({length:n},(_,i)=>[base+i+1,GOPT[stg][i]])].map(x=>`<a class="${mGr===x[0]?'on':''}" onclick="mGrSet(${typeof x[0]==='string'?"'all'":x[0]})">${x[1]}</a>`).join('')}</div>`;
+  }
+  return '';
+}
+
+window.renderSubj=function(s){
+  curSubj=s;
+  const v=$('v-subj');if(!v)return;
+  if(s==='soc'){
+    v.innerHTML=socHub();
+    if(typeof newsCard==='function'){const h=v.firstElementChild;if(h)h.insertAdjacentHTML('afterend',newsCard());if(typeof newsInit==='function')newsInit()}
+    if(typeof examCard==='function')v.insertAdjacentHTML('beforeend',examCard('soc'));
+    v.insertAdjacentHTML('afterbegin',socTabs('soc'));
+    return;
+  }
+  const stg=getSubjStage(s);
+  if(s==='math'){
+    const exp={'國小':'E','國中':'JH','高中':'H','大學':'U'}[stg];
+    const inH=['H','A','B','J','Y','S'].includes(mLv);
+    if((stg==='高中'&&!inH)||(stg!=='高中'&&mLv!==exp)){mLv=exp;mGr='all';mUc='all'}
+  }
+  if(s==='eng'&&typeof vsetLv==='function')vsetLv(stg);
+
+  const all=courseItems(s,stg,false);
+  const m=all.filter(k=>st.m.includes(k.id)).length;
+  const r=all.filter(k=>st.r.includes(k.id)).length;
+  const mexCnt=s==='math'?KB.filter(k=>k.s==='mex'&&itemInStage(k,'math',stg)&&prefOK(k)).length:0;
+  const bar=(a,b)=>`<div style="height:8px;background:#0f172a;border-radius:4px;overflow:hidden;border:1px solid #334155"><div style="width:${b?Math.round(a*100/b):0}%;height:100%;background:#34d399"></div></div>`;
+
+  let extraBtns='';
+  if(s==='math'&&mexCnt)extraBtns=`<button class="btn blue" onclick="subjQuiz(2,'mex')">🧮 例題測驗</button>`;
+  if(s==='hist')extraBtns=`<button class="btn alt" onclick="go('map')">🗺️ 歷史數位地圖</button><button class="btn alt" onclick="go('time')">⏳ 跨時空年代軸</button>`;
+
+  let h='';
+  if(socMode()==='merge'&&['hist','geo','civ'].includes(s))h+=socTabs(s);
+  if(s==='chi'){
+    if(typeof chiPanel==='function')h+=chiPanel();
+    const lid=LS.getItem('lastTxt'),lk=KB.find(x=>x.id===lid);
+    if(lk&&(window.FULLTEXT||{})[lid])h+=`<div class="card" style="border-color:#f59e0b"><b>▶ 繼續上次閱讀：</b>${esc(lk.t)}　<button class="btn" onclick="openTxt('${lk.id}')">接著讀</button></div>`;
+  }
+
+  h+=stageBarHtml(s,stg);
+
+  h+=`<div class="card">
+    <h3><span>${SUBJ[s]}・${stg}</span></h3>
+    <div class="muted">${esc(SUBJ_DESC[s]||'')}</div>
+    <div style="margin:10px 0">${bar(m,all.length)}</div>
+    <div class="muted">共 ${all.length} 個知識點${s==='math'&&mexCnt?`（另有例題 ${mexCnt} 題）`:''}　已熟練 <b style="color:#34d399">${m}</b>　待複習 <b style="color:#f87171">${r}</b></div>
+    <div class="cfg" style="margin:12px 0 0">
+      <button class="btn blue" onclick="subjQuiz(1)">🗂️ 本階段閃卡</button>
+      <button class="btn blue" onclick="subjQuiz(2)">📝 本階段測驗</button>
+      ${extraBtns}
+    </div>
+  </div>`;
+
+  if(s==='civ'&&typeof newsCard==='function')h+=newsCard();
+
+  if(s==='math'){
+    mCat=null;mId=null;
+    h+=mathSubBarHtml(stg)+mathView();
+  }else{
+    const U=subjUnits(s);
+    let last=null;
+    U.forEach(u=>{
+      if(u.g!==last){
+        if(last!==null)h+='</div>';
+        last=u.g;
+        h+=`<div class="ugroup">${esc(u.g)}</div><div class="folders">`;
+      }
+      const tot=u.items?u.items.length:0;
+      const done=u.items?u.items.filter(k=>st.m.includes(k.id)).length:0;
+      const pct=tot?Math.round(done*100/tot):0;
+      h+=`<div class="ufold" onclick="${u.act}">
+        <div class="ufold-l">
+          <span class="ufold-ic">${u.ic}</span>
+          <div style="min-width:0">
+            <div style="font-weight:bold;color:#f8fafc">${esc(u.name)}</div>
+            ${u.sub?`<div class="muted" style="font-size:.78rem;margin-top:2px">${esc(u.sub)}</div>`:''}
+          </div>
+        </div>
+        <div class="ufold-r">
+          <div>${tot} 條・熟 ${done}</div>
+          <div class="cprog" style="width:76px;margin-top:4px;margin-left:auto"><div style="width:${pct}%"></div></div>
+        </div>
+      </div>`;
+    });
+    if(last!==null)h+='</div>';
+  }
+
+  if(typeof examCard==='function')h+=examCard(s);
+  v.innerHTML=h;
+  if(s==='civ'&&typeof newsInit==='function')newsInit();
+};
+
+/* ===== 優化 study 頁標題，附返回科目主頁麵包屑 ===== */
+const _origRenderStudy=window.renderStudy;
+window.renderStudy=function(s){
+  _origRenderStudy(s);
+  if(curSubj!=='math'&&$('stTitle')){
+    const stg=AVAIL[curSubj]?getSubjStage(curSubj):'';
+    const U=curUnit!==null?subjUnits(curSubj)[curUnit]:null;
+    const baseSubj=curSubj==='mex'?'math':curSubj;
+    $('stTitle').innerHTML=`<a style="color:#38bdf8;cursor:pointer" onclick="go('subj','${baseSubj}')">${SUBJ[baseSubj]||'🧮 數學'}${stg?'・'+stg:''}</a>${U?' › '+esc(U.name):'　知識點與詳解'}`;
+  }
+  const sb=$('stScopeBtn');
+  if(sb)sb.textContent=window.sAll?'範圍：全站搜尋':'範圍：僅我的課程';
+};
+
+/* ===== 測驗與閃卡整合選課過濾（附「包含未選修課程」開關）===== */
+window.toggleQuizAll=function(chk){
+  window.qAll=!!chk;
+  renderQCfg();
+};
+
+const _origQItems=window.qItems;
+window.qItems=function(r){
+  let p=_origQItems(r);
+  if(!r.ids&&!window.qAll)p=p.filter(inMyCourses);
+  return p;
+};
+
+const _origRenderQCfg=window.renderQCfg;
+window.renderQCfg=function(){
+  _origRenderQCfg();
+  const qc=$('qCfg');if(!qc)return;
+  const sw=`<div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid #334155">
+    <span class="muted" style="font-size:.82rem">${window.qAll?'🌐 目前出題範圍：<b>全站所有課程</b>':`🎓 目前出題範圍：<b>我的課表（${st.courses.length} 門課）</b>`}</span>
+    <label class="muted" style="font-size:.82rem;cursor:pointer"><input type="checkbox" ${window.qAll?'checked':''} onchange="toggleQuizAll(this.checked)"> 包含未選修的課程（全站題庫）</label>
+  </div>`;
+  qc.insertAdjacentHTML('afterbegin',sw);
+};
+
+window.subjQuiz=function(n,d){
+  const s=d||curSubj;
+  if(s==='soc'){go('quiz');qRows=[{d:'soc',u:'',ts:['mix'],n:10}];quizTab(n);startQuiz();return}
+  const base=s==='mex'?'math':s;
+  const stg=AVAIL[base]?getSubjStage(base):'高中';
+  const ids=KB.filter(k=>(s==='mex'?k.s==='mex':k.s!=='mex')&&itemInStage(k,base,stg)&&k.lv!=='S'&&prefOK(k)).map(k=>k.id);
+  go('quiz');
+  qRows=[{d:s,u:'',ts:['mix'],n:10,ids}];
+  quizTab(n);
+  startQuiz();
+};
+
+/* ===== 搜尋整合選課過濾（預設僅我的課程，可一鍵切全站）===== */
+window.toggleSearchScope=function(){
+  window.sAll=!window.sAll;
+  const sb=$('stScopeBtn');
+  if(sb)sb.textContent=window.sAll?'範圍：全站搜尋':'範圍：僅我的課程';
+  const inp=$('stSearch');
+  if(inp&&inp.value.trim())doSearch(inp.value);
+};
+
+window.doSearch=function(q){
+  q=q.trim().toLowerCase();
+  if(!q){$('stList').innerHTML=studyHtml();return}
+  const pool=window.sAll?KB:KB.filter(inMyCourses);
+  const hits=pool.filter(k=>(k.t+' '+k.d+' '+k.x+' '+(k.code||'')).toLowerCase().includes(q)).slice(0,50);
+  $('stList').innerHTML=hits.length
+    ? `<div class="muted" style="margin-bottom:6px">找到 ${hits.length}${hits.length===50?'+':''} 筆（${window.sAll?'全站':'僅我的課程'}，點選開啟）</div>`+hits.map(k=>`<div class="row" onclick="openHit('${k.id}')"><b>${esc(k.t)}</b><span class="lv">${SUB_NAME[k.s]}${k.s==='math'?'・'+lvTag(k):''}</span><div class="muted" style="margin-top:4px">${mt(k,k.s==='math'?k.d.split('\n')[0]:k.d)}</div></div>`).join('')
+    : `<div class="muted">在${window.sAll?'全站':'「我的課程」'}中沒有符合的知識點。${window.sAll?'':` <a style="color:#38bdf8;cursor:pointer" onclick="toggleSearchScope()">改為全站搜尋</a>`}</div>`;
+};
+
+const _origOpenHit=window.openHit;
+window.openHit=function(id){
+  const k=KB.find(x=>x.id===id);
+  if(k){
+    const s=itemSubj(k);
+    if(AVAIL[s]){
+      const matched=STAGES.find(g=>AVAIL[s].includes(g)&&itemInStage(k,s,g));
+      if(matched){curStage[s]=matched;syncStageSideEffects(s,matched)}
+    }
+  }
+  _origOpenHit(id);
+};
+
+/* ===== 單字非同步載入完成後的 UI 重繪 ===== */
+window.refreshCourseUI=function(){
+  try{
+    if($('v-home').style.display==='block')buildSubjMenus();
+    if($('v-course').style.display==='block')renderCourseHall();
+    if($('v-subj').style.display==='block'&&curSubj==='eng')renderSubj('eng');
+    stats();
+  }catch(e){}
+};
+
+/* ===== 初始登入／已存在 Session 時自動刷新課表 ===== */
+try{
+  if(typeof user!=='undefined'&&user){ensureCourses();buildSubjMenus();stats()}
+}catch(e){}
 })();
 </script>
 </body></html>
