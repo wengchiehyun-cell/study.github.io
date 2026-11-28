@@ -1,0 +1,57 @@
+{
+  "name": "english-vocab",
+  "version": "1.0.0",
+  "total": 6127,
+  "with_definition": 4567,
+  "without_definition": 1560,
+  "with_example": 2195,
+  "needs_review": 4,
+  "by_level": {
+    "國小": {
+      "total": 400,
+      "with_definition": 400,
+      "with_example": 400
+    },
+    "國中": {
+      "total": 801,
+      "with_definition": 801,
+      "with_example": 801
+    },
+    "高中": {
+      "total": 4926,
+      "with_definition": 3366,
+      "with_example": 994
+    }
+  },
+  "sources": [
+    "教育部國中小基本英語字彙 1,200 字",
+    "大考中心高中英文參考詞彙表（111 學年度起適用）"
+  ],
+  "files": [
+    {
+      "path": "data/vocab.json",
+      "bytes": 1301115,
+      "sha256": "c6a6b9addc9ca3401f3fc7ffe679ae02c522e2c6de33bdaae995e203eb026995"
+    },
+    {
+      "path": "data/vocab.csv",
+      "bytes": 441290,
+      "sha256": "bfb9cd25ab2b161e2f497d78cbbd045ce271ff5ec09070d014c979d519a13326"
+    },
+    {
+      "path": "data/levels/elementary.json",
+      "bytes": 88049,
+      "sha256": "a9fefdb912b3c860fc09652b989c190869c90d4f04ea917c110ca359033c857b"
+    },
+    {
+      "path": "data/levels/junior.json",
+      "bytes": 179681,
+      "sha256": "4ae74ace95a4251e708cb2be02eaa09f467607ae312e5890f6310bb4128358ec"
+    },
+    {
+      "path": "data/levels/senior.json",
+      "bytes": 1033391,
+      "sha256": "ed835af5ed9969d3b8ed460b2a3dcc45d5274d2685762bccd2861f58fe34cf56"
+    }
+  ]
+}
