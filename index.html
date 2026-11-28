@@ -5,6 +5,7 @@
 <meta name="theme-color" content="#0f172a">
 <meta name="keywords" content="傻T學習網,108課綱,高中數學,高一數學,數A,數B,數甲,數乙,大學數學,微積分,線性代數,英文單字,國文古文,歷史,地理,公民,學測,會考,記憶閃卡">
 <meta name="robots" content="index,follow">
+<meta name="google-site-verification" content="lAyZLeGXJfiHGP_uMFgmJNunWp08ofZblBV6hH8kAOA" />
 <link rel="canonical" href="https://wengchiehyun-cell.github.io/study.github.io/">
 <meta property="og:type" content="website">
 <meta property="og:title" content="傻T學習網｜108課綱跨學科與大學數學學習平台">
@@ -32,9 +33,16 @@ input.in,select.in{background:#0f172a;border:1px solid #475569;color:#fff;paddin
 .tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
 .tab{background:#0f172a;border:1px solid #334155;color:#cbd5e1;padding:7px 14px;border-radius:6px;cursor:pointer;font-weight:bold;font-size:.85rem}
 .tab.on{background:#f59e0b;color:#0f172a;border-color:#f59e0b}
-.av{display:grid;grid-template-columns:repeat(6,1fr);gap:6px}
-.av span{font-size:1.3rem;text-align:center;padding:4px;border:1px solid #334155;border-radius:8px;cursor:pointer}
-.av span.on{border-color:#f59e0b;background:#334155}
+.av{display:grid;grid-template-columns:repeat(auto-fill,minmax(92px,1fr));gap:8px}
+.av-item{display:flex;flex-direction:column;align-items:center;gap:4px;padding:8px 6px;border:1px solid #334155;border-radius:10px;cursor:pointer;background:#0f172a;transition:.15s;text-align:center}
+.av-item:hover{border-color:#f59e0b}
+.av-item.on{border-color:#f59e0b;background:#334155;box-shadow:0 0 0 1px #f59e0b}
+.av-item.lk{opacity:.72;border-style:dashed}
+.av-item.lk:hover{opacity:1;border-color:#38bdf8}
+.av-nm{font-size:.74rem;color:#e2e8f0;font-weight:bold;line-height:1.2}
+.av-pr{font-size:.68rem;color:#fbbf24}
+.av-svg{display:inline-flex;align-items:center;justify-content:center;vertical-align:middle;flex:none}
+.coin-pill{display:inline-flex;align-items:center;gap:3px;background:#1e293b;border:1px solid #f59e0b66;border-radius:999px;padding:1px 8px;font-size:.76rem;color:#fbbf24;margin-right:6px}
 #app{display:none;flex-direction:column;height:100vh;height:100dvh}
 nav{background:#1e293b;border-bottom:1px solid #334155;padding:10px 16px;display:flex;justify-content:space-between;align-items:center}
 nav b{color:#f59e0b;cursor:pointer}
@@ -189,7 +197,7 @@ summary{color:#38bdf8;cursor:pointer;font-size:.85rem;font-weight:bold}
 <div id="app">
 <div id="storeWarn" style="display:none;background:#7f1d1d;color:#fff;padding:6px 12px;font-size:.82rem;text-align:center">⚠️ 此瀏覽器無法儲存資料（可能是無痕模式或內嵌瀏覽器）。關閉頁面後進度會消失，請記得到「個人設定」匯出備份。</div>
 <nav><div style="display:flex;gap:10px;align-items:center"><button class="btn alt" onclick="side()">☰ 選單</button><b onclick="go('home')">📜 傻T學習網</b><button class="btn alt" id="langBtn" onclick="setLang()" style="padding:4px 10px">🌐 EN</button></div>
-<div class="badge"><button class="btn" id="devBk" style="display:none;padding:2px 8px" onclick="devBack()">↩ 返回開發者</button> <span id="who"></span> <button class="btn" id="loBtn" style="padding:2px 8px;background:#ef4444;color:#fff" onclick="logout()">登出</button></div></nav>
+<div class="badge"><button class="btn" id="devBk" style="display:none;padding:2px 8px" onclick="devBack()">↩ 返回開發者</button> <span class="coin-pill" title="每日登入、答題、閃卡、打卡與生日皆可獲得金幣，用來解鎖專屬頭像">🪙 <b id="navCoins">0</b></span><span id="who" style="display:inline-flex;align-items:center;gap:5px;vertical-align:middle"></span> <button class="btn" id="loBtn" style="padding:2px 8px;background:#ef4444;color:#fff" onclick="logout()">登出</button></div></nav>
 <div class="views">
 
 <div class="view" id="v-home">
@@ -245,7 +253,8 @@ summary{color:#38bdf8;cursor:pointer;font-size:.85rem;font-weight:bold}
 <div class="box" id="uiPrev" style="margin-top:8px">預覽：臨渴掘井，不如未雨綢繆。The quick brown fox jumps over 12345。</div></div>
 <div class="setSec"><div class="muted">🏠 首頁</div><label class="muted" style="display:block;margin-top:6px"><input type="checkbox" id="chkJoke" checked onchange="uiJoke(this.checked)"> 在首頁顯示每日冷笑話</label><select class="in" id="jokeSubjS" onchange="uiJokeSubj(this.value)" style="width:100%;margin-top:6px"><option value="auto">冷笑話科目：自動（依目前選修課程）</option><option value="all">全部科目</option><option value="數學">📐 數學</option><option value="國文">📖 國文</option><option value="英文">🔤 英文</option><option value="歷史">📜 歷史</option><option value="地理">🌍 地理</option><option value="公民">⚖️ 公民</option><option value="學習">📚 學習日常</option></select></div>
 <div class="setSec"><div class="muted">🌏 社會科顯示方式</div><select class="in" id="socS" onchange="uiSoc(this.value)" style="width:100%;margin-top:6px"><option value="auto">自動（國小：三科分開；其他：三科合併）</option><option value="merge">三科合併：社會主頁面（總覽、跨科主題）</option><option value="sep">三科分開：歷史、地理、公民各自的入口</option></select><div class="muted" style="font-size:.8rem;margin-top:4px">測驗的「社會三科綜合」範圍在兩種方式下都會保留。</div></div>
-<div class="setSec"><div class="muted">👤 暱稱與頭像</div>
+<div class="setSec"><div class="muted" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px"><span>👤 暱稱與頭像（預設 3 款免費，其餘可用金幣解鎖）</span><span style="color:#fbbf24;font-weight:bold">🪙 目前金幣：<b id="setCoins">0</b></span></div>
+<div class="muted" style="font-size:.76rem;margin:4px 0 8px">💡 賺幣方式：每日登入 +15、測驗答對 +3（完賽 +10）、閃卡 +2（完輪 +5）、日曆打卡 +10、生日當天 +100</div>
 <input class="in" id="setNick" style="width:100%;margin-bottom:8px" placeholder="暱稱"><div class="av" id="savs"></div>
 <button class="btn" style="width:100%;margin:8px 0" onclick="saveProfile()">儲存暱稱與頭像</button></div>
 <div id="pfBox" style="border-top:1px solid #334155;margin-top:10px;padding-top:10px"><div class="muted">🎓 學習設定（選擇出生年月日會精準計算至月與日，並自動帶入程度，你仍可自行修改）</div>
@@ -271,7 +280,7 @@ summary{color:#38bdf8;cursor:pointer;font-size:.85rem;font-weight:bold}
 <div class="toast" id="toast"></div>
 <div id="sideBg" onclick="side()"></div>
 <div id="side"><div class="mi" onclick="side()" style="text-align:right">✕ 關閉選單</div><div class="mi" onclick="go('home');side()">🏠 主控制台</div><div class="mi" onclick="go('course');side()" style="border-color:#f59e0b;color:#fbbf24">🎓 選課大廳</div><div class="mi" onclick="guide();side()">🧭 使用導覽</div><div class="mi" id="devMi" style="display:none" onclick="go('dev');side()">🛠️ 開發者後台</div>
-<div class="muted" style="margin:8px 0">📚 我的課程</div><div id="sideSubj"></div>
+<details id="sideCourses" style="margin:0 0 6px;padding:0;background:#1e293b;border:1px solid #334155;border-radius:6px"><summary style="padding:10px 14px;color:#f8fafc;font-size:.85rem;list-style:none;display:flex;justify-content:space-between;align-items:center;cursor:pointer"><span>📚 我的課程</span><span id="sideCourseCnt" class="muted" style="font-size:.75rem">▾</span></summary><div id="sideSubj" style="padding:4px 8px 8px;border-top:1px solid #334155;max-height:42vh;overflow-y:auto"></div></details>
 <div class="mi" onclick="go('quiz');side()">🧠 測驗閃卡</div>
 <div class="mi" onclick="go('cal');side()">📅 學習日曆</div><div class="mi" onclick="go('chat');side()">💬 討論社群</div>
 <div class="mi" onclick="openSet();side()">⚙️ 個人設定與備份</div></div>
@@ -301,7 +310,79 @@ function showErr(m){const a=document.getElementById('authMsg'),au=document.getEl
 window.addEventListener('error',e=>showErr('發生錯誤：'+e.message));
 window.addEventListener('unhandledrejection',e=>showErr('發生錯誤：'+((e.reason&&e.reason.message)||e.reason)));
 const $=id=>document.getElementById(id),esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const AV=['👑','📜','⚔️','⛵','🎓','🛡️','🧭','🏛️','🕵️','🧙‍♂️','🦁','🦉'];let selAv=AV[0];
+const AV_DATA=[
+ {id:'av1',n:'小柴學徒',c:0,bg:['#f59e0b','#b45309'],svg:'<circle cx="32" cy="36" r="17" fill="#fcd34d"/><polygon points="16,24 22,12 29,22" fill="#d97706"/><polygon points="48,24 42,12 35,22" fill="#d97706"/><ellipse cx="32" cy="41" rx="11" ry="8" fill="#fef3c7"/><circle cx="25" cy="34" r="2.5" fill="#1e293b"/><circle cx="39" cy="34" r="2.5" fill="#1e293b"/><polygon points="29,39 35,39 32,42" fill="#1e293b"/><path d="M28 45Q32 48 36 45" stroke="#1e293b" stroke-width="1.8" fill="none" stroke-linecap="round"/>'},
+ {id:'av2',n:'貓頭鷹博士',c:0,bg:['#6366f1','#312e81'],svg:'<ellipse cx="32" cy="38" rx="16" ry="17" fill="#a5b4fc"/><polygon points="18,22 24,14 28,23" fill="#4f46e5"/><polygon points="46,22 40,14 36,23" fill="#4f46e5"/><circle cx="25" cy="35" r="6" fill="#fff"/><circle cx="39" cy="35" r="6" fill="#fff"/><circle cx="25" cy="35" r="2.8" fill="#0f172a"/><circle cx="39" cy="35" r="2.8" fill="#0f172a"/><polygon points="29,40 35,40 32,46" fill="#f59e0b"/><path d="M18 19L32 13L46 19L32 24Z" fill="#1e293b"/>'},
+ {id:'av3',n:'元氣黑貓',c:0,bg:['#0ea5e9','#1e3a8a'],svg:'<circle cx="32" cy="37" r="16" fill="#1e293b"/><polygon points="17,27 20,13 30,23" fill="#1e293b"/><polygon points="47,27 44,13 34,23" fill="#1e293b"/><polygon points="20,25 22,17 27,23" fill="#f472b6"/><polygon points="44,25 42,17 37,23" fill="#f472b6"/><circle cx="25" cy="36" r="4.8" fill="none" stroke="#38bdf8" stroke-width="2"/><circle cx="39" cy="36" r="4.8" fill="none" stroke="#38bdf8" stroke-width="2"/><line x1="30" y1="36" x2="34" y2="36" stroke="#38bdf8" stroke-width="2"/><circle cx="25" cy="36" r="2" fill="#fde047"/><circle cx="39" cy="36" r="2" fill="#fde047"/><path d="M29 44Q32 46 35 44" stroke="#f472b6" stroke-width="1.8" fill="none" stroke-linecap="round"/>'},
+ {id:'av4',n:'赤狐劍客',c:30,bg:['#ef4444','#7f1d1d'],svg:'<polygon points="15,24 22,10 30,23" fill="#fb923c"/><polygon points="49,24 42,10 34,23" fill="#fb923c"/><path d="M16 32Q32 18 48 32L32 53Z" fill="#f97316"/><path d="M19 36L32 53L45 36Q32 42 19 36Z" fill="#fff7ed"/><circle cx="25" cy="34" r="2.4" fill="#0f172a"/><circle cx="39" cy="34" r="2.4" fill="#0f172a"/><circle cx="32" cy="48" r="2.5" fill="#0f172a"/>'},
+ {id:'av5',n:'太空企鵝',c:50,bg:['#0284c7','#0f172a'],svg:'<circle cx="32" cy="32" r="24" fill="none" stroke="#bae6fd" stroke-width="2.5" stroke-dasharray="4 3"/><ellipse cx="32" cy="37" rx="15" ry="17" fill="#1e293b"/><ellipse cx="32" cy="40" rx="10" ry="12" fill="#f8fafc"/><circle cx="26" cy="33" r="2.3" fill="#0f172a"/><circle cx="38" cy="33" r="2.3" fill="#0f172a"/><polygon points="28,37 36,37 32,42" fill="#f59e0b"/>'},
+ {id:'av6',n:'魔法水獺',c:80,bg:['#14b8a6','#115e59'],svg:'<ellipse cx="32" cy="39" rx="16" ry="14" fill="#b45309"/><circle cx="17" cy="31" r="4" fill="#92400e"/><circle cx="47" cy="31" r="4" fill="#92400e"/><ellipse cx="32" cy="42" rx="10" ry="7" fill="#fde68a"/><circle cx="25" cy="36" r="2.3" fill="#0f172a"/><circle cx="39" cy="36" r="2.3" fill="#0f172a"/><ellipse cx="32" cy="40" rx="3.2" ry="2.2" fill="#1e293b"/><polygon points="21,26 32,9 43,26" fill="#7c3aed"/><rect x="18" y="25" width="28" height="3.5" rx="2" fill="#fbbf24"/>'},
+ {id:'av7',n:'黃金獅王',c:120,bg:['#eab308','#854d0e'],svg:'<circle cx="32" cy="35" r="20" fill="#b45309"/><circle cx="32" cy="36" r="14" fill="#fcd34d"/><circle cx="21" cy="24" r="4" fill="#fcd34d"/><circle cx="43" cy="24" r="4" fill="#fcd34d"/><circle cx="26" cy="34" r="2.4" fill="#1e293b"/><circle cx="38" cy="34" r="2.4" fill="#1e293b"/><polygon points="29,39 35,39 32,43" fill="#92400e"/><path d="M26 45Q32 49 38 45" stroke="#92400e" stroke-width="2" fill="none"/>'},
+ {id:'av8',n:'星空獨角獸',c:160,bg:['#a855f7','#4c1d95'],svg:'<polygon points="32,8 28,24 36,24" fill="#fde047"/><ellipse cx="32" cy="38" rx="14" ry="15" fill="#f8fafc"/><path d="M20 26Q26 18 34 24Q42 18 44 30" stroke="#f472b6" stroke-width="4" fill="none" stroke-linecap="round"/><circle cx="26" cy="37" r="2.3" fill="#3b0764"/><circle cx="38" cy="37" r="2.3" fill="#3b0764"/><circle cx="22" cy="42" r="2.5" fill="#f9a8d4" opacity=".7"/><circle cx="42" cy="42" r="2.5" fill="#f9a8d4" opacity=".7"/>'},
+ {id:'av9',n:'機甲熊貓',c:200,bg:['#475569','#0f172a'],svg:'<circle cx="20" cy="21" r="6" fill="#0f172a"/><circle cx="44" cy="21" r="6" fill="#0f172a"/><rect x="16" y="21" width="32" height="30" rx="12" fill="#f8fafc"/><rect x="20" y="29" width="24" height="9" rx="4" fill="#0f172a"/><circle cx="26" cy="33.5" r="2.5" fill="#38bdf8"/><circle cx="38" cy="33.5" r="2.5" fill="#38bdf8"/><rect x="27" y="42" width="10" height="3" rx="1.5" fill="#334155"/>'},
+ {id:'av10',n:'碧海鯨靈',c:250,bg:['#06b6d4','#164e63'],svg:'<path d="M12 40Q14 22 34 22Q50 22 52 38Q52 48 34 48Q14 48 12 40Z" fill="#38bdf8"/><path d="M16 42Q32 48 48 42Q46 49 32 49Q18 49 16 42Z" fill="#e0f2fe"/><circle cx="24" cy="35" r="2.5" fill="#0f172a"/><path d="M32 22Q30 14 24 13M32 22Q34 14 40 13" stroke="#bae6fd" stroke-width="2.5" fill="none" stroke-linecap="round"/>'},
+ {id:'av11',n:'烈焰鳳凰',c:320,bg:['#dc2626','#7c2d12'],svg:'<path d="M32 10L38 22L50 18L43 32L52 42L38 44L32 54L26 44L12 42L21 32L14 18L26 22Z" fill="#f97316"/><circle cx="32" cy="34" r="11" fill="#fde047"/><circle cx="28" cy="32" r="2" fill="#7f1d1d"/><circle cx="36" cy="32" r="2" fill="#7f1d1d"/><polygon points="29,36 35,36 32,42" fill="#dc2626"/>'},
+ {id:'av12',n:'皇冠神龍',c:500,bg:['#10b981','#064e3b'],svg:'<polygon points="20,21 25,11 32,18 39,11 44,21" fill="#fbbf24"/><ellipse cx="32" cy="38" rx="16" ry="15" fill="#34d399"/><circle cx="25" cy="35" r="3" fill="#fef08a"/><circle cx="39" cy="35" r="3" fill="#fef08a"/><circle cx="25" cy="35" r="1.4" fill="#064e3b"/><circle cx="39" cy="35" r="1.4" fill="#064e3b"/><path d="M24 44Q32 48 40 44" stroke="#064e3b" stroke-width="2" fill="none" stroke-linecap="round"/>'}
+];
+const AV=AV_DATA.map(x=>x.id);
+const FREE_AV=['av1','av2','av3'];
+let selAv=AV[0];
+function avHtml(av,sz){
+  sz=sz||24;
+  const item=AV_DATA.find(x=>x.id===av);
+  if(!item)return `<span style="font-size:${Math.round(sz*0.85)}px;line-height:1">${esc(av||'🎓')}</span>`;
+  const gid='g_'+item.id+'_'+sz;
+  return `<span class="av-svg" style="width:${sz}px;height:${sz}px"><svg viewBox="0 0 64 64" width="${sz}" height="${sz}" aria-label="${esc(item.n)}"><defs><linearGradient id="${gid}" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="${item.bg[0]}"/><stop offset="100%" stop-color="${item.bg[1]}"/></linearGradient></defs><circle cx="32" cy="32" r="30" fill="url(#${gid})" stroke="#f8fafc33" stroke-width="2"/>${item.svg}</svg></span>`;
+}
+function ensureCoins(){
+  if(typeof st.coins!=='number'||isNaN(st.coins))st.coins=0;
+  if(!Array.isArray(st.unlockedAv))st.unlockedAv=FREE_AV.slice();
+  FREE_AV.forEach(a=>{if(!st.unlockedAv.includes(a))st.unlockedAv.push(a)});
+  if(user&&user.avatar&&AV.includes(user.avatar)&&!st.unlockedAv.includes(user.avatar))st.unlockedAv.push(user.avatar);
+  if(!st.coinLog||typeof st.coinLog!=='object')st.coinLog={};
+}
+function renderCoins(){
+  ensureCoins();
+  if($('navCoins'))$('navCoins').textContent=st.coins;
+  if($('setCoins'))$('setCoins').textContent=st.coins;
+}
+function addCoins(n,reason,silent){
+  if(!n||n<=0)return;
+  ensureCoins();
+  st.coins+=n;
+  save();
+  renderCoins();
+  if(!silent&&reason)showErr(`🪙 ${reason} +${n} 金幣！（目前 ${st.coins} 枚）`);
+}
+function checkDailyAndBdayCoins(){
+  if(!user||user.guest)return;
+  ensureCoins();
+  const td=today();
+  if(st.coinLog.login!==td){
+    st.coinLog.login=td;
+    st.coins+=15;
+    save();renderCoins();
+    setTimeout(()=>showErr(`🪙 每日登入獎勵 +15 金幣！（目前 ${st.coins} 枚）`),900);
+  }
+  try{
+    const a=users()[user.name],b=a&&a.pf&&a.pf.bday;
+    if(b&&/^\d{4}-\d{2}-\d{2}$/.test(b)){
+      const [,bm,bd]=b.split('-');
+      const now=new Date(),mm=String(now.getMonth()+1).padStart(2,'0'),dd=String(now.getDate()).padStart(2,'0'),yr=String(now.getFullYear());
+      if(bm===mm&&bd===dd&&st.coinLog.bday!==yr){
+        st.coinLog.bday=yr;
+        st.coins+=100;
+        save();renderCoins();
+        setTimeout(()=>showErr(`🎂 生日快樂！送上 100 金幣生日禮金！（目前 ${st.coins} 枚）`),2200);
+      }
+    }
+  }catch(e){}
+}
+function renderWho(){
+  if(!user||!$('who'))return;
+  $('who').innerHTML=`${avHtml(user.avatar,24)}<span>${esc(user.nickname)}</span>`;
+  renderCoins();
+}
 const SUBJ={math:'📐 數學',chi:'📖 國文',eng:'🔤 英文',hist:'📜 歷史',geo:'🌍 地理',civ:'⚖️ 公民',soc:'🌏 社會全科'};
 const SUBJ_DESC={math:'依課綱章節整理定理、定義與性質（附證明）',chi:'課文選文（附全文與字詞注釋）、字音字形對比、成語',eng:'文法與用法、易混字、國小／國中／高中分級單字（附例句）、閱讀與寫作策略',hist:'臺灣史、中國史與世界史，依分期整合，附年代軸與歷史地圖',soc:'歷史、地理、公民三科整合：三科進度、跨科主題、公民時事與歷屆試題',geo:'自然與人文地理、GIS 與區域發展',civ:'經濟、憲法與法律、政治與公民素養'};
 const SUB_NAME={math:'數學',chi:'國文',eng:'英文',evoc:'英文',geo:'地理',civ:'公民',tw:'臺灣史',cn:'中國史',world:'世界史',east:'東亞史',mex:'數學例題',chz:'國文',chx:'國文',chy:'國文'};
@@ -1085,7 +1166,43 @@ const pubChats=()=>JSON.parse(LS.getItem('pub_chat')||'[]');
 
 /* ===== 登入 ===== */
 const users=()=>{try{return Object.assign(Object.create(null),JSON.parse(LS.getItem('users')||'{}'))}catch(e){return Object.create(null)}};
-function avGrid(id){const g=$(id);g.innerHTML='';AV.forEach(a=>{const s=document.createElement('span');s.textContent=a;if(a===selAv)s.className='on';s.onclick=()=>{selAv=a;document.querySelectorAll('.av span').forEach(e=>e.classList.toggle('on',e.textContent===a))};g.appendChild(s)})}
+function avGrid(id){
+  const g=$(id);if(!g)return;
+  g.innerHTML='';
+  const isReg=(id==='ravs');
+  if(!isReg)ensureCoins();
+  const list=isReg?AV_DATA.slice(0,3):AV_DATA;
+  list.forEach(item=>{
+    const unlocked=isReg||item.c===0||(st.unlockedAv&&st.unlockedAv.includes(item.id));
+    const d=document.createElement('div');
+    d.className='av-item'+(item.id===selAv?' on':'')+(unlocked?'':' lk');
+    d.setAttribute('role','button');d.setAttribute('tabindex','0');
+    d.innerHTML=`${avHtml(item.id,42)}<div class="av-nm">${esc(item.n)}</div><div class="av-pr">${unlocked?(item.id===selAv?'✓ 使用中':'已擁有'):`🔒 🪙 ${item.c}`}</div>`;
+    d.onclick=()=>{
+      if(!unlocked){
+        if(user&&user.guest){showErr('訪客無法解鎖頭像，請先免費註冊！');return}
+        if(st.coins<item.c){showErr(`金幣不足！解鎖「${item.n}」需要 ${item.c} 金幣，目前還差 ${item.c-st.coins} 枚。`);return}
+        if(d.dataset.cfm!=='1'){
+          d.dataset.cfm='1';
+          d.querySelector('.av-pr').textContent=`確定花 ${item.c} 🪙？`;
+          setTimeout(()=>{if(d.dataset.cfm==='1'){d.dataset.cfm='';const p=d.querySelector('.av-pr');if(p)p.textContent=`🔒 🪙 ${item.c}`}},3000);
+          return;
+        }
+        st.coins-=item.c;
+        st.unlockedAv.push(item.id);
+        selAv=item.id;
+        save();renderCoins();
+        showErr(`🎉 已解鎖「${item.n}」頭像！記得按下方「儲存暱稱與頭像」套用。`);
+        avGrid(id);
+        return;
+      }
+      selAv=item.id;
+      avGrid(id);
+    };
+    g.appendChild(d);
+  });
+  if(!isReg)renderCoins();
+}
 function authTab(t){$('fl').style.display=t=='l'?'flex':'none';$('fr').style.display=t=='r'?'flex':'none';$('tl').classList.toggle('on',t=='l');$('tr').classList.toggle('on',t=='r')}
 const RESERVED=['guest','admin','system'],RESERVED_NICK=['客服','系統','管理員','admin','system'];
 const newSalt=()=>Array.from((window.crypto&&crypto.getRandomValues)?crypto.getRandomValues(new Uint8Array(12)):Array.from({length:12},()=>Math.random()*256|0),b=>b.toString(16).padStart(2,'0')).join('');
@@ -1128,7 +1245,7 @@ async function doLogin(e){e.preventDefault();const M=t=>{$('authMsg').textConten
  enter({name:u,nickname:a.nick,avatar:a.av,guest:false})}
 function guest(){trackGuest();enter({name:'GUEST',nickname:'訪客體驗',avatar:'👀',guest:true})}
 function enter(u){user=u;try{const a0=users()[u.name];PFC=a0&&a0.pf&&a0.pf.use?a0.pf:null;PFS=a0&&a0.pf?(a0.pf.stage||''):'';if(PFC){mLv='all';mGr='all'}if(a0&&!a0.pf&&!a0.pfSkip&&!u.guest&&!DEV_USERS.includes(u.name)&&!SS.getItem('devret')){a0.pfSkip=1;const al=users();al[u.name].pfSkip=1;LS.setItem('users',JSON.stringify(al));setTimeout(()=>{openSet();$('setMsg').textContent='👋 請補填年齡與年級，系統會依此調整知識點；也可先關閉，之後在這裡設定。'},500)}}catch(e){PFC=null}try{$('devBk').style.display=SS.getItem('devret')?'inline-block':'none';if(!u.guest&&!SS.getItem('devret')){const a=users();if(a[u.name]){a[u.name].last=Date.now();LS.setItem('users',JSON.stringify(a))}}}catch(e){}setTimeout(()=>{$('devMi').style.display=isDev()?'block':'none'},0);LS.setItem('sess',JSON.stringify(u));load();
- $('auth').style.display='none';$('app').style.display='flex';$('storeWarn').style.display=LS.ok?'none':'block';$('who').textContent=`${u.avatar} ${u.nickname}`;
+ $('auth').style.display='none';$('app').style.display='flex';$('storeWarn').style.display=LS.ok?'none':'block';renderWho();checkDailyAndBdayCoins();
  stats();go('home');if(!LS.getItem('seen_guide')){guide();LS.setItem('seen_guide',1)}}
 let loT=0;
 function logout(){const b=$('loBtn');
@@ -2020,13 +2137,13 @@ function startQuiz(){pool=getPool();qi=0;score=0;wrongPool=[];
  qMode==1?showFC():showQ()}
 function retryWrong(){if(!wrongPool.length)return;pool=shuffle(wrongPool.slice());qi=0;score=0;wrongPool=[];showQ()}
 function showFC(){
- if(qi>=pool.length){const gPrompt=user&&user.guest?'<div class="box" style="margin-top:10px;border-color:#f59e0b">想保存這次的學習進度嗎？ <button class="btn" style="padding:3px 10px;margin-left:6px" onclick="logoutNow(\'r\')">免費註冊</button></div>':'';$('qArea').innerHTML='<div class="card"><h3>✨ 閃卡複習完成！</h3><div class="muted">做得好，間隔複習已為你排好下次複習時間。</div>'+gPrompt+'</div>';return}
+ if(qi>=pool.length){if(pool.length)addCoins(5,'完成閃卡複習');const gPrompt=user&&user.guest?'<div class="box" style="margin-top:10px;border-color:#f59e0b">想保存這次的學習進度嗎？ <button class="btn" style="padding:3px 10px;margin-left:6px" onclick="logoutNow(\'r\')">免費註冊</button></div>':'';$('qArea').innerHTML='<div class="card"><h3>✨ 閃卡複習完成！</h3><div class="muted">做得好，間隔複習已為你排好下次複習時間。</div>'+gPrompt+'</div>';return}
  const k=pool[qi];
  $('qArea').innerHTML=`<div class="muted" style="text-align:center;margin-bottom:6px">${qi+1} / ${pool.length}　${SUB_NAME[k.s]}</div>
  <div class="fc" id="fc" onclick="this.classList.toggle('flip')"><div class="fci"><div class="f">${k.s==='mex'?mt(k,k.d):esc(k.t)}<div class="muted">點擊翻面</div></div>
  <div class="b">${k.s==='mex'?`<div class="box" style="border-color:#34d399"><b>答案：</b>${mt(k,k.a)}</div><div class="box" style="white-space:pre-line">${mt(k,k.x)}</div>`:`<div class="box">${mt(k,k.d)}</div><div class="box" style="border-color:#f59e0b">${mt(k,k.x)}</div>`}</div></div></div>
  <div class="cfg" style="justify-content:center"><button class="btn alt" onclick="rate(0)">還不熟（退回一箱）</button><button class="btn alt" style="border-color:#38bdf8;color:#38bdf8" onclick="rate(0.5)">差點記得（明天再看）</button><button class="btn" onclick="rate(1)">記得（拉長間隔）</button></div>`}
-function rate(ok){const k=pool[qi];srs(k.id,ok);if(ok>=0.5)log('完成閃卡：'+k.t);save();qi++;showFC()}
+function rate(ok){const k=pool[qi];srs(k.id,ok);if(ok>=0.5){log('完成閃卡：'+k.t);addCoins(2,'',true)}save();qi++;showFC()}
 const INTV=[1,2,4,8,16];
 function srs(id,ok){const cur=st.box[id];if(ok===1&&cur&&cur.due>today())return;/* 未到複習日就答對：不加箱，避免同日重複作答灌水 */const b=(cur||{b:1}).b,nb=ok===1?Math.min(5,b+1):ok===0.5?b:Math.max(1,b-1),d=new Date();d.setDate(d.getDate()+(ok===0.5?1:INTV[nb-1]));
  st.box[id]={b:nb,due:fmt(d.getFullYear(),d.getMonth(),d.getDate())};
@@ -2153,11 +2270,11 @@ function showQ(){
    const retryBtn=wrongPool.length?`<button class="btn" onclick="retryWrong()">🔁 把答錯的 ${wrongPool.length} 題再測一次</button>`:'';
    const gPrompt=user&&user.guest?`<div class="box" style="margin-top:10px;border-color:#f59e0b">想保存這次的學習進度嗎？ <button class="btn" style="padding:3px 10px;margin-left:6px" onclick="logoutNow('r')">免費註冊</button></div>`:'';
    $('qArea').innerHTML=`<div class="card"><h3>${title}</h3><div>得分：<b>${score} / ${pool.length}</b>（${pct}%）</div>${diff}<div class="cfg" style="margin:12px 0 0">${retryBtn}<button class="btn alt" onclick="startQuiz()">再測一回</button></div>${gPrompt}</div>`;
-   log(`完成模擬測驗：${score}/${pool.length}`);return}
+   if(pool.length)addCoins(10,'完成模擬測驗');log(`完成模擬測驗：${score}/${pool.length}`);return}
   const k=pool[qi],q=mkQ(k,qT[k.id]),kind=q.kind||'single';
   $('qArea').innerHTML=`<div class="card"><div class="muted">題目 ${qi+1} / ${pool.length}　${SUB_NAME[k.s]}<span class="qtag">${QK[kind]}</span></div><div style="font-weight:bold;margin:10px 0;line-height:1.6">${q.stem}</div>${kind==='multi'?'<div class="muted" style="margin:-4px 0 8px">（多選：可選一個以上，全部選對才得分）</div>':''}<div id="opts"></div><div id="act"></div><div id="exp" class="box" style="display:none;border-color:#f59e0b"></div></div>`;
   let done=false;
-  const reveal=(ok,pre)=>{done=true;if(ok)score++;else if(!wrongPool.includes(k))wrongPool.push(k);srs(k.id,ok?1:0);save();const e=$('exp');e.style.display='block';const head=pre||(ok?'<b style="color:#34d399">✅ 答對了</b><br>':'<b style="color:#fbbf24">📝 這題先記下來，下次會再出現</b><br>');e.innerHTML=head+qBase(k)+`<button class="btn" style="margin-top:8px" onclick="qi++;showQ()">下一題 ➔</button>`};
+  const reveal=(ok,pre)=>{done=true;if(ok){score++;addCoins(3,'',true)}else if(!wrongPool.includes(k))wrongPool.push(k);srs(k.id,ok?1:0);save();const e=$('exp');e.style.display='block';const head=pre||(ok?'<b style="color:#34d399">✅ 答對了</b><br>':'<b style="color:#fbbf24">📝 這題先記下來，下次會再出現</b><br>');e.innerHTML=head+qBase(k)+`<button class="btn" style="margin-top:8px" onclick="qi++;showQ()">下一題 ➔</button>`};
   if(kind==='single'){
    q.opts.forEach((o,i)=>{const b=document.createElement('button');b.className='opt';b.innerHTML=LAB[i]+'. '+o.h;
     b.onclick=()=>{if(done)return;b.classList.add(o.ok?'ok':'no');[...$('opts').children].forEach((c,j)=>{if(q.opts[j].ok)c.classList.add('ok')});reveal(o.ok)};
@@ -2198,7 +2315,7 @@ function renderCal(){const n=new Date();if(cy===undefined){cy=n.getFullYear();cm
  $('selT').textContent=`📅 ${sel} 學習紀錄`;const L=st.cal[sel]||[];
  $('selL').innerHTML=L.length?L.map(x=>`<div class="box">📌 ${esc(x)}</div>`).join(''):'<div class="muted">當日尚無紀錄。</div>'}
 function calMove(d){cm+=d;if(cm<0){cm=11;cy--}if(cm>11){cm=0;cy++}renderCal()}
-function addLog(){const t=$('logIn').value.trim();if(!t)return;(st.cal[sel]=st.cal[sel]||[]).push(t);save();$('logIn').value='';renderCal()}
+function addLog(){const t=$('logIn').value.trim();if(!t)return;(st.cal[sel]=st.cal[sel]||[]).push(t);$('logIn').value='';ensureCoins();if(st.coinLog.checkin!==today()){st.coinLog.checkin=today();addCoins(10,'每日打卡')}else{save()}renderCal()}
 
 /* ===== 討論區（公開大廳＋客服＋管理）===== */
 const CHAT_API='';/* 部署 chat-server.js 後填入網址，如 'https://chat.example.com'；留空＝僅本機模式 */
@@ -2308,7 +2425,7 @@ function saveProfile(){if(user.guest){$('setMsg').textContent='訪客無法儲�
  {const o=users();if(Object.keys(o).some(x=>x!==user.name&&String((o[x]||{}).nick||'').toLowerCase()===n.toLowerCase())){$('setMsg').textContent='此暱稱已被使用';return}}
  user.nickname=n;user.avatar=selAv;LS.setItem('sess',JSON.stringify(user));
  const all=users();if(all[user.name]){all[user.name].nick=n;all[user.name].av=selAv;LS.setItem('users',JSON.stringify(all))}
- $('who').textContent=`${user.avatar} ${user.nickname}`;$('setMsg').textContent='✅ 已儲存';setTimeout(closeSet,600)}
+ renderWho();$('setMsg').textContent='✅ 已儲存暱稱與頭像'}
 function exportData(){const b=new Blob([JSON.stringify(Object.assign({v:1,exported:today()},st))],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=`study-backup-${today()}.json`;a.click()}
 async function importData(e){const f=e.target.files[0];if(!f)return;
  if(f.size>2e6){alert('檔案過大（上限 2 MB）');e.target.value='';return}if(!window.vocabReady){alert('英文單字資料尚未載入完成（'+(window.vocabError||'載入中')+'），為避免單字進度被丟掉，請稍後再匯入。');e.target.value='';return}
@@ -2378,7 +2495,7 @@ async function devDo(a,n){if(!isDev())return;
  renderDev()}
 function devBack(){const n=SS.getItem('devret'),a=users()[n];SS.removeItem('devret');if(!n||n!==devFrom||!DEV_USERS.includes(n)||!a)return;enter({name:n,nickname:a.nick,avatar:a.av,guest:false});go('dev')}
 /* ===== 初始化 ===== */
-avGrid('ravs');$('mSet').onclick=e=>{if(e.target===$('mSet'))closeSet()};$('mTxt').onclick=e=>{if(e.target===$('mTxt'))closeTxt()};
+avGrid('ravs');$('mTxt').onclick=e=>{if(e.target===$('mTxt'))closeTxt()};
 buildSubjMenus();
 const KBSEL='.mi,.portal>div,.fold,.row,.cd,.fc,#jA,.an,.rt';
 function kbify(){document.querySelectorAll(KBSEL).forEach(e=>{if(!e.hasAttribute('tabindex')){e.setAttribute('tabindex','0');e.setAttribute('role','button')}})}
@@ -2939,6 +3056,34 @@ function courseLabel(s,g){
   return SUBJ[s].split(' ')[1];
 }
 
+
+const COURSE_POINTS={
+  'math:國小':['整數與四則運算順序','分數、小數與比率應用','平面圖形面積與立體體積'],
+  'math:國中':['一元一次／二次方程式','畢氏定理與三角形全等相似','一次函數、機率與統計圖表'],
+  'math:高一數學':['實數、絕對值與多項式','直線、圓與銳角三角比','數列級數、排列組合與數據分析'],
+  'math:高二數A':['指數與對數函數運算','三角函數和角／倍角公式','平面與空間向量、矩陣應用'],
+  'math:高二數B':['週期性數學與三角函數','指數對數與連續複利模型','圓錐截痕與平面向量'],
+  'math:高三數甲':['極限、微分與積分應用','空間向量與三階行列式','複數平面、棣美弗與圓錐曲線'],
+  'math:高三數乙':['極限與多項式微積分','常態分布與信賴區間','相關係數與線性規劃'],
+  'math:大學・微積分':['ε-δ 極限定義與導數公式','泰勒展開與麥克勞林級數','偏導數、多重積分與級數收斂'],
+  'math:大學・線性代數':['向量空間、基底與維度','特徵值、特徵向量與對角化','內積空間與線性變換'],
+  'math:大學・機率與統計':['隨機變數、期望值與變異數','中央極限定理與常態分布','參數估計、信賴區間與檢定'],
+  'math:大學・離散數學':['邏輯命題與數學歸納法','圖論、樹與遞迴關係','排列組合與數論基礎'],
+  'math:大學・微分方程':['分離變數與積分因子法','二階常係數齊次微分方程','拉普拉斯轉換（Laplace）'],
+  'math:大學・基礎與哲學':['集合論與基數概念','實數完備性與公理化系統','數學證明與邏輯基礎'],
+  'chi:高中':['108課綱 15 篇推薦古文（含語譯／修辭）','字音字形易混對照表','典故成語與閱讀賞析'],
+  'eng:國小':['教育部國小基本字彙（附例句）','詞性分類與真人語音發音','遮罩背誦與間隔複習'],
+  'eng:國中':['會考必備 1,200 基本單字','詞性分類與例句朗讀','單字遮罩自測與熟練標記'],
+  'eng:高中':['核心文法（時態、假設、倒裝、子句）','大考中心分級單字庫','易混字辨析與閱讀寫作策略'],
+  'soc:國中':['國中歷史核心脈絡與分期','跨科主題與歷史地圖／年代軸','即時公民時事與綜合測驗'],
+  'soc:高中':['歷史、地理、公民三科整合','跨科議題與大考歷屆試題','即時公民時事與綜合測驗'],
+  'hist:國小':['臺灣早期開發與歷史故事','中華文化重要朝代脈絡','重點事件與圖文整理'],
+  'hist:國中':['臺灣史、中國史與世界史分期','重要戰役、變法與時代轉折','歷史數位地圖與年代軸'],
+  'hist:高中':['東亞史與世界史跨區域連動','歷史因果分析與學測歷屆題','數位地圖與跨時空年代軸'],
+  'geo:高中':['板塊構造、地形與氣候判讀','GIS／GPS／遙測空間分析','人口轉型、區位論與全球化'],
+  'civ:高中':['憲法基本權、五權分立與憲法法庭','民法、刑法與勞動／消保權益','供需彈性、外部性與貨幣財政政策']
+};
+
 const PRESETS=[
   {n:'國小基礎',c:['math:國小','eng:國小','hist:國小']},
   {n:'國中會考',c:['math:國中','eng:國中','soc:國中']},
@@ -3164,6 +3309,7 @@ window.buildSubjMenus=function(){
   const ordered=[];
   SUBJS.forEach(s=>(AVAIL[s]||[]).forEach(g=>{if(st.courses.includes(s+':'+g))ordered.push([s,g])}));
 
+  if($('sideCourseCnt'))$('sideCourseCnt').textContent=(ordered.length?`${ordered.length} 門 `:'')+'▾';
   if(sd){
     sd.innerHTML=ordered.length
       ? ordered.map(([s,g])=>{const [ic]=SUBJ[s].split(' '),lb=courseLabel(s,g),tg=stageBucket(g);return `<div class="mi" onclick="openCourse('${s}','${g}');side()">${ic} ${lb} <span style="float:right;font-size:.75rem;color:#38bdf8">${tg}</span></div>`}).join('')
@@ -3243,7 +3389,7 @@ window.renderCourseHall=function(){
             <div class="muted" style="font-size:.76rem">${cntTxt}</div>
           </div>
         </div>
-        <div class="muted" style="font-size:.78rem;line-height:1.5;flex:1">${esc(SUBJ_DESC[s]||'')}</div>
+        <ul style="margin:2px 0 0 16px;padding:0;color:#94a3b8;font-size:.78rem;line-height:1.55;flex:1">${(COURSE_POINTS[s+':'+g]||[SUBJ_DESC[s]||'']).map(pt=>`<li>${esc(pt)}</li>`).join('')}</ul>
         <div style="display:flex;justify-content:flex-end;margin-top:4px">
           <span class="btn${on?' alt':''}" style="padding:4px 12px;font-size:.8rem;${on?'background:#064e3b;color:#6ee7b7;border:1px solid #10b981':''}">${on?'✓ 已選（點此退選）':'＋ 加選'}</span>
         </div>
@@ -3265,11 +3411,7 @@ window.renderCourseHall=function(){
       <div style="margin-top:10px"><div class="muted" style="margin-bottom:6px">⚡ 一鍵套用推薦課表：</div><div class="qchips">${presetsHtml}</div></div>
     </div>
     <div class="tabs">${tabsHtml}</div>
-    <div style="margin-bottom:80px">${sectionsHtml}</div>
-    <div class="cfoot">
-      <div>目前已選 <b style="color:#f59e0b">${st.courses.length}</b> 門課（共 <b style="color:#38bdf8">${totalItems}</b> 個知識點）</div>
-      <button class="btn" onclick="go('home')">✓ 完成選課，前往我的課表</button>
-    </div>`;
+    <div style="margin-bottom:16px">${sectionsHtml}</div>`;
 };
 
 /* ===== 覆寫 subjUnits：英文與歷史依目前階段過濾 ===== */
